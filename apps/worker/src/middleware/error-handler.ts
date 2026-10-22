@@ -18,12 +18,13 @@ export const errorHandler: ErrorHandler<{ Bindings: Env }> = (err: Error, c: Con
 
   if (err.name === 'HTTPException') {
     const httpErr = err as { status?: number; message: string };
+    const status = httpErr.status || 500;
     return c.json(
       {
         error: httpErr.message,
         code: 'HTTP_ERROR',
       },
-      httpErr.status || 500
+      status >= 400 && status < 600 ? (status as 400 | 401 | 403 | 404 | 500 | 503) : 500
     );
   }
 
@@ -33,6 +34,6 @@ export const errorHandler: ErrorHandler<{ Bindings: Env }> = (err: Error, c: Con
       code: 'INTERNAL_ERROR',
       message: process.env.NODE_ENV === 'development' ? err.message : undefined,
     },
-    500
+    500 as 500
   );
 };

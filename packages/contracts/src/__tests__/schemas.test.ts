@@ -1,10 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
   LocationSchema,
-  BrandAffinitySchema,
   BacktestResultSchema,
   AnalysisRequestSchema,
-  AnalysisResponseSchema,
 } from '../index';
 
 describe('Contract Schemas', () => {

@@ -6,15 +6,27 @@ import { randomUUID } from 'node:crypto';
 
 export const analysisRouter = new Hono<{ Bindings: Env }>();
 
+/**
+ * Hash an IP address using SHA-256 (privacy: don't store raw IPs)
+ */
+async function hashIP(ip: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(ip);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+}
+
 analysisRouter.post('/analyze', async (c) => {
   const body = await c.req.json();
   const request = AnalysisRequestSchema.parse(body);
 
   const runId = randomUUID();
-  const ipAddress = c.req.header('cf-connecting-ip') || 'unknown';
+  const ip = c.req.header('cf-connecting-ip') || 'unknown';
+  const ipHash = await hashIP(ip);
 
   const service = new AnalysisService(c.env);
-  const result = await service.analyze(request, runId, ipAddress);
+  const result = await service.analyze(request, runId, ipHash);
 
   return c.json(result);
 });
