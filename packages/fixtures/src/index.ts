@@ -1,86 +1,74 @@
 /**
- * Demo locations with validated backtest results
+ * Demo fixtures from REAL Qloo validation data
+ * Source: round2/neigh_test_10km.json (actual API responses from Oct 2026)
+ * Store locations: All The Places (CC0 license, Oct 2026 snapshot)
+ * 
+ * To regenerate: node scripts/build-fixtures.mjs
  */
-export const DEMO_LOCATIONS = {
-  wickerPark: {
-    name: 'Wicker Park, Chicago',
-    address: '1574 N Milwaukee Ave, Chicago, IL 60622',
-    latitude: 41.9088,
-    longitude: -87.6776,
-    city: 'Chicago',
-    neighborhood: 'Wicker Park',
-    backtest: {
-      auc: 0.797,
-      precisionAt10: 1.0,
-      totalStores: 36,
-      predictedStores: 36,
-    },
-  },
-  sevierville: {
-    name: 'Sevierville, Tennessee',
-    address: '125 Collier Dr, Sevierville, TN 37862',
-    latitude: 35.8681,
-    longitude: -83.5618,
-    city: 'Sevierville',
-    neighborhood: 'Sevierville',
-    backtest: {
-      auc: 0.742,
-      precisionAt10: 0.8,
-      totalStores: 29,
-      predictedStores: 25,
-    },
-  },
-  boulder: {
-    name: 'Boulder, Colorado',
-    address: '1125 Pearl St, Boulder, CO 80302',
-    latitude: 40.0150,
-    longitude: -105.2705,
-    city: 'Boulder',
-    neighborhood: 'Pearl Street',
-    backtest: {
-      auc: 0.87,
-      precisionAt10: 1.0,
-      totalStores: 28,
-      predictedStores: 28,
-    },
-  },
-} as const;
 
-/**
- * Brand entities used in fixtures (from research data)
- */
-export const DEMO_BRANDS = {
-  'Trader Joe\'s': { entityId: 'urn:qloo:entity:brand:trader_joes', popularity: 0.85 },
-  'Whole Foods': { entityId: 'urn:qloo:entity:brand:whole_foods', popularity: 0.92 },
-  'Sweetgreen': { entityId: 'urn:qloo:entity:brand:sweetgreen', popularity: 0.78 },
-  'Lululemon': { entityId: 'urn:qloo:entity:brand:lululemon', popularity: 0.88 },
-  'Madewell': { entityId: 'urn:qloo:entity:brand:madewell', popularity: 0.71 },
-  'Everlane': { entityId: 'urn:qloo:entity:brand:everlane', popularity: 0.65 },
-  'Reformation': { entityId: 'urn:qloo:entity:brand:reformation', popularity: 0.69 },
-  'Aritzia': { entityId: 'urn:qloo:entity:brand:aritzia', popularity: 0.72 },
-  'Bluemercury': { entityId: 'urn:qloo:entity:brand:bluemercury', popularity: 0.58 },
-  'REI': { entityId: 'urn:qloo:entity:brand:rei', popularity: 0.81 },
-  'Warby Parker': { entityId: 'urn:qloo:entity:brand:warby_parker', popularity: 0.74 },
-  'Blue Bottle Coffee': { entityId: 'urn:qloo:entity:brand:blue_bottle_coffee', popularity: 0.66 },
-} as const;
+export { wickerparkFixture } from './wicker-park';
+export { boulderFixture } from './boulder';
+export { seviervilleFixture } from './sevierville';
 
-/**
- * Store location data for absence verification
- * Subset of All The Places data used in validation
- */
-export interface StoreLocation {
-  lat: number;
-  lon: number;
+import storeLocations from './store-locations.json';
+
+export { storeLocations };
+
+interface BrandData {
+  name: string;
+  slug: string;
+  count: number;
+  locations: number[][];
 }
 
-export const STORE_LOCATIONS: Record<string, StoreLocation[]> = {
-  'trader_joes': [],
-  'whole_foods': [],
-  'sweetgreen': [],
-  'lululemon': [],
-  'rei': [],
-};
+type StoreData = Record<string, BrandData>;
 
-export * from './wicker-park';
-export * from './sevierville';
-export * from './boulder';
+const storeData = storeLocations.data as StoreData;
+
+/**
+ * Haversine distance in km between two lat/lon points
+ */
+export function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // Earth radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+/**
+ * Find stores within radius of a location
+ */
+export function findStoresNearby(
+  brandId: string,
+  lat: number,
+  lon: number,
+  radiusKm: number
+): Array<{ lat: number; lon: number; distance: number }> {
+  const brand = storeData[brandId];
+  if (!brand) return [];
+
+  const nearby = [];
+  for (const location of brand.locations) {
+    const [storeLat, storeLon] = location;
+    if (storeLat === undefined || storeLon === undefined) continue;
+    
+    const distance = haversineDistance(lat, lon, storeLat, storeLon);
+    if (distance <= radiusKm) {
+      nearby.push({ lat: storeLat, lon: storeLon, distance });
+    }
+  }
+
+  return nearby.sort((a, b) => a.distance - b.distance);
+}
+
+/**
+ * Get national store count for a brand
+ */
+export function getNationalStoreCount(brandId: string): number {
+  return storeData[brandId]?.count || 0;
+}

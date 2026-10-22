@@ -84,7 +84,7 @@ export class QlooClient {
 
     const start = Date.now();
     
-    const response = await this.fetch(url.toString(), params.runId);
+    const response = await this.fetch(url.toString());
     const latency = Date.now() - start;
     
     if (!response.ok) {
@@ -151,7 +151,7 @@ export class QlooClient {
     }
 
     const start = Date.now();
-    const response = await this.fetch(url.toString(), params.runId);
+    const response = await this.fetch(url.toString());
     const latency = Date.now() - start;
     
     if (!response.ok) {
@@ -185,7 +185,7 @@ export class QlooClient {
     return cells;
   }
 
-  private async fetch(url: string, runId?: string): Promise<Response> {
+  private async fetch(url: string): Promise<Response> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 30000);
 
@@ -224,7 +224,7 @@ export class QlooClient {
     return this.wickerParkInsights();
   }
 
-  private getDemoHeatmap(location: string): QlooHeatmapCell[] {
+  private getDemoHeatmap(_location: string): QlooHeatmapCell[] {
     return [
       { latitude: 41.9088, longitude: -87.6776, affinity_rank: 0.95, affinity: 0.892 },
       { latitude: 41.9098, longitude: -87.6786, affinity_rank: 0.94, affinity: 0.885 },

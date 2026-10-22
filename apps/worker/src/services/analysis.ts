@@ -2,7 +2,7 @@ import type { Env } from '../index';
 import type { AnalysisRequest, AnalysisResponse, Location, BacktestResult, ProspectPack } from '@leaseup/contracts';
 import { QlooClient } from '../providers/qloo';
 import { OpenAIClient } from '../providers/openai';
-import { wickerParkFixture, seviervilleFixture, boulderFixture } from '@leaseup/fixtures';
+import { wickerparkFixture, boulderFixture, seviervilleFixture, findStoresNearby, getNationalStoreCount } from '@leaseup/fixtures';
 
 export class AnalysisService {
   private qloo: QlooClient;
@@ -17,12 +17,12 @@ export class AnalysisService {
     this.mode = (env.APP_MODE === 'live') ? 'live' : 'demo';
   }
 
-  async analyze(request: AnalysisRequest, runId: string, ipAddress: string): Promise<AnalysisResponse> {
+  async analyze(request: AnalysisRequest, runId: string, ipHash: string): Promise<AnalysisResponse> {
     await this.db
       .prepare(
         'INSERT INTO analysis_runs (run_id, address, status, ip_address, created_at) VALUES (?, ?, ?, ?, ?)'
       )
-      .bind(runId, request.address, 'running', ipAddress, Math.floor(Date.now() / 1000))
+      .bind(runId, request.address, 'running', ipHash, Math.floor(Date.now() / 1000))
       .run();
 
     try {
@@ -39,8 +39,10 @@ export class AnalysisService {
         return this.insufficientDataResponse(location, runId);
       }
 
-      const backtest = await this.runBacktest(location, insights, runId);
+      // Real backtest using actual presence data
+      const backtest = await this.runBacktest(location, insights, request.radius, runId);
       
+      // Real absence verification
       const prospects = await this.generateProspects(
         location,
         insights,
@@ -82,12 +84,13 @@ export class AnalysisService {
       return this.resolveDemoLocation(address);
     }
 
+    // Nominatim geocoding with proper User-Agent
     const query = encodeURIComponent(address);
     const url = `https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=1`;
 
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'LeaseUp/1.0',
+        'User-Agent': 'LeaseUp/1.0 (hackathon@example.com)',
       },
     });
 
@@ -127,98 +130,133 @@ export class AnalysisService {
     const lowerAddress = address.toLowerCase();
     
     if (lowerAddress.includes('wicker') || lowerAddress.includes('milwaukee')) {
-      return wickerParkFixture.location;
-    } else if (lowerAddress.includes('sevierville') || lowerAddress.includes('collier')) {
-      return seviervilleFixture.location;
+      return {
+        address,
+        ...wickerparkFixture.location,
+        resolvedAddress: wickerparkFixture.location.name,
+      };
     } else if (lowerAddress.includes('boulder') || lowerAddress.includes('pearl')) {
-      return boulderFixture.location;
+      return {
+        address,
+        ...boulderFixture.location,
+        resolvedAddress: boulderFixture.location.name,
+      };
+    } else if (lowerAddress.includes('sevierville') || lowerAddress.includes('collier')) {
+      return {
+        address,
+        ...seviervilleFixture.location,
+        resolvedAddress: seviervilleFixture.location.name,
+      };
     }
     
-    return wickerParkFixture.location;
+    // Default to Wicker Park
+    return {
+      address,
+      ...wickerparkFixture.location,
+      resolvedAddress: wickerparkFixture.location.name,
+    };
   }
 
+  /**
+   * Run backtest: compare Qloo ranks to actual store presence
+   * Methodology from round2/neigh_test.py:
+   * - AUC: How well ranks separate present from absent brands
+   * - P@10: What fraction of top-10 ranked brands are actually present
+   */
   private async runBacktest(
     location: Location,
     insights: Array<{ entity_id: string; name: string; query?: { affinity_rank?: number } }>,
-    runId: string
+    radius: number,
+    _runId: string
   ): Promise<BacktestResult> {
     if (this.mode === 'demo') {
       return this.getDemoBacktest(location);
     }
 
-    const presentBrands = await this.findPresentBrands(location, insights.map(i => i.name));
-    
-    const top10 = insights.slice(0, 10);
-    const predictedInTop10 = top10.filter(brand => presentBrands.has(brand.name)).length;
-    
-    const examples = top10
-      .filter(brand => presentBrands.has(brand.name))
-      .slice(0, 7)
-      .map((brand, idx) => ({
-        name: brand.name,
-        distance: Math.random() * 2 + 0.3,
-        rank: idx + 1,
-        predicted: true,
-      }));
+    // Find which brands are actually present within radius
+    const presentBrands = new Set<string>();
+    const examples: BacktestResult['examples'] = [];
 
+    for (const insight of insights) {
+      const nearby = findStoresNearby(insight.entity_id, location.latitude, location.longitude, radius);
+      
+      if (nearby.length > 0) {
+        presentBrands.add(insight.entity_id);
+        
+        // Record for examples
+        if (examples.length < 10) {
+          examples.push({
+            name: insight.name,
+            distance: nearby[0]!.distance,
+            rank: insights.indexOf(insight) + 1,
+            predicted: true,
+          });
+        }
+      }
+    }
+
+    // Precision@10: what fraction of top-10 are present?
+    const top10 = insights.slice(0, 10);
+    const predictedInTop10 = top10.filter(b => presentBrands.has(b.entity_id)).length;
+    const precisionAt10 = predictedInTop10 / 10;
+
+    // AUC: How well do ranks separate present from absent?
     const auc = this.calculateAUC(insights, presentBrands);
 
     return {
       totalStores: presentBrands.size,
       predictedStores: presentBrands.size,
       accuracy: presentBrands.size > 0 ? predictedInTop10 / Math.min(10, presentBrands.size) : 0,
-      precisionAt10: predictedInTop10 / 10,
+      precisionAt10,
       auc,
-      examples,
+      examples: examples.slice(0, 7),
     };
   }
 
   private getDemoBacktest(location: Location): BacktestResult {
     const address = location.address.toLowerCase();
     
+    let fixture;
     if (address.includes('wicker') || address.includes('milwaukee')) {
-      return wickerParkFixture.backtest;
-    } else if (address.includes('sevierville') || address.includes('collier')) {
-      return seviervilleFixture.backtest;
+      fixture = wickerparkFixture;
     } else if (address.includes('boulder') || address.includes('pearl')) {
-      return boulderFixture.backtest;
+      fixture = boulderFixture;
+    } else if (address.includes('sevierville') || address.includes('collier')) {
+      fixture = seviervilleFixture;
+    } else {
+      fixture = wickerparkFixture;
     }
     
-    return wickerParkFixture.backtest;
+    return {
+      totalStores: fixture.backtest.totalStores,
+      predictedStores: fixture.backtest.totalStores,
+      accuracy: fixture.backtest.precisionAt10,
+      precisionAt10: fixture.backtest.precisionAt10,
+      auc: fixture.backtest.auc,
+      examples: [], // Would need to be added to fixtures
+    };
   }
 
-  private async findPresentBrands(
-    location: Location,
-    brandNames: string[]
-  ): Promise<Set<string>> {
-    const present = new Set<string>();
-    
-    for (const brand of brandNames.slice(0, 20)) {
-      const isPresent = Math.random() > 0.3;
-      if (isPresent) {
-        present.add(brand);
-      }
-    }
-    
-    return present;
-  }
-
+  /**
+   * AUC calculation: For each (present, absent) pair, does present rank higher?
+   * This is the exact methodology from round2/neigh_test.py
+   */
   private calculateAUC(
-    insights: Array<{ entity_id: string; name: string; query?: { affinity_rank?: number } }>,
+    insights: Array<{ entity_id: string }>,
     presentBrands: Set<string>
   ): number {
-    const positives = insights.filter(i => presentBrands.has(i.name));
-    const negatives = insights.filter(i => !presentBrands.has(i.name));
+    const positives = insights.filter(i => presentBrands.has(i.entity_id));
+    const negatives = insights.filter(i => !presentBrands.has(i.entity_id));
     
     if (positives.length === 0 || negatives.length === 0) {
       return 0;
     }
 
     let sum = 0;
-    for (let i = 0; i < positives.length; i++) {
-      const posRank = insights.indexOf(positives[i]!);
-      for (let j = 0; j < negatives.length; j++) {
-        const negRank = insights.indexOf(negatives[j]!);
+    for (const pos of positives) {
+      const posRank = insights.indexOf(pos);
+      for (const neg of negatives) {
+        const negRank = insights.indexOf(neg);
         if (posRank < negRank) {
           sum += 1;
         } else if (posRank === negRank) {
@@ -232,75 +270,86 @@ export class AnalysisService {
 
   private async generateProspects(
     location: Location,
-    insights: Array<{ entity_id: string; name: string; query?: { affinity?: number; affinity_rank?: number; popularity?: number } }>,
+    insights: Array<{ entity_id: string; name: string; query?: { affinity?: number; affinity_rank?: number } }>,
     radius: number,
-    runId: string
+    _runId: string
   ): Promise<ProspectPack[]> {
-    const presentBrands = await this.findPresentBrands(location, insights.map(i => i.name));
-    
-    const prospects = insights
-      .filter(insight => !presentBrands.has(insight.name))
-      .filter(insight => (insight.query?.affinity_rank || 0) >= 0.85)
-      .slice(0, 10);
-
     const prospectPacks: ProspectPack[] = [];
 
-    for (const prospect of prospects) {
-      const reasons = this.generateReasons(prospect, location);
+    // Only consider high-affinity brands (top 25% or affinity_rank >= 0.85)
+    const candidates = insights.filter(i => (i.query?.affinity_rank || 0) >= 0.85);
+
+    for (const candidate of candidates.slice(0, 20)) {
+      // Check for actual stores nearby (real absence verification)
+      const nearbyStores = findStoresNearby(candidate.entity_id, location.latitude, location.longitude, radius);
       
-      const outreachDraft = await this.openai.generateOutreach({
-        brandName: prospect.name,
-        address: location.resolvedAddress || location.address,
-        reasons,
-        runId,
-      });
+      // Absent means NO stores within radius
+      if (nearbyStores.length > 0) {
+        continue; // Brand is present, skip
+      }
+
+      const nationalCount = getNationalStoreCount(candidate.entity_id);
+      
+      // Only include brands that have at least some national presence
+      if (nationalCount < 5) {
+        continue;
+      }
+
+      const reasons = this.generateReasons(candidate, location, nationalCount);
 
       prospectPacks.push({
         brand: {
-          entityId: prospect.entity_id,
-          name: prospect.name,
-          affinity: prospect.query?.affinity || 0,
-          affinityRank: prospect.query?.affinity_rank || 0,
-          popularity: prospect.query?.popularity,
-          verified: true,
-          nationalStoreCount: Math.floor(Math.random() * 500) + 50,
+          entityId: candidate.entity_id,
+          name: candidate.name,
+          affinity: candidate.query?.affinity || 0,
+          affinityRank: candidate.query?.affinity_rank || 0,
+          popularity: undefined, // Not available from Qloo in current response
+          verified: true, // Verified absent via store dataset
+          nationalStoreCount: nationalCount,
           nearbyStoreCount: 0,
         },
         tenantMixScore: {
-          score: 0.85 + Math.random() * 0.12,
-          coAffinityMean: 0.78 + Math.random() * 0.15,
-          categoryFit: 'strong',
-          explanation: `High co-affinity with existing tenants in the area`,
+          score: 0, // Removed: can't compute honestly without co-affinity data
+          coAffinityMean: 0,
+          categoryFit: 'unavailable',
+          explanation: 'Tenant mix scoring requires additional Qloo API calls (not yet implemented)',
         },
-        demographics: undefined,
-        outreachDraft: `${outreachDraft.subject}\n\n${outreachDraft.body}`,
+        demographics: undefined, // Not requested in current Qloo call
+        outreachDraft: '', // Generated on-demand to save API calls
         reasons,
       });
+
+      // Limit to top 10 prospects
+      if (prospectPacks.length >= 10) {
+        break;
+      }
     }
 
     return prospectPacks;
   }
 
   private generateReasons(
-    prospect: { name: string; query?: { affinity_rank?: number; popularity?: number } },
-    location: Location
+    prospect: { name: string; query?: { affinity_rank?: number } },
+    location: Location,
+    nationalCount: number
   ): string[] {
     const reasons: string[] = [];
     
     const affinityRank = prospect.query?.affinity_rank || 0;
     if (affinityRank >= 0.95) {
-      reasons.push(`Exceptional brand affinity in ${location.neighborhood || location.city} (top 5% match)`);
+      reasons.push(`Top 5% brand affinity in ${location.neighborhood || location.city || 'this area'}`);
     } else if (affinityRank >= 0.90) {
-      reasons.push(`Very high brand affinity in ${location.neighborhood || location.city} (top 10% match)`);
-    } else {
-      reasons.push(`Strong brand affinity in ${location.neighborhood || location.city}`);
+      reasons.push(`Top 10% brand affinity in ${location.neighborhood || location.city || 'this area'}`);
+    } else if (affinityRank >= 0.85) {
+      reasons.push(`Top 15% brand affinity in ${location.neighborhood || location.city || 'this area'}`);
     }
 
-    reasons.push('No existing location within 10km radius - verified white space opportunity');
-    reasons.push('Existing tenant mix shows high co-affinity with your customer base');
+    reasons.push(`No existing location within ${10}km radius (verified via All The Places store data)`);
     
-    if (Math.random() > 0.5) {
-      reasons.push('Strong demographic alignment: 25-34 age group over-indexed');
+    if (nationalCount >= 100) {
+      reasons.push(`Established chain with ${nationalCount} US locations`);
+    } else if (nationalCount >= 20) {
+      reasons.push(`Growing regional chain with ${nationalCount} US locations`);
     }
 
     return reasons;
@@ -328,12 +377,14 @@ export class AnalysisService {
     }
 
     if (backtest.precisionAt10 < 0.7) {
-      warnings.push('Lower prediction confidence - consider this a preliminary analysis');
+      warnings.push('Lower prediction confidence - treat as preliminary analysis');
     }
 
     if (!location.neighborhood && !location.city) {
       warnings.push('Location resolution is approximate');
     }
+
+    warnings.push('Absence verification is limited to brands in All The Places dataset (47 major chains)');
 
     return warnings;
   }
@@ -351,12 +402,32 @@ export class AnalysisService {
       prospects: [],
       dataQuality: 'insufficient',
       warnings: [
-        'Insufficient data for this location',
-        'This area may be too small or too new for reliable analysis',
-        'Try a nearby larger city or neighborhood',
+        'Insufficient Qloo data for this location',
+        'This area may be too small, too new, or outside Qloo\'s coverage',
+        'Try a nearby larger city or well-known neighborhood',
       ],
       runId,
       timestamp: new Date().toISOString(),
     };
+  }
+
+  /**
+   * Generate outreach draft lazily (not called during initial analysis)
+   * Call this separately when user clicks "View Outreach"
+   */
+  async generateOutreachForBrand(
+    brandName: string,
+    address: string,
+    reasons: string[],
+    runId: string
+  ): Promise<string> {
+    const draft = await this.openai.generateOutreach({
+      brandName,
+      address,
+      reasons,
+      runId,
+    });
+
+    return `${draft.subject}\n\n${draft.body}`;
   }
 }
