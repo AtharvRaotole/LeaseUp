@@ -34,6 +34,6 @@ export const errorHandler: ErrorHandler<{ Bindings: Env }> = (err: Error, c: Con
       code: 'INTERNAL_ERROR',
       message: process.env.NODE_ENV === 'development' ? err.message : undefined,
     },
-    500 as 500
+    500 as const
   );
 };
