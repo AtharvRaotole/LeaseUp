@@ -1,0 +1,37 @@
+name = "leaseup-worker"
+main = "dist/index.js"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[env.production]
+name = "leaseup-worker-prod"
+
+[vars]
+APP_MODE = "demo"
+
+# D1 database for caching and rate limiting
+# Run: wrangler d1 create leaseup_db
+# Then copy the database_id below
+[[d1_databases]]
+binding = "DB"
+database_name = "leaseup_db"
+database_id = ""
+
+# KV for response caching
+# Run: wrangler kv:namespace create CACHE
+# Then copy the id below
+[[kv_namespaces]]
+binding = "CACHE"
+id = ""
+
+[env.production.d1_databases]
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "leaseup_db_prod"
+database_id = ""
+
+[env.production.kv_namespaces]
+[[env.production.kv_namespaces]]
+binding = "CACHE"
+id = ""
