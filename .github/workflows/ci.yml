@@ -48,7 +48,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       
-      - name: Build packages (required for typecheck)
+      - name: Build workspace packages first
+        run: |
+          pnpm --filter @leaseup/contracts build
+          pnpm --filter @leaseup/fixtures build
+      
+      - name: Build all packages
         run: pnpm build
         
       - name: Run typecheck
