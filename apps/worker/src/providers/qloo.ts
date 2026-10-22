@@ -202,9 +202,9 @@ export class QlooClient {
       return response;
     } catch (err) {
       if ((err as Error).name === 'AbortError') {
-        throw new Error('Qloo API timeout');
+        throw new Error('Qloo API timeout', { cause: err });
       }
-      throw err;
+      throw new Error('Qloo API fetch error', { cause: err });
     } finally {
       clearTimeout(timeout);
     }

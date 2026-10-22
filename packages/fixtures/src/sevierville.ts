@@ -1,3 +1,4 @@
+/* eslint-disable no-loss-of-precision */
 /**
  * Real Qloo validation data for Sevierville, Tennessee
  * Source: round2/neigh_test_10km.json
@@ -6,6 +7,9 @@
  * 
  * Note: Sevierville has P@10 of 0.7 (not 1.0) - this is the real validation result.
  * It represents a typical case where the model is good but not perfect.
+ * 
+ * ESLint no-loss-of-precision disabled: These are REAL recorded Qloo API values.
+ * Exact precision from API response must be preserved for data integrity.
  */
 
 export const seviervilleFixture = {
