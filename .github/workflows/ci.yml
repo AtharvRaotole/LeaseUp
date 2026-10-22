@@ -52,6 +52,7 @@ jobs:
         run: |
           pnpm --filter @leaseup/contracts build
           pnpm --filter @leaseup/fixtures build
+          ls -la packages/contracts/dist/ packages/fixtures/dist/ || echo "Dist folders missing!"
       
       - name: Build all packages
         run: pnpm build
