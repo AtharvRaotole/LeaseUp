@@ -295,7 +295,7 @@ export class AnalysisService {
         continue;
       }
 
-      const reasons = this.generateReasons(candidate, location, nationalCount);
+      const reasons = this.generateReasons(candidate, location, nationalCount, radius);
 
       prospectPacks.push({
         brand: {
@@ -303,19 +303,15 @@ export class AnalysisService {
           name: candidate.name,
           affinity: candidate.query?.affinity || 0,
           affinityRank: candidate.query?.affinity_rank || 0,
-          popularity: undefined, // Not available from Qloo in current response
-          verified: true, // Verified absent via store dataset
+          popularity: undefined,
+          verified: 'unverified (1 source)',
+          verificationSources: ['All The Places (CC0)'],
           nationalStoreCount: nationalCount,
           nearbyStoreCount: 0,
         },
-        tenantMixScore: {
-          score: 0, // Removed: can't compute honestly without co-affinity data
-          coAffinityMean: 0,
-          categoryFit: 'unavailable',
-          explanation: 'Tenant mix scoring requires additional Qloo API calls (not yet implemented)',
-        },
-        demographics: undefined, // Not requested in current Qloo call
-        outreachDraft: '', // Generated on-demand to save API calls
+        tenantMixScore: undefined,
+        demographics: undefined,
+        outreachDraft: '',
         reasons,
       });
 
@@ -331,7 +327,8 @@ export class AnalysisService {
   private generateReasons(
     prospect: { name: string; query?: { affinity_rank?: number } },
     location: Location,
-    nationalCount: number
+    nationalCount: number,
+    radius: number
   ): string[] {
     const reasons: string[] = [];
     
@@ -344,7 +341,7 @@ export class AnalysisService {
       reasons.push(`Top 15% brand affinity in ${location.neighborhood || location.city || 'this area'}`);
     }
 
-    reasons.push(`No existing location within ${10}km radius (verified via All The Places store data)`);
+    reasons.push(`No existing location within ${radius}km radius (verified via All The Places store data)`);
     
     if (nationalCount >= 100) {
       reasons.push(`Established chain with ${nationalCount} US locations`);

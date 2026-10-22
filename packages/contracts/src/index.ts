@@ -19,7 +19,8 @@ export const BrandAffinitySchema = z.object({
   popularity: z.number().optional(),
   nationalStoreCount: z.number().optional(),
   nearbyStoreCount: z.number().optional(),
-  verified: z.boolean(),
+  verified: z.union([z.literal('verified'), z.literal('unverified (1 source)'), z.literal('unverified')]),
+  verificationSources: z.array(z.string()).optional(),
   explanation: z.string().optional(),
 });
 
@@ -52,7 +53,7 @@ export type TenantMixScore = z.infer<typeof TenantMixScoreSchema>;
 
 export const ProspectPackSchema = z.object({
   brand: BrandAffinitySchema,
-  tenantMixScore: TenantMixScoreSchema,
+  tenantMixScore: TenantMixScoreSchema.optional(),
   demographics: z.object({
     ageSkew: z.record(z.string(), z.number()).optional(),
     genderSkew: z.record(z.string(), z.number()).optional(),
