@@ -14,7 +14,7 @@ export function ProspectList({ prospects, location }: ProspectListProps) {
   };
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
+    void navigator.clipboard.writeText(text);
   };
 
   return (
@@ -48,12 +48,19 @@ export function ProspectList({ prospects, location }: ProspectListProps) {
                 </div>
 
                 <div className="flex items-center space-x-4 text-sm mb-3">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    Tenant Fit: {(prospect.tenantMixScore.score * 100).toFixed(0)}%
-                  </span>
-                  {prospect.brand.verified && (
+                  {prospect.tenantMixScore && prospect.tenantMixScore.score > 0 && (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      Tenant Fit: {(prospect.tenantMixScore.score * 100).toFixed(0)}%
+                    </span>
+                  )}
+                  {prospect.brand.verified === 'verified' && (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      ✓ Verified Absent
+                      ✓ Verified (2 sources)
+                    </span>
+                  )}
+                  {prospect.brand.verified === 'unverified (1 source)' && (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                      ⚠ Unverified (1 source)
                     </span>
                   )}
                 </div>
