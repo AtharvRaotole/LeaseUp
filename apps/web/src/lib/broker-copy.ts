@@ -24,11 +24,16 @@ export function alreadyNearbyStatLabel(backtest: BacktestResult): string {
 }
 
 export function alreadyNearbyStatTooltip(radiusKm: number): string {
-  return `Of the top 10 taste picks, how many already have a store within ${radiusKm} km. Lower is better for leasing white space.`;
+  return `Of the top 10 picks, how many already have a store within ${radiusKm} km. Lower means more room for a new tenant.`;
 }
 
 export function brandsScoredStatTooltip(): string {
-  return 'How many major chains Qloo scored for taste fit at this address.';
+  return 'How many major chains we scored for local shopper taste at this address.';
+}
+
+/** Plain line when a taste tag or audience stands out in the trade area. */
+export function shopperInterestHighlight(interest: string): string {
+  return `People near this site shop more for ${interest} than in a typical neighborhood`;
 }
 
 export function dataConfidenceStatTooltip(): string {
@@ -92,7 +97,7 @@ export function proofSectionLead(present: number, radiusKm: number): string {
 
 export function rankingModeTooltip(mode: 'qloo' | 'baseline'): string {
   return mode === 'qloo'
-    ? 'Ranked by what local shoppers love (Qloo taste data).'
+    ? 'Ranked by what local shoppers love (shopper taste data from Qloo).'
     : 'Same brands, ranked only by national chain size without local taste.';
 }
 

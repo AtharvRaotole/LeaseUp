@@ -29,7 +29,7 @@ describe('whyBrandBulletLines', () => {
     } as ProspectPack;
     const results = { rankings: [{ entityId: 'x' }] } as AnalysisResponse;
     const lines = whyBrandBulletLines(prospect, results, 10);
-    expect(lines.some((l) => l.includes('Local tags over-indexing'))).toBe(true);
+    expect(lines.some((l) => l.includes('Interests that stand out'))).toBe(true);
     expect(lines.some((l) => l.includes('Hiking'))).toBe(true);
   });
 });

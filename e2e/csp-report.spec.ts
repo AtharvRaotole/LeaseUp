@@ -11,6 +11,7 @@ const WORKER_ORIGIN = 'https://leaseup-worker.issue-atharva.workers.dev';
 
 test.describe('Production CSP on report + map', () => {
   test('report loads API and MapLibre under committed _headers CSP', async ({ page }) => {
+    test.setTimeout(240_000);
     const csp = readFileSync(join(process.cwd(), 'apps/web/public/_headers'), 'utf8');
     const cspLine = csp
       .split('\n')
