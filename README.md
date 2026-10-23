@@ -38,6 +38,7 @@ Mobile landing:
 | **Pitch pack** (`/pitch/:id`) | Shareable read-only snapshot from a site report, map image, top 5 prospects, print/PDF |
 | **Qloo proof** (report) | Toggle Qloo vs national chain-size baseline with computed backtest comparison |
 | **Full prospecting** (`/prospect/:id`) | Agent timeline over SSE: geocode through pitch pack and draft outreach |
+| **Leasing pipeline** (`/pipeline`) | Kanban board (D1 + workspace cookie): drag stages, notes, follow-ups, grounded outreach drafts, CSV export, read-only share link |
 
 Brand reverse (recorded Chicago heatmap, light 1440px):
 
@@ -58,6 +59,10 @@ Qloo proof on report (light 1440px):
 Autonomous prospecting (light 390px):
 
 ![Prospecting agent](docs/screenshots/features/prospecting-agent-light-390.png)
+
+Leasing pipeline (light 1440px):
+
+![Leasing pipeline](docs/screenshots/features/pipeline-light-1440.png)
 
 ## Architecture
 

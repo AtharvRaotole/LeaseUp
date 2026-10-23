@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { cn } from '../../lib/cn';
@@ -10,11 +11,13 @@ export function WhyThisBrandCard({
   results,
   radiusKm,
   className,
+  actions,
 }: {
   prospect: ProspectPack | null;
   results: AnalysisResponse;
   radiusKm: number;
   className?: string;
+  actions?: ReactNode;
 }) {
   if (!prospect) return null;
 
@@ -40,6 +43,7 @@ export function WhyThisBrandCard({
           ))}
         </ul>
       )}
+      {actions && <div className="mt-4 flex flex-wrap gap-2">{actions}</div>}
     </Card>
   );
 }

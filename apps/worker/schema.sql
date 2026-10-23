@@ -65,4 +65,15 @@ CREATE TABLE IF NOT EXISTS prospecting_jobs (
 
 CREATE INDEX IF NOT EXISTS idx_prospecting_jobs_created ON prospecting_jobs(created_at);
 
+-- Leasing pipeline boards (one per anonymous browser workspace)
+CREATE TABLE IF NOT EXISTS pipeline_boards (
+  workspace_id TEXT PRIMARY KEY,
+  share_id TEXT NOT NULL UNIQUE,
+  payload TEXT NOT NULL,
+  updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+);
+
+CREATE INDEX IF NOT EXISTS idx_pipeline_boards_share ON pipeline_boards(share_id);
+CREATE INDEX IF NOT EXISTS idx_pipeline_boards_updated ON pipeline_boards(updated_at);
+
 -- Store locations are served from static geotiles (apps/worker/public/tiles), not D1.

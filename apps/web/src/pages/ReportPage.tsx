@@ -34,6 +34,8 @@ import type { ReportMapCaptureRef } from '../components/report/ReportMap';
 import type { VacancyCalculatorInput } from '@leaseup/contracts';
 import { DEFAULT_VACANCY_INPUT } from '../lib/vacancy-cost';
 import { startProspectingJob } from '../lib/start-prospecting';
+import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton';
+import { pipelineCardFromProspect } from '../lib/build-pipeline-card';
 
 type MobilePane = 'report' | 'map';
 
@@ -193,6 +195,17 @@ export function ReportPage() {
             prospect={selected}
             results={results}
             radiusKm={request.radius}
+            actions={
+              selected ? (
+                <AddToPipelineButton
+                  buildPayload={() =>
+                    pipelineCardFromProspect(selected, results, {
+                      reportPath: buildReportPath(request, slug ?? 'run'),
+                    })
+                  }
+                />
+              ) : null
+            }
           />
         </div>
       </ErrorBoundary>
@@ -307,6 +320,17 @@ export function ReportPage() {
                   prospect={selected}
                   results={results}
                   radiusKm={request.radius}
+                  actions={
+                    selected ? (
+                      <AddToPipelineButton
+                        buildPayload={() =>
+                          pipelineCardFromProspect(selected, results, {
+                            reportPath: buildReportPath(request, slug ?? 'run'),
+                          })
+                        }
+                      />
+                    ) : null
+                  }
                 />
                 <ReportMap
                   results={results}
