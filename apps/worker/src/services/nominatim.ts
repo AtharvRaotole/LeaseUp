@@ -1,4 +1,5 @@
 import type { GeocodeCandidate, Location } from '@leaseup/contracts';
+import type { ResponseCache } from '../lib/response-cache';
 import {
   dedupeGeocodeCandidatesWithinMeters,
   formatGeocodeCandidateLabel,
@@ -34,11 +35,11 @@ type NominatimResult = {
 };
 
 export class NominatimClient {
-  private cache: KVNamespace;
+  private cache: ResponseCache;
   private contact: string;
   private lastRequestAt = 0;
 
-  constructor(cache: KVNamespace, contact: string) {
+  constructor(cache: ResponseCache, contact: string) {
     this.cache = cache;
     this.contact = contact;
   }
@@ -57,8 +58,8 @@ export class NominatimClient {
 
   async geocodeCandidates(address: string, limit = 5): Promise<GeocodeCandidate[]> {
     const cacheKey = `nominatim:candidates:v3:${address.toLowerCase().trim()}:${limit}`;
-    const cached = await this.cache.get(cacheKey);
-    if (cached) {
+    const cached = await this.cache.get(cacheKey, 'text');
+    if (typeof cached === 'string') {
       return JSON.parse(cached) as GeocodeCandidate[];
     }
 
@@ -119,7 +120,7 @@ export class NominatimClient {
 
     const deduped = dedupeGeocodeCandidatesWithinMeters(candidates, 50);
 
-    await this.cache.put(cacheKey, JSON.stringify(deduped), { expirationTtl: 86400 });
+    await this.cache.putJsonIfChanged(cacheKey, deduped, 86400);
 
     return deduped;
   }
@@ -160,8 +161,8 @@ export class NominatimClient {
 
   async reverseGeocode(latitude: number, longitude: number): Promise<string> {
     const cacheKey = `nominatim:reverse:${latitude.toFixed(5)},${longitude.toFixed(5)}`;
-    const cached = await this.cache.get(cacheKey);
-    if (cached) return cached;
+    const cached = await this.cache.get(cacheKey, 'text');
+    if (typeof cached === 'string') return cached;
 
     await this.enforceRateLimit();
 
@@ -191,7 +192,7 @@ export class NominatimClient {
       result.display_name?.split(',')[0] ||
       'Area';
 
-    await this.cache.put(cacheKey, label, { expirationTtl: 86400 * 7 });
+    await this.cache.putTextIfChanged(cacheKey, label, 86400 * 7);
     return label;
   }
 

@@ -13,6 +13,8 @@ import {
   QLOO_UNAVAILABLE_USER_MESSAGE,
 } from './qloo-fetch.js';
 import { sha256Short } from '../lib/cache-key';
+import type { ResponseCache } from '../lib/response-cache';
+import { getResponseCache } from '../lib/worker-cache';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
   applyQlooInsightsLocationParams,
@@ -103,14 +105,14 @@ export function normalizeHeatmapCells(raw: RawHeatmapCell[]): QlooHeatmapCell[] 
 export class QlooClient {
   private baseUrl: string;
   private apiKey: string;
-  private cache: KVNamespace;
+  private cache: ResponseCache;
   private db: D1Database;
   private mode: 'live' | 'demo';
 
   constructor(env: Env) {
     this.baseUrl = env.QLOO_BASE_URL || 'https://hackathon.api.qloo.com';
     this.apiKey = env.QLOO_API_KEY || '';
-    this.cache = env.CACHE;
+    this.cache = getResponseCache();
     this.db = env.DB;
 
     if (env.APP_MODE === 'live' && !this.apiKey) {
@@ -142,8 +144,8 @@ export class QlooClient {
     const brandKey = brandIds.length ? await sha256Short(brandIds.join(',')) : 'all';
     const cacheKey = `insights:${locationKey}:${params.tags?.join(',') || 'all'}:${brandKey}:take=${take}`;
 
-    const cached = await this.cache.get(cacheKey);
-    if (cached) {
+    const cached = await this.cache.get(cacheKey, 'text');
+    if (typeof cached === 'string') {
       await recordApiMetric(this.db, {
         runId: params.runId,
         provider: 'qloo',
@@ -176,9 +178,7 @@ export class QlooClient {
       );
     }
 
-    await this.cache.put(cacheKey, JSON.stringify(merged), {
-      expirationTtl: 86400,
-    });
+    await this.cache.putJsonIfChanged(cacheKey, merged, 86400);
 
     return merged;
   }
@@ -277,8 +277,8 @@ export class QlooClient {
     const locationKey = this.locationCacheKey(params.location);
     const cacheKey = `explain:${params.filterType}:${locationKey}:${params.brandEntityId}:take=${params.take}`;
 
-    const cached = await this.cache.get(cacheKey);
-    if (cached) {
+    const cached = await this.cache.get(cacheKey, 'text');
+    if (typeof cached === 'string') {
       return JSON.parse(cached) as unknown;
     }
 
@@ -315,7 +315,7 @@ export class QlooClient {
       cached: false,
     });
 
-    await this.cache.put(cacheKey, JSON.stringify(data), { expirationTtl: 86400 });
+    await this.cache.putJsonIfChanged(cacheKey, data, 86400);
     return data;
   }
 
@@ -331,8 +331,8 @@ export class QlooClient {
     const locationKey = this.locationCacheKey(params.location);
     const cacheKey = `heatmap:${locationKey}:${params.entityId || 'all'}`;
 
-    const cached = await this.cache.get(cacheKey);
-    if (cached) {
+    const cached = await this.cache.get(cacheKey, 'text');
+    if (typeof cached === 'string') {
       await recordApiMetric(this.db, {
         runId: params.runId,
         provider: 'qloo',
@@ -380,9 +380,7 @@ export class QlooClient {
       cached: false,
     });
 
-    await this.cache.put(cacheKey, JSON.stringify(cells), {
-      expirationTtl: 86400,
-    });
+    await this.cache.putJsonIfChanged(cacheKey, cells, 86400);
 
     return cells;
   }

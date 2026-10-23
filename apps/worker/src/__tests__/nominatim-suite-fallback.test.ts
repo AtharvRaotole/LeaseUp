@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { NominatimClient } from '../services/nominatim';
+import { ResponseCache } from '../lib/response-cache';
 
 describe('NominatimClient suite fallback', () => {
   afterEach(() => {
@@ -7,11 +8,13 @@ describe('NominatimClient suite fallback', () => {
   });
 
   it('retries structured search without suite when suite query returns empty', async () => {
-    const cache = {
-      get: vi.fn(async () => null),
-      put: vi.fn(async () => undefined),
-    } as unknown as KVNamespace;
-    const client = new NominatimClient(cache, 'LeaseUp-Test/1.0');
+    vi.stubGlobal('caches', {
+      default: {
+        match: async () => undefined,
+        put: async () => undefined,
+      },
+    });
+    const client = new NominatimClient(new ResponseCache(), 'LeaseUp-Test/1.0');
 
     vi.stubGlobal(
       'fetch',

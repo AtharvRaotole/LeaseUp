@@ -2,7 +2,7 @@
  * OSM Overpass API client for second-source absence verification
  */
 
-import type { KVNamespace } from '@cloudflare/workers-types';
+import type { ResponseCache } from '../lib/response-cache';
 import { matchDemoFixtureId, overpassDemoByFixture } from '@leaseup/fixtures/worker';
 import { encodeGeohash } from '../lib/geohash';
 import {
@@ -44,11 +44,11 @@ const CACHE_TTL_SEC = 7 * 86400;
 export type OverpassQueryError = 'overpass_unavailable' | 'demo_osm_unrecorded';
 
 export class OverpassClient {
-  private cache: KVNamespace;
+  private cache: ResponseCache;
   private timeout: number;
   private demoMode: boolean;
 
-  constructor(cache: KVNamespace, timeout: number = 12000, demoMode = false) {
+  constructor(cache: ResponseCache, timeout: number = 12000, demoMode = false) {
     this.cache = cache;
     this.timeout = timeout;
     this.demoMode = demoMode;
@@ -87,7 +87,7 @@ export class OverpassClient {
     const brandKey = await hashBrandSet(brands);
     const cacheKey = `overpass:v2:${brandKey}:${gh5}:${radiusKm}`;
 
-    const cached = await this.cache.get(cacheKey, 'json') as OverpassResponse | null;
+    const cached = (await this.cache.get(cacheKey, 'json')) as OverpassResponse | null;
     if (cached) {
       return {
         brands: this.parseResponse(cached),
@@ -135,9 +135,7 @@ export class OverpassClient {
 
         const data = await response.json() as OverpassResponse;
 
-        await this.cache.put(cacheKey, JSON.stringify(data), {
-          expirationTtl: CACHE_TTL_SEC,
-        });
+        await this.cache.putJsonIfChanged(cacheKey, data, CACHE_TTL_SEC);
 
         return {
           brands: this.parseResponse(data),

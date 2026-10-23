@@ -17,6 +17,8 @@ import { DemoModeRequiredError } from '../lib/demo-mode';
 import { UpstreamError } from '../lib/errors';
 import { affinityPercentile } from '../lib/affinity-label';
 import { brandReverseFixtures } from '@leaseup/fixtures/worker';
+import type { ResponseCache } from '../lib/response-cache';
+import { getResponseCache } from '../lib/worker-cache';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -66,15 +68,15 @@ export class BrandReverseService {
   private qloo: QlooClient;
   private nominatim: NominatimClient;
   private catalog: StoreCatalog;
-  private cache: KVNamespace;
+  private edgeCache: ResponseCache;
   private mode: 'live' | 'demo';
 
   constructor(env: Env) {
     this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
     this.qloo = new QlooClient(env);
-    this.cache = env.CACHE;
+    this.edgeCache = getResponseCache();
     this.nominatim = new NominatimClient(
-      env.CACHE,
+      this.edgeCache,
       env.NOMINATIM_CONTACT || DEFAULT_NOMINATIM_CONTACT
     );
     this.catalog = createStoreCatalog(env, this.mode);
@@ -97,8 +99,8 @@ export class BrandReverseService {
 
   private async cachedNeighborhood(lat: number, lng: number): Promise<string | undefined> {
     const cacheKey = `nominatim:reverse:${lat.toFixed(5)},${lng.toFixed(5)}`;
-    const cached = await this.cache.get(cacheKey);
-    return cached ?? undefined;
+    const cached = await this.edgeCache.get(cacheKey, 'text');
+    return typeof cached === 'string' ? cached : undefined;
   }
 
   private neighborhoodCacheKey(entityId: string, metroId: string, rank: number): string {
@@ -275,10 +277,10 @@ export class BrandReverseService {
   ): Promise<BrandReverseOpportunity[]> {
     const out: BrandReverseOpportunity[] = [];
     for (const row of rows) {
-      const kv = await this.cache.get(this.neighborhoodCacheKey(entityId, metroId, row.rank));
+      const kv = await this.edgeCache.get(this.neighborhoodCacheKey(entityId, metroId, row.rank), 'text');
       out.push({
         ...row,
-        neighborhood: kv ?? row.neighborhood,
+        neighborhood: typeof kv === 'string' ? kv : row.neighborhood,
       });
     }
     return out;
@@ -293,19 +295,19 @@ export class BrandReverseService {
   ): Promise<void> {
     for (const row of rows) {
       const key = this.neighborhoodCacheKey(entityId, metroId, row.rank);
-      const existing = await this.cache.get(key);
-      if (existing) {
+      const existing = await this.edgeCache.get(key, 'text');
+      if (typeof existing === 'string') {
         const updated = { ...row, neighborhood: existing };
         await onUpdate(updated);
         continue;
       }
       if (row.neighborhood) {
-        await this.cache.put(key, row.neighborhood, { expirationTtl: 86400 * 7 });
+        await this.edgeCache.putTextIfChanged(key, row.neighborhood, 86400 * 7);
         await onUpdate(row as BrandReverseOpportunity);
         continue;
       }
       const label = await this.nominatim.reverseGeocode(row.latitude, row.longitude);
-      await this.cache.put(key, label, { expirationTtl: 86400 * 7 });
+      await this.edgeCache.putTextIfChanged(key, label, 86400 * 7);
       await onUpdate({ ...row, neighborhood: label });
     }
   }

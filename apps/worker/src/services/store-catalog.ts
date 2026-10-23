@@ -5,6 +5,8 @@ import {
 } from '@leaseup/fixtures/worker';
 import { TRACKED_BRAND_IDS } from '../data/tracked-brand-ids';
 import { coveringGeohash3 } from '../lib/geohash';
+import type { ResponseCache } from '../lib/response-cache';
+import { getResponseCache } from '../lib/worker-cache';
 
 export interface NearbyStore {
   lat: number;
@@ -72,12 +74,12 @@ type TilePayload = { gh: string; stores: Array<[number, number, number]> };
 
 export class GeoTileStoreCatalog implements StoreCatalog {
   private assets: Fetcher;
-  private cache: KVNamespace;
+  private cache: ResponseCache;
   private brandsIndex: BrandsIndex | null = null;
   private tileMemory = new Map<string, TilePayload>();
   private demoFallback = new DemoStoreCatalog();
 
-  constructor(assets: Fetcher, cache: KVNamespace) {
+  constructor(assets: Fetcher, cache: ResponseCache) {
     this.assets = assets;
     this.cache = cache;
   }
@@ -88,7 +90,7 @@ export class GeoTileStoreCatalog implements StoreCatalog {
 
   private async loadBrandsIndex(): Promise<BrandsIndex> {
     if (this.brandsIndex) return this.brandsIndex;
-    const cached = await this.cache.get('tiles:brands', 'json') as BrandsIndex | null;
+    const cached = (await this.cache.get('tiles:brands', 'json')) as BrandsIndex | null;
     if (cached) {
       this.brandsIndex = cached;
       return cached;
@@ -99,7 +101,7 @@ export class GeoTileStoreCatalog implements StoreCatalog {
     }
     const data = (await res.json()) as BrandsIndex;
     this.brandsIndex = data;
-    await this.cache.put('tiles:brands', JSON.stringify(data), { expirationTtl: 86400 });
+    await this.cache.putJsonIfChanged('tiles:brands', data, 86400);
     return data;
   }
 
@@ -108,7 +110,7 @@ export class GeoTileStoreCatalog implements StoreCatalog {
       return this.tileMemory.get(gh)!;
     }
     const kvKey = `tiles:${gh}`;
-    const cached = await this.cache.get(kvKey, 'json') as TilePayload | null;
+    const cached = (await this.cache.get(kvKey, 'json')) as TilePayload | null;
     if (cached) {
       this.tileMemory.set(gh, cached);
       return cached;
@@ -117,7 +119,7 @@ export class GeoTileStoreCatalog implements StoreCatalog {
     if (!res.ok) return null;
     const data = (await res.json()) as TilePayload;
     this.tileMemory.set(gh, data);
-    await this.cache.put(kvKey, JSON.stringify(data), { expirationTtl: 86400 });
+    await this.cache.putJsonIfChanged(kvKey, data, 86400);
     return data;
   }
 
@@ -177,7 +179,7 @@ export function createStoreCatalog(
   mode: 'live' | 'demo'
 ): StoreCatalog {
   if (mode === 'live' && env.ASSETS) {
-    return new GeoTileStoreCatalog(env.ASSETS, env.CACHE);
+    return new GeoTileStoreCatalog(env.ASSETS, getResponseCache());
   }
   return new DemoStoreCatalog();
 }
