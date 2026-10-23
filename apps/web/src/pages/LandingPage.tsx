@@ -72,7 +72,7 @@ export function LandingPage() {
       <main id="main-content" className="outline-none">
         <section className="relative overflow-hidden border-b border-border bg-[radial-gradient(ellipse_at_top,_var(--surface-2)_0%,_var(--bg)_58%)]">
           <div className="mx-auto max-w-[1120px] px-4 pb-16 pt-[12vh] md:px-6 md:pb-20 md:pt-[14vh]">
-            <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(280px,420px)] lg:items-start lg:gap-10 xl:gap-14">
+            <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(320px,600px)] lg:items-start lg:gap-10 xl:grid-cols-[minmax(0,1fr)_640px] xl:gap-14">
               <div className="min-w-0">
             <div className="mx-auto max-w-[640px] text-center lg:mx-0 lg:text-left">
               <h1 className="font-display font-semibold text-[clamp(2rem,5vw,3.25rem)] leading-[1.12] tracking-tight text-ink">

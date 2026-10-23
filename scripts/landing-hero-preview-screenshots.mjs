@@ -16,7 +16,17 @@ for (const theme of ['light', 'dark']) {
     });
     const page = await context.newPage();
     await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
-    await page.getByTestId('landing-hero-product-preview').waitFor({ timeout: 30_000 });
+    const preview = page.getByTestId('landing-hero-product-preview');
+    await preview.waitFor({ timeout: 30_000 });
+    await preview.scrollIntoViewIfNeeded();
+    await page.getByTestId('landing-hero-preview-img').waitFor({ state: 'visible', timeout: 15_000 });
+    await page.waitForFunction(
+      () => {
+        const el = document.querySelector('[data-testid="landing-hero-preview-img"]');
+        return el instanceof HTMLImageElement && el.naturalWidth > 0;
+      },
+      { timeout: 15_000 }
+    );
     await page.screenshot({
       path: join(OUT, `landing-hero-${width}-${theme}.png`),
       fullPage: true,

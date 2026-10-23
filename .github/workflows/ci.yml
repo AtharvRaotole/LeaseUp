@@ -159,6 +159,25 @@ jobs:
       - name: CSP + map smoke (production _headers)
         run: node scripts/run-csp-e2e.mjs
 
+  landing-hero-preview-e2e:
+    name: Landing hero preview e2e
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.0'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium
+      - name: Hero preview image loads (light + dark)
+        run: node scripts/run-landing-hero-preview-e2e.mjs
+
   lighthouse:
     name: Lighthouse CI
     runs-on: ubuntu-latest
