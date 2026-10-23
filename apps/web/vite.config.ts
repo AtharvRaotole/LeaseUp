@@ -4,7 +4,9 @@ import viteCompression from 'vite-plugin-compression';
 import { fontPreloadPlugin } from './vite-font-preload';
 import { loadPagesHeaders } from './load-pages-headers.mjs';
 
-const productionPageHeaders = loadPagesHeaders();
+const productionPageHeaders = loadPagesHeaders({
+  localPreview: process.env.CSP_E2E_LOCAL === '1',
+});
 const workerProxyTarget = `http://127.0.0.1:${process.env.CSP_E2E_WORKER_PORT || '8787'}`;
 
 export default defineConfig({

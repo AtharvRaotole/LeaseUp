@@ -189,15 +189,27 @@ importers:
 
   apps/worker:
     dependencies:
+      '@fontsource/geist':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/instrument-serif':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@leaseup/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
       '@leaseup/fixtures':
         specifier: workspace:*
         version: link:../../packages/fixtures
+      '@resvg/resvg-wasm':
+        specifier: ^2.6.2
+        version: 2.6.2
       hono:
         specifier: ^4.7.9
         version: 4.13.13
+      satori:
+        specifier: ^0.63.2
+        version: 0.63.2
       zod:
         specifier: ^3.24.1
         version: 3.25.76
@@ -1850,6 +1862,10 @@ packages:
 
   '@resvg/resvg-js@2.6.2':
     resolution: {integrity: sha512-xBaJish5OeGmniDj9cW5PRa/PtmuVU3ziqrbr5xJj901ZDN4TosrVaNZpEiLZAxdfnhAe7uQ7QFWfjPe9d9K2Q==}
+    engines: {node: '>= 10'}
+
+  '@resvg/resvg-wasm@2.6.2':
+    resolution: {integrity: sha512-FqALmHI8D4o6lk/LRWDnhw95z5eO+eAa6ORjVg09YRR7BkcM6oPHU9uyC0gtQG5vpFLvgpeU4+zEAz2H8APHNw==}
     engines: {node: '>= 10'}
 
   '@rolldown/pluginutils@1.0.0-beta.27':
@@ -6552,6 +6568,8 @@ snapshots:
       '@resvg/resvg-js-win32-arm64-msvc': 2.6.2
       '@resvg/resvg-js-win32-ia32-msvc': 2.6.2
       '@resvg/resvg-js-win32-x64-msvc': 2.6.2
+
+  '@resvg/resvg-wasm@2.6.2': {}
 
   '@rolldown/pluginutils@1.0.0-beta.27': {}
 

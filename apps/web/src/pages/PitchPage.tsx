@@ -17,6 +17,8 @@ import {
 import { DEFAULT_VACANCY_INPUT } from '../lib/vacancy-cost';
 import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton';
 import { pipelineCardFromPitchProspect } from '../lib/build-pipeline-card';
+import { ShareHead } from '../components/seo/ShareHead';
+import { pitchShareHead } from '../lib/share-preview';
 
 export function PitchPage() {
   const { id } = useParams();
@@ -49,6 +51,12 @@ export function PitchPage() {
     [snapshot]
   );
 
+  const shareHead = useMemo(() => {
+    if (!snapshot) return null;
+    const pathId = id ?? snapshot.id;
+    return pitchShareHead(snapshot, `/p/${pathId}`);
+  }, [snapshot, id]);
+
   if (error) {
     return (
       <div className="min-h-screen bg-bg px-4 py-24 text-center">
@@ -70,6 +78,7 @@ export function PitchPage() {
 
   return (
     <div className="min-h-screen bg-bg pitch-pack print-pitch-page" data-testid="pitch-page">
+      {shareHead && <ShareHead {...shareHead} />}
       <header className="no-print border-b border-border bg-surface/90 px-4 py-4">
         <div className="mx-auto flex max-w-[880px] items-center justify-between gap-4">
           <Link to="/" className="text-ink" aria-label="LeaseUp home">
