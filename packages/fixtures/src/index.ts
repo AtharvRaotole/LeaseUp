@@ -51,6 +51,14 @@ export {
   demoChipHitRateLabel,
 } from './demo-chip-hit-rates.js';
 export {
+  demoChipQlooProof,
+  demoChipTopRankMovers,
+  demoChipIdsByQlooLift,
+  demoChipProofHitRateLabel,
+  type DemoChipQlooProof,
+  type DemoChipRankMover,
+} from './demo-chip-qloo-proof.js';
+export {
   wickerLandingTasteSnippet,
   type LandingTasteRow,
 } from './landing-taste-snippet.js';
