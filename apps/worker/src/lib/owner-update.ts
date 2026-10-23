@@ -1,15 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import type { OwnerUpdateSnapshot, PipelineBoard, PipelineCard } from '@leaseup/contracts';
-import { pipelineColumnLabel } from './pipeline-export-labels';
-
-const COLUMN_NEXT: Record<string, string> = {
-  to_pitch: 'Draft outreach and confirm the right real estate contact.',
-  contacted: 'Log replies and schedule a site tour if interest is warm.',
-  touring: 'Share floor plans and co-tenancy after the walkthrough.',
-  loi: 'Track LOI edits with the landlord and tenant counsel.',
-  signed: 'Hand off to lease execution and opening timeline.',
-  passed: 'Note why this brand passed so the owner sees the full story.',
-};
+import {
+  STATUS_NEXT_STEP,
+  pipelineProspectStatusLabel,
+} from './pipeline-status-labels';
 
 export function cardsForProperty(board: PipelineBoard, propertyAddress: string): PipelineCard[] {
   const normalized = propertyAddress.trim().toLowerCase();
@@ -29,13 +23,12 @@ export function buildOwnerUpdateSnapshot(
   const brands = cards.map((card) => ({
     brandEntityId: card.brandEntityId,
     brandName: card.brandName,
-    column: card.column,
-    columnLabel: pipelineColumnLabel(card.column),
-    outreachStatus: card.outreachStatus,
+    prospectStatus: card.prospectStatus,
+    prospectStatusLabel: pipelineProspectStatusLabel(card.prospectStatus),
     followUpAt: card.followUpAt,
     lastTouchedAt: card.lastTouchedAt,
     notes: card.notes.trim() ? card.notes.trim() : undefined,
-    nextStep: COLUMN_NEXT[card.column] ?? 'Update the card stage when something changes.',
+    nextStep: STATUS_NEXT_STEP[card.prospectStatus] ?? 'Update the card when something changes.',
   }));
 
   return {

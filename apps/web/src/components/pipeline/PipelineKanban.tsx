@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import type { PipelineCard, PipelineColumn } from '@leaseup/contracts';
+import type { PipelineCard, PipelineProspectStatus } from '@leaseup/contracts';
 import {
   DndContext,
   DragOverlay,
@@ -17,37 +17,37 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { PIPELINE_COLUMNS, columnLabel } from '../../lib/pipeline-columns';
+import { PIPELINE_STATUSES, prospectStatusLabel } from '../../lib/pipeline-status';
 import { PipelineCardItem } from './PipelineCardItem';
 import { PipelineCardDialog } from './PipelineCardDialog';
 import { updatePipelineCard } from '../../lib/pipeline-api';
 import { cn } from '../../lib/cn';
 
 function ColumnShell({
-  column,
+  status,
   cards,
   readOnly,
   onOpen,
 }: {
-  column: PipelineColumn;
+  status: PipelineProspectStatus;
   cards: PipelineCard[];
   readOnly?: boolean;
   onOpen: (c: PipelineCard) => void;
 }) {
-  const { setNodeRef, isOver } = useDroppable({ id: column, disabled: readOnly });
+  const { setNodeRef, isOver } = useDroppable({ id: status, disabled: readOnly });
   const ids = cards.map((c) => c.id);
 
   return (
     <div
       ref={setNodeRef}
       className={cn(
-        'flex w-[min(100%,280px)] shrink-0 flex-col rounded-card border border-border bg-surface-2/40',
+        'flex w-[min(100%,240px)] shrink-0 flex-col rounded-card border border-border bg-surface-2/40',
         isOver && 'ring-2 ring-accent/40'
       )}
-      data-testid={`pipeline-column-${column}`}
+      data-testid={`pipeline-column-${status}`}
     >
       <div className="flex items-center justify-between border-b border-border px-3 py-2">
-        <h3 className="text-sm font-semibold text-ink">{columnLabel(column)}</h3>
+        <h3 className="text-sm font-semibold text-ink">{prospectStatusLabel(status)}</h3>
         <span className="rounded-pill bg-surface px-2 py-0.5 text-xs text-ink-3">
           {cards.length}
         </span>
@@ -65,13 +65,13 @@ function ColumnShell({
   );
 }
 
-function findColumnForId(
+function findStatusForId(
   cards: PipelineCard[],
   id: string
-): PipelineColumn | null {
-  if (PIPELINE_COLUMNS.some((c) => c.id === id)) return id as PipelineColumn;
+): PipelineProspectStatus | null {
+  if (PIPELINE_STATUSES.some((c) => c.id === id)) return id as PipelineProspectStatus;
   const card = cards.find((c) => c.id === id);
-  return card?.column ?? null;
+  return card?.prospectStatus ?? null;
 }
 
 export function PipelineKanban({
@@ -91,15 +91,15 @@ export function PipelineKanban({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  const byColumn = useMemo(() => {
-    const map = new Map<PipelineColumn, PipelineCard[]>();
-    for (const col of PIPELINE_COLUMNS) map.set(col.id, []);
+  const byStatus = useMemo(() => {
+    const map = new Map<PipelineProspectStatus, PipelineCard[]>();
+    for (const col of PIPELINE_STATUSES) map.set(col.id, []);
     for (const card of cards) {
-      const list = map.get(card.column) ?? [];
+      const list = map.get(card.prospectStatus) ?? [];
       list.push(card);
-      map.set(card.column, list);
+      map.set(card.prospectStatus, list);
     }
-    for (const col of PIPELINE_COLUMNS) {
+    for (const col of PIPELINE_STATUSES) {
       map.get(col.id)?.sort((a, b) => a.sortOrder - b.sortOrder);
     }
     return map;
@@ -107,78 +107,68 @@ export function PipelineKanban({
 
   const activeCard = activeId ? cards.find((c) => c.id === activeId) : null;
 
-  const handleDragEnd = async (event: DragEndEvent) => {
+  const onDragEnd = async (event: DragEndEvent) => {
     setActiveId(null);
     if (readOnly) return;
     const { active, over } = event;
     if (!over) return;
 
-    const cardId = String(active.id);
-    const card = cards.find((c) => c.id === cardId);
+    const card = cards.find((c) => c.id === active.id);
     if (!card) return;
 
-    const overColumn = findColumnForId(cards, String(over.id));
-    if (!overColumn) return;
+    const overStatus = findStatusForId(cards, String(over.id));
+    if (!overStatus) return;
 
-    const destCards = (byColumn.get(overColumn) ?? []).filter((c) => c.id !== cardId);
-    const overIsCard = cards.some((c) => c.id === over.id);
-    let sortOrder = destCards.length;
-    if (overIsCard) {
-      const overCard = cards.find((c) => c.id === over.id);
-      if (overCard && overCard.column === overColumn) {
-        sortOrder = overCard.sortOrder;
-      }
+    let sortOrder = 0;
+    const overCard = cards.find((c) => c.id === over.id);
+    if (overCard && overCard.prospectStatus === overStatus) {
+      sortOrder = overCard.sortOrder;
+    } else {
+      sortOrder = (byStatus.get(overStatus)?.length ?? 0);
     }
 
-    if (card.column === overColumn && card.sortOrder === sortOrder) return;
+    if (card.prospectStatus === overStatus && card.sortOrder === sortOrder) return;
 
-    await updatePipelineCard(cardId, { column: overColumn, sortOrder });
+    await updatePipelineCard(card.id, {
+      prospectStatus: overStatus,
+      sortOrder,
+    });
     onBoardUpdated();
   };
-
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(String(event.active.id));
-  };
-
-  const openCard = (c: PipelineCard) => setDialogCard(c);
-  const dialogOpen = !!dialogCard;
-  const dialogCardLive = dialogCard ? cards.find((c) => c.id === dialogCard.id) ?? dialogCard : null;
 
   return (
     <>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
-        onDragStart={handleDragStart}
-        onDragEnd={(e) => void handleDragEnd(e)}
+        onDragStart={(e: DragStartEvent) => setActiveId(String(e.active.id))}
+        onDragEnd={(e) => void onDragEnd(e)}
       >
         <div
-          className="flex gap-3 overflow-x-auto pb-4"
+          className="mt-6 flex gap-3 overflow-x-auto pb-2"
           data-testid="pipeline-board"
         >
-          {PIPELINE_COLUMNS.map((col) => (
+          {PIPELINE_STATUSES.map((col) => (
             <ColumnShell
               key={col.id}
-              column={col.id}
-              cards={byColumn.get(col.id) ?? []}
+              status={col.id}
+              cards={byStatus.get(col.id) ?? []}
               readOnly={readOnly}
-              onOpen={openCard}
+              onOpen={setDialogCard}
             />
           ))}
         </div>
         <DragOverlay>
           {activeCard ? (
-            <div className="w-[260px] opacity-95">
-              <PipelineCardItem card={activeCard} readOnly onOpen={() => undefined} />
-            </div>
+            <PipelineCardItem card={activeCard} readOnly onOpen={() => {}} />
           ) : null}
         </DragOverlay>
       </DndContext>
 
       <PipelineCardDialog
-        card={dialogCardLive}
+        card={dialogCard}
         readOnly={readOnly}
-        open={dialogOpen}
+        open={!!dialogCard}
         onOpenChange={(o) => !o && setDialogCard(null)}
         onBoardUpdated={onBoardUpdated}
       />

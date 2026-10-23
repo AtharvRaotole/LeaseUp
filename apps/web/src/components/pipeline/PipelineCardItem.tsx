@@ -5,6 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { cn } from '../../lib/cn';
 import { brandMonogram, brandTint } from '../../lib/brand-monogram';
 import { formatUserFacingDate } from '../../lib/format-date';
+import { prospectStatusLabel } from '../../lib/pipeline-status';
 
 function isOverdue(followUpAt?: string): boolean {
   if (!followUpAt) return false;
@@ -71,11 +72,9 @@ export function PipelineCardItem({
           <span className="rounded-pill border border-border px-2 py-0.5 text-ink-2">
             {card.verification}
           </span>
-          {card.outreachStatus && card.outreachStatus !== 'none' && (
-            <span className="rounded-pill border border-border px-2 py-0.5 text-ink-2 capitalize">
-              {card.outreachStatus}
-            </span>
-          )}
+          <span className="rounded-pill border border-border px-2 py-0.5 text-ink-2">
+            {prospectStatusLabel(card.prospectStatus)}
+          </span>
           {overdue && (
             <span
               className="rounded-pill bg-danger/10 px-2 py-0.5 font-medium text-danger"
@@ -87,7 +86,7 @@ export function PipelineCardItem({
         </div>
         <p className="mt-2 text-[11px] text-ink-3">
           Touched {formatUserFacingDate(card.lastTouchedAt)}
-          {card.followUpAt ? ` · Follow-up ${formatUserFacingDate(card.followUpAt)}` : ''}
+          {card.followUpAt ? ` · Reminder ${formatUserFacingDate(card.followUpAt)}` : ''}
         </p>
       </button>
     </div>

@@ -76,7 +76,7 @@ export function OwnerUpdatePage() {
                   <h2 className="font-display font-semibold text-xl text-ink">{row.brandName}</h2>
                 </div>
                 <p className="mt-1 text-sm text-ink-2">
-                  {row.columnLabel} · outreach {row.outreachStatus}
+                  {row.prospectStatusLabel}
                   {row.followUpAt ? ` · follow up ${formatUserFacingDate(row.followUpAt)}` : ''}
                 </p>
                 <p className="mt-2 text-ink">{row.nextStep}</p>

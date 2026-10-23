@@ -26,8 +26,9 @@ Apply **in this order** (files under `apps/worker/migrations/`):
 | 1 | `0001_owner_updates.sql` | `owner_updates`, `idx_owner_updates_created` |
 | 2 | `0002_watch_spaces.sql` | `watch_spaces`, workspace + unique address indexes |
 | 3 | `0003_watch_snapshots.sql` | `watch_snapshots`, `idx_watch_snapshots_watch` |
+| 4 | `0004_pipeline_cards.sql` | `pipeline_cards`, workspace + status indexes (broker CRM rows) |
 
-**Nothing else** changed in `schema.sql` after `93f6560` besides these blocks (existing tables such as `pipeline_boards`, `pitch_packs`, `rate_limits` were already on production).
+**Nothing else** changed in `schema.sql` after `93f6560` besides these blocks (plus `pipeline_cards` in checklist #20 follow-up) (existing tables such as `pipeline_boards`, `pitch_packs`, `rate_limits` were already on production).
 
 ### Remote apply (production worker DB)
 

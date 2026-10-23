@@ -78,7 +78,7 @@ test.describe('LeaseUp feature pages (demo)', () => {
     test.setTimeout(180_000);
     await page.goto(`${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`);
     await waitForReportReady(page);
-    await page.getByTestId('report-pipeline-cta').getByTestId('add-to-pipeline').click();
+    await page.getByTestId('report-primary-actions').getByTestId('add-to-pipeline').click();
     await expect(page.getByText('Added to pipeline')).toBeVisible({ timeout: 30000 });
     await page.goto(`${BASE}/pipeline`);
     await expect(page.getByTestId('pipeline-board')).toBeVisible();

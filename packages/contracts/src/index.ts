@@ -542,6 +542,7 @@ export const ProspectingJobSchema = z.object({
 
 export type ProspectingJob = z.infer<typeof ProspectingJobSchema>;
 
+/** @deprecated Kanban columns replaced by prospectStatus; kept for legacy payload parsing. */
 export const PipelineColumnSchema = z.enum([
   'to_pitch',
   'contacted',
@@ -552,6 +553,18 @@ export const PipelineColumnSchema = z.enum([
 ]);
 
 export type PipelineColumn = z.infer<typeof PipelineColumnSchema>;
+
+export const PipelineProspectStatusSchema = z.enum([
+  'to_pitch',
+  'drafted',
+  'sent_by_me',
+  'replied',
+  'touring',
+  'loi',
+  'passed',
+]);
+
+export type PipelineProspectStatus = z.infer<typeof PipelineProspectStatusSchema>;
 
 export const PipelineOutreachDraftSchema = z.object({
   subject: z.string(),
@@ -578,7 +591,7 @@ export type PipelineOutreachContext = z.infer<typeof PipelineOutreachContextSche
 
 export const PipelineCardSchema = z.object({
   id: z.string().uuid(),
-  column: PipelineColumnSchema,
+  prospectStatus: PipelineProspectStatusSchema,
   sortOrder: z.number().int(),
   brandEntityId: z.string(),
   brandName: z.string(),
@@ -595,7 +608,6 @@ export const PipelineCardSchema = z.object({
   followUpAt: z.string().optional(),
   outreachContext: PipelineOutreachContextSchema.optional(),
   outreachDraft: PipelineOutreachDraftSchema.optional(),
-  outreachStatus: PipelineOutreachStatusSchema.default('none'),
 });
 
 export type PipelineCard = z.infer<typeof PipelineCardSchema>;
@@ -635,13 +647,12 @@ export const PipelineAddCardSchema = z.object({
 export type PipelineAddCard = z.infer<typeof PipelineAddCardSchema>;
 
 export const PipelineUpdateCardSchema = z.object({
-  column: PipelineColumnSchema.optional(),
+  prospectStatus: PipelineProspectStatusSchema.optional(),
   sortOrder: z.number().int().optional(),
   notes: z.string().max(5000).optional(),
   recipientEmail: z.string().max(320).optional(),
   followUpAt: z.string().nullable().optional(),
   outreachDraft: PipelineOutreachDraftSchema.nullable().optional(),
-  outreachStatus: PipelineOutreachStatusSchema.optional(),
 });
 
 export type PipelineUpdateCard = z.infer<typeof PipelineUpdateCardSchema>;
@@ -649,9 +660,8 @@ export type PipelineUpdateCard = z.infer<typeof PipelineUpdateCardSchema>;
 export const OwnerUpdateBrandRowSchema = z.object({
   brandEntityId: z.string(),
   brandName: z.string(),
-  column: PipelineColumnSchema,
-  columnLabel: z.string(),
-  outreachStatus: PipelineOutreachStatusSchema,
+  prospectStatus: PipelineProspectStatusSchema,
+  prospectStatusLabel: z.string(),
   followUpAt: z.string().optional(),
   lastTouchedAt: z.string(),
   notes: z.string().max(5000).optional(),

@@ -216,6 +216,25 @@ jobs:
       - name: Who shops here + Who to contact on Wicker demo
         run: node scripts/run-wicker-broker-e2e.mjs
 
+  pipeline-crm-e2e:
+    name: Pipeline CRM e2e
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.0'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium
+      - name: Pipeline status, notes, and reminder (demo)
+        run: node scripts/run-pipeline-crm-e2e.mjs
+
   landing-hero-preview-e2e:
     name: Landing hero preview e2e
     runs-on: ubuntu-latest
