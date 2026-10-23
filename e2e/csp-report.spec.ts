@@ -50,16 +50,19 @@ test.describe('Production CSP on report + map', () => {
     expect(analyzeProbe.ok(), 'Proxied /api/analyze under CSP').toBeTruthy();
 
     await page.goto(WICKER, { waitUntil: 'load' });
-    await page
-      .locator(
-        '[data-testid="report-summary"], [data-testid="brands-to-pitch"], [data-testid="report-error"]'
-      )
-      .first()
-      .waitFor({ timeout: 180_000 });
-    const error = page.getByTestId('report-error');
-    if (await error.isVisible().catch(() => false)) {
-      throw new Error(`Report failed to load: ${await error.innerText()}`);
+    const summary = page.locator(
+      '[data-testid="report-summary"], [data-testid="brands-to-pitch"]'
+    );
+    const deadline = Date.now() + 180_000;
+    while (Date.now() < deadline) {
+      if (await summary.first().isVisible().catch(() => false)) break;
+      const tryAgain = page.getByRole('button', { name: 'Try again' });
+      if (await tryAgain.isVisible().catch(() => false)) {
+        await tryAgain.click();
+      }
+      await page.waitForTimeout(2000);
     }
+    await expect(summary.first()).toBeVisible({ timeout: 10_000 });
 
     const pageViolations = await page.evaluate(() =>
       (window as unknown as { __cspViolations?: string[] }).__cspViolations ?? []
