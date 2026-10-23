@@ -29,6 +29,17 @@ export function isComparePayload(value: unknown): value is ComparePayload {
   return Array.isArray(d.flipExamples);
 }
 
+export async function fetchCompareFlipData(
+  fetchImpl: typeof fetch,
+  url: string
+): Promise<{ ok: true; data: ComparePayload } | { ok: false }> {
+  const r = await fetchImpl(url);
+  if (!r.ok) return { ok: false };
+  const body: unknown = await r.json();
+  if (!isComparePayload(body)) return { ok: false };
+  return { ok: true, data: body };
+}
+
 export function CompareUnavailable() {
   return (
     <section>
@@ -45,19 +56,11 @@ export function CompareSection() {
   useEffect(() => {
     let cancelled = false;
 
-    void fetch(apiUrl('/api/compare/flip'))
-      .then(async (r) => {
-        if (!r.ok) {
-          throw new Error(`compare_flip_${r.status}`);
-        }
-        const body: unknown = await r.json();
-        if (!isComparePayload(body)) {
-          throw new Error('compare_flip_invalid');
-        }
-        return body;
-      })
-      .then((d) => {
-        if (!cancelled) setData(d);
+    void fetchCompareFlipData(fetch, apiUrl('/api/compare/flip'))
+      .then((result) => {
+        if (cancelled) return;
+        if (result.ok) setData(result.data);
+        else setFailed(true);
       })
       .catch(() => {
         if (!cancelled) setFailed(true);
