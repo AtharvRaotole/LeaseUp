@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 import {
   dedupeGeocodeCandidatesByPlaceAndDistance,
   filterCandidatesByInputPostalCode,
@@ -31,7 +32,26 @@ describe('filterCandidatesByInputPostalCode', () => {
     expect(kept).toHaveLength(1);
     expect(kept[0]?.neighborhood).toBe('West Village');
   });
+
+  it('keeps candidates with no ZIP in the label when the input has a ZIP', () => {
+    const input = DEMO_CHIP_ADDRESSES.wicker;
+    const kept = filterCandidatesByInputPostalCode(input, [
+      {
+        address: input,
+        latitude: 41.9088,
+        longitude: -87.6776,
+        city: 'Chicago',
+        neighborhood: 'Wicker Park',
+        resolvedAddress: 'Wicker Park, Chicago, IL',
+      },
+    ]);
+    expect(kept).toHaveLength(1);
+  });
 });
+
+const DEMO_CHIP_ADDRESSES = {
+  wicker: '1574 N Milwaukee Ave, Chicago, IL 60622',
+};
 
 describe('dedupeGeocodeCandidatesByPlaceAndDistance', () => {
   it('merges two West Village rows within 50 m when city and state match', () => {

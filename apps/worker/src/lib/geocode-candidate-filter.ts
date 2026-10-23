@@ -150,7 +150,11 @@ export function filterCandidatesByInputPostalCode(
 ): GeocodeCandidate[] {
   const { postalCode } = parseUsAddress(inputAddress);
   if (!postalCode) return candidates;
-  return candidates.filter((c) => postalCodeFromResolved(c.resolvedAddress) === postalCode);
+  return candidates.filter((c) => {
+    const zip = postalCodeFromResolved(c.resolvedAddress);
+    if (!zip) return true;
+    return zip === postalCode;
+  });
 }
 
 /** Merge Nominatim duplicates within a short radius when city and state normalize the same. */
