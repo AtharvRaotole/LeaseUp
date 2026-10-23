@@ -42,7 +42,11 @@ export function WhyThisBrandCard({
           ))}
         </ul>
       )}
-      {actions && <div className="mt-4 flex flex-wrap gap-2">{actions}</div>}
+      {actions && (
+        <div className="mt-4 flex flex-wrap gap-2" data-testid="report-pipeline-cta">
+          {actions}
+        </div>
+      )}
     </Card>
   );
 }

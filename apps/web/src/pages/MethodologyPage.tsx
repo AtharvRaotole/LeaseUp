@@ -1,11 +1,21 @@
-import type { EvalMetroRow, EvalMetrosResults } from '@leaseup/fixtures';
+import type { EvalMetroRow, EvalMetrosResults, EvalRunRow } from '@leaseup/fixtures';
+import {
+  loadEvalRunBundle,
+  getEvalManifest,
+  evalMetricDefinition,
+  formatMetricValue,
+  loadLiveQlooLiftAggregates,
+} from '@leaseup/fixtures';
+import siteTable from '@leaseup/fixtures/eval/live-qloo-lift/site-table.json';
 import evalResults from '@leaseup/fixtures/eval/results.json';
 import { TopBar } from '../components/layout/TopBar';
 import { SiteFooter } from '../components/layout/SiteFooter';
-import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 
 const data = evalResults as EvalMetrosResults;
+const evalBundle = loadEvalRunBundle();
+const evalManifest = getEvalManifest();
+const qlooLift = loadLiveQlooLiftAggregates();
 
 const PIPELINE = [
   {
@@ -26,7 +36,7 @@ const PIPELINE = [
   {
     title: 'Backtest',
     body:
-      'We score how many physically present chains appear in the top 10 ranked prospects. The same pool is re-ordered without taste (chain-size baseline and random expectation) so lift is visible.',
+      'We score how many physically present chains appear in the top 10 ranked prospects. Dense pins often saturate that legacy metric, so we also publish a metric catalog (adaptive radius, Spearman, chain-residual hits, random baselines) with a swappable results bundle.',
   },
   {
     title: 'Outreach',
@@ -51,6 +61,17 @@ function formatCount(value: number): string {
   return value.toFixed(1);
 }
 
+function metricCell(row: EvalRunRow, metricId: string): string {
+  const panel = row.panels?.find((p) => p.id === metricId);
+  if (!panel) return 'n/a';
+  const def = evalMetricDefinition(metricId);
+  const format = def?.format ?? 'decimal';
+  const q = panel.qloo !== undefined ? formatMetricValue(format, panel.qloo) : '';
+  const c = panel.chain !== undefined ? formatMetricValue(format, panel.chain) : '';
+  if (q && c) return `${q} / ${c}`;
+  return q || c || 'n/a';
+}
+
 function liftLabel(row: EvalMetroRow): string {
   if (row.liftVsChainSize === undefined) return 'n/a';
   if (row.liftVsChainSize > 0) return `+${row.liftVsChainSize} vs chain size`;
@@ -59,9 +80,6 @@ function liftLabel(row: EvalMetroRow): string {
 }
 
 export function MethodologyPage() {
-  const recorded = data.rows.filter((r) => r.status === 'recorded');
-  const pending = data.rows.filter((r) => r.status === 'pending_qloo');
-
   return (
     <div className="min-h-screen bg-bg">
       <TopBar />
@@ -106,6 +124,80 @@ export function MethodologyPage() {
             </ol>
           </section>
 
+          <section className="mt-14" aria-labelledby="strict-eval-heading">
+            <h2 id="strict-eval-heading" className="font-serif text-title text-ink">
+              Evaluation metric catalog
+            </h2>
+            <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
+              Headline metric:{' '}
+              {evalManifest.headlineMetricId
+                ? evalManifest.headlineMetricId
+                : 'pending (live API eval in progress)'}. Bundle:{' '}
+              <code className="rounded bg-surface-2 px-1 py-0.5 text-xs">{evalManifest.resultsBundle}</code>{' '}
+              ({evalBundle.dataSource}, site set {evalBundle.siteSetId}). Protocol:{' '}
+              <code className="rounded bg-surface-2 px-1 py-0.5 text-xs">
+                {evalManifest.protocolDoc}
+              </code>
+              .
+            </p>
+            {evalBundle.recordingNote && (
+              <p className="mt-3 text-sm text-ink-2">{evalBundle.recordingNote}</p>
+            )}
+            <div className="mt-6 overflow-x-auto rounded-card border border-border">
+              <table className="w-full min-w-[720px] border-collapse text-left text-sm">
+                <caption className="sr-only">Evaluation metrics by site (Qloo / chain)</caption>
+                <thead>
+                  <tr className="border-b border-border bg-surface-2 text-label uppercase text-ink-3">
+                    <th scope="col" className="px-3 py-3 font-medium">Site</th>
+                    {evalManifest.displayMetricIds.map((metricId) => (
+                      <th key={metricId} scope="col" className="px-3 py-3 font-medium text-right">
+                        {evalMetricDefinition(metricId)?.shortLabel ?? metricId}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {evalBundle.rows.map((row) => (
+                    <tr key={row.id} className="border-b border-border last:border-0">
+                      <th scope="row" className="px-3 py-3 font-medium text-ink">
+                        {row.label}
+                        {row.status === 'pending_qloo' && (
+                          <span className="mt-1 block text-xs font-normal text-ink-3">
+                            Pending recording
+                          </span>
+                        )}
+                      </th>
+                      {row.status === 'recorded' ? (
+                        evalManifest.displayMetricIds.map((metricId) => (
+                          <td
+                            key={metricId}
+                            className={`px-3 py-3 text-right tabular-nums text-ink-2 ${
+                              evalManifest.headlineMetricId === metricId ? 'font-medium text-ink' : ''
+                            }`}
+                          >
+                            {metricCell(row, metricId)}
+                          </td>
+                        ))
+                      ) : (
+                        <td
+                          colSpan={evalManifest.displayMetricIds.length}
+                          className="px-3 py-3 text-ink-3"
+                        >
+                          n/a
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3 text-xs text-ink-3">
+              Recompute pilot: <code className="rounded bg-surface-2 px-1">node scripts/strict-eval.mjs</code>.
+              See <code className="rounded bg-surface-2 px-1">scripts/eval/README.md</code> to swap in the
+              live 25+ address bundle.
+            </p>
+          </section>
+
           <section className="mt-14" aria-labelledby="eval-heading">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
@@ -117,26 +209,13 @@ export function MethodologyPage() {
                   radius (227 tracked chains).
                 </p>
               </div>
-              <Badge tone={data.recordingStatus === 'complete' ? 'success' : 'warn'}>
-                {data.recordingStatus === 'complete'
-                  ? 'Full recording'
-                  : data.recordingStatus === 'partial'
-                    ? `${recorded.length} of ${data.rows.length} recorded`
-                    : 'Awaiting recording'}
-              </Badge>
+              {data.recordingStatus === 'complete' && (
+                <Badge tone="success">Full recording</Badge>
+              )}
+              {data.recordingStatus === 'partial' && (
+                <Badge tone="warn">Partial recording</Badge>
+              )}
             </div>
-
-            {data.recordingStatus !== 'complete' && (
-              <Card className="mt-6 border-warn/30 bg-surface-2 p-4 text-sm text-ink-2">
-                <p className="font-medium text-ink">{data.recordingNote}</p>
-                {pending.length > 0 && (
-                  <p className="mt-2 text-ink-3">
-                    Pending metros need a live Qloo run via{' '}
-                    <code className="rounded bg-surface-2 px-1 py-0.5 text-xs">scripts/eval-metros.mjs</code>.
-                  </p>
-                )}
-              </Card>
-            )}
 
             {data.recordingStatus === 'empty' ? (
               <p className="mt-6 text-sm text-ink-2">
@@ -211,6 +290,58 @@ export function MethodologyPage() {
                   </p>
                 )}
               </>
+            )}
+          </section>
+
+          <section className="mt-14" aria-labelledby="qloo-lift-heading">
+            <h2 id="qloo-lift-heading" className="font-display font-semibold text-title text-ink">
+              Qloo lift study (committed aggregates)
+            </h2>
+            <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
+              Raw Qloo P@10 {(qlooLift.rawQlooPrecisionAt10 * 100).toFixed(0)}% vs chain size{' '}
+              {(qlooLift.chainSizePrecisionAt10 * 100).toFixed(0)}% on the recorded cohort; legacy
+              0.75/0.25 blend {(qlooLift.legacyBlendPrecisionAt10 * 100).toFixed(0)}%. Same-size tier
+              AUC {(qlooLift.sameSizeAuc.value * 100).toFixed(1)}% (95% CI{' '}
+              {(qlooLift.sameSizeAuc.ciLow * 100).toFixed(1)}% to{' '}
+              {(qlooLift.sameSizeAuc.ciHigh * 100).toFixed(1)}%). Logistic companion blend{' '}
+              {(qlooLift.logisticBlendPrecisionAt10 * 100).toFixed(0)}% P@10 (+{qlooLift.logisticBlendLiftVsChainPp}{' '}
+              pp vs chain, 95% CI {qlooLift.logisticBlendLiftCiLowPp} to {qlooLift.logisticBlendLiftCiHighPp} pp).
+              Heatmap features did not add lift; fixed 10 km presence saturates in dense areas. Qloo partly
+              reflects brands that already operate nearby.
+            </p>
+            <p className="mt-3 text-xs text-ink-3">
+              Full write-up:{' '}
+              <code className="rounded bg-surface-2 px-1">
+                packages/fixtures/src/eval/live-qloo-lift/QLOO_LIFT_EVAL.md
+              </code>
+            </p>
+            <div className="mt-6 overflow-x-auto rounded-card border border-border">
+              <table className="w-full min-w-[640px] border-collapse text-left text-sm">
+                <caption className="sr-only">Qloo lift evaluation addresses</caption>
+                <thead>
+                  <tr className="border-b border-border bg-surface-2 text-label uppercase text-ink-3">
+                    <th scope="col" className="px-3 py-3 font-medium">Site</th>
+                    <th scope="col" className="px-3 py-3 font-medium">Address</th>
+                    <th scope="col" className="px-3 py-3 font-medium">Density</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(siteTable as { sites: Array<{ label: string; address: string; density: string }> }).sites.map(
+                    (site) => (
+                      <tr key={site.address} className="border-b border-border last:border-0">
+                        <th scope="row" className="px-3 py-3 font-medium text-ink">
+                          {site.label}
+                        </th>
+                        <td className="px-3 py-3 text-ink-2">{site.address}</td>
+                        <td className="px-3 py-3 capitalize text-ink-2">{site.density}</td>
+                      </tr>
+                    )
+                  )}
+                </tbody>
+              </table>
+            </div>
+            {(siteTable as { note?: string }).note && (
+              <p className="mt-3 text-xs text-ink-3">{(siteTable as { note?: string }).note}</p>
             )}
           </section>
 

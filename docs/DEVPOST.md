@@ -17,6 +17,8 @@ LeaseUp turns a storefront address into a ranked pitch list:
 
 **Live demo:** https://leaseup-59m.pages.dev
 
+**Product walkthrough (recorded on production demo):** [docs/media/walkthrough.mp4](./media/walkthrough.mp4) and [walkthrough.webm](./media/walkthrough.webm). Re-record with `pnpm record:demo`.
+
 ## How we use Qloo
 
 - **Site reports:** `GET /v2/insights` with `filter.type=urn:entity:brand`, WKT `signal.location`, radius in meters, optional `filter.results.entities` (45 IDs per batch), `feature.explainability=true`.

@@ -1,3 +1,6 @@
+import type { EvalMetricPanel } from './present-metrics.js';
+import type { StrictEvalSiteMetrics } from '../strict-eval.js';
+
 export type EvalSiteDensity = 'urban' | 'suburban' | 'exurban' | 'tourist';
 
 export type EvalMetroRowStatus = 'recorded' | 'pending_qloo';
@@ -9,9 +12,7 @@ export interface EvalMetroRow {
   density: EvalSiteDensity;
   status: EvalMetroRowStatus;
   qlooPresentInTop10?: number;
-  /** Chain-size baseline (national ATP store count), same pool as Qloo. */
   chainSizePresentInTop10?: number;
-  /** Expected present count if 10 brands were drawn uniformly at random from the pool. */
   expectedRandomPresentInTop10?: number;
   liftVsChainSize?: number;
   liftVsRandomExpected?: number;
@@ -35,3 +36,23 @@ export interface EvalMetrosResults {
     meanLiftVsChainSize: number;
   };
 }
+
+export type EvalRunRow = {
+  id: string;
+  label: string;
+  address: string;
+  density: EvalSiteDensity;
+  status: EvalMetroRowStatus;
+  panels?: EvalMetricPanel[];
+  siteMetrics?: StrictEvalSiteMetrics;
+};
+
+export type EvalRunBundle = {
+  manifestId: string;
+  recordedAt: string;
+  dataSource: string;
+  siteSetId: string;
+  recordingNote?: string;
+  rows: EvalRunRow[];
+  summary?: Record<string, unknown>;
+};

@@ -1,0 +1,17 @@
+{
+  "id": "leaseup-eval-v1",
+  "headlineMetricId": "same_size_auc",
+  "resultsBundle": "live-qloo-lift/live-qloo-lift-results.json",
+  "siteSetId": "live-qloo-lift-pilot",
+  "dataSource": "fixtures",
+  "displayMetricIds": [
+    "same_size_auc",
+    "legacy_present_at10",
+    "adaptive_present_at10",
+    "spearman_presence",
+    "surprise_present_at10",
+    "random_monte_carlo"
+  ],
+  "protocolDoc": "packages/fixtures/src/eval/live-qloo-lift/QLOO_LIFT_EVAL.md",
+  "note": "Headline same_size_auc uses cohort aggregates; per-site panels remain for sanity checks on pilot chips."
+}

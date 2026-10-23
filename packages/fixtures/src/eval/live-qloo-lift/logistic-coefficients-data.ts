@@ -1,0 +1,20 @@
+/** Committed logistic blend weights (see QLOO_LIFT_EVAL.md and fit-logistic-blend.mjs). */
+export const logisticBlendCoefficients = {
+  version: 1,
+  fittedOn: 'live-qloo-lift cohort (see QLOO_LIFT_EVAL.md)',
+  features: {
+    qlooRankScore: '1 minus normalized Qloo list position (0 worst, 1 best)',
+    logChainSize: 'ln(1 + national ATP store count)',
+    densityUrban: '1 when site density is urban else 0',
+    densitySuburban: '1 when site density is suburban else 0',
+    densityExurban: '1 when site density is exurban else 0',
+    densityTourist: '1 when site density is tourist else 0',
+  },
+  intercept: -1.85,
+  qlooRankScore: 2.45,
+  logChainSize: 0.38,
+  densityUrban: 0.12,
+  densitySuburban: 0.05,
+  densityExurban: -0.08,
+  densityTourist: -0.15,
+} as const;
