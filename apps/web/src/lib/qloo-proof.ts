@@ -7,6 +7,15 @@ export function qlooProofSentence(
   baselineBacktest: BacktestResult
 ): string {
   const withoutTaste = presentInTop10Count(baselineBacktest);
+  const withTaste = presentInTop10Count(qlooBacktest);
+  return `Local taste ranking: ${withTaste} of 10 top picks already have a store nearby. Ranking by chain size only: ${withoutTaste} of 10.`;
+}
+
+export function qlooProofSentenceTechnical(
+  qlooBacktest: BacktestResult,
+  baselineBacktest: BacktestResult
+): string {
+  const withoutTaste = presentInTop10Count(baselineBacktest);
   const withQloo = presentInTop10Count(qlooBacktest);
   return `Without taste data: ${withoutTaste} of 10. With Qloo: ${withQloo} of 10.`;
 }
@@ -23,6 +32,13 @@ export function qlooProofWinner(
 }
 
 export function rankMovementLabel(qlooRank: number, baselineRank: number): string {
+  const delta = baselineRank - qlooRank;
+  if (delta > 0) return `+${delta} with taste`;
+  if (delta < 0) return `${delta} with taste`;
+  return 'Same';
+}
+
+export function rankMovementLabelTechnical(qlooRank: number, baselineRank: number): string {
   const delta = baselineRank - qlooRank;
   if (delta > 0) return `Up ${delta} with Qloo`;
   if (delta < 0) return `Down ${Math.abs(delta)} with Qloo`;
@@ -47,8 +63,20 @@ function topRankMovers(rankings: BrandRankingRow[], take = 3): BrandRankingRow[]
     .slice(0, take);
 }
 
-/** When hit counts tie, explain which top-10 rows moved between taste and chain-size order. */
 export function qlooProofTieDetail(rankings: BrandRankingRow[] | undefined): string | null {
+  if (!rankings?.length) return null;
+  const movers = topRankMovers(rankings, 3);
+  if (movers.length === 0) {
+    return 'Same nearby-store count and the top 10 list matches chain-size order.';
+  }
+  const parts = movers.map((row) => {
+    const name = displayBrandName(row.entityId, row.name);
+    return `${name} (taste #${row.qlooRank} vs chain size #${row.baselineRank ?? row.qlooRank})`;
+  });
+  return `Same nearby-store count, but taste changes who makes the top 10 (e.g. ${parts.join('; ')}).`;
+}
+
+export function qlooProofTieDetailTechnical(rankings: BrandRankingRow[] | undefined): string | null {
   if (!rankings?.length) return null;
   const movers = topRankMovers(rankings, 3);
   if (movers.length === 0) {
@@ -61,11 +89,10 @@ export function qlooProofTieDetail(rankings: BrandRankingRow[] | undefined): str
   return `Same hit count; Qloo reshuffles who makes the top 10 (e.g. ${parts.join('; ')}).`;
 }
 
-/** Subtitle for the hit-rate tile when taste vs chain-size backtests tie. */
 export function qlooProofHitRateTieSubtitle(
   rankings: BrandRankingRow[] | undefined
 ): string | null {
   const detail = qlooProofTieDetail(rankings);
-  if (!detail) return 'Hit rate tied; Qloo still changes top-10 order at this pin.';
-  return `Hit rate tied here. ${detail}`;
+  if (!detail) return 'Tied on nearby-store match; taste still changes order.';
+  return detail;
 }

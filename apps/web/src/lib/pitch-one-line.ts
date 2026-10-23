@@ -16,8 +16,8 @@ export function pitchOneLineWhy(prospect: ProspectPack, rankingsTotal: number): 
   }
 
   if (prospect.nearestExistingStoreKm !== undefined) {
-    return `${name} ranks ${fitPhrase} for taste here (Qloo #${rank}); nearest store is ${prospect.nearestExistingStoreKm.toFixed(1)} km away (${verify}).`;
+    return `${name} ranks ${fitPhrase} for local taste (rank ${rank}); nearest store is ${prospect.nearestExistingStoreKm.toFixed(1)} km away (${verify}).`;
   }
 
-  return `${name} ranks ${fitPhrase} for taste here (Qloo #${rank}); no store in radius (${verify}).`;
+  return `${name} ranks ${fitPhrase} for local taste (rank ${rank}); no store in radius (${verify}).`;
 }
