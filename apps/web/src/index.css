@@ -1,6 +1,7 @@
-@import '@fontsource/geist/latin.css';
-@import '@fontsource/geist-mono/latin.css';
-@import '@fontsource/instrument-serif/latin.css';
+@import '@fontsource/geist/latin-400.css';
+@import '@fontsource/geist/latin-600.css';
+@import '@fontsource/geist-mono/latin-400.css';
+@import '@fontsource/instrument-serif/latin-400.css';
 @import './styles/tokens.css';
 
 @tailwind base;

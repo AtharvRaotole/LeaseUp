@@ -37,6 +37,7 @@ export function Switch({
         <SwitchPrimitive.Root
           checked={displayChecked}
           onCheckedChange={onCheckedChange}
+          aria-label={label}
           className={cn(
             'relative h-5 w-9 shrink-0 rounded-pill border border-border bg-surface-2 data-[state=checked]:bg-accent data-[state=checked]:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent'
           )}
