@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { REPORT_TOUR_STORAGE_KEY } from '../../lib/broker-copy';
@@ -7,23 +8,36 @@ const STEPS = [
   {
     title: 'Your pitch list',
     body: 'Each row is a brand local shoppers love that does not have a store in your trade area yet.',
-    targetTestId: 'report-top-brands',
+    targetTestId: 'report-top-brands-list',
+    highlightTestId: 'report-top-brands-list',
   },
   {
     title: 'Why this brand',
     body: 'Select a row to see plain-language reasons and open the map for that chain.',
     targetTestId: 'why-this-brand',
+    highlightTestId: 'why-this-brand',
   },
   {
     title: 'Track outreach',
     body: 'Add strong fits to your pipeline so nothing falls through the cracks.',
     targetTestId: 'report-pipeline-cta',
+    highlightTestId: 'report-pipeline-cta',
   },
 ] as const;
+
+function highlightTarget(testId: string | undefined) {
+  document.querySelectorAll('[data-tour-active]').forEach((node) => {
+    node.removeAttribute('data-tour-active');
+  });
+  if (!testId) return;
+  const el = document.querySelector(`[data-testid="${testId}"]`);
+  el?.setAttribute('data-tour-active', 'true');
+}
 
 export function ReportFirstRunTour({ ready }: { ready: boolean }) {
   const [step, setStep] = useState(0);
   const [visible, setVisible] = useState(false);
+  const [popover, setPopover] = useState<{ top: number; left: number; width: number } | null>(null);
 
   useEffect(() => {
     if (!ready) return;
@@ -42,33 +56,57 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
       /* private mode */
     }
     setVisible(false);
+    highlightTarget(undefined);
   };
 
-  useEffect(() => {
-    document.querySelectorAll('[data-tour-active]').forEach((node) => {
-      node.removeAttribute('data-tour-active');
-    });
-    if (!visible) return;
-    const id = STEPS[step]?.targetTestId;
-    if (!id) return;
-    const el = document.querySelector(`[data-testid="${id}"]`);
-    el?.setAttribute('data-tour-active', 'true');
-    el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  const placePopover = () => {
+    const current = STEPS[step] ?? STEPS[0];
+    const anchor = document.querySelector(`[data-testid="${current.targetTestId}"]`);
+    if (!anchor) {
+      setPopover(null);
+      return;
+    }
+    const rect = anchor.getBoundingClientRect();
+    const width = Math.min(320, window.innerWidth - 24);
+    let left = rect.left;
+    if (left + width > window.innerWidth - 12) {
+      left = window.innerWidth - width - 12;
+    }
+    left = Math.max(12, left);
+    const top = Math.min(rect.bottom + 10, window.innerHeight - 200);
+    setPopover({ top, left, width });
+    highlightTarget(current.highlightTestId);
+  };
+
+  useLayoutEffect(() => {
+    if (!visible) {
+      highlightTarget(undefined);
+      setPopover(null);
+      return;
+    }
+    placePopover();
+    const onLayout = () => placePopover();
+    window.addEventListener('resize', onLayout);
+    window.addEventListener('scroll', onLayout, true);
     return () => {
-      el?.removeAttribute('data-tour-active');
+      window.removeEventListener('resize', onLayout);
+      window.removeEventListener('scroll', onLayout, true);
+      highlightTarget(undefined);
     };
   }, [step, visible]);
 
-  if (!visible) return null;
+  if (!visible || !popover) return null;
 
   const current = STEPS[step] ?? STEPS[0];
   const isLast = step >= STEPS.length - 1;
 
-  return (
+  return createPortal(
     <div
-      className="no-print rounded-card border border-accent/30 bg-accent-soft/40 p-4 shadow-sm transition-opacity duration-200"
+      className="no-print fixed z-[60] rounded-card border border-border bg-surface p-4 shadow-pop"
+      style={{ top: popover.top, left: popover.left, width: popover.width }}
       data-testid="report-first-run-tour"
-      role="region"
+      role="dialog"
+      aria-modal="false"
       aria-label="Quick tour"
     >
       <div className="flex items-start justify-between gap-3">
@@ -76,8 +114,8 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
           <p className="text-label uppercase text-ink-3">
             Step {step + 1} of {STEPS.length}
           </p>
-          <p className="mt-1 font-medium text-ink">{current.title}</p>
-          <p className="mt-1 text-sm text-ink-2">{current.body}</p>
+          <p className="mt-1 font-medium text-body-lg text-ink">{current.title}</p>
+          <p className="mt-1 text-small text-ink-2">{current.body}</p>
         </div>
         <button
           type="button"
@@ -106,12 +144,13 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
         )}
         <button
           type="button"
-          className="text-sm text-ink-3 underline-offset-2 transition-colors duration-150 hover:text-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
+          className="rounded-control text-small text-ink-3 underline-offset-2 transition-colors duration-150 hover:text-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           onClick={dismiss}
         >
           Skip tour
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

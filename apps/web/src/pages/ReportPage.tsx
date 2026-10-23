@@ -223,7 +223,6 @@ export function ReportPage() {
     <div className="report-content-enter space-y-8 text-body">
       <ErrorBoundary fallback={<SectionUnavailable />}>
         <div className="print-pitch-block space-y-6">
-          <ReportFirstRunTour ready={results.prospects.length > 0} />
           <ReportSummaryAboveFold
             results={results}
             request={request}
@@ -534,6 +533,9 @@ export function ReportPage() {
           prospect={outreach}
           results={results}
         />
+      )}
+      {results && (
+        <ReportFirstRunTour ready={results.prospects.length > 0} />
       )}
       <footer className="no-print py-8 text-center text-meta text-ink-3">
         <Link to="/" className="text-accent hover:underline">Back to search</Link>
