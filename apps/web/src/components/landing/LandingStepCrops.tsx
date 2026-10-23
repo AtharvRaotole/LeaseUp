@@ -1,6 +1,7 @@
 import { displayBrandName } from '../../lib/brand-display';
-import { LANDING_WICKER_PREVIEW } from '../../data/landing-wicker-preview';
+import { LANDING_WICKER_PREVIEW, LANDING_WICKER_RADIUS_KM } from '../../data/landing-wicker-preview';
 import { LANDING_PUBLIC_HOST } from '../../lib/landing-public-host';
+import { prospectOneLineReason } from '../../lib/prospect-one-line';
 
 /** Static UI crops for "How it works" (fixture data only, no network). */
 
@@ -25,6 +26,7 @@ export function AddressStepCrop() {
 
 export function BrandsStepCrop() {
   const rows = LANDING_WICKER_PREVIEW.prospects.slice(0, 3);
+  const results = LANDING_WICKER_PREVIEW;
   return (
     <div
       className="overflow-hidden rounded-control border border-border bg-surface text-left shadow-sm"
@@ -39,7 +41,9 @@ export function BrandsStepCrop() {
             <p className="text-small font-medium text-ink">
               #{i + 1} {displayBrandName(p.brand.entityId, p.brand.name)}
             </p>
-            <p className="mt-0.5 text-meta text-ink-3">No store in your trade area</p>
+            <p className="mt-0.5 text-meta leading-snug text-ink-3">
+              {prospectOneLineReason(p, results, LANDING_WICKER_RADIUS_KM)}
+            </p>
           </li>
         ))}
       </ul>

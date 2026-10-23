@@ -31,6 +31,7 @@
     "test:a11y": "playwright test e2e/a11y.spec.ts",
     "test:csp": "node scripts/run-csp-e2e.mjs",
     "test:landing-hero": "node scripts/run-landing-hero-preview-e2e.mjs",
+    "visual-qa:pass": "node scripts/full-visual-qa-pass.mjs",
     "deploy": "pnpm --filter @leaseup/worker deploy"
   },
   "devDependencies": {

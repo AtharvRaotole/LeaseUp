@@ -192,7 +192,7 @@ export function LandingPage() {
             </p>
               </div>
 
-              <div className="mt-12 lg:mt-4 lg:pt-2">
+              <div className="mt-12 min-w-0 lg:mt-4 lg:pt-2">
                 <Suspense fallback={null}>
                   <LandingHeroProductPreview />
                 </Suspense>

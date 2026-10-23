@@ -147,7 +147,7 @@ export function PipelineKanban({
         onDragEnd={(e) => void onDragEnd(e)}
       >
         <div
-          className="mt-6 flex gap-3 overflow-x-auto pb-2"
+          className="mt-6 flex min-w-0 max-w-full snap-x snap-mandatory gap-3 overflow-x-auto pb-2 md:gap-4 md:pb-4"
           data-testid="pipeline-board"
           role="region"
           aria-label="Pipeline board. Use the move control on each card to drag, or open a card to set status with the keyboard."
