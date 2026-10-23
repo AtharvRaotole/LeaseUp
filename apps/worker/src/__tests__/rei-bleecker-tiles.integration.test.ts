@@ -1,14 +1,14 @@
 import { beforeAll, describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { BLEECKER_NYC, REI_ENTITY_ID } from '@leaseup/fixtures/worker';
+import { BLEECKER_NYC, REI_ENTITY_ID, REI_SOHO_OSM_NODE } from '@leaseup/fixtures/worker';
 import { OsmSnapshotCatalog } from '../services/osm-snapshot-catalog';
 import { ResponseCache } from '../lib/response-cache';
 import { OSM_SNAPSHOT_BRAND_STATUS } from '../data/osm-snapshot-meta';
 
 const publicRoot = join(__dirname, '../../public');
 
-function readAsset(host: 'tiles.local' | 'osm.local', url: string): Response {
+function readAsset(host: 'osm.local', url: string): Response {
   const path = url.replace(`https://${host}`, '');
   const file = join(publicRoot, path);
   try {
@@ -20,7 +20,6 @@ function readAsset(host: 'tiles.local' | 'osm.local', url: string): Response {
 
 const assets = {
   fetch: async (url: string) => {
-    if (url.includes('tiles.local')) return readAsset('tiles.local', url);
     if (url.includes('osm.local')) return readAsset('osm.local', url);
     return new Response('missing', { status: 404 });
   },
@@ -38,30 +37,6 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): nu
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-function nearestReiKmFromTilePack(
-  brandsPath: string,
-  tilePath: string,
-  lat: number,
-  lon: number,
-  radiusKm: number
-): number | undefined {
-  const brands = JSON.parse(readFileSync(join(publicRoot, brandsPath), 'utf8')) as {
-    brands: Array<{ id: string }>;
-  };
-  const tile = JSON.parse(readFileSync(join(publicRoot, tilePath), 'utf8')) as {
-    stores: Array<[number, number, number]>;
-  };
-  const brandIdx = brands.brands.findIndex((b) => b.id === REI_ENTITY_ID);
-  if (brandIdx < 0) return undefined;
-  let nearest = Infinity;
-  for (const [bIdx, tLat, tLon] of tile.stores) {
-    if (bIdx !== brandIdx) continue;
-    const d = haversineKm(lat, lon, tLat, tLon);
-    if (d <= radiusKm && d < nearest) nearest = d;
-  }
-  return nearest === Infinity ? undefined : nearest;
-}
-
 describe('REI SoHo on committed geotiles (350 Bleecker)', () => {
   beforeAll(() => {
     OSM_SNAPSHOT_BRAND_STATUS[REI_ENTITY_ID] = 'ok';
@@ -69,16 +44,21 @@ describe('REI SoHo on committed geotiles (350 Bleecker)', () => {
 
   it('finds REI within trade area (after supplement), not a distant-only false absence', async () => {
     const { latitude, longitude } = BLEECKER_NYC;
-    const nearestAtp = nearestReiKmFromTilePack('tiles/brands.json', 'tiles/dr5.json', latitude, longitude, 10);
     const responseCache = new ResponseCache();
     const osm = new OsmSnapshotCatalog(assets, responseCache);
     const nearestOsm = await osm.nearestStoreKm(REI_ENTITY_ID, latitude, longitude, 50);
 
-    expect(nearestAtp).toBeDefined();
-    expect(nearestAtp!).toBeLessThan(2);
+    const supplementKm = haversineKm(
+      latitude,
+      longitude,
+      REI_SOHO_OSM_NODE.lat,
+      REI_SOHO_OSM_NODE.lon
+    );
+
     expect(nearestOsm).toBeDefined();
     expect(nearestOsm!).toBeLessThan(2);
-    expect(nearestAtp!).toBeGreaterThan(1);
     expect(nearestOsm!).toBeGreaterThan(1);
+    expect(supplementKm).toBeLessThan(2);
+    expect(Math.abs(nearestOsm! - supplementKm)).toBeLessThan(0.05);
   });
 });
