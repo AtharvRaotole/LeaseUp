@@ -1,26 +1,40 @@
 /**
- * Recorded Qloo heatmap cell shape from live API (see apps/worker/src/__tests__/qloo-heatmap.test.ts).
- * Regenerate full metro: node scripts/record-brand-reverse-fixture.mjs (requires QLOO_API_KEY).
+ * Real Qloo heatmap recordings (hackathon.api.qloo.com, urn:heatmap) with provenance.
+ * Regenerate: QLOO_API_KEY=... node scripts/record-brand-reverse-fixture.mjs chicago denver austin
  */
+import chicago from './brand-reverse/chicago.json';
+import denver from './brand-reverse/denver.json';
+import austin from './brand-reverse/austin.json';
+
 export type BrandReverseDemoFixture = {
   brandEntityId: string;
   metroId: string;
   source: 'heatmap' | 'grid_insights';
   sourceNote?: string;
+  provenance: {
+    recordedAt: string;
+    host: string;
+    method: string;
+    path: string;
+    params: Record<string, string>;
+    httpStatus: number;
+    rawCellCount: number;
+    note: string;
+  };
   cells: Array<{
     latitude: number;
     longitude: number;
+    geohash?: string;
     affinity_rank: number;
     affinity?: number;
+    popularity?: number;
   }>;
 };
 
-export const brandReverseChicagoDemo: BrandReverseDemoFixture = {
-  brandEntityId: '54617D9D-5EC7-45E0-8B7F-360DADB0FE7E',
-  metroId: 'chicago',
-  source: 'heatmap',
-  sourceNote: 'Demo uses one recorded Qloo heatmap cell. Live mode loads the full metro heatmap.',
-  cells: [
-    { latitude: 41.8819, longitude: -87.6278, affinity_rank: 4, affinity: 0.8123 },
-  ],
+export const brandReverseFixtures: Partial<Record<string, BrandReverseDemoFixture>> = {
+  chicago: chicago as BrandReverseDemoFixture,
+  denver: denver as BrandReverseDemoFixture,
+  austin: austin as BrandReverseDemoFixture,
 };
+
+export const brandReverseChicagoDemo: BrandReverseDemoFixture = chicago as BrandReverseDemoFixture;

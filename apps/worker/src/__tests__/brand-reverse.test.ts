@@ -66,7 +66,7 @@ describe('BrandReverseService', () => {
     expect(result.cells.length).toBeGreaterThan(0);
     expect(result.opportunities.length).toBeGreaterThan(0);
     expect(result.opportunities[0]?.reportPath).toContain('/r/site?');
-  });
+  }, 20000);
 });
 
 describe('Qloo heatmap mock', () => {

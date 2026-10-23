@@ -1,26 +1,43 @@
-import { useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { ArrowRight, Search } from 'lucide-react';
 import { TopBar } from '../components/layout/TopBar';
-import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Select } from '../components/ui/Select';
 import { Card } from '../components/ui/Card';
 import { Skeleton } from '../components/ui/Skeleton';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-import { lazy, Suspense } from 'react';
+import { useBrandReverse, useBrandSearch, useMetros } from '../hooks/useBrandReverse';
+import { displayBrandName } from '../lib/brand-display';
+import { formatAffinityMatchLabel } from '../lib/affinity-label';
+import { cn } from '../lib/cn';
 
 const BrandReverseMap = lazy(() =>
   import('../components/brand/BrandReverseMap').then((m) => ({ default: m.BrandReverseMap }))
 );
-import { useBrandReverse, useBrandSearch, useMetros } from '../hooks/useBrandReverse';
-import { displayBrandName } from '../lib/brand-display';
+
+const DEFAULT_METRO = 'chicago';
+const DEMO_BRAND_ID = '54617D9D-5EC7-45E0-8B7F-360DADB0FE7E';
+
+function formatRecordedAt(iso?: string): string | null {
+  if (!iso) return null;
+  try {
+    return new Date(iso).toLocaleString(undefined, {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+  } catch {
+    return null;
+  }
+}
 
 export function BrandPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const metroId = searchParams.get('metro') || DEFAULT_METRO;
   const [search, setSearch] = useState('');
-  const [metroId, setMetroId] = useState('chicago');
+  const [hoverRank, setHoverRank] = useState<number | null>(null);
   const { data: metros } = useMetros();
   const { data: brands, isLoading: brandsLoading } = useBrandSearch(search);
   const { data, isLoading, error, isFetching } = useBrandReverse(id, metroId);
@@ -29,6 +46,21 @@ export function BrandPage() {
     () => (metros ?? []).map((m) => ({ value: m.id, label: m.label })),
     [metros]
   );
+
+  const setMetroId = (next: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('metro', next);
+    setSearchParams(params, { replace: true });
+  };
+
+  useEffect(() => {
+    if (!id && searchParams.get('metro')) return;
+    if (id && !searchParams.get('metro')) {
+      const params = new URLSearchParams(searchParams);
+      params.set('metro', DEFAULT_METRO);
+      setSearchParams(params, { replace: true });
+    }
+  }, [id, searchParams, setSearchParams]);
 
   if (!id) {
     return (
@@ -67,7 +99,7 @@ export function BrandPage() {
                   <button
                     type="button"
                     className="flex w-full items-center justify-between py-3 text-left hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                    onClick={() => navigate(`/brand/${b.entityId}`)}
+                    onClick={() => navigate(`/brand/${b.entityId}?metro=${DEFAULT_METRO}`)}
                   >
                     <span className="font-medium text-ink">{displayBrandName(b.entityId, b.displayName)}</span>
                     <span className="text-meta text-ink-3">Select</span>
@@ -84,22 +116,28 @@ export function BrandPage() {
     );
   }
 
+  const headlineTakeaway =
+    data &&
+    `${data.opportunities.length} strong gap${data.opportunities.length === 1 ? '' : 's'} in ${data.metro.label}, ${data.stores.length} stores today`;
+
+  const recordedLabel = formatRecordedAt(data?.recordedAt);
+
   return (
     <div className="min-h-screen bg-bg" data-testid="brand-reverse-page">
       <TopBar />
-      <main className="mx-auto max-w-[1280px] px-4 py-8 md:px-6">
-        <div className="grid gap-8 lg:grid-cols-12">
-          <div className="lg:col-span-4">
+      <main className="mx-auto max-w-[1280px] px-4 py-6 md:px-6">
+        <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
+          <div className="flex flex-col lg:col-span-5 lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto lg:pr-1">
             <Link to="/brand" className="text-sm text-accent hover:underline">
               Change brand
             </Link>
-            <h1 className="mt-3 font-serif text-h2 text-ink">
+            <h1 className="mt-2 font-serif text-h2 text-ink">
               {data ? displayBrandName(data.brand.entityId, data.brand.displayName) : 'Brand sites'}
             </h1>
-            <p className="mt-2 text-sm text-ink-2">
-              High-affinity cells with no nearby store in ATP data. Open any row as a full site report.
-            </p>
-            <div className="mt-6">
+            {headlineTakeaway && (
+              <p className="mt-1 text-base text-ink-2">{headlineTakeaway}</p>
+            )}
+            <div className="mt-5">
               <Select
                 label="Metro"
                 value={metroId}
@@ -108,17 +146,15 @@ export function BrandPage() {
               />
             </div>
             {data?.sourceNote && (
-              <p className="mt-4 rounded-control border border-border bg-surface-2 px-3 py-2 text-sm text-ink-2">
-                {data.sourceNote}
-              </p>
+              <p className="mt-3 text-sm text-ink-3">{data.sourceNote}</p>
             )}
             {error && (
-              <p className="mt-4 text-sm text-red-600" role="alert">
+              <p className="mt-3 text-sm text-red-600" role="alert">
                 {(error as Error).message}
               </p>
             )}
             <ErrorBoundary>
-              <section className="mt-6" aria-label="Top opportunities">
+              <section className="mt-6 flex-1" aria-label="Top opportunities">
                 <h2 className="text-label uppercase text-ink-3">Top opportunities</h2>
                 {isLoading || isFetching ? (
                   <div className="mt-3 space-y-2">
@@ -133,22 +169,39 @@ export function BrandPage() {
                   <ol className="mt-3 space-y-2" data-testid="brand-opportunities">
                     {data?.opportunities.map((row) => (
                       <li key={`${row.latitude},${row.longitude}`}>
-                        <Card className="p-4">
-                          <div className="flex items-start justify-between gap-3">
-                            <div>
-                              <p className="font-medium text-ink">{row.neighborhood ?? 'Area'}</p>
-                              <p className="font-mono text-sm tabular-nums text-ink-3">
-                                Affinity rank {row.affinityRank}
+                        <Card
+                          className={cn(
+                            'p-4 transition-colors',
+                            hoverRank === row.rank && 'border-accent ring-1 ring-accent/30'
+                          )}
+                          onMouseEnter={() => setHoverRank(row.rank)}
+                          onMouseLeave={() => setHoverRank(null)}
+                        >
+                          <div className="flex gap-3">
+                            <span
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-white"
+                              aria-hidden
+                            >
+                              {row.rank}
+                            </span>
+                            <div className="min-w-0 flex-1">
+                              <p className="font-medium text-ink">
+                                {row.neighborhood ?? 'Loading area name'}
+                              </p>
+                              <p className="mt-1 text-sm text-ink-2">
+                                {formatAffinityMatchLabel(row.affinityRank)}
                                 {row.nearestStoreKm !== undefined
-                                  ? ` · ${row.nearestStoreKm} km to nearest store`
+                                  ? ` · ${row.nearestStoreKm} km from nearest store`
                                   : ''}
                               </p>
+                              <Link
+                                to={row.reportPath}
+                                className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline"
+                              >
+                                Site report
+                                <ArrowRight className="h-4 w-4" aria-hidden />
+                              </Link>
                             </div>
-                            <Link to={row.reportPath}>
-                              <Button type="button" size="sm" variant="secondary">
-                                Open as site report
-                              </Button>
-                            </Link>
                           </div>
                         </Card>
                       </li>
@@ -158,31 +211,42 @@ export function BrandPage() {
               </section>
             </ErrorBoundary>
           </div>
-          <div className="lg:col-span-8">
+
+          <div className="lg:col-span-7 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)]">
             <ErrorBoundary>
-              <Card className="overflow-hidden p-0">
+              <Card className="flex h-full flex-col overflow-hidden p-0">
                 {isLoading ? (
-                  <Skeleton className="min-h-[420px] w-full" />
+                  <Skeleton className="min-h-[360px] flex-1 w-full" />
                 ) : data ? (
-                  <Suspense fallback={<Skeleton className="min-h-[420px] w-full" />}>
-                    <BrandReverseMap data={data} />
+                  <Suspense fallback={<Skeleton className="min-h-[360px] flex-1 w-full" />}>
+                    <div className="flex-1 min-h-0">
+                      <BrandReverseMap
+                        data={data}
+                        highlightRank={hoverRank}
+                        onHoverRank={setHoverRank}
+                      />
+                    </div>
                   </Suspense>
                 ) : (
-                  <div className="flex min-h-[420px] items-center justify-center p-8 text-sm text-ink-2">
+                  <div className="flex flex-1 items-center justify-center p-8 text-sm text-ink-2">
                     Pick a metro to load the heatmap.
                   </div>
                 )}
+                {data && (
+                  <p className="border-t border-border px-4 py-3 text-meta text-ink-3">
+                    Source: {data.source === 'heatmap' ? 'Qloo heatmap' : 'Qloo grid insights'}
+                    {recordedLabel ? ` · Recorded ${recordedLabel}` : ''}
+                    {' · '}
+                    {data.stores.length} ATP stores in metro
+                  </p>
+                )}
               </Card>
             </ErrorBoundary>
-            {data && (
-              <p className="mt-3 text-meta text-ink-3">
-                Source: {data.source === 'heatmap' ? 'Qloo heatmap' : 'Qloo grid insights'} ·{' '}
-                {data.stores.length} stores in metro
-              </p>
-            )}
           </div>
         </div>
       </main>
     </div>
   );
 }
+
+export { DEMO_BRAND_ID };

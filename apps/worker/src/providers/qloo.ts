@@ -58,7 +58,7 @@ type RawHeatmapCell = {
   affinity_rank?: number;
   affinity?: number;
   popularity?: number;
-  query?: { affinity?: number; affinity_rank?: number };
+  query?: { affinity?: number; affinity_rank?: number; popularity?: number };
   location?: {
     latitude?: number;
     longitude?: number;
@@ -88,7 +88,7 @@ export function normalizeHeatmapCells(raw: RawHeatmapCell[]): QlooHeatmapCell[] 
       longitude,
       affinity_rank: affinityRank,
       affinity,
-      popularity: cell.popularity,
+      popularity: cell.query?.popularity ?? cell.popularity,
     });
   }
   return cells;
@@ -310,10 +310,11 @@ export class QlooClient {
     }
 
     const size = Math.min(8, Math.max(3, params.gridSize));
-    const center =
-      params.location.kind === 'point'
-        ? params.location
-        : { latitude: 41.8781, longitude: -87.6298, radiusKm: 25 };
+    if (params.location.kind !== 'point') {
+      // No coordinates to build a grid around; never default to another metro.
+      return [];
+    }
+    const center = params.location;
 
     const latSpan = (center.radiusKm / 111) * 0.85;
     const lonSpan =

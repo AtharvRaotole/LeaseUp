@@ -201,6 +201,7 @@ export const BrandReverseOpportunitySchema = z.object({
   longitude: z.number(),
   affinity: z.number().optional(),
   affinityRank: z.number(),
+  affinityPercentile: z.number().optional(),
   neighborhood: z.string().optional(),
   nearestStoreKm: z.number().optional(),
   reportPath: z.string(),
@@ -213,6 +214,7 @@ export const BrandReverseResponseSchema = z.object({
   metro: MetroOptionSchema,
   source: BrandReverseSourceSchema,
   sourceNote: z.string().optional(),
+  recordedAt: z.string().optional(),
   cells: z.array(HeatmapCellSchema),
   stores: z.array(
     z.object({
@@ -268,6 +270,7 @@ export const PortfolioRowSchema = z.object({
   backtestHitRate: z.number().optional(),
   neighborhood: z.string().optional(),
   runId: z.string().optional(),
+  analyzingStartedAt: z.string().optional(),
 });
 
 export type PortfolioRow = z.infer<typeof PortfolioRowSchema>;

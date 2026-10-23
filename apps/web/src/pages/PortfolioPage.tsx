@@ -200,6 +200,14 @@ export function PortfolioPage() {
     void loadPortfolio(id).catch(() => setError('Could not load this portfolio link.'));
   }, [id, loadPortfolio]);
 
+  useEffect(() => {
+    if (!id || !portfolio?.rows.some((r) => r.status === 'analyzing')) return;
+    const timer = window.setInterval(() => {
+      void loadPortfolio(id);
+    }, 3000);
+    return () => window.clearInterval(timer);
+  }, [id, portfolio?.rows, loadPortfolio]);
+
   return (
     <div className="min-h-screen bg-bg" data-testid="portfolio-page">
       <TopBar />

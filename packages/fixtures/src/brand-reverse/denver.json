@@ -1,0 +1,7735 @@
+{
+ "brandEntityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+ "metroId": "denver",
+ "source": "heatmap",
+ "sourceNote": "Recorded Qloo heatmap (964 cells) captured 2026-10-23.",
+ "provenance": {
+  "recordedAt": "2026-10-23T12:51:35.763Z",
+  "host": "https://hackathon.api.qloo.com",
+  "method": "GET",
+  "path": "/v2/insights",
+  "params": {
+   "filter.type": "urn:heatmap",
+   "filter.location": "POINT(-104.9903 39.7392)",
+   "filter.location.radius": "30000",
+   "signal.interests.entities": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E"
+  },
+  "httpStatus": 200,
+  "rawCellCount": 964,
+  "note": "API key stripped. Cells are the unmodified results.heatmap array, field-renamed only."
+ },
+ "cells": [
+  {
+   "latitude": 39.740295,
+   "longitude": -104.97986,
+   "geohash": "9xj654",
+   "affinity_rank": 0.992731,
+   "affinity": 1,
+   "popularity": 1
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -104.990845,
+   "geohash": "9xj64g",
+   "affinity_rank": 0.989289,
+   "affinity": 0.9989615784008308,
+   "popularity": 0.9989615784008308
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -104.82605,
+   "geohash": "9xj3ys",
+   "affinity_rank": 0.988958,
+   "affinity": 0.9979231568016614,
+   "popularity": 0.9885773624091381
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -105.01282,
+   "geohash": "9xj64k",
+   "affinity_rank": 0.987441,
+   "affinity": 0.9968847352024922,
+   "popularity": 0.9927310488058152
+  },
+  {
+   "latitude": 39.839172,
+   "longitude": -104.67224,
+   "geohash": "9xjddh",
+   "affinity_rank": 0.986083,
+   "affinity": 0.995846313603323,
+   "popularity": 0.9968847352024922
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -105.01282,
+   "geohash": "9xj647",
+   "affinity_rank": 0.985901,
+   "affinity": 0.9948078920041536,
+   "popularity": 0.9896157840083074
+  },
+  {
+   "latitude": 39.66339,
+   "longitude": -105.21057,
+   "geohash": "9xj1tu",
+   "affinity_rank": 0.984967,
+   "affinity": 0.9937694704049844,
+   "popularity": 0.9979231568016614
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -104.9469,
+   "geohash": "9xj65u",
+   "affinity_rank": 0.981802,
+   "affinity": 0.9927310488058152,
+   "popularity": 0.9865005192107996
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -105.0238,
+   "geohash": "9xj645",
+   "affinity_rank": 0.981568,
+   "affinity": 0.9916926272066459,
+   "popularity": 0.9906542056074766
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -104.990845,
+   "geohash": "9xj64v",
+   "affinity_rank": 0.981275,
+   "affinity": 0.9906542056074766,
+   "popularity": 0.995846313603323
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -105.00183,
+   "geohash": "9xj64s",
+   "affinity_rank": 0.980669,
+   "affinity": 0.9896157840083074,
+   "popularity": 0.9948078920041536
+  },
+  {
+   "latitude": 39.910583,
+   "longitude": -104.9469,
+   "geohash": "9xj75c",
+   "affinity_rank": 0.980638,
+   "affinity": 0.9885773624091381,
+   "popularity": 0.9740394600207685
+  },
+  {
+   "latitude": 39.8172,
+   "longitude": -104.749146,
+   "geohash": "9xjd82",
+   "affinity_rank": 0.979091,
+   "affinity": 0.9875389408099688,
+   "popularity": 0.9615784008307373
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -105.00183,
+   "geohash": "9xj64e",
+   "affinity_rank": 0.978774,
+   "affinity": 0.9865005192107996,
+   "popularity": 0.9937694704049844
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -105.22156,
+   "geohash": "9xj4jt",
+   "affinity_rank": 0.978592,
+   "affinity": 0.9854620976116303,
+   "popularity": 0.9916926272066459
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -105.10071,
+   "geohash": "9xj3bk",
+   "affinity_rank": 0.976452,
+   "affinity": 0.9844236760124611,
+   "popularity": 0.9781931464174455
+  },
+  {
+   "latitude": 39.580994,
+   "longitude": -104.902954,
+   "geohash": "9xj3hv",
+   "affinity_rank": 0.976404,
+   "affinity": 0.9833852544132918,
+   "popularity": 0.9709241952232607
+  },
+  {
+   "latitude": 39.916077,
+   "longitude": -105.06775,
+   "geohash": "9xj714",
+   "affinity_rank": 0.975282,
+   "affinity": 0.9823468328141225,
+   "popularity": 0.9730010384215991
+  },
+  {
+   "latitude": 39.861145,
+   "longitude": -105.04578,
+   "geohash": "9xj6c8",
+   "affinity_rank": 0.974918,
+   "affinity": 0.9813084112149533,
+   "popularity": 0.9698857736240913
+  },
+  {
+   "latitude": 39.613953,
+   "longitude": -105.01282,
+   "geohash": "9xj367",
+   "affinity_rank": 0.974545,
+   "affinity": 0.980269989615784,
+   "popularity": 0.9792315680166147
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -104.990845,
+   "geohash": "9xj64f",
+   "affinity_rank": 0.974517,
+   "affinity": 0.9792315680166147,
+   "popularity": 0.9833852544132918
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.92493,
+   "geohash": "9xj3sq",
+   "affinity_rank": 0.974308,
+   "affinity": 0.9781931464174455,
+   "popularity": 0.9491173416407062
+  },
+  {
+   "latitude": 39.88861,
+   "longitude": -105.06775,
+   "geohash": "9xj6cj",
+   "affinity_rank": 0.9737,
+   "affinity": 0.9771547248182763,
+   "popularity": 0.9688473520249221
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -104.957886,
+   "geohash": "9xj659",
+   "affinity_rank": 0.973163,
+   "affinity": 0.9761163032191069,
+   "popularity": 0.9844236760124611
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -105.078735,
+   "geohash": "9xj3bu",
+   "affinity_rank": 0.97307,
+   "affinity": 0.9750778816199377,
+   "popularity": 0.956386292834891
+  },
+  {
+   "latitude": 39.54254,
+   "longitude": -104.96887,
+   "geohash": "9xj2gq",
+   "affinity_rank": 0.972356,
+   "affinity": 0.9740394600207685,
+   "popularity": 0.9667705088265836
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -104.96887,
+   "geohash": "9xj673",
+   "affinity_rank": 0.971923,
+   "affinity": 0.9730010384215991,
+   "popularity": 0.9719626168224299
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -104.97986,
+   "geohash": "9xj651",
+   "affinity_rank": 0.971811,
+   "affinity": 0.9719626168224299,
+   "popularity": 0.9823468328141225
+  },
+  {
+   "latitude": 39.564514,
+   "longitude": -104.88098,
+   "geohash": "9xj3j6",
+   "affinity_rank": 0.971255,
+   "affinity": 0.9709241952232607,
+   "popularity": 0.9460020768431984
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -104.990845,
+   "geohash": "9xj64u",
+   "affinity_rank": 0.970814,
+   "affinity": 0.9698857736240913,
+   "popularity": 0.9854620976116303
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -104.990845,
+   "geohash": "9xj64c",
+   "affinity_rank": 0.969105,
+   "affinity": 0.9688473520249221,
+   "popularity": 0.9875389408099688
+  },
+  {
+   "latitude": 39.822693,
+   "longitude": -105.111694,
+   "geohash": "9xj681",
+   "affinity_rank": 0.968776,
+   "affinity": 0.9678089304257529,
+   "popularity": 0.9678089304257529
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -104.9469,
+   "geohash": "9xj65g",
+   "affinity_rank": 0.968565,
+   "affinity": 0.9667705088265836,
+   "popularity": 0.9813084112149533
+  },
+  {
+   "latitude": 39.548035,
+   "longitude": -104.89197,
+   "geohash": "9xj2vp",
+   "affinity_rank": 0.968055,
+   "affinity": 0.9657320872274143,
+   "popularity": 0.9470404984423676
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -104.957886,
+   "geohash": "9xj3gw",
+   "affinity_rank": 0.966436,
+   "affinity": 0.9646936656282451,
+   "popularity": 0.9761163032191069
+  },
+  {
+   "latitude": 39.602966,
+   "longitude": -104.89197,
+   "geohash": "9xj3m1",
+   "affinity_rank": 0.966105,
+   "affinity": 0.9636552440290758,
+   "popularity": 0.9657320872274143
+  },
+  {
+   "latitude": 39.9765,
+   "longitude": -105.14465,
+   "geohash": "9xj5rm",
+   "affinity_rank": 0.966031,
+   "affinity": 0.9626168224299065,
+   "popularity": 0.9543094496365524
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -105.24353,
+   "geohash": "9xj4j1",
+   "affinity_rank": 0.963706,
+   "affinity": 0.9615784008307373,
+   "popularity": 0.9595015576323987
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -104.990845,
+   "geohash": "9xj3df",
+   "affinity_rank": 0.963211,
+   "affinity": 0.960539979231568,
+   "popularity": 0.9553478712357217
+  },
+  {
+   "latitude": 39.78424,
+   "longitude": -104.89197,
+   "geohash": "9xj6m4",
+   "affinity_rank": 0.962921,
+   "affinity": 0.9595015576323987,
+   "popularity": 0.9241952232606438
+  },
+  {
+   "latitude": 39.619446,
+   "longitude": -104.902954,
+   "geohash": "9xj3ku",
+   "affinity_rank": 0.961876,
+   "affinity": 0.9584631360332295,
+   "popularity": 0.944963655244029
+  },
+  {
+   "latitude": 39.932556,
+   "longitude": -105.13367,
+   "geohash": "9xj5pt",
+   "affinity_rank": 0.959948,
+   "affinity": 0.9574247144340602,
+   "popularity": 0.9262720664589823
+  },
+  {
+   "latitude": 39.613953,
+   "longitude": -104.91394,
+   "geohash": "9xj3ke",
+   "affinity_rank": 0.959462,
+   "affinity": 0.956386292834891,
+   "popularity": 0.9356178608515057
+  },
+  {
+   "latitude": 39.806213,
+   "longitude": -104.93591,
+   "geohash": "9xj6kn",
+   "affinity_rank": 0.958495,
+   "affinity": 0.9553478712357217,
+   "popularity": 0.9138110072689511
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -105.01282,
+   "geohash": "9xj64m",
+   "affinity_rank": 0.958394,
+   "affinity": 0.9543094496365524,
+   "popularity": 0.980269989615784
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -105.1886,
+   "geohash": "9xj1w6",
+   "affinity_rank": 0.957802,
+   "affinity": 0.9532710280373832,
+   "popularity": 0.9626168224299065
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -105.13367,
+   "geohash": "9xj4r9",
+   "affinity_rank": 0.956749,
+   "affinity": 0.952232606438214,
+   "popularity": 0.9345794392523364
+  },
+  {
+   "latitude": 39.613953,
+   "longitude": -105.03479,
+   "geohash": "9xj33g",
+   "affinity_rank": 0.956167,
+   "affinity": 0.9511941848390446,
+   "popularity": 0.8826583592938733
+  },
+  {
+   "latitude": 39.602966,
+   "longitude": -104.7052,
+   "geohash": "9xj933",
+   "affinity_rank": 0.956146,
+   "affinity": 0.9501557632398754,
+   "popularity": 0.9117341640706127
+  },
+  {
+   "latitude": 39.90509,
+   "longitude": -105.08972,
+   "geohash": "9xj708",
+   "affinity_rank": 0.954792,
+   "affinity": 0.9491173416407062,
+   "popularity": 0.9480789200415368
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -105.24353,
+   "geohash": "9xj1vh",
+   "affinity_rank": 0.954607,
+   "affinity": 0.9480789200415368,
+   "popularity": 0.9428868120456906
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -104.9469,
+   "geohash": "9xj3gy",
+   "affinity_rank": 0.954423,
+   "affinity": 0.9470404984423676,
+   "popularity": 0.9532710280373832
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -105.06775,
+   "geohash": "9xj614",
+   "affinity_rank": 0.954235,
+   "affinity": 0.9460020768431984,
+   "popularity": 0.9325025960539979
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -104.96887,
+   "geohash": "9xj656",
+   "affinity_rank": 0.954113,
+   "affinity": 0.944963655244029,
+   "popularity": 0.9511941848390446
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.957886,
+   "geohash": "9xj3ew",
+   "affinity_rank": 0.953565,
+   "affinity": 0.9439252336448598,
+   "popularity": 0.940809968847352
+  },
+  {
+   "latitude": 39.960022,
+   "longitude": -104.990845,
+   "geohash": "9xj76f",
+   "affinity_rank": 0.952655,
+   "affinity": 0.9428868120456906,
+   "popularity": 0.9148494288681205
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -104.97986,
+   "geohash": "9xj655",
+   "affinity_rank": 0.951188,
+   "affinity": 0.9418483904465212,
+   "popularity": 0.9636552440290758
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -104.93591,
+   "geohash": "9xj3u5",
+   "affinity_rank": 0.95025,
+   "affinity": 0.940809968847352,
+   "popularity": 0.9252336448598131
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -104.990845,
+   "geohash": "9xj3dg",
+   "affinity_rank": 0.949203,
+   "affinity": 0.9397715472481828,
+   "popularity": 0.9439252336448598
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -104.97986,
+   "geohash": "9xj65p",
+   "affinity_rank": 0.94914,
+   "affinity": 0.9387331256490135,
+   "popularity": 0.9761163032191069
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -104.89197,
+   "geohash": "9xj6m1",
+   "affinity_rank": 0.949063,
+   "affinity": 0.9376947040498442,
+   "popularity": 0.8951194184839044
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -105.00183,
+   "geohash": "9xj64t",
+   "affinity_rank": 0.948806,
+   "affinity": 0.936656282450675,
+   "popularity": 0.952232606438214
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -105.00183,
+   "geohash": "9xj64w",
+   "affinity_rank": 0.948076,
+   "affinity": 0.9356178608515057,
+   "popularity": 0.9646936656282451
+  },
+  {
+   "latitude": 39.894104,
+   "longitude": -104.990845,
+   "geohash": "9xj6fy",
+   "affinity_rank": 0.947634,
+   "affinity": 0.9345794392523364,
+   "popularity": 0.9023883696780893
+  },
+  {
+   "latitude": 39.597473,
+   "longitude": -104.91394,
+   "geohash": "9xj3k8",
+   "affinity_rank": 0.947468,
+   "affinity": 0.9335410176531672,
+   "popularity": 0.833852544132918
+  },
+  {
+   "latitude": 39.795227,
+   "longitude": -104.990845,
+   "geohash": "9xj66u",
+   "affinity_rank": 0.947429,
+   "affinity": 0.9325025960539979,
+   "popularity": 0.9314641744548287
+  },
+  {
+   "latitude": 39.80072,
+   "longitude": -105.078735,
+   "geohash": "9xj62v",
+   "affinity_rank": 0.946618,
+   "affinity": 0.9314641744548287,
+   "popularity": 0.9376947040498442
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -104.97986,
+   "geohash": "9xj65n",
+   "affinity_rank": 0.946301,
+   "affinity": 0.9304257528556594,
+   "popularity": 0.9750778816199377
+  },
+  {
+   "latitude": 39.613953,
+   "longitude": -105.0238,
+   "geohash": "9xj365",
+   "affinity_rank": 0.946272,
+   "affinity": 0.9293873312564901,
+   "popularity": 0.9158878504672897
+  },
+  {
+   "latitude": 39.586487,
+   "longitude": -104.869995,
+   "geohash": "9xj3jw",
+   "affinity_rank": 0.945811,
+   "affinity": 0.9283489096573209,
+   "popularity": 0.9231568016614745
+  },
+  {
+   "latitude": 39.570007,
+   "longitude": -104.869995,
+   "geohash": "9xj3je",
+   "affinity_rank": 0.945307,
+   "affinity": 0.9273104880581516,
+   "popularity": 0.9075804776739356
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -104.97986,
+   "geohash": "9xj65j",
+   "affinity_rank": 0.945104,
+   "affinity": 0.9262720664589823,
+   "popularity": 0.960539979231568
+  },
+  {
+   "latitude": 39.602966,
+   "longitude": -105.0238,
+   "geohash": "9xj361",
+   "affinity_rank": 0.945017,
+   "affinity": 0.9252336448598131,
+   "popularity": 0.9200415368639667
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -105.15564,
+   "geohash": "9xj4p0",
+   "affinity_rank": 0.944325,
+   "affinity": 0.9241952232606438,
+   "popularity": 0.881619937694704
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -104.96887,
+   "geohash": "9xj3g7",
+   "affinity_rank": 0.943167,
+   "affinity": 0.9231568016614745,
+   "popularity": 0.9574247144340602
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -104.9469,
+   "geohash": "9xj65f",
+   "affinity_rank": 0.943091,
+   "affinity": 0.9221183800623053,
+   "popularity": 0.9501557632398754
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -104.957886,
+   "geohash": "9xj65d",
+   "affinity_rank": 0.94297,
+   "affinity": 0.9210799584631361,
+   "popularity": 0.936656282450675
+  },
+  {
+   "latitude": 39.62494,
+   "longitude": -104.902954,
+   "geohash": "9xj3kv",
+   "affinity_rank": 0.942749,
+   "affinity": 0.9200415368639667,
+   "popularity": 0.9117341640706127
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -104.837036,
+   "geohash": "9xj6n6",
+   "affinity_rank": 0.942518,
+   "affinity": 0.9190031152647975,
+   "popularity": 0.9106957424714434
+  },
+  {
+   "latitude": 39.806213,
+   "longitude": -104.89197,
+   "geohash": "9xj6mn",
+   "affinity_rank": 0.942227,
+   "affinity": 0.9179646936656283,
+   "popularity": 0.9418483904465212
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -104.902954,
+   "geohash": "9xj6hz",
+   "affinity_rank": 0.941771,
+   "affinity": 0.9169262720664589,
+   "popularity": 0.9003115264797508
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -104.93591,
+   "geohash": "9xj3sp",
+   "affinity_rank": 0.941725,
+   "affinity": 0.9158878504672897,
+   "popularity": 0.8899273104880582
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -105.00183,
+   "geohash": "9xj649",
+   "affinity_rank": 0.941459,
+   "affinity": 0.9148494288681205,
+   "popularity": 0.9262720664589823
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -104.82605,
+   "geohash": "9xj3yt",
+   "affinity_rank": 0.940786,
+   "affinity": 0.9138110072689511,
+   "popularity": 0.8546209761163032
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -104.89197,
+   "geohash": "9xj3vn",
+   "affinity_rank": 0.940537,
+   "affinity": 0.9127725856697819,
+   "popularity": 0.9169262720664589
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -104.88098,
+   "geohash": "9xj6jk",
+   "affinity_rank": 0.940097,
+   "affinity": 0.9117341640706127,
+   "popularity": 0.9335410176531672
+  },
+  {
+   "latitude": 39.613953,
+   "longitude": -105.10071,
+   "geohash": "9xj327",
+   "affinity_rank": 0.939498,
+   "affinity": 0.9106957424714434,
+   "popularity": 0.885773624091381
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -104.93591,
+   "geohash": "9xj6h0",
+   "affinity_rank": 0.938463,
+   "affinity": 0.9096573208722741,
+   "popularity": 0.9055036344755971
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -105.078735,
+   "geohash": "9xj60z",
+   "affinity_rank": 0.937612,
+   "affinity": 0.9086188992731049,
+   "popularity": 0.9179646936656283
+  },
+  {
+   "latitude": 39.630432,
+   "longitude": -104.84802,
+   "geohash": "9xj3qn",
+   "affinity_rank": 0.937489,
+   "affinity": 0.9075804776739356,
+   "popularity": 0.9221183800623053
+  },
+  {
+   "latitude": 39.910583,
+   "longitude": -104.990845,
+   "geohash": "9xj74c",
+   "affinity_rank": 0.93698,
+   "affinity": 0.9065420560747663,
+   "popularity": 0.8743509865005192
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -104.990845,
+   "geohash": "9xj3fy",
+   "affinity_rank": 0.936254,
+   "affinity": 0.9055036344755971,
+   "popularity": 0.9584631360332295
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -105.01282,
+   "geohash": "9xj646",
+   "affinity_rank": 0.935928,
+   "affinity": 0.9044652128764278,
+   "popularity": 0.9065420560747663
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -105.00183,
+   "geohash": "9xj64d",
+   "affinity_rank": 0.934039,
+   "affinity": 0.9034267912772586,
+   "popularity": 0.9283489096573209
+  },
+  {
+   "latitude": 39.987488,
+   "longitude": -105.10071,
+   "geohash": "9xj72r",
+   "affinity_rank": 0.933978,
+   "affinity": 0.9023883696780893,
+   "popularity": 0.9190031152647975
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.869995,
+   "geohash": "9xj3tw",
+   "affinity_rank": 0.933748,
+   "affinity": 0.90134994807892,
+   "popularity": 0.877466251298027
+  },
+  {
+   "latitude": 39.54254,
+   "longitude": -105.06775,
+   "geohash": "9xj2cn",
+   "affinity_rank": 0.933381,
+   "affinity": 0.9003115264797508,
+   "popularity": 0.9304257528556594
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -104.96887,
+   "geohash": "9xj657",
+   "affinity_rank": 0.933142,
+   "affinity": 0.8992731048805815,
+   "popularity": 0.9210799584631361
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -104.97986,
+   "geohash": "9xj65h",
+   "affinity_rank": 0.932158,
+   "affinity": 0.8982346832814122,
+   "popularity": 0.9044652128764278
+  },
+  {
+   "latitude": 39.553528,
+   "longitude": -104.88098,
+   "geohash": "9xj3j2",
+   "affinity_rank": 0.931421,
+   "affinity": 0.897196261682243,
+   "popularity": 0.8805815160955348
+  },
+  {
+   "latitude": 39.795227,
+   "longitude": -104.837036,
+   "geohash": "9xj6qk",
+   "affinity_rank": 0.930467,
+   "affinity": 0.8961578400830738,
+   "popularity": 0.8400830737279336
+  },
+  {
+   "latitude": 39.580994,
+   "longitude": -105.10071,
+   "geohash": "9xj30m",
+   "affinity_rank": 0.930054,
+   "affinity": 0.8951194184839044,
+   "popularity": 0.8909657320872274
+  },
+  {
+   "latitude": 39.59198,
+   "longitude": -104.957886,
+   "geohash": "9xj35x",
+   "affinity_rank": 0.92903,
+   "affinity": 0.8940809968847352,
+   "popularity": 0.8992731048805815
+  },
+  {
+   "latitude": 39.916077,
+   "longitude": -104.990845,
+   "geohash": "9xj74f",
+   "affinity_rank": 0.928144,
+   "affinity": 0.893042575285566,
+   "popularity": 0.8681204569055037
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -104.7052,
+   "geohash": "9xj936",
+   "affinity_rank": 0.92726,
+   "affinity": 0.8920041536863966,
+   "popularity": 0.857736240913811
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -105.04578,
+   "geohash": "9xj638",
+   "affinity_rank": 0.926636,
+   "affinity": 0.8909657320872274,
+   "popularity": 0.9293873312564901
+  },
+  {
+   "latitude": 39.62494,
+   "longitude": -104.89197,
+   "geohash": "9xj3mj",
+   "affinity_rank": 0.926566,
+   "affinity": 0.8899273104880582,
+   "popularity": 0.8785046728971962
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -104.96887,
+   "geohash": "9xj653",
+   "affinity_rank": 0.924595,
+   "affinity": 0.8888888888888888,
+   "popularity": 0.9387331256490135
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -104.957886,
+   "geohash": "9xj3ex",
+   "affinity_rank": 0.923573,
+   "affinity": 0.8878504672897196,
+   "popularity": 0.8878504672897196
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -104.990845,
+   "geohash": "9xj3fv",
+   "affinity_rank": 0.923557,
+   "affinity": 0.8868120456905504,
+   "popularity": 0.9096573208722741
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -105.1886,
+   "geohash": "9xj1w7",
+   "affinity_rank": 0.922184,
+   "affinity": 0.885773624091381,
+   "popularity": 0.8847352024922118
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -104.93591,
+   "geohash": "9xj3uh",
+   "affinity_rank": 0.920348,
+   "affinity": 0.8847352024922118,
+   "popularity": 0.8909657320872274
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -104.990845,
+   "geohash": "9xj3fc",
+   "affinity_rank": 0.919353,
+   "affinity": 0.8836967808930426,
+   "popularity": 0.9034267912772586
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -105.15564,
+   "geohash": "9xj4p1",
+   "affinity_rank": 0.918852,
+   "affinity": 0.8826583592938733,
+   "popularity": 0.857736240913811
+  },
+  {
+   "latitude": 39.80072,
+   "longitude": -104.97986,
+   "geohash": "9xj67j",
+   "affinity_rank": 0.918252,
+   "affinity": 0.881619937694704,
+   "popularity": 0.8608515057113187
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -105.01282,
+   "geohash": "9xj64q",
+   "affinity_rank": 0.9161,
+   "affinity": 0.8805815160955348,
+   "popularity": 0.9397715472481828
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -105.04578,
+   "geohash": "9xj61s",
+   "affinity_rank": 0.913636,
+   "affinity": 0.8795430944963655,
+   "popularity": 0.9086188992731049
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -104.80408,
+   "geohash": "9xj6r0",
+   "affinity_rank": 0.913524,
+   "affinity": 0.8785046728971962,
+   "popularity": 0.8328141225337488
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -104.93591,
+   "geohash": "9xj3u4",
+   "affinity_rank": 0.912542,
+   "affinity": 0.877466251298027,
+   "popularity": 0.8618899273104881
+  },
+  {
+   "latitude": 39.9765,
+   "longitude": -105.13367,
+   "geohash": "9xj5rt",
+   "affinity_rank": 0.912245,
+   "affinity": 0.8764278296988577,
+   "popularity": 0.8878504672897196
+  },
+  {
+   "latitude": 39.564514,
+   "longitude": -104.902954,
+   "geohash": "9xj3hf",
+   "affinity_rank": 0.911717,
+   "affinity": 0.8753894080996885,
+   "popularity": 0.8546209761163032
+  },
+  {
+   "latitude": 39.95453,
+   "longitude": -105.166626,
+   "geohash": "9xj5qc",
+   "affinity_rank": 0.911087,
+   "affinity": 0.8743509865005192,
+   "popularity": 0.8764278296988577
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -105.1886,
+   "geohash": "9xj1y3",
+   "affinity_rank": 0.909286,
+   "affinity": 0.8733125649013499,
+   "popularity": 0.8722741433021807
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -104.902954,
+   "geohash": "9xj6hy",
+   "affinity_rank": 0.909154,
+   "affinity": 0.8722741433021807,
+   "popularity": 0.8359293873312564
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -104.92493,
+   "geohash": "9xj6h7",
+   "affinity_rank": 0.908968,
+   "affinity": 0.8712357217030114,
+   "popularity": 0.8660436137071651
+  },
+  {
+   "latitude": 39.927063,
+   "longitude": -105.12268,
+   "geohash": "9xj5pu",
+   "affinity_rank": 0.908623,
+   "affinity": 0.8701973001038421,
+   "popularity": 0.8618899273104881
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -104.79309,
+   "geohash": "9xj6r2",
+   "affinity_rank": 0.908406,
+   "affinity": 0.8691588785046729,
+   "popularity": 0.7819314641744548
+  },
+  {
+   "latitude": 39.668884,
+   "longitude": -105.25452,
+   "geohash": "9xj1sv",
+   "affinity_rank": 0.908167,
+   "affinity": 0.8681204569055037,
+   "popularity": 0.8982346832814122
+  },
+  {
+   "latitude": 39.548035,
+   "longitude": -105.08972,
+   "geohash": "9xj2bx",
+   "affinity_rank": 0.907374,
+   "affinity": 0.8670820353063343,
+   "popularity": 0.8701973001038421
+  },
+  {
+   "latitude": 39.580994,
+   "longitude": -104.837036,
+   "geohash": "9xj3nm",
+   "affinity_rank": 0.906028,
+   "affinity": 0.8660436137071651,
+   "popularity": 0.8431983385254413
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -105.05676,
+   "geohash": "9xj633",
+   "affinity_rank": 0.904814,
+   "affinity": 0.8650051921079959,
+   "popularity": 0.8639667705088265
+  },
+  {
+   "latitude": 39.95453,
+   "longitude": -104.97986,
+   "geohash": "9xj771",
+   "affinity_rank": 0.904676,
+   "affinity": 0.8639667705088265,
+   "popularity": 0.8130841121495327
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.82605,
+   "geohash": "9xj3ww",
+   "affinity_rank": 0.904364,
+   "affinity": 0.8629283489096573,
+   "popularity": 0.7819314641744548
+  },
+  {
+   "latitude": 39.548035,
+   "longitude": -105.00183,
+   "geohash": "9xj2fx",
+   "affinity_rank": 0.903924,
+   "affinity": 0.8618899273104881,
+   "popularity": 0.8494288681204569
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -105.04578,
+   "geohash": "9xj639",
+   "affinity_rank": 0.903922,
+   "affinity": 0.8608515057113187,
+   "popularity": 0.9003115264797508
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -105.24353,
+   "geohash": "9xj1mp",
+   "affinity_rank": 0.90392,
+   "affinity": 0.8598130841121495,
+   "popularity": 0.897196261682243
+  },
+  {
+   "latitude": 39.883118,
+   "longitude": -104.92493,
+   "geohash": "9xj6uk",
+   "affinity_rank": 0.903882,
+   "affinity": 0.8587746625129803,
+   "popularity": 0.8473520249221184
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -104.990845,
+   "geohash": "9xj64b",
+   "affinity_rank": 0.903182,
+   "affinity": 0.857736240913811,
+   "popularity": 0.8868120456905504
+  },
+  {
+   "latitude": 39.949036,
+   "longitude": -105.08972,
+   "geohash": "9xj728",
+   "affinity_rank": 0.902139,
+   "affinity": 0.8566978193146417,
+   "popularity": 0.8743509865005192
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -104.990845,
+   "geohash": "9xj3fb",
+   "affinity_rank": 0.901294,
+   "affinity": 0.8556593977154725,
+   "popularity": 0.8546209761163032
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -104.837036,
+   "geohash": "9xj6n7",
+   "affinity_rank": 0.901152,
+   "affinity": 0.8546209761163032,
+   "popularity": 0.857736240913811
+  },
+  {
+   "latitude": 39.883118,
+   "longitude": -104.97986,
+   "geohash": "9xj6gh",
+   "affinity_rank": 0.900351,
+   "affinity": 0.8535825545171339,
+   "popularity": 0.7995846313603323
+  },
+  {
+   "latitude": 39.90509,
+   "longitude": -104.990845,
+   "geohash": "9xj74b",
+   "affinity_rank": 0.900339,
+   "affinity": 0.8525441329179647,
+   "popularity": 0.8078920041536864
+  },
+  {
+   "latitude": 39.630432,
+   "longitude": -104.837036,
+   "geohash": "9xj3qq",
+   "affinity_rank": 0.898566,
+   "affinity": 0.8515057113187954,
+   "popularity": 0.8515057113187954
+  },
+  {
+   "latitude": 39.59198,
+   "longitude": -104.88098,
+   "geohash": "9xj3jr",
+   "affinity_rank": 0.897572,
+   "affinity": 0.8504672897196262,
+   "popularity": 0.822429906542056
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -105.078735,
+   "geohash": "9xj32f",
+   "affinity_rank": 0.897232,
+   "affinity": 0.8494288681204569,
+   "popularity": 0.8452751817237798
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -104.902954,
+   "geohash": "9xj6hv",
+   "affinity_rank": 0.896493,
+   "affinity": 0.8483904465212876,
+   "popularity": 0.8369678089304258
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -105.03479,
+   "geohash": "9xj61y",
+   "affinity_rank": 0.896207,
+   "affinity": 0.8473520249221184,
+   "popularity": 0.8951194184839044
+  },
+  {
+   "latitude": 39.62494,
+   "longitude": -105.111694,
+   "geohash": "9xj32j",
+   "affinity_rank": 0.895691,
+   "affinity": 0.8463136033229491,
+   "popularity": 0.7518172377985463
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -105.0238,
+   "geohash": "9xj644",
+   "affinity_rank": 0.895548,
+   "affinity": 0.8452751817237798,
+   "popularity": 0.8265835929387332
+  },
+  {
+   "latitude": 39.564514,
+   "longitude": -104.869995,
+   "geohash": "9xj3jd",
+   "affinity_rank": 0.895381,
+   "affinity": 0.8442367601246106,
+   "popularity": 0.8245067497403946
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -104.91394,
+   "geohash": "9xj3sd",
+   "affinity_rank": 0.895267,
+   "affinity": 0.8431983385254413,
+   "popularity": 0.833852544132918
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -104.957886,
+   "geohash": "9xj37x",
+   "affinity_rank": 0.894554,
+   "affinity": 0.842159916926272,
+   "popularity": 0.8411214953271028
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -105.00183,
+   "geohash": "9xj3fx",
+   "affinity_rank": 0.894031,
+   "affinity": 0.8411214953271028,
+   "popularity": 0.8940809968847352
+  },
+  {
+   "latitude": 39.59198,
+   "longitude": -105.0238,
+   "geohash": "9xj34p",
+   "affinity_rank": 0.893898,
+   "affinity": 0.8400830737279336,
+   "popularity": 0.8785046728971962
+  },
+  {
+   "latitude": 39.597473,
+   "longitude": -104.80408,
+   "geohash": "9xj3r0",
+   "affinity_rank": 0.893009,
+   "affinity": 0.8390446521287642,
+   "popularity": 0.8026998961578401
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -104.97986,
+   "geohash": "9xj650",
+   "affinity_rank": 0.89228,
+   "affinity": 0.838006230529595,
+   "popularity": 0.8836967808930426
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -105.0238,
+   "geohash": "9xj64p",
+   "affinity_rank": 0.891845,
+   "affinity": 0.8369678089304258,
+   "popularity": 0.8660436137071651
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -105.00183,
+   "geohash": "9xj648",
+   "affinity_rank": 0.891643,
+   "affinity": 0.8359293873312564,
+   "popularity": 0.893042575285566
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -105.05676,
+   "geohash": "9xj61k",
+   "affinity_rank": 0.890423,
+   "affinity": 0.8348909657320872,
+   "popularity": 0.8722741433021807
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -104.77112,
+   "geohash": "9xj3xf",
+   "affinity_rank": 0.887709,
+   "affinity": 0.833852544132918,
+   "popularity": 0.77466251298027
+  },
+  {
+   "latitude": 39.861145,
+   "longitude": -105.05676,
+   "geohash": "9xj6c2",
+   "affinity_rank": 0.887701,
+   "affinity": 0.8328141225337488,
+   "popularity": 0.7985462097611631
+  },
+  {
+   "latitude": 39.580994,
+   "longitude": -104.88098,
+   "geohash": "9xj3jm",
+   "affinity_rank": 0.88621,
+   "affinity": 0.8317757009345794,
+   "popularity": 0.818276220145379
+  },
+  {
+   "latitude": 39.932556,
+   "longitude": -104.869995,
+   "geohash": "9xj7jt",
+   "affinity_rank": 0.885412,
+   "affinity": 0.8307372793354102,
+   "popularity": 0.8245067497403946
+  },
+  {
+   "latitude": 39.861145,
+   "longitude": -105.01282,
+   "geohash": "9xj6f2",
+   "affinity_rank": 0.885027,
+   "affinity": 0.829698857736241,
+   "popularity": 0.7362409138110073
+  },
+  {
+   "latitude": 39.548035,
+   "longitude": -105.06775,
+   "geohash": "9xj2cp",
+   "affinity_rank": 0.884774,
+   "affinity": 0.8286604361370716,
+   "popularity": 0.8452751817237798
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -105.232544,
+   "geohash": "9xj1vk",
+   "affinity_rank": 0.884678,
+   "affinity": 0.8276220145379024,
+   "popularity": 0.7819314641744548
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -104.990845,
+   "geohash": "9xj3fz",
+   "affinity_rank": 0.884211,
+   "affinity": 0.8265835929387332,
+   "popularity": 0.8691588785046729
+  },
+  {
+   "latitude": 39.613953,
+   "longitude": -104.81506,
+   "geohash": "9xj3qg",
+   "affinity_rank": 0.882964,
+   "affinity": 0.8255451713395638,
+   "popularity": 0.8473520249221184
+  },
+  {
+   "latitude": 39.861145,
+   "longitude": -104.902954,
+   "geohash": "9xj6ub",
+   "affinity_rank": 0.881146,
+   "affinity": 0.8245067497403946,
+   "popularity": 0.794392523364486
+  },
+  {
+   "latitude": 39.927063,
+   "longitude": -105.13367,
+   "geohash": "9xj5ps",
+   "affinity_rank": 0.880277,
+   "affinity": 0.8234683281412254,
+   "popularity": 0.7975077881619937
+  },
+  {
+   "latitude": 39.64691,
+   "longitude": -105.166626,
+   "geohash": "9xj1wc",
+   "affinity_rank": 0.880075,
+   "affinity": 0.822429906542056,
+   "popularity": 0.8650051921079959
+  },
+  {
+   "latitude": 39.88861,
+   "longitude": -104.990845,
+   "geohash": "9xj6fv",
+   "affinity_rank": 0.879576,
+   "affinity": 0.8213914849428868,
+   "popularity": 0.7663551401869159
+  },
+  {
+   "latitude": 39.59198,
+   "longitude": -104.80408,
+   "geohash": "9xj3pp",
+   "affinity_rank": 0.87954,
+   "affinity": 0.8203530633437176,
+   "popularity": 0.7819314641744548
+  },
+  {
+   "latitude": 39.597473,
+   "longitude": -104.89197,
+   "geohash": "9xj3m0",
+   "affinity_rank": 0.879036,
+   "affinity": 0.8193146417445483,
+   "popularity": 0.8151609553478713
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -104.89197,
+   "geohash": "9xj3t4",
+   "affinity_rank": 0.877348,
+   "affinity": 0.818276220145379,
+   "popularity": 0.794392523364486
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -104.902954,
+   "geohash": "9xj3sg",
+   "affinity_rank": 0.876014,
+   "affinity": 0.8172377985462098,
+   "popularity": 0.7819314641744548
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -105.08972,
+   "geohash": "9xj3bs",
+   "affinity_rank": 0.87554,
+   "affinity": 0.8161993769470405,
+   "popularity": 0.8110072689511942
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -104.96887,
+   "geohash": "9xj3er",
+   "affinity_rank": 0.875029,
+   "affinity": 0.8151609553478713,
+   "popularity": 0.8411214953271028
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -104.97986,
+   "geohash": "9xj3gp",
+   "affinity_rank": 0.875025,
+   "affinity": 0.814122533748702,
+   "popularity": 0.8525441329179647
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -105.05676,
+   "geohash": "9xj617",
+   "affinity_rank": 0.874468,
+   "affinity": 0.8130841121495327,
+   "popularity": 0.8369678089304258
+  },
+  {
+   "latitude": 39.62494,
+   "longitude": -105.00183,
+   "geohash": "9xj36t",
+   "affinity_rank": 0.874268,
+   "affinity": 0.8120456905503635,
+   "popularity": 0.8151609553478713
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -104.97986,
+   "geohash": "9xj3g1",
+   "affinity_rank": 0.873634,
+   "affinity": 0.8110072689511942,
+   "popularity": 0.8701973001038421
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -105.14465,
+   "geohash": "9xj1xr",
+   "affinity_rank": 0.871288,
+   "affinity": 0.8099688473520249,
+   "popularity": 0.8504672897196262
+  },
+  {
+   "latitude": 39.789734,
+   "longitude": -105.03479,
+   "geohash": "9xj63g",
+   "affinity_rank": 0.870671,
+   "affinity": 0.8089304257528557,
+   "popularity": 0.8047767393561787
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -105.04578,
+   "geohash": "9xj61d",
+   "affinity_rank": 0.869004,
+   "affinity": 0.8078920041536864,
+   "popularity": 0.8078920041536864
+  },
+  {
+   "latitude": 39.64142,
+   "longitude": -104.82605,
+   "geohash": "9xj3w8",
+   "affinity_rank": 0.868208,
+   "affinity": 0.8068535825545171,
+   "popularity": 0.8151609553478713
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -105.08972,
+   "geohash": "9xj32d",
+   "affinity_rank": 0.867823,
+   "affinity": 0.8058151609553479,
+   "popularity": 0.77466251298027
+  },
+  {
+   "latitude": 39.88861,
+   "longitude": -105.078735,
+   "geohash": "9xj6bv",
+   "affinity_rank": 0.86649,
+   "affinity": 0.8047767393561787,
+   "popularity": 0.7912772585669782
+  },
+  {
+   "latitude": 39.54254,
+   "longitude": -104.9469,
+   "geohash": "9xj2gy",
+   "affinity_rank": 0.866071,
+   "affinity": 0.8037383177570093,
+   "popularity": 0.7798546209761164
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -104.96887,
+   "geohash": "9xj65q",
+   "affinity_rank": 0.865351,
+   "affinity": 0.8026998961578401,
+   "popularity": 0.7715472481827622
+  },
+  {
+   "latitude": 39.630432,
+   "longitude": -104.88098,
+   "geohash": "9xj3mq",
+   "affinity_rank": 0.865299,
+   "affinity": 0.8016614745586709,
+   "popularity": 0.77466251298027
+  },
+  {
+   "latitude": 39.668884,
+   "longitude": -105.21057,
+   "geohash": "9xj1tv",
+   "affinity_rank": 0.864164,
+   "affinity": 0.8006230529595015,
+   "popularity": 0.8265835929387332
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -104.97986,
+   "geohash": "9xj3g0",
+   "affinity_rank": 0.863754,
+   "affinity": 0.7995846313603323,
+   "popularity": 0.818276220145379
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -105.00183,
+   "geohash": "9xj64x",
+   "affinity_rank": 0.86371,
+   "affinity": 0.7985462097611631,
+   "popularity": 0.8265835929387332
+  },
+  {
+   "latitude": 39.53705,
+   "longitude": -104.96887,
+   "geohash": "9xj2gm",
+   "affinity_rank": 0.863703,
+   "affinity": 0.7975077881619937,
+   "popularity": 0.822429906542056
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -105.29846,
+   "geohash": "9xj1gu",
+   "affinity_rank": 0.863454,
+   "affinity": 0.7964693665628245,
+   "popularity": 0.8265835929387332
+  },
+  {
+   "latitude": 39.795227,
+   "longitude": -105.078735,
+   "geohash": "9xj62u",
+   "affinity_rank": 0.8631,
+   "affinity": 0.7954309449636553,
+   "popularity": 0.7590861889927311
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -104.869995,
+   "geohash": "9xj3tx",
+   "affinity_rank": 0.862718,
+   "affinity": 0.794392523364486,
+   "popularity": 0.7632398753894081
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -104.97986,
+   "geohash": "9xj670",
+   "affinity_rank": 0.861564,
+   "affinity": 0.7933541017653167,
+   "popularity": 0.8442367601246106
+  },
+  {
+   "latitude": 39.789734,
+   "longitude": -104.9469,
+   "geohash": "9xj67g",
+   "affinity_rank": 0.860538,
+   "affinity": 0.7923156801661475,
+   "popularity": 0.7819314641744548
+  },
+  {
+   "latitude": 39.83368,
+   "longitude": -104.84802,
+   "geohash": "9xj6w5",
+   "affinity_rank": 0.858737,
+   "affinity": 0.7912772585669782,
+   "popularity": 0.8047767393561787
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -105.00183,
+   "geohash": "9xj3f8",
+   "affinity_rank": 0.858509,
+   "affinity": 0.7902388369678089,
+   "popularity": 0.8390446521287642
+  },
+  {
+   "latitude": 39.55902,
+   "longitude": -104.990845,
+   "geohash": "9xj34c",
+   "affinity_rank": 0.858333,
+   "affinity": 0.7892004153686397,
+   "popularity": 0.7715472481827622
+  },
+  {
+   "latitude": 39.861145,
+   "longitude": -105.12268,
+   "geohash": "9xj4zb",
+   "affinity_rank": 0.856919,
+   "affinity": 0.7881619937694704,
+   "popularity": 0.8078920041536864
+  },
+  {
+   "latitude": 39.789734,
+   "longitude": -105.078735,
+   "geohash": "9xj62g",
+   "affinity_rank": 0.855674,
+   "affinity": 0.7871235721703012,
+   "popularity": 0.7632398753894081
+  },
+  {
+   "latitude": 39.597473,
+   "longitude": -104.88098,
+   "geohash": "9xj3m2",
+   "affinity_rank": 0.854194,
+   "affinity": 0.7860851505711319,
+   "popularity": 0.7518172377985463
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -104.990845,
+   "geohash": "9xj3dz",
+   "affinity_rank": 0.853203,
+   "affinity": 0.7850467289719626,
+   "popularity": 0.8047767393561787
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -105.0238,
+   "geohash": "9xj64h",
+   "affinity_rank": 0.852986,
+   "affinity": 0.7840083073727934,
+   "popularity": 0.8265835929387332
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -105.22156,
+   "geohash": "9xj4m9",
+   "affinity_rank": 0.851305,
+   "affinity": 0.7829698857736241,
+   "popularity": 0.8535825545171339
+  },
+  {
+   "latitude": 39.64691,
+   "longitude": -105.04578,
+   "geohash": "9xj399",
+   "affinity_rank": 0.850517,
+   "affinity": 0.7819314641744548,
+   "popularity": 0.7663551401869159
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -104.97986,
+   "geohash": "9xj3gh",
+   "affinity_rank": 0.850258,
+   "affinity": 0.7808930425752856,
+   "popularity": 0.7590861889927311
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -105.00183,
+   "geohash": "9xj3dd",
+   "affinity_rank": 0.849809,
+   "affinity": 0.7798546209761164,
+   "popularity": 0.7912772585669782
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -105.21057,
+   "geohash": "9xj4jv",
+   "affinity_rank": 0.849431,
+   "affinity": 0.778816199376947,
+   "popularity": 0.818276220145379
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -104.837036,
+   "geohash": "9xj3y6",
+   "affinity_rank": 0.849178,
+   "affinity": 0.7777777777777778,
+   "popularity": 0.6770508826583593
+  },
+  {
+   "latitude": 39.586487,
+   "longitude": -105.166626,
+   "geohash": "9xj1ny",
+   "affinity_rank": 0.847191,
+   "affinity": 0.7767393561786086,
+   "popularity": 0.818276220145379
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -104.957886,
+   "geohash": "9xj3gx",
+   "affinity_rank": 0.846215,
+   "affinity": 0.7757009345794392,
+   "popularity": 0.7995846313603323
+  },
+  {
+   "latitude": 39.861145,
+   "longitude": -105.078735,
+   "geohash": "9xj6bb",
+   "affinity_rank": 0.84556,
+   "affinity": 0.77466251298027,
+   "popularity": 0.7736240913811008
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -104.82605,
+   "geohash": "9xj3wx",
+   "affinity_rank": 0.845339,
+   "affinity": 0.7736240913811008,
+   "popularity": 0.6915887850467289
+  },
+  {
+   "latitude": 39.597473,
+   "longitude": -104.837036,
+   "geohash": "9xj3q2",
+   "affinity_rank": 0.845232,
+   "affinity": 0.7725856697819314,
+   "popularity": 0.7590861889927311
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -105.1886,
+   "geohash": "9xj4q2",
+   "affinity_rank": 0.844823,
+   "affinity": 0.7715472481827622,
+   "popularity": 0.7819314641744548
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -105.2655,
+   "geohash": "9xj1ud",
+   "affinity_rank": 0.844503,
+   "affinity": 0.770508826583593,
+   "popularity": 0.7912772585669782
+  },
+  {
+   "latitude": 39.987488,
+   "longitude": -104.990845,
+   "geohash": "9xj76z",
+   "affinity_rank": 0.844046,
+   "affinity": 0.7694704049844237,
+   "popularity": 0.7476635514018691
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -105.04578,
+   "geohash": "9xj3c8",
+   "affinity_rank": 0.843856,
+   "affinity": 0.7684319833852544,
+   "popularity": 0.7217030114226376
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -104.91394,
+   "geohash": "9xj6hs",
+   "affinity_rank": 0.842447,
+   "affinity": 0.7673935617860852,
+   "popularity": 0.7663551401869159
+  },
+  {
+   "latitude": 39.66339,
+   "longitude": -104.85901,
+   "geohash": "9xj3tu",
+   "affinity_rank": 0.841721,
+   "affinity": 0.7663551401869159,
+   "popularity": 0.7102803738317757
+  },
+  {
+   "latitude": 39.54254,
+   "longitude": -105.15564,
+   "geohash": "9xj0zn",
+   "affinity_rank": 0.841565,
+   "affinity": 0.7653167185877466,
+   "popularity": 0.8317757009345794
+  },
+  {
+   "latitude": 39.53705,
+   "longitude": -104.88098,
+   "geohash": "9xj2vm",
+   "affinity_rank": 0.841191,
+   "affinity": 0.7642782969885774,
+   "popularity": 0.7559709241952233
+  },
+  {
+   "latitude": 39.553528,
+   "longitude": -104.77112,
+   "geohash": "9xj3pb",
+   "affinity_rank": 0.839766,
+   "affinity": 0.7632398753894081,
+   "popularity": 0.7331256490134995
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -105.04578,
+   "geohash": "9xj61x",
+   "affinity_rank": 0.839535,
+   "affinity": 0.7622014537902388,
+   "popularity": 0.8037383177570093
+  },
+  {
+   "latitude": 39.965515,
+   "longitude": -104.990845,
+   "geohash": "9xj76g",
+   "affinity_rank": 0.838872,
+   "affinity": 0.7611630321910696,
+   "popularity": 0.7663551401869159
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -104.88098,
+   "geohash": "9xj6m3",
+   "affinity_rank": 0.838806,
+   "affinity": 0.7601246105919003,
+   "popularity": 0.7435098650051921
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -105.078735,
+   "geohash": "9xj3bv",
+   "affinity_rank": 0.838773,
+   "affinity": 0.7590861889927311,
+   "popularity": 0.7300103842159917
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -104.902954,
+   "geohash": "9xj3uy",
+   "affinity_rank": 0.838033,
+   "affinity": 0.7580477673935618,
+   "popularity": 0.7435098650051921
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -104.81506,
+   "geohash": "9xj3yv",
+   "affinity_rank": 0.836562,
+   "affinity": 0.7570093457943925,
+   "popularity": 0.7237798546209762
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -104.82605,
+   "geohash": "9xj6nw",
+   "affinity_rank": 0.836445,
+   "affinity": 0.7559709241952233,
+   "popularity": 0.7663551401869159
+  },
+  {
+   "latitude": 39.97101,
+   "longitude": -105.08972,
+   "geohash": "9xj72s",
+   "affinity_rank": 0.83572,
+   "affinity": 0.754932502596054,
+   "popularity": 0.7819314641744548
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -104.902954,
+   "geohash": "9xj3sf",
+   "affinity_rank": 0.835265,
+   "affinity": 0.7538940809968847,
+   "popularity": 0.726895119418484
+  },
+  {
+   "latitude": 39.53705,
+   "longitude": -104.869995,
+   "geohash": "9xj2vt",
+   "affinity_rank": 0.834156,
+   "affinity": 0.7528556593977155,
+   "popularity": 0.7300103842159917
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -104.869995,
+   "geohash": "9xj6m9",
+   "affinity_rank": 0.833108,
+   "affinity": 0.7518172377985463,
+   "popularity": 0.7476635514018691
+  },
+  {
+   "latitude": 39.630432,
+   "longitude": -104.902954,
+   "geohash": "9xj3ky",
+   "affinity_rank": 0.832978,
+   "affinity": 0.7507788161993769,
+   "popularity": 0.7331256490134995
+  },
+  {
+   "latitude": 39.59198,
+   "longitude": -104.869995,
+   "geohash": "9xj3jx",
+   "affinity_rank": 0.832892,
+   "affinity": 0.7497403946002077,
+   "popularity": 0.7435098650051921
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -104.9469,
+   "geohash": "9xj65c",
+   "affinity_rank": 0.832872,
+   "affinity": 0.7487019730010385,
+   "popularity": 0.8110072689511942
+  },
+  {
+   "latitude": 39.580994,
+   "longitude": -105.0238,
+   "geohash": "9xj34j",
+   "affinity_rank": 0.832045,
+   "affinity": 0.7476635514018691,
+   "popularity": 0.7559709241952233
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -104.902954,
+   "geohash": "9xj6hg",
+   "affinity_rank": 0.831729,
+   "affinity": 0.7466251298026999,
+   "popularity": 0.715472481827622
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -104.957886,
+   "geohash": "9xj3ge",
+   "affinity_rank": 0.831728,
+   "affinity": 0.7455867082035307,
+   "popularity": 0.7632398753894081
+  },
+  {
+   "latitude": 39.531555,
+   "longitude": -104.88098,
+   "geohash": "9xj2vk",
+   "affinity_rank": 0.831531,
+   "affinity": 0.7445482866043613,
+   "popularity": 0.754932502596054
+  },
+  {
+   "latitude": 39.64142,
+   "longitude": -104.79309,
+   "geohash": "9xj3x2",
+   "affinity_rank": 0.827696,
+   "affinity": 0.7435098650051921,
+   "popularity": 0.6947040498442367
+  },
+  {
+   "latitude": 39.894104,
+   "longitude": -105.04578,
+   "geohash": "9xj6cw",
+   "affinity_rank": 0.826514,
+   "affinity": 0.7424714434060229,
+   "popularity": 0.6947040498442367
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -104.81506,
+   "geohash": "9xj3wz",
+   "affinity_rank": 0.826385,
+   "affinity": 0.7414330218068536,
+   "popularity": 0.7331256490134995
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -104.97986,
+   "geohash": "9xj3gj",
+   "affinity_rank": 0.82638,
+   "affinity": 0.7403946002076843,
+   "popularity": 0.7819314641744548
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -104.990845,
+   "geohash": "9xj66b",
+   "affinity_rank": 0.824675,
+   "affinity": 0.7393561786085151,
+   "popularity": 0.7362409138110073
+  },
+  {
+   "latitude": 39.85565,
+   "longitude": -105.05676,
+   "geohash": "9xj69r",
+   "affinity_rank": 0.824636,
+   "affinity": 0.7383177570093458,
+   "popularity": 0.6947040498442367
+  },
+  {
+   "latitude": 39.8172,
+   "longitude": -104.73816,
+   "geohash": "9xjd88",
+   "affinity_rank": 0.824486,
+   "affinity": 0.7372793354101765,
+   "popularity": 0.6843198338525441
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -104.957886,
+   "geohash": "9xj65e",
+   "affinity_rank": 0.823191,
+   "affinity": 0.7362409138110073,
+   "popularity": 0.794392523364486
+  },
+  {
+   "latitude": 39.916077,
+   "longitude": -105.00183,
+   "geohash": "9xj74d",
+   "affinity_rank": 0.823185,
+   "affinity": 0.735202492211838,
+   "popularity": 0.7102803738317757
+  },
+  {
+   "latitude": 39.53705,
+   "longitude": -104.84802,
+   "geohash": "9xj2yj",
+   "affinity_rank": 0.822222,
+   "affinity": 0.7341640706126688,
+   "popularity": 0.7362409138110073
+  },
+  {
+   "latitude": 39.85565,
+   "longitude": -104.902954,
+   "geohash": "9xj6sz",
+   "affinity_rank": 0.82194,
+   "affinity": 0.7331256490134995,
+   "popularity": 0.7237798546209762
+  },
+  {
+   "latitude": 39.613953,
+   "longitude": -105.08972,
+   "geohash": "9xj32e",
+   "affinity_rank": 0.821527,
+   "affinity": 0.7320872274143302,
+   "popularity": 0.715472481827622
+  },
+  {
+   "latitude": 39.55902,
+   "longitude": -104.869995,
+   "geohash": "9xj3j9",
+   "affinity_rank": 0.820263,
+   "affinity": 0.731048805815161,
+   "popularity": 0.7403946002076843
+  },
+  {
+   "latitude": 39.586487,
+   "longitude": -104.88098,
+   "geohash": "9xj3jq",
+   "affinity_rank": 0.81982,
+   "affinity": 0.7300103842159917,
+   "popularity": 0.667705088265836
+  },
+  {
+   "latitude": 39.493103,
+   "longitude": -105.08972,
+   "geohash": "9xj28t",
+   "affinity_rank": 0.819312,
+   "affinity": 0.7289719626168224,
+   "popularity": 0.8016614745586709
+  },
+  {
+   "latitude": 39.64691,
+   "longitude": -105.199585,
+   "geohash": "9xj1w1",
+   "affinity_rank": 0.818253,
+   "affinity": 0.7279335410176532,
+   "popularity": 0.77466251298027
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -104.869995,
+   "geohash": "9xj3v9",
+   "affinity_rank": 0.818105,
+   "affinity": 0.726895119418484,
+   "popularity": 0.6728971962616822
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -105.13367,
+   "geohash": "9xj1zw",
+   "affinity_rank": 0.818067,
+   "affinity": 0.7258566978193146,
+   "popularity": 0.7362409138110073
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -104.957886,
+   "geohash": "9xj3gd",
+   "affinity_rank": 0.817894,
+   "affinity": 0.7248182762201454,
+   "popularity": 0.7798546209761164
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -105.111694,
+   "geohash": "9xj3bp",
+   "affinity_rank": 0.81699,
+   "affinity": 0.7237798546209762,
+   "popularity": 0.726895119418484
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -104.82605,
+   "geohash": "9xj6q8",
+   "affinity_rank": 0.816901,
+   "affinity": 0.7227414330218068,
+   "popularity": 0.6355140186915887
+  },
+  {
+   "latitude": 39.553528,
+   "longitude": -105.10071,
+   "geohash": "9xj302",
+   "affinity_rank": 0.816496,
+   "affinity": 0.7217030114226376,
+   "popularity": 0.7476635514018691
+  },
+  {
+   "latitude": 39.87213,
+   "longitude": -105.05676,
+   "geohash": "9xj6c6",
+   "affinity_rank": 0.814309,
+   "affinity": 0.7206645898234684,
+   "popularity": 0.7300103842159917
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -104.96887,
+   "geohash": "9xj65r",
+   "affinity_rank": 0.811984,
+   "affinity": 0.719626168224299,
+   "popularity": 0.8130841121495327
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -105.232544,
+   "geohash": "9xj4jk",
+   "affinity_rank": 0.811713,
+   "affinity": 0.7185877466251298,
+   "popularity": 0.7559709241952233
+  },
+  {
+   "latitude": 39.899597,
+   "longitude": -104.9469,
+   "geohash": "9xj6gz",
+   "affinity_rank": 0.811693,
+   "affinity": 0.7175493250259606,
+   "popularity": 0.6947040498442367
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -104.93591,
+   "geohash": "9xj3uj",
+   "affinity_rank": 0.811007,
+   "affinity": 0.7165109034267912,
+   "popularity": 0.715472481827622
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -104.68323,
+   "geohash": "9xj93z",
+   "affinity_rank": 0.810687,
+   "affinity": 0.715472481827622,
+   "popularity": 0.715472481827622
+  },
+  {
+   "latitude": 39.8172,
+   "longitude": -104.96887,
+   "geohash": "9xj6e2",
+   "affinity_rank": 0.810629,
+   "affinity": 0.7144340602284528,
+   "popularity": 0.7435098650051921
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -104.92493,
+   "geohash": "9xj3uk",
+   "affinity_rank": 0.809348,
+   "affinity": 0.7133956386292835,
+   "popularity": 0.7237798546209762
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -104.79309,
+   "geohash": "9xj6pr",
+   "affinity_rank": 0.808802,
+   "affinity": 0.7123572170301142,
+   "popularity": 0.6614745586708204
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -105.01282,
+   "geohash": "9xj663",
+   "affinity_rank": 0.807126,
+   "affinity": 0.711318795430945,
+   "popularity": 0.7518172377985463
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -104.902954,
+   "geohash": "9xj6kb",
+   "affinity_rank": 0.806283,
+   "affinity": 0.7102803738317757,
+   "popularity": 0.6510903426791277
+  },
+  {
+   "latitude": 39.54254,
+   "longitude": -104.869995,
+   "geohash": "9xj2vw",
+   "affinity_rank": 0.805814,
+   "affinity": 0.7092419522326064,
+   "popularity": 0.7050882658359294
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -105.03479,
+   "geohash": "9xj63c",
+   "affinity_rank": 0.802329,
+   "affinity": 0.7082035306334372,
+   "popularity": 0.7476635514018691
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -104.82605,
+   "geohash": "9xj3y9",
+   "affinity_rank": 0.801953,
+   "affinity": 0.7071651090342679,
+   "popularity": 0.6355140186915887
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -104.93591,
+   "geohash": "9xj3u0",
+   "affinity_rank": 0.799261,
+   "affinity": 0.7061266874350987,
+   "popularity": 0.7040498442367601
+  },
+  {
+   "latitude": 39.53705,
+   "longitude": -104.77112,
+   "geohash": "9xj2zv",
+   "affinity_rank": 0.798822,
+   "affinity": 0.7050882658359294,
+   "popularity": 0.6915887850467289
+  },
+  {
+   "latitude": 39.52057,
+   "longitude": -104.869995,
+   "geohash": "9xj2vd",
+   "affinity_rank": 0.797291,
+   "affinity": 0.7040498442367601,
+   "popularity": 0.715472481827622
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -105.199585,
+   "geohash": "9xj1y4",
+   "affinity_rank": 0.797224,
+   "affinity": 0.7030114226375909,
+   "popularity": 0.77466251298027
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -105.01282,
+   "geohash": "9xj3d6",
+   "affinity_rank": 0.797147,
+   "affinity": 0.7019730010384216,
+   "popularity": 0.6843198338525441
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -104.81506,
+   "geohash": "9xj3wf",
+   "affinity_rank": 0.797024,
+   "affinity": 0.7009345794392523,
+   "popularity": 0.667705088265836
+  },
+  {
+   "latitude": 39.822693,
+   "longitude": -104.77112,
+   "geohash": "9xj6xc",
+   "affinity_rank": 0.796926,
+   "affinity": 0.6998961578400831,
+   "popularity": 0.6915887850467289
+  },
+  {
+   "latitude": 39.62494,
+   "longitude": -105.0238,
+   "geohash": "9xj36j",
+   "affinity_rank": 0.796494,
+   "affinity": 0.6988577362409139,
+   "popularity": 0.7217030114226376
+  },
+  {
+   "latitude": 39.586487,
+   "longitude": -105.0238,
+   "geohash": "9xj34n",
+   "affinity_rank": 0.795203,
+   "affinity": 0.6978193146417445,
+   "popularity": 0.7102803738317757
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -105.078735,
+   "geohash": "9xj62c",
+   "affinity_rank": 0.792173,
+   "affinity": 0.6967808930425753,
+   "popularity": 0.6770508826583593
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -104.85901,
+   "geohash": "9xj3vv",
+   "affinity_rank": 0.791209,
+   "affinity": 0.6957424714434061,
+   "popularity": 0.612668743509865
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -104.97986,
+   "geohash": "9xj671",
+   "affinity_rank": 0.789719,
+   "affinity": 0.6947040498442367,
+   "popularity": 0.7590861889927311
+  },
+  {
+   "latitude": 39.92157,
+   "longitude": -104.84802,
+   "geohash": "9xj7n5",
+   "affinity_rank": 0.789137,
+   "affinity": 0.6936656282450675,
+   "popularity": 0.6199376947040498
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -104.93591,
+   "geohash": "9xj3u1",
+   "affinity_rank": 0.787755,
+   "affinity": 0.6926272066458983,
+   "popularity": 0.6728971962616822
+  },
+  {
+   "latitude": 39.531555,
+   "longitude": -104.869995,
+   "geohash": "9xj2vs",
+   "affinity_rank": 0.787354,
+   "affinity": 0.6915887850467289,
+   "popularity": 0.715472481827622
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -104.96887,
+   "geohash": "9xj3g3",
+   "affinity_rank": 0.78727,
+   "affinity": 0.6905503634475597,
+   "popularity": 0.6770508826583593
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -105.0238,
+   "geohash": "9xj3fj",
+   "affinity_rank": 0.786551,
+   "affinity": 0.6895119418483905,
+   "popularity": 0.6458982346832814
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -105.10071,
+   "geohash": "9xj326",
+   "affinity_rank": 0.784771,
+   "affinity": 0.6884735202492211,
+   "popularity": 0.6770508826583593
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -105.04578,
+   "geohash": "9xj3cd",
+   "affinity_rank": 0.784525,
+   "affinity": 0.6874350986500519,
+   "popularity": 0.5794392523364486
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.79309,
+   "geohash": "9xj3xq",
+   "affinity_rank": 0.784515,
+   "affinity": 0.6863966770508827,
+   "popularity": 0.6510903426791277
+  },
+  {
+   "latitude": 39.668884,
+   "longitude": -104.869995,
+   "geohash": "9xj3tt",
+   "affinity_rank": 0.780999,
+   "affinity": 0.6853582554517134,
+   "popularity": 0.6614745586708204
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -104.88098,
+   "geohash": "9xj6j7",
+   "affinity_rank": 0.780905,
+   "affinity": 0.6843198338525441,
+   "popularity": 0.6458982346832814
+  },
+  {
+   "latitude": 39.916077,
+   "longitude": -104.96887,
+   "geohash": "9xj756",
+   "affinity_rank": 0.780265,
+   "affinity": 0.6832814122533749,
+   "popularity": 0.6355140186915887
+  },
+  {
+   "latitude": 39.910583,
+   "longitude": -105.04578,
+   "geohash": "9xj719",
+   "affinity_rank": 0.779889,
+   "affinity": 0.6822429906542056,
+   "popularity": 0.6843198338525441
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -105.166626,
+   "geohash": "9xj1yz",
+   "affinity_rank": 0.778944,
+   "affinity": 0.6812045690550363,
+   "popularity": 0.6843198338525441
+  },
+  {
+   "latitude": 39.8172,
+   "longitude": -104.88098,
+   "geohash": "9xj6t2",
+   "affinity_rank": 0.778243,
+   "affinity": 0.6801661474558671,
+   "popularity": 0.6947040498442367
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -104.93591,
+   "geohash": "9xj6h1",
+   "affinity_rank": 0.778219,
+   "affinity": 0.6791277258566978,
+   "popularity": 0.7050882658359294
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -104.82605,
+   "geohash": "9xj3yx",
+   "affinity_rank": 0.775315,
+   "affinity": 0.6780893042575286,
+   "popularity": 0.5482866043613707
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -105.22156,
+   "geohash": "9xj4js",
+   "affinity_rank": 0.775149,
+   "affinity": 0.6770508826583593,
+   "popularity": 0.7050882658359294
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -105.21057,
+   "geohash": "9xj1vy",
+   "affinity_rank": 0.775019,
+   "affinity": 0.67601246105919,
+   "popularity": 0.7403946002076843
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -104.88098,
+   "geohash": "9xj3v3",
+   "affinity_rank": 0.774359,
+   "affinity": 0.6749740394600208,
+   "popularity": 0.569055036344756
+  },
+  {
+   "latitude": 39.85565,
+   "longitude": -105.078735,
+   "geohash": "9xj68z",
+   "affinity_rank": 0.773208,
+   "affinity": 0.6739356178608515,
+   "popularity": 0.6614745586708204
+  },
+  {
+   "latitude": 39.916077,
+   "longitude": -105.04578,
+   "geohash": "9xj71d",
+   "affinity_rank": 0.773202,
+   "affinity": 0.6728971962616822,
+   "popularity": 0.6510903426791277
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -105.03479,
+   "geohash": "9xj61f",
+   "affinity_rank": 0.772737,
+   "affinity": 0.671858774662513,
+   "popularity": 0.6770508826583593
+  },
+  {
+   "latitude": 39.927063,
+   "longitude": -105.232544,
+   "geohash": "9xj5jk",
+   "affinity_rank": 0.772152,
+   "affinity": 0.6708203530633438,
+   "popularity": 0.7403946002076843
+  },
+  {
+   "latitude": 39.88861,
+   "longitude": -104.782104,
+   "geohash": "9xj6zt",
+   "affinity_rank": 0.771673,
+   "affinity": 0.6697819314641744,
+   "popularity": 0.6510903426791277
+  },
+  {
+   "latitude": 39.5755,
+   "longitude": -104.84802,
+   "geohash": "9xj3nh",
+   "affinity_rank": 0.770843,
+   "affinity": 0.6687435098650052,
+   "popularity": 0.6770508826583593
+  },
+  {
+   "latitude": 39.597473,
+   "longitude": -104.79309,
+   "geohash": "9xj3r2",
+   "affinity_rank": 0.769327,
+   "affinity": 0.667705088265836,
+   "popularity": 0.6292834890965732
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -105.0238,
+   "geohash": "9xj3fp",
+   "affinity_rank": 0.768743,
+   "affinity": 0.6666666666666666,
+   "popularity": 0.6510903426791277
+  },
+  {
+   "latitude": 39.916077,
+   "longitude": -104.97986,
+   "geohash": "9xj754",
+   "affinity_rank": 0.766213,
+   "affinity": 0.6656282450674974,
+   "popularity": 0.6614745586708204
+  },
+  {
+   "latitude": 39.85016,
+   "longitude": -104.97986,
+   "geohash": "9xj6en",
+   "affinity_rank": 0.763127,
+   "affinity": 0.6645898234683282,
+   "popularity": 0.6043613707165109
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -104.92493,
+   "geohash": "9xj6h6",
+   "affinity_rank": 0.76241,
+   "affinity": 0.6635514018691588,
+   "popularity": 0.7050882658359294
+  },
+  {
+   "latitude": 39.59198,
+   "longitude": -104.84802,
+   "geohash": "9xj3np",
+   "affinity_rank": 0.762165,
+   "affinity": 0.6625129802699896,
+   "popularity": 0.6510903426791277
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -104.869995,
+   "geohash": "9xj3vd",
+   "affinity_rank": 0.761696,
+   "affinity": 0.6614745586708204,
+   "popularity": 0.5898234683281413
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -104.96887,
+   "geohash": "9xj3gm",
+   "affinity_rank": 0.759531,
+   "affinity": 0.660436137071651,
+   "popularity": 0.6728971962616822
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -105.078735,
+   "geohash": "9xj38f",
+   "affinity_rank": 0.758859,
+   "affinity": 0.6593977154724818,
+   "popularity": 0.612668743509865
+  },
+  {
+   "latitude": 39.597473,
+   "longitude": -104.7052,
+   "geohash": "9xj932",
+   "affinity_rank": 0.757485,
+   "affinity": 0.6583592938733126,
+   "popularity": 0.5898234683281413
+  },
+  {
+   "latitude": 39.78424,
+   "longitude": -104.77112,
+   "geohash": "9xj6rf",
+   "affinity_rank": 0.756481,
+   "affinity": 0.6573208722741433,
+   "popularity": 0.5597092419522326
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -104.96887,
+   "geohash": "9xj65m",
+   "affinity_rank": 0.754053,
+   "affinity": 0.656282450674974,
+   "popularity": 0.6728971962616822
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.81506,
+   "geohash": "9xj3wy",
+   "affinity_rank": 0.753247,
+   "affinity": 0.6552440290758048,
+   "popularity": 0.5898234683281413
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -104.990845,
+   "geohash": "9xj3fu",
+   "affinity_rank": 0.751053,
+   "affinity": 0.6542056074766355,
+   "popularity": 0.7102803738317757
+  },
+  {
+   "latitude": 39.564514,
+   "longitude": -105.15564,
+   "geohash": "9xj1p4",
+   "affinity_rank": 0.750536,
+   "affinity": 0.6531671858774662,
+   "popularity": 0.6947040498442367
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -104.990845,
+   "geohash": "9xj64y",
+   "affinity_rank": 0.750278,
+   "affinity": 0.652128764278297,
+   "popularity": 0.6947040498442367
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.84802,
+   "geohash": "9xj3wn",
+   "affinity_rank": 0.749791,
+   "affinity": 0.6510903426791277,
+   "popularity": 0.5794392523364486
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -104.97986,
+   "geohash": "9xj3g5",
+   "affinity_rank": 0.748411,
+   "affinity": 0.6500519210799585,
+   "popularity": 0.726895119418484
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -105.14465,
+   "geohash": "9xj1x6",
+   "affinity_rank": 0.74822,
+   "affinity": 0.6490134994807892,
+   "popularity": 0.7102803738317757
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -105.111694,
+   "geohash": "9xj620",
+   "affinity_rank": 0.747525,
+   "affinity": 0.6479750778816199,
+   "popularity": 0.667705088265836
+  },
+  {
+   "latitude": 39.526062,
+   "longitude": -104.89197,
+   "geohash": "9xj2v5",
+   "affinity_rank": 0.747385,
+   "affinity": 0.6469366562824507,
+   "popularity": 0.6843198338525441
+  },
+  {
+   "latitude": 39.580994,
+   "longitude": -105.06775,
+   "geohash": "9xj31j",
+   "affinity_rank": 0.746946,
+   "affinity": 0.6458982346832814,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.62494,
+   "longitude": -104.73816,
+   "geohash": "9xj92t",
+   "affinity_rank": 0.74606,
+   "affinity": 0.6448598130841121,
+   "popularity": 0.5389408099688473
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -104.96887,
+   "geohash": "9xj3gr",
+   "affinity_rank": 0.74552,
+   "affinity": 0.6438213914849429,
+   "popularity": 0.6843198338525441
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -105.01282,
+   "geohash": "9xj3fm",
+   "affinity_rank": 0.744146,
+   "affinity": 0.6427829698857737,
+   "popularity": 0.6292834890965732
+  },
+  {
+   "latitude": 39.877625,
+   "longitude": -105.12268,
+   "geohash": "9xj4zg",
+   "affinity_rank": 0.743271,
+   "affinity": 0.6417445482866043,
+   "popularity": 0.6043613707165109
+  },
+  {
+   "latitude": 39.88861,
+   "longitude": -105.05676,
+   "geohash": "9xj6cm",
+   "affinity_rank": 0.742935,
+   "affinity": 0.6407061266874351,
+   "popularity": 0.6510903426791277
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -105.287476,
+   "geohash": "9xj1un",
+   "affinity_rank": 0.742561,
+   "affinity": 0.6396677050882659,
+   "popularity": 0.667705088265836
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -104.97986,
+   "geohash": "9xj3e4",
+   "affinity_rank": 0.740589,
+   "affinity": 0.6386292834890965,
+   "popularity": 0.6355140186915887
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.96887,
+   "geohash": "9xj3eq",
+   "affinity_rank": 0.739749,
+   "affinity": 0.6375908618899273,
+   "popularity": 0.6355140186915887
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -105.01282,
+   "geohash": "9xj64r",
+   "affinity_rank": 0.73913,
+   "affinity": 0.6365524402907581,
+   "popularity": 0.6770508826583593
+  },
+  {
+   "latitude": 39.943542,
+   "longitude": -105.0238,
+   "geohash": "9xj74p",
+   "affinity_rank": 0.738487,
+   "affinity": 0.6355140186915887,
+   "popularity": 0.569055036344756
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -104.9469,
+   "geohash": "9xj3gb",
+   "affinity_rank": 0.737732,
+   "affinity": 0.6344755970924195,
+   "popularity": 0.6199376947040498
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -104.869995,
+   "geohash": "9xj6jd",
+   "affinity_rank": 0.736571,
+   "affinity": 0.6334371754932503,
+   "popularity": 0.612668743509865
+  },
+  {
+   "latitude": 39.916077,
+   "longitude": -105.05676,
+   "geohash": "9xj716",
+   "affinity_rank": 0.736259,
+   "affinity": 0.632398753894081,
+   "popularity": 0.6614745586708204
+  },
+  {
+   "latitude": 39.8172,
+   "longitude": -104.77112,
+   "geohash": "9xj6xb",
+   "affinity_rank": 0.735598,
+   "affinity": 0.6313603322949117,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.960022,
+   "longitude": -105.166626,
+   "geohash": "9xj5qf",
+   "affinity_rank": 0.734069,
+   "affinity": 0.6303219106957425,
+   "popularity": 0.6355140186915887
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -104.80408,
+   "geohash": "9xj6p4",
+   "affinity_rank": 0.732604,
+   "affinity": 0.6292834890965732,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -104.88098,
+   "geohash": "9xj3vq",
+   "affinity_rank": 0.731707,
+   "affinity": 0.6282450674974039,
+   "popularity": 0.6355140186915887
+  },
+  {
+   "latitude": 39.86664,
+   "longitude": -105.05676,
+   "geohash": "9xj6c3",
+   "affinity_rank": 0.731362,
+   "affinity": 0.6272066458982347,
+   "popularity": 0.5794392523364486
+  },
+  {
+   "latitude": 39.822693,
+   "longitude": -105.078735,
+   "geohash": "9xj68c",
+   "affinity_rank": 0.731233,
+   "affinity": 0.6261682242990654,
+   "popularity": 0.6458982346832814
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.990845,
+   "geohash": "9xj3dy",
+   "affinity_rank": 0.731152,
+   "affinity": 0.6251298026998962,
+   "popularity": 0.6510903426791277
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -105.13367,
+   "geohash": "9xj1zx",
+   "affinity_rank": 0.729717,
+   "affinity": 0.6240913811007269,
+   "popularity": 0.6199376947040498
+  },
+  {
+   "latitude": 39.570007,
+   "longitude": -104.88098,
+   "geohash": "9xj3j7",
+   "affinity_rank": 0.72944,
+   "affinity": 0.6230529595015576,
+   "popularity": 0.6292834890965732
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -105.00183,
+   "geohash": "9xj36d",
+   "affinity_rank": 0.726978,
+   "affinity": 0.6220145379023884,
+   "popularity": 0.6510903426791277
+  },
+  {
+   "latitude": 39.88861,
+   "longitude": -105.13367,
+   "geohash": "9xj4zt",
+   "affinity_rank": 0.726219,
+   "affinity": 0.6209761163032191,
+   "popularity": 0.6947040498442367
+  },
+  {
+   "latitude": 39.987488,
+   "longitude": -105.08972,
+   "geohash": "9xj72x",
+   "affinity_rank": 0.726111,
+   "affinity": 0.6199376947040498,
+   "popularity": 0.6510903426791277
+  },
+  {
+   "latitude": 39.630432,
+   "longitude": -105.1886,
+   "geohash": "9xj1qq",
+   "affinity_rank": 0.725812,
+   "affinity": 0.6188992731048806,
+   "popularity": 0.6355140186915887
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -104.88098,
+   "geohash": "9xj3mr",
+   "affinity_rank": 0.725526,
+   "affinity": 0.6178608515057114,
+   "popularity": 0.6199376947040498
+  },
+  {
+   "latitude": 39.613953,
+   "longitude": -104.97986,
+   "geohash": "9xj375",
+   "affinity_rank": 0.725233,
+   "affinity": 0.616822429906542,
+   "popularity": 0.7050882658359294
+  },
+  {
+   "latitude": 39.839172,
+   "longitude": -105.00183,
+   "geohash": "9xj6ds",
+   "affinity_rank": 0.725191,
+   "affinity": 0.6157840083073728,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -105.0238,
+   "geohash": "9xj3f4",
+   "affinity_rank": 0.724942,
+   "affinity": 0.6147455867082036,
+   "popularity": 0.612668743509865
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -105.0238,
+   "geohash": "9xj3f5",
+   "affinity_rank": 0.724878,
+   "affinity": 0.6137071651090342,
+   "popularity": 0.5898234683281413
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -104.869995,
+   "geohash": "9xj6jt",
+   "affinity_rank": 0.724744,
+   "affinity": 0.612668743509865,
+   "popularity": 0.6355140186915887
+  },
+  {
+   "latitude": 39.548035,
+   "longitude": -105.03479,
+   "geohash": "9xj2cz",
+   "affinity_rank": 0.724453,
+   "affinity": 0.6116303219106958,
+   "popularity": 0.569055036344756
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -104.84802,
+   "geohash": "9xj6q0",
+   "affinity_rank": 0.723176,
+   "affinity": 0.6105919003115264,
+   "popularity": 0.569055036344756
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -105.078735,
+   "geohash": "9xj38g",
+   "affinity_rank": 0.722222,
+   "affinity": 0.6095534787123572,
+   "popularity": 0.5898234683281413
+  },
+  {
+   "latitude": 39.66339,
+   "longitude": -105.27649,
+   "geohash": "9xj1sk",
+   "affinity_rank": 0.718889,
+   "affinity": 0.608515057113188,
+   "popularity": 0.6614745586708204
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -104.749146,
+   "geohash": "9xj9b7",
+   "affinity_rank": 0.717349,
+   "affinity": 0.6074766355140186,
+   "popularity": 0.5482866043613707
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -104.80408,
+   "geohash": "9xj3zh",
+   "affinity_rank": 0.716825,
+   "affinity": 0.6064382139148494,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.630432,
+   "longitude": -105.2655,
+   "geohash": "9xj1kw",
+   "affinity_rank": 0.716713,
+   "affinity": 0.6053997923156802,
+   "popularity": 0.6292834890965732
+  },
+  {
+   "latitude": 39.883118,
+   "longitude": -105.078735,
+   "geohash": "9xj6bu",
+   "affinity_rank": 0.715678,
+   "affinity": 0.6043613707165109,
+   "popularity": 0.6199376947040498
+  },
+  {
+   "latitude": 39.927063,
+   "longitude": -104.869995,
+   "geohash": "9xj7js",
+   "affinity_rank": 0.715179,
+   "affinity": 0.6033229491173416,
+   "popularity": 0.612668743509865
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.837036,
+   "geohash": "9xj3wq",
+   "affinity_rank": 0.714848,
+   "affinity": 0.6022845275181724,
+   "popularity": 0.5389408099688473
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -105.25452,
+   "geohash": "9xj4kb",
+   "affinity_rank": 0.714223,
+   "affinity": 0.6012461059190031,
+   "popularity": 0.6843198338525441
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -105.1886,
+   "geohash": "9xj4q3",
+   "affinity_rank": 0.71337,
+   "affinity": 0.6002076843198338,
+   "popularity": 0.6947040498442367
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -105.166626,
+   "geohash": "9xj4nc",
+   "affinity_rank": 0.712636,
+   "affinity": 0.5991692627206646,
+   "popularity": 0.6043613707165109
+  },
+  {
+   "latitude": 39.54254,
+   "longitude": -104.80408,
+   "geohash": "9xj2zn",
+   "affinity_rank": 0.711974,
+   "affinity": 0.5981308411214953,
+   "popularity": 0.5794392523364486
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -104.80408,
+   "geohash": "9xj3zp",
+   "affinity_rank": 0.711009,
+   "affinity": 0.5970924195223261,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.64691,
+   "longitude": -105.00183,
+   "geohash": "9xj3d9",
+   "affinity_rank": 0.710573,
+   "affinity": 0.5960539979231568,
+   "popularity": 0.5898234683281413
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -105.111694,
+   "geohash": "9xj384",
+   "affinity_rank": 0.710227,
+   "affinity": 0.5950155763239875,
+   "popularity": 0.5898234683281413
+  },
+  {
+   "latitude": 39.64691,
+   "longitude": -104.84802,
+   "geohash": "9xj3w1",
+   "affinity_rank": 0.709793,
+   "affinity": 0.5939771547248183,
+   "popularity": 0.6199376947040498
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -104.97986,
+   "geohash": "9xj3g4",
+   "affinity_rank": 0.70947,
+   "affinity": 0.592938733125649,
+   "popularity": 0.667705088265836
+  },
+  {
+   "latitude": 39.95453,
+   "longitude": -104.990845,
+   "geohash": "9xj76c",
+   "affinity_rank": 0.708904,
+   "affinity": 0.5919003115264797,
+   "popularity": 0.6199376947040498
+  },
+  {
+   "latitude": 39.55902,
+   "longitude": -104.77112,
+   "geohash": "9xj3pc",
+   "affinity_rank": 0.708763,
+   "affinity": 0.5908618899273105,
+   "popularity": 0.5389408099688473
+  },
+  {
+   "latitude": 39.602966,
+   "longitude": -104.71619,
+   "geohash": "9xj931",
+   "affinity_rank": 0.707351,
+   "affinity": 0.5898234683281413,
+   "popularity": 0.5597092419522326
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -104.902954,
+   "geohash": "9xj6hf",
+   "affinity_rank": 0.707274,
+   "affinity": 0.5887850467289719,
+   "popularity": 0.6458982346832814
+  },
+  {
+   "latitude": 39.564514,
+   "longitude": -104.89197,
+   "geohash": "9xj3j4",
+   "affinity_rank": 0.706999,
+   "affinity": 0.5877466251298027,
+   "popularity": 0.6199376947040498
+  },
+  {
+   "latitude": 39.619446,
+   "longitude": -105.08972,
+   "geohash": "9xj32s",
+   "affinity_rank": 0.705613,
+   "affinity": 0.5867082035306335,
+   "popularity": 0.5794392523364486
+  },
+  {
+   "latitude": 39.943542,
+   "longitude": -105.04578,
+   "geohash": "9xj71x",
+   "affinity_rank": 0.705426,
+   "affinity": 0.5856697819314641,
+   "popularity": 0.6043613707165109
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -105.01282,
+   "geohash": "9xj3f3",
+   "affinity_rank": 0.702022,
+   "affinity": 0.5846313603322949,
+   "popularity": 0.5794392523364486
+  },
+  {
+   "latitude": 39.570007,
+   "longitude": -104.96887,
+   "geohash": "9xj357",
+   "affinity_rank": 0.701934,
+   "affinity": 0.5835929387331257,
+   "popularity": 0.5898234683281413
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -104.84802,
+   "geohash": "9xj3y4",
+   "affinity_rank": 0.701807,
+   "affinity": 0.5825545171339563,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.602966,
+   "longitude": -105.22156,
+   "geohash": "9xj1m9",
+   "affinity_rank": 0.701783,
+   "affinity": 0.5815160955347871,
+   "popularity": 0.612668743509865
+  },
+  {
+   "latitude": 39.619446,
+   "longitude": -104.89197,
+   "geohash": "9xj3mh",
+   "affinity_rank": 0.700634,
+   "affinity": 0.5804776739356179,
+   "popularity": 0.569055036344756
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -104.957886,
+   "geohash": "9xj65x",
+   "affinity_rank": 0.700414,
+   "affinity": 0.5794392523364486,
+   "popularity": 0.6458982346832814
+  },
+  {
+   "latitude": 39.59198,
+   "longitude": -104.96887,
+   "geohash": "9xj35r",
+   "affinity_rank": 0.6999,
+   "affinity": 0.5784008307372793,
+   "popularity": 0.5898234683281413
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -104.902954,
+   "geohash": "9xj3kf",
+   "affinity_rank": 0.699847,
+   "affinity": 0.5773624091381101,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -105.320435,
+   "geohash": "9xj1gk",
+   "affinity_rank": 0.698359,
+   "affinity": 0.5763239875389408,
+   "popularity": 0.5794392523364486
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -105.21057,
+   "geohash": "9xj4jy",
+   "affinity_rank": 0.695086,
+   "affinity": 0.5752855659397715,
+   "popularity": 0.5597092419522326
+  },
+  {
+   "latitude": 39.602966,
+   "longitude": -105.078735,
+   "geohash": "9xj32c",
+   "affinity_rank": 0.694986,
+   "affinity": 0.5742471443406023,
+   "popularity": 0.5129802699896158
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -105.03479,
+   "geohash": "9xj3cg",
+   "affinity_rank": 0.69407,
+   "affinity": 0.573208722741433,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.668884,
+   "longitude": -104.85901,
+   "geohash": "9xj3tv",
+   "affinity_rank": 0.693536,
+   "affinity": 0.5721703011422637,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.564514,
+   "longitude": -104.85901,
+   "geohash": "9xj3jf",
+   "affinity_rank": 0.693128,
+   "affinity": 0.5711318795430945,
+   "popularity": 0.5389408099688473
+  },
+  {
+   "latitude": 39.55902,
+   "longitude": -104.88098,
+   "geohash": "9xj3j3",
+   "affinity_rank": 0.692049,
+   "affinity": 0.5700934579439252,
+   "popularity": 0.569055036344756
+  },
+  {
+   "latitude": 39.586487,
+   "longitude": -104.902954,
+   "geohash": "9xj3hy",
+   "affinity_rank": 0.691601,
+   "affinity": 0.569055036344756,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -105.30945,
+   "geohash": "9xj1gt",
+   "affinity_rank": 0.691076,
+   "affinity": 0.5680166147455867,
+   "popularity": 0.6355140186915887
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -104.869995,
+   "geohash": "9xj3td",
+   "affinity_rank": 0.690229,
+   "affinity": 0.5669781931464174,
+   "popularity": 0.5794392523364486
+  },
+  {
+   "latitude": 39.613953,
+   "longitude": -105.078735,
+   "geohash": "9xj32g",
+   "affinity_rank": 0.690201,
+   "affinity": 0.5659397715472482,
+   "popularity": 0.6199376947040498
+  },
+  {
+   "latitude": 39.806213,
+   "longitude": -105.0238,
+   "geohash": "9xj66n",
+   "affinity_rank": 0.690068,
+   "affinity": 0.564901349948079,
+   "popularity": 0.5482866043613707
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -104.990845,
+   "geohash": "9xj3ff",
+   "affinity_rank": 0.689494,
+   "affinity": 0.5638629283489096,
+   "popularity": 0.5898234683281413
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -105.33142,
+   "geohash": "9xj1g5",
+   "affinity_rank": 0.686848,
+   "affinity": 0.5628245067497404,
+   "popularity": 0.5898234683281413
+  },
+  {
+   "latitude": 39.62494,
+   "longitude": -105.08972,
+   "geohash": "9xj32t",
+   "affinity_rank": 0.68651,
+   "affinity": 0.5617860851505712,
+   "popularity": 0.569055036344756
+  },
+  {
+   "latitude": 39.998474,
+   "longitude": -104.97986,
+   "geohash": "9xj7e1",
+   "affinity_rank": 0.686427,
+   "affinity": 0.5607476635514018,
+   "popularity": 0.5597092419522326
+  },
+  {
+   "latitude": 39.553528,
+   "longitude": -105.00183,
+   "geohash": "9xj348",
+   "affinity_rank": 0.685984,
+   "affinity": 0.5597092419522326,
+   "popularity": 0.612668743509865
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -105.078735,
+   "geohash": "9xj3by",
+   "affinity_rank": 0.684685,
+   "affinity": 0.5586708203530634,
+   "popularity": 0.5597092419522326
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -105.00183,
+   "geohash": "9xj3fw",
+   "affinity_rank": 0.684365,
+   "affinity": 0.557632398753894,
+   "popularity": 0.6292834890965732
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -104.82605,
+   "geohash": "9xj3yd",
+   "affinity_rank": 0.677807,
+   "affinity": 0.5565939771547248,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -105.166626,
+   "geohash": "9xj4nb",
+   "affinity_rank": 0.675886,
+   "affinity": 0.5555555555555556,
+   "popularity": 0.5482866043613707
+  },
+  {
+   "latitude": 39.580994,
+   "longitude": -105.14465,
+   "geohash": "9xj1pm",
+   "affinity_rank": 0.675408,
+   "affinity": 0.5545171339563862,
+   "popularity": 0.6043613707165109
+  },
+  {
+   "latitude": 39.564514,
+   "longitude": -104.93591,
+   "geohash": "9xj3h4",
+   "affinity_rank": 0.674501,
+   "affinity": 0.553478712357217,
+   "popularity": 0.5794392523364486
+  },
+  {
+   "latitude": 39.64691,
+   "longitude": -105.0238,
+   "geohash": "9xj3d1",
+   "affinity_rank": 0.673504,
+   "affinity": 0.5524402907580478,
+   "popularity": 0.44963655244029077
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -105.05676,
+   "geohash": "9xj39r",
+   "affinity_rank": 0.672241,
+   "affinity": 0.5514018691588785,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -105.0238,
+   "geohash": "9xj64n",
+   "affinity_rank": 0.671035,
+   "affinity": 0.5503634475597092,
+   "popularity": 0.5898234683281413
+  },
+  {
+   "latitude": 39.64691,
+   "longitude": -105.078735,
+   "geohash": "9xj38c",
+   "affinity_rank": 0.669492,
+   "affinity": 0.54932502596054,
+   "popularity": 0.6043613707165109
+  },
+  {
+   "latitude": 39.949036,
+   "longitude": -104.990845,
+   "geohash": "9xj76b",
+   "affinity_rank": 0.669388,
+   "affinity": 0.5482866043613707,
+   "popularity": 0.5389408099688473
+  },
+  {
+   "latitude": 39.861145,
+   "longitude": -104.97986,
+   "geohash": "9xj6g0",
+   "affinity_rank": 0.668867,
+   "affinity": 0.5472481827622014,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -105.24353,
+   "geohash": "9xj4jh",
+   "affinity_rank": 0.668267,
+   "affinity": 0.5462097611630322,
+   "popularity": 0.6292834890965732
+  },
+  {
+   "latitude": 39.64142,
+   "longitude": -105.0238,
+   "geohash": "9xj3d0",
+   "affinity_rank": 0.666365,
+   "affinity": 0.5451713395638629,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.668884,
+   "longitude": -104.93591,
+   "geohash": "9xj3sj",
+   "affinity_rank": 0.66589,
+   "affinity": 0.5441329179646937,
+   "popularity": 0.5482866043613707
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -105.078735,
+   "geohash": "9xj60f",
+   "affinity_rank": 0.663856,
+   "affinity": 0.5430944963655244,
+   "popularity": 0.5482866043613707
+  },
+  {
+   "latitude": 39.806213,
+   "longitude": -104.97986,
+   "geohash": "9xj67n",
+   "affinity_rank": 0.661656,
+   "affinity": 0.5420560747663551,
+   "popularity": 0.5597092419522326
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -105.287476,
+   "geohash": "9xj1uh",
+   "affinity_rank": 0.660897,
+   "affinity": 0.5410176531671859,
+   "popularity": 0.5898234683281413
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -104.82605,
+   "geohash": "9xj6nd",
+   "affinity_rank": 0.659744,
+   "affinity": 0.5399792315680166,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.564514,
+   "longitude": -105.111694,
+   "geohash": "9xj304",
+   "affinity_rank": 0.659555,
+   "affinity": 0.5389408099688473,
+   "popularity": 0.5482866043613707
+  },
+  {
+   "latitude": 39.811707,
+   "longitude": -105.13367,
+   "geohash": "9xj4rx",
+   "affinity_rank": 0.659532,
+   "affinity": 0.5379023883696781,
+   "popularity": 0.5389408099688473
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -105.13367,
+   "geohash": "9xj1zt",
+   "affinity_rank": 0.658939,
+   "affinity": 0.5368639667705088,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -104.957886,
+   "geohash": "9xj37d",
+   "affinity_rank": 0.658881,
+   "affinity": 0.5358255451713395,
+   "popularity": 0.569055036344756
+  },
+  {
+   "latitude": 39.883118,
+   "longitude": -104.990845,
+   "geohash": "9xj6fu",
+   "affinity_rank": 0.657333,
+   "affinity": 0.5347871235721703,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.949036,
+   "longitude": -105.10071,
+   "geohash": "9xj722",
+   "affinity_rank": 0.657224,
+   "affinity": 0.5337487019730011,
+   "popularity": 0.5794392523364486
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -104.96887,
+   "geohash": "9xj3gq",
+   "affinity_rank": 0.653889,
+   "affinity": 0.5327102803738317,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -105.29846,
+   "geohash": "9xj1eg",
+   "affinity_rank": 0.651948,
+   "affinity": 0.5316718587746625,
+   "popularity": 0.569055036344756
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -104.84802,
+   "geohash": "9xj3w5",
+   "affinity_rank": 0.651899,
+   "affinity": 0.5306334371754933,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.580994,
+   "longitude": -104.869995,
+   "geohash": "9xj3jt",
+   "affinity_rank": 0.651543,
+   "affinity": 0.5295950155763239,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.52057,
+   "longitude": -104.92493,
+   "geohash": "9xj2u6",
+   "affinity_rank": 0.651079,
+   "affinity": 0.5285565939771547,
+   "popularity": 0.5129802699896158
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -104.93591,
+   "geohash": "9xj3s5",
+   "affinity_rank": 0.650126,
+   "affinity": 0.5275181723779855,
+   "popularity": 0.5597092419522326
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -104.91394,
+   "geohash": "9xj3ue",
+   "affinity_rank": 0.650039,
+   "affinity": 0.5264797507788161,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.580994,
+   "longitude": -104.96887,
+   "geohash": "9xj35m",
+   "affinity_rank": 0.643432,
+   "affinity": 0.5254413291796469,
+   "popularity": 0.5389408099688473
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -105.05676,
+   "geohash": "9xj61r",
+   "affinity_rank": 0.642224,
+   "affinity": 0.5244029075804777,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.839172,
+   "longitude": -105.078735,
+   "geohash": "9xj68u",
+   "affinity_rank": 0.641736,
+   "affinity": 0.5233644859813084,
+   "popularity": 0.5482866043613707
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -105.21057,
+   "geohash": "9xj4jb",
+   "affinity_rank": 0.641602,
+   "affinity": 0.5223260643821391,
+   "popularity": 0.6043613707165109
+  },
+  {
+   "latitude": 39.597473,
+   "longitude": -104.869995,
+   "geohash": "9xj3m8",
+   "affinity_rank": 0.641494,
+   "affinity": 0.5212876427829699,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -105.25452,
+   "geohash": "9xj4hb",
+   "affinity_rank": 0.641455,
+   "affinity": 0.5202492211838006,
+   "popularity": 0.5597092419522326
+  },
+  {
+   "latitude": 39.877625,
+   "longitude": -105.10071,
+   "geohash": "9xj6b7",
+   "affinity_rank": 0.639011,
+   "affinity": 0.5192107995846313,
+   "popularity": 0.5129802699896158
+  },
+  {
+   "latitude": 39.828186,
+   "longitude": -104.85901,
+   "geohash": "9xj6tf",
+   "affinity_rank": 0.637267,
+   "affinity": 0.5181723779854621,
+   "popularity": 0.5482866043613707
+  },
+  {
+   "latitude": 39.90509,
+   "longitude": -105.10071,
+   "geohash": "9xj702",
+   "affinity_rank": 0.637087,
+   "affinity": 0.5171339563862928,
+   "popularity": 0.6043613707165109
+  },
+  {
+   "latitude": 39.62494,
+   "longitude": -105.12268,
+   "geohash": "9xj1rv",
+   "affinity_rank": 0.63641,
+   "affinity": 0.5160955347871236,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.59198,
+   "longitude": -104.85901,
+   "geohash": "9xj3jz",
+   "affinity_rank": 0.635808,
+   "affinity": 0.5150571131879543,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -104.97986,
+   "geohash": "9xj3gn",
+   "affinity_rank": 0.635381,
+   "affinity": 0.514018691588785,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.54254,
+   "longitude": -104.93591,
+   "geohash": "9xj2un",
+   "affinity_rank": 0.634921,
+   "affinity": 0.5129802699896158,
+   "popularity": 0.5129802699896158
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -105.00183,
+   "geohash": "9xj669",
+   "affinity_rank": 0.634672,
+   "affinity": 0.5119418483904465,
+   "popularity": 0.5597092419522326
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -104.84802,
+   "geohash": "9xj6q1",
+   "affinity_rank": 0.633333,
+   "affinity": 0.5109034267912772,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.981995,
+   "longitude": -105.06775,
+   "geohash": "9xj73n",
+   "affinity_rank": 0.633005,
+   "affinity": 0.509865005192108,
+   "popularity": 0.5898234683281413
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -105.04578,
+   "geohash": "9xj61t",
+   "affinity_rank": 0.630435,
+   "affinity": 0.5077881619937694,
+   "popularity": 0.569055036344756
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -105.08972,
+   "geohash": "9xj60x",
+   "affinity_rank": 0.630435,
+   "affinity": 0.5077881619937694,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.668884,
+   "longitude": -104.990845,
+   "geohash": "9xj3dv",
+   "affinity_rank": 0.629378,
+   "affinity": 0.5067497403946002,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.526062,
+   "longitude": -104.990845,
+   "geohash": "9xj2fg",
+   "affinity_rank": 0.627653,
+   "affinity": 0.505711318795431,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.883118,
+   "longitude": -105.06775,
+   "geohash": "9xj6ch",
+   "affinity_rank": 0.626894,
+   "affinity": 0.5046728971962616,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -104.92493,
+   "geohash": "9xj3um",
+   "affinity_rank": 0.625422,
+   "affinity": 0.5036344755970924,
+   "popularity": 0.5482866043613707
+  },
+  {
+   "latitude": 39.861145,
+   "longitude": -105.06775,
+   "geohash": "9xj6c0",
+   "affinity_rank": 0.624727,
+   "affinity": 0.5025960539979232,
+   "popularity": 0.5129802699896158
+  },
+  {
+   "latitude": 39.95453,
+   "longitude": -105.15564,
+   "geohash": "9xj5r1",
+   "affinity_rank": 0.624336,
+   "affinity": 0.5015576323987538,
+   "popularity": 0.5389408099688473
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -105.0238,
+   "geohash": "9xj3dp",
+   "affinity_rank": 0.623457,
+   "affinity": 0.5005192107995846,
+   "popularity": 0.44963655244029077
+  },
+  {
+   "latitude": 39.52057,
+   "longitude": -104.96887,
+   "geohash": "9xj2g6",
+   "affinity_rank": 0.620955,
+   "affinity": 0.4994807892004154,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -104.85901,
+   "geohash": "9xj3mf",
+   "affinity_rank": 0.620843,
+   "affinity": 0.4984423676012461,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.78424,
+   "longitude": -104.990845,
+   "geohash": "9xj66f",
+   "affinity_rank": 0.618898,
+   "affinity": 0.4974039460020768,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -104.85901,
+   "geohash": "9xj3vg",
+   "affinity_rank": 0.617347,
+   "affinity": 0.4963655244029076,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.910583,
+   "longitude": -104.97986,
+   "geohash": "9xj751",
+   "affinity_rank": 0.617284,
+   "affinity": 0.4953271028037383,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -104.990845,
+   "geohash": "9xj64z",
+   "affinity_rank": 0.616619,
+   "affinity": 0.49428868120456904,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -104.837036,
+   "geohash": "9xj3w7",
+   "affinity_rank": 0.609442,
+   "affinity": 0.4932502596053998,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -105.05676,
+   "geohash": "9xj3c2",
+   "affinity_rank": 0.6088,
+   "affinity": 0.49221183800623053,
+   "popularity": 0.5482866043613707
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -105.10071,
+   "geohash": "9xj3b2",
+   "affinity_rank": 0.60625,
+   "affinity": 0.49117341640706125,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -104.9469,
+   "geohash": "9xj3gv",
+   "affinity_rank": 0.604911,
+   "affinity": 0.490134994807892,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -105.0238,
+   "geohash": "9xj364",
+   "affinity_rank": 0.604781,
+   "affinity": 0.48909657320872274,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.943542,
+   "longitude": -104.92493,
+   "geohash": "9xj7hr",
+   "affinity_rank": 0.60201,
+   "affinity": 0.48805815160955346,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.844666,
+   "longitude": -105.06775,
+   "geohash": "9xj69j",
+   "affinity_rank": 0.601407,
+   "affinity": 0.48701973001038423,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -104.88098,
+   "geohash": "9xj3vr",
+   "affinity_rank": 0.600148,
+   "affinity": 0.48598130841121495,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.78424,
+   "longitude": -105.05676,
+   "geohash": "9xj636",
+   "affinity_rank": 0.598014,
+   "affinity": 0.48494288681204567,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -104.88098,
+   "geohash": "9xj6jq",
+   "affinity_rank": 0.597254,
+   "affinity": 0.48390446521287644,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -105.078735,
+   "geohash": "9xj60g",
+   "affinity_rank": 0.597241,
+   "affinity": 0.48286604361370716,
+   "popularity": 0.5129802699896158
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -105.08972,
+   "geohash": "9xj60d",
+   "affinity_rank": 0.596866,
+   "affinity": 0.4818276220145379,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -105.10071,
+   "geohash": "9xj60q",
+   "affinity_rank": 0.593931,
+   "affinity": 0.48078920041536866,
+   "popularity": 0.5389408099688473
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -105.13367,
+   "geohash": "9xj4p8",
+   "affinity_rank": 0.593407,
+   "affinity": 0.4797507788161994,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.5755,
+   "longitude": -105.14465,
+   "geohash": "9xj1pk",
+   "affinity_rank": 0.591865,
+   "affinity": 0.4787123572170301,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -105.03479,
+   "geohash": "9xj61g",
+   "affinity_rank": 0.590292,
+   "affinity": 0.47767393561786087,
+   "popularity": 0.5129802699896158
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -105.232544,
+   "geohash": "9xj4jm",
+   "affinity_rank": 0.588808,
+   "affinity": 0.4766355140186916,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -105.03479,
+   "geohash": "9xj3cf",
+   "affinity_rank": 0.586794,
+   "affinity": 0.4755970924195223,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.62494,
+   "longitude": -104.88098,
+   "geohash": "9xj3mm",
+   "affinity_rank": 0.586457,
+   "affinity": 0.4745586708203531,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -105.06775,
+   "geohash": "9xj3cj",
+   "affinity_rank": 0.586059,
+   "affinity": 0.4735202492211838,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -104.97986,
+   "geohash": "9xj3ep",
+   "affinity_rank": 0.583685,
+   "affinity": 0.4724818276220145,
+   "popularity": 0.5233644859813084
+  },
+  {
+   "latitude": 39.66339,
+   "longitude": -104.990845,
+   "geohash": "9xj3du",
+   "affinity_rank": 0.583595,
+   "affinity": 0.4714434060228453,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -104.782104,
+   "geohash": "9xj3z8",
+   "affinity_rank": 0.581197,
+   "affinity": 0.470404984423676,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -105.04578,
+   "geohash": "9xj39x",
+   "affinity_rank": 0.580851,
+   "affinity": 0.46936656282450673,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.85016,
+   "longitude": -105.00183,
+   "geohash": "9xj6dw",
+   "affinity_rank": 0.580808,
+   "affinity": 0.4683281412253375,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -105.05676,
+   "geohash": "9xj3c3",
+   "affinity_rank": 0.578595,
+   "affinity": 0.4672897196261682,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.548035,
+   "longitude": -104.869995,
+   "geohash": "9xj2vx",
+   "affinity_rank": 0.57715,
+   "affinity": 0.46625129802699894,
+   "popularity": 0.5129802699896158
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -104.88098,
+   "geohash": "9xj3t6",
+   "affinity_rank": 0.57561,
+   "affinity": 0.4652128764278297,
+   "popularity": 0.44963655244029077
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -104.85901,
+   "geohash": "9xj3vf",
+   "affinity_rank": 0.571429,
+   "affinity": 0.46417445482866043,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -104.79309,
+   "geohash": "9xj3z6",
+   "affinity_rank": 0.570201,
+   "affinity": 0.46313603322949115,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.789734,
+   "longitude": -104.89197,
+   "geohash": "9xj6m5",
+   "affinity_rank": 0.570122,
+   "affinity": 0.4620976116303219,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.86664,
+   "longitude": -105.04578,
+   "geohash": "9xj6c9",
+   "affinity_rank": 0.566667,
+   "affinity": 0.46105919003115264,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.86664,
+   "longitude": -104.97986,
+   "geohash": "9xj6g1",
+   "affinity_rank": 0.563218,
+   "affinity": 0.46002076843198336,
+   "popularity": 0.44963655244029077
+  },
+  {
+   "latitude": 39.883118,
+   "longitude": -104.96887,
+   "geohash": "9xj6gk",
+   "affinity_rank": 0.562701,
+   "affinity": 0.45898234683281414,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.844666,
+   "longitude": -105.05676,
+   "geohash": "9xj69m",
+   "affinity_rank": 0.56257,
+   "affinity": 0.45794392523364486,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -104.92493,
+   "geohash": "9xj3u2",
+   "affinity_rank": 0.562022,
+   "affinity": 0.4569055036344756,
+   "popularity": 0.44963655244029077
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -104.92493,
+   "geohash": "9xj3u7",
+   "affinity_rank": 0.56193,
+   "affinity": 0.45586708203530635,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -104.84802,
+   "geohash": "9xj3wp",
+   "affinity_rank": 0.561437,
+   "affinity": 0.45482866043613707,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -104.81506,
+   "geohash": "9xj3wg",
+   "affinity_rank": 0.560644,
+   "affinity": 0.4537902388369678,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.78424,
+   "longitude": -104.84802,
+   "geohash": "9xj6q4",
+   "affinity_rank": 0.56044,
+   "affinity": 0.45275181723779856,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -104.80408,
+   "geohash": "9xj3z0",
+   "affinity_rank": 0.556548,
+   "affinity": 0.4517133956386293,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -104.96887,
+   "geohash": "9xj65k",
+   "affinity_rank": 0.556465,
+   "affinity": 0.45067497403946,
+   "popularity": 0.5129802699896158
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -105.04578,
+   "geohash": "9xj61e",
+   "affinity_rank": 0.556464,
+   "affinity": 0.44963655244029077,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -104.96887,
+   "geohash": "9xj672",
+   "affinity_rank": 0.555681,
+   "affinity": 0.4485981308411215,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.53705,
+   "longitude": -104.782104,
+   "geohash": "9xj2zt",
+   "affinity_rank": 0.555389,
+   "affinity": 0.4475597092419522,
+   "popularity": 0.44963655244029077
+  },
+  {
+   "latitude": 39.62494,
+   "longitude": -105.1886,
+   "geohash": "9xj1qm",
+   "affinity_rank": 0.555352,
+   "affinity": 0.446521287642783,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.64691,
+   "longitude": -104.749146,
+   "geohash": "9xj983",
+   "affinity_rank": 0.553241,
+   "affinity": 0.4454828660436137,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.927063,
+   "longitude": -105.078735,
+   "geohash": "9xj70u",
+   "affinity_rank": 0.54898,
+   "affinity": 0.4444444444444444,
+   "popularity": 0.44963655244029077
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -104.81506,
+   "geohash": "9xj3yf",
+   "affinity_rank": 0.548936,
+   "affinity": 0.4434060228452752,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -105.111694,
+   "geohash": "9xj324",
+   "affinity_rank": 0.548323,
+   "affinity": 0.4423676012461059,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.883118,
+   "longitude": -105.00183,
+   "geohash": "9xj6fs",
+   "affinity_rank": 0.545685,
+   "affinity": 0.44132917964693663,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -105.232544,
+   "geohash": "9xj4jr",
+   "affinity_rank": 0.545222,
+   "affinity": 0.4402907580477674,
+   "popularity": 0.5129802699896158
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -104.81506,
+   "geohash": "9xj3yz",
+   "affinity_rank": 0.542857,
+   "affinity": 0.4392523364485981,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.597473,
+   "longitude": -104.990845,
+   "geohash": "9xj36b",
+   "affinity_rank": 0.542056,
+   "affinity": 0.43821391484942884,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -105.05676,
+   "geohash": "9xj3cr",
+   "affinity_rank": 0.541944,
+   "affinity": 0.4371754932502596,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -104.990845,
+   "geohash": "9xj3fg",
+   "affinity_rank": 0.53953,
+   "affinity": 0.43613707165109034,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -104.80408,
+   "geohash": "9xj6p1",
+   "affinity_rank": 0.539157,
+   "affinity": 0.43509865005192105,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.586487,
+   "longitude": -104.782104,
+   "geohash": "9xj3pw",
+   "affinity_rank": 0.539084,
+   "affinity": 0.43406022845275183,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -105.00183,
+   "geohash": "9xj3ft",
+   "affinity_rank": 0.538221,
+   "affinity": 0.43302180685358255,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -105.13367,
+   "geohash": "9xj4pd",
+   "affinity_rank": 0.537705,
+   "affinity": 0.43198338525441327,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -105.05676,
+   "geohash": "9xj612",
+   "affinity_rank": 0.537688,
+   "affinity": 0.43094496365524404,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -104.89197,
+   "geohash": "9xj3vp",
+   "affinity_rank": 0.537612,
+   "affinity": 0.42990654205607476,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.960022,
+   "longitude": -105.01282,
+   "geohash": "9xj766",
+   "affinity_rank": 0.537602,
+   "affinity": 0.4288681204569055,
+   "popularity": 0.44963655244029077
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -104.89197,
+   "geohash": "9xj6jn",
+   "affinity_rank": 0.53742,
+   "affinity": 0.42782969885773625,
+   "popularity": 0.44963655244029077
+  },
+  {
+   "latitude": 39.580994,
+   "longitude": -104.89197,
+   "geohash": "9xj3jj",
+   "affinity_rank": 0.537182,
+   "affinity": 0.42679127725856697,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.597473,
+   "longitude": -104.902954,
+   "geohash": "9xj3kb",
+   "affinity_rank": 0.536162,
+   "affinity": 0.4257528556593977,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.782104,
+   "geohash": "9xj3xw",
+   "affinity_rank": 0.536,
+   "affinity": 0.42471443406022846,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.597473,
+   "longitude": -105.13367,
+   "geohash": "9xj1r8",
+   "affinity_rank": 0.535992,
+   "affinity": 0.4236760124610592,
+   "popularity": 0.4620976116303219
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -105.03479,
+   "geohash": "9xj61z",
+   "affinity_rank": 0.534945,
+   "affinity": 0.4226375908618899,
+   "popularity": 0.47767393561786087
+  },
+  {
+   "latitude": 39.828186,
+   "longitude": -105.0238,
+   "geohash": "9xj6d4",
+   "affinity_rank": 0.534639,
+   "affinity": 0.4215991692627207,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -105.078735,
+   "geohash": "9xj3bg",
+   "affinity_rank": 0.534543,
+   "affinity": 0.4205607476635514,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -104.82605,
+   "geohash": "9xj6q9",
+   "affinity_rank": 0.534247,
+   "affinity": 0.4195223260643821,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.85565,
+   "longitude": -104.97986,
+   "geohash": "9xj6ep",
+   "affinity_rank": 0.53159,
+   "affinity": 0.4184839044652129,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.910583,
+   "longitude": -105.12268,
+   "geohash": "9xj5pc",
+   "affinity_rank": 0.529618,
+   "affinity": 0.4174454828660436,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.78424,
+   "longitude": -105.232544,
+   "geohash": "9xj4m6",
+   "affinity_rank": 0.52921,
+   "affinity": 0.4164070612668744,
+   "popularity": 0.4974039460020768
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -104.869995,
+   "geohash": "9xj6je",
+   "affinity_rank": 0.527778,
+   "affinity": 0.4153686396677051,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -105.14465,
+   "geohash": "9xj1z3",
+   "affinity_rank": 0.527233,
+   "affinity": 0.4143302180685358,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -104.902954,
+   "geohash": "9xj3sz",
+   "affinity_rank": 0.527229,
+   "affinity": 0.4132917964693666,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.92157,
+   "longitude": -104.97986,
+   "geohash": "9xj755",
+   "affinity_rank": 0.525173,
+   "affinity": 0.4122533748701973,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -104.869995,
+   "geohash": "9xj6jw",
+   "affinity_rank": 0.524096,
+   "affinity": 0.411214953271028,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -105.0238,
+   "geohash": "9xj64j",
+   "affinity_rank": 0.523835,
+   "affinity": 0.4101765316718588,
+   "popularity": 0.44963655244029077
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -104.88098,
+   "geohash": "9xj3v6",
+   "affinity_rank": 0.523636,
+   "affinity": 0.4091381100726895,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -104.91394,
+   "geohash": "9xj6hd",
+   "affinity_rank": 0.523426,
+   "affinity": 0.40809968847352024,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.630432,
+   "longitude": -104.80408,
+   "geohash": "9xj3rn",
+   "affinity_rank": 0.523364,
+   "affinity": 0.407061266874351,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.564514,
+   "longitude": -104.990845,
+   "geohash": "9xj34f",
+   "affinity_rank": 0.523191,
+   "affinity": 0.40602284527518173,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -104.89197,
+   "geohash": "9xj3vh",
+   "affinity_rank": 0.523121,
+   "affinity": 0.40498442367601245,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -104.73816,
+   "geohash": "9xjd28",
+   "affinity_rank": 0.523077,
+   "affinity": 0.4039460020768432,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.861145,
+   "longitude": -105.08972,
+   "geohash": "9xj6b8",
+   "affinity_rank": 0.519515,
+   "affinity": 0.40290758047767394,
+   "popularity": 0.44963655244029077
+  },
+  {
+   "latitude": 39.564514,
+   "longitude": -104.957886,
+   "geohash": "9xj35d",
+   "affinity_rank": 0.517647,
+   "affinity": 0.40186915887850466,
+   "popularity": 0.44963655244029077
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -104.77112,
+   "geohash": "9xj6rb",
+   "affinity_rank": 0.516517,
+   "affinity": 0.40083073727933544,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.53705,
+   "longitude": -105.01282,
+   "geohash": "9xj2fm",
+   "affinity_rank": 0.515547,
+   "affinity": 0.39979231568016615,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -104.9469,
+   "geohash": "9xj3ez",
+   "affinity_rank": 0.513096,
+   "affinity": 0.3987538940809969,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.493103,
+   "longitude": -104.92493,
+   "geohash": "9xj2sm",
+   "affinity_rank": 0.512821,
+   "affinity": 0.39771547248182765,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -104.869995,
+   "geohash": "9xj3te",
+   "affinity_rank": 0.511574,
+   "affinity": 0.39667705088265837,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.8172,
+   "longitude": -105.22156,
+   "geohash": "9xj4t8",
+   "affinity_rank": 0.509687,
+   "affinity": 0.3956386292834891,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -104.837036,
+   "geohash": "9xj6n3",
+   "affinity_rank": 0.509554,
+   "affinity": 0.39460020768431986,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -105.03479,
+   "geohash": "9xj61b",
+   "affinity_rank": 0.509104,
+   "affinity": 0.3935617860851506,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -104.89197,
+   "geohash": "9xj3m4",
+   "affinity_rank": 0.502569,
+   "affinity": 0.3925233644859813,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -105.199585,
+   "geohash": "9xj1yh",
+   "affinity_rank": 0.501548,
+   "affinity": 0.39148494288681207,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.78424,
+   "longitude": -105.0238,
+   "geohash": "9xj664",
+   "affinity_rank": 0.49775,
+   "affinity": 0.3904465212876428,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.78424,
+   "longitude": -105.111694,
+   "geohash": "9xj624",
+   "affinity_rank": 0.49711,
+   "affinity": 0.3894080996884735,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -105.05676,
+   "geohash": "9xj396",
+   "affinity_rank": 0.493802,
+   "affinity": 0.3883696780893043,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -104.902954,
+   "geohash": "9xj3uc",
+   "affinity_rank": 0.492958,
+   "affinity": 0.387331256490135,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.844666,
+   "longitude": -104.96887,
+   "geohash": "9xj6em",
+   "affinity_rank": 0.492718,
+   "affinity": 0.3862928348909657,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -105.03479,
+   "geohash": "9xj33f",
+   "affinity_rank": 0.492235,
+   "affinity": 0.3852544132917965,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -105.078735,
+   "geohash": "9xj3bz",
+   "affinity_rank": 0.491965,
+   "affinity": 0.3842159916926272,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.92157,
+   "longitude": -104.990845,
+   "geohash": "9xj74g",
+   "affinity_rank": 0.491647,
+   "affinity": 0.38317757009345793,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.877625,
+   "longitude": -104.97986,
+   "geohash": "9xj6g5",
+   "affinity_rank": 0.491525,
+   "affinity": 0.3821391484942887,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.85016,
+   "longitude": -104.990845,
+   "geohash": "9xj6dy",
+   "affinity_rank": 0.49095,
+   "affinity": 0.3811007268951194,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.828186,
+   "longitude": -104.990845,
+   "geohash": "9xj6df",
+   "affinity_rank": 0.481514,
+   "affinity": 0.38006230529595014,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -105.0238,
+   "geohash": "9xj3fh",
+   "affinity_rank": 0.480663,
+   "affinity": 0.3790238836967809,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.861145,
+   "longitude": -105.0238,
+   "geohash": "9xj6f0",
+   "affinity_rank": 0.480249,
+   "affinity": 0.37798546209761164,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.586487,
+   "longitude": -105.13367,
+   "geohash": "9xj1pw",
+   "affinity_rank": 0.479675,
+   "affinity": 0.37694704049844235,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -104.869995,
+   "geohash": "9xj3vs",
+   "affinity_rank": 0.477966,
+   "affinity": 0.37590861889927313,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.62494,
+   "longitude": -104.68323,
+   "geohash": "9xj93v",
+   "affinity_rank": 0.477492,
+   "affinity": 0.37487019730010385,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.828186,
+   "longitude": -104.97986,
+   "geohash": "9xj6e4",
+   "affinity_rank": 0.477223,
+   "affinity": 0.37383177570093457,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -104.96887,
+   "geohash": "9xj3g2",
+   "affinity_rank": 0.473725,
+   "affinity": 0.37279335410176534,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -104.9469,
+   "geohash": "9xj3gc",
+   "affinity_rank": 0.473203,
+   "affinity": 0.37175493250259606,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.564514,
+   "longitude": -104.91394,
+   "geohash": "9xj3hd",
+   "affinity_rank": 0.472998,
+   "affinity": 0.3707165109034268,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.570007,
+   "longitude": -104.92493,
+   "geohash": "9xj3h7",
+   "affinity_rank": 0.471891,
+   "affinity": 0.36967808930425755,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -104.96887,
+   "geohash": "9xj652",
+   "affinity_rank": 0.47116,
+   "affinity": 0.36863966770508827,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.916077,
+   "longitude": -105.0238,
+   "geohash": "9xj744",
+   "affinity_rank": 0.470874,
+   "affinity": 0.367601246105919,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.88861,
+   "longitude": -105.0238,
+   "geohash": "9xj6fj",
+   "affinity_rank": 0.470667,
+   "affinity": 0.36656282450674976,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.883118,
+   "longitude": -105.0238,
+   "geohash": "9xj6fh",
+   "affinity_rank": 0.470305,
+   "affinity": 0.3655244029075805,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.932556,
+   "longitude": -104.97986,
+   "geohash": "9xj75j",
+   "affinity_rank": 0.468326,
+   "affinity": 0.3644859813084112,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.828186,
+   "longitude": -105.14465,
+   "geohash": "9xj4x6",
+   "affinity_rank": 0.468069,
+   "affinity": 0.363447559709242,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.54254,
+   "longitude": -105.078735,
+   "geohash": "9xj2by",
+   "affinity_rank": 0.466779,
+   "affinity": 0.3624091381100727,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -104.9469,
+   "geohash": "9xj67b",
+   "affinity_rank": 0.466614,
+   "affinity": 0.3613707165109034,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -104.89197,
+   "geohash": "9xj6jj",
+   "affinity_rank": 0.466236,
+   "affinity": 0.3603322949117342,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -105.199585,
+   "geohash": "9xj1wp",
+   "affinity_rank": 0.465089,
+   "affinity": 0.3592938733125649,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.80072,
+   "longitude": -105.12268,
+   "geohash": "9xj4rv",
+   "affinity_rank": 0.464646,
+   "affinity": 0.3582554517133956,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.53705,
+   "longitude": -104.89197,
+   "geohash": "9xj2vj",
+   "affinity_rank": 0.464623,
+   "affinity": 0.3572170301142264,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -105.08972,
+   "geohash": "9xj38x",
+   "affinity_rank": 0.4635,
+   "affinity": 0.3561786085150571,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.877625,
+   "longitude": -104.990845,
+   "geohash": "9xj6fg",
+   "affinity_rank": 0.461039,
+   "affinity": 0.35514018691588783,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.53705,
+   "longitude": -104.9469,
+   "geohash": "9xj2gv",
+   "affinity_rank": 0.460169,
+   "affinity": 0.3541017653167186,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -105.03479,
+   "geohash": "9xj61v",
+   "affinity_rank": 0.459048,
+   "affinity": 0.3530633437175493,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -105.232544,
+   "geohash": "9xj1mr",
+   "affinity_rank": 0.458524,
+   "affinity": 0.35202492211838005,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.78424,
+   "longitude": -104.749146,
+   "geohash": "9xjd26",
+   "affinity_rank": 0.456365,
+   "affinity": 0.3509865005192108,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.64691,
+   "longitude": -104.97986,
+   "geohash": "9xj3e1",
+   "affinity_rank": 0.454191,
+   "affinity": 0.34994807892004154,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -105.08972,
+   "geohash": "9xj3be",
+   "affinity_rank": 0.454145,
+   "affinity": 0.34890965732087226,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -105.17761,
+   "geohash": "9xj4n9",
+   "affinity_rank": 0.453749,
+   "affinity": 0.34787123572170303,
+   "popularity": 0.43406022845275183
+  },
+  {
+   "latitude": 39.83368,
+   "longitude": -105.04578,
+   "geohash": "9xj69e",
+   "affinity_rank": 0.453731,
+   "affinity": 0.34683281412253375,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.668884,
+   "longitude": -104.97986,
+   "geohash": "9xj3ej",
+   "affinity_rank": 0.451816,
+   "affinity": 0.34579439252336447,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.580994,
+   "longitude": -104.92493,
+   "geohash": "9xj3hm",
+   "affinity_rank": 0.451327,
+   "affinity": 0.34475597092419524,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.93591,
+   "geohash": "9xj3sn",
+   "affinity_rank": 0.450038,
+   "affinity": 0.34371754932502596,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -105.078735,
+   "geohash": "9xj62b",
+   "affinity_rank": 0.448649,
+   "affinity": 0.3426791277258567,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -105.21057,
+   "geohash": "9xj1vv",
+   "affinity_rank": 0.446947,
+   "affinity": 0.34164070612668745,
+   "popularity": 0.4174454828660436
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -104.85901,
+   "geohash": "9xj3tf",
+   "affinity_rank": 0.446328,
+   "affinity": 0.3406022845275182,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.66339,
+   "longitude": -105.111694,
+   "geohash": "9xj38h",
+   "affinity_rank": 0.442229,
+   "affinity": 0.3395638629283489,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.789734,
+   "longitude": -104.77112,
+   "geohash": "9xj6rg",
+   "affinity_rank": 0.441441,
+   "affinity": 0.33852544132917967,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.927063,
+   "longitude": -104.88098,
+   "geohash": "9xj7jk",
+   "affinity_rank": 0.438692,
+   "affinity": 0.3374870197300104,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -105.14465,
+   "geohash": "9xj4p7",
+   "affinity_rank": 0.435122,
+   "affinity": 0.3364485981308411,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.83368,
+   "longitude": -104.990845,
+   "geohash": "9xj6dg",
+   "affinity_rank": 0.434783,
+   "affinity": 0.3354101765316719,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -104.89197,
+   "geohash": "9xj6jp",
+   "affinity_rank": 0.434457,
+   "affinity": 0.3343717549325026,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -104.77112,
+   "geohash": "9xj6pz",
+   "affinity_rank": 0.432558,
+   "affinity": 0.3333333333333333,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -105.15564,
+   "geohash": "9xj1zn",
+   "affinity_rank": 0.432432,
+   "affinity": 0.3322949117341641,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.531555,
+   "longitude": -104.80408,
+   "geohash": "9xj2zh",
+   "affinity_rank": 0.431444,
+   "affinity": 0.3312564901349948,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.668884,
+   "longitude": -105.199585,
+   "geohash": "9xj1wj",
+   "affinity_rank": 0.430676,
+   "affinity": 0.3302180685358255,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.66339,
+   "longitude": -104.93591,
+   "geohash": "9xj3sh",
+   "affinity_rank": 0.429206,
+   "affinity": 0.3291796469366563,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.981995,
+   "longitude": -104.869995,
+   "geohash": "9xj7mw",
+   "affinity_rank": 0.427762,
+   "affinity": 0.328141225337487,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.59198,
+   "longitude": -104.91394,
+   "geohash": "9xj3hx",
+   "affinity_rank": 0.427056,
+   "affinity": 0.32710280373831774,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -105.04578,
+   "geohash": "9xj39w",
+   "affinity_rank": 0.426901,
+   "affinity": 0.3260643821391485,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -104.84802,
+   "geohash": "9xj6n0",
+   "affinity_rank": 0.426778,
+   "affinity": 0.32502596053997923,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.916077,
+   "longitude": -105.08972,
+   "geohash": "9xj70d",
+   "affinity_rank": 0.424065,
+   "affinity": 0.32398753894080995,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.55902,
+   "longitude": -105.01282,
+   "geohash": "9xj343",
+   "affinity_rank": 0.423121,
+   "affinity": 0.3229491173416407,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.548035,
+   "longitude": -104.77112,
+   "geohash": "9xj2zz",
+   "affinity_rank": 0.422043,
+   "affinity": 0.32191069574247144,
+   "popularity": 0.3956386292834891
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -104.92493,
+   "geohash": "9xj3sr",
+   "affinity_rank": 0.419355,
+   "affinity": 0.32087227414330216,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.564514,
+   "longitude": -104.92493,
+   "geohash": "9xj3h6",
+   "affinity_rank": 0.418649,
+   "affinity": 0.31983385254413293,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -104.837036,
+   "geohash": "9xj3y3",
+   "affinity_rank": 0.417445,
+   "affinity": 0.31879543094496365,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.597473,
+   "longitude": -104.84802,
+   "geohash": "9xj3q0",
+   "affinity_rank": 0.416517,
+   "affinity": 0.3177570093457944,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.83368,
+   "longitude": -105.00183,
+   "geohash": "9xj6de",
+   "affinity_rank": 0.416327,
+   "affinity": 0.31671858774662515,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -105.111694,
+   "geohash": "9xj604",
+   "affinity_rank": 0.412027,
+   "affinity": 0.31568016614745587,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -105.12268,
+   "geohash": "9xj4pf",
+   "affinity_rank": 0.411765,
+   "affinity": 0.3146417445482866,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -104.79309,
+   "geohash": "9xj3z7",
+   "affinity_rank": 0.41159,
+   "affinity": 0.31360332294911736,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.80072,
+   "longitude": -105.10071,
+   "geohash": "9xj62m",
+   "affinity_rank": 0.406199,
+   "affinity": 0.3125649013499481,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.844666,
+   "longitude": -105.15564,
+   "geohash": "9xj4xj",
+   "affinity_rank": 0.405751,
+   "affinity": 0.3115264797507788,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.927063,
+   "longitude": -104.990845,
+   "geohash": "9xj74u",
+   "affinity_rank": 0.40553,
+   "affinity": 0.31048805815160957,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.59198,
+   "longitude": -104.89197,
+   "geohash": "9xj3jp",
+   "affinity_rank": 0.402619,
+   "affinity": 0.3094496365524403,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.64142,
+   "longitude": -104.869995,
+   "geohash": "9xj3t8",
+   "affinity_rank": 0.402116,
+   "affinity": 0.308411214953271,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.932556,
+   "longitude": -105.12268,
+   "geohash": "9xj5pv",
+   "affinity_rank": 0.400901,
+   "affinity": 0.3073727933541018,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -104.84802,
+   "geohash": "9xj3y0",
+   "affinity_rank": 0.398585,
+   "affinity": 0.3063343717549325,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -104.96887,
+   "geohash": "9xj3e6",
+   "affinity_rank": 0.398004,
+   "affinity": 0.3052959501557632,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.811707,
+   "longitude": -104.77112,
+   "geohash": "9xj6rz",
+   "affinity_rank": 0.396923,
+   "affinity": 0.304257528556594,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.943542,
+   "longitude": -105.12268,
+   "geohash": "9xj5pz",
+   "affinity_rank": 0.394044,
+   "affinity": 0.3032191069574247,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.87213,
+   "longitude": -104.97986,
+   "geohash": "9xj6g4",
+   "affinity_rank": 0.393939,
+   "affinity": 0.30218068535825543,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.66339,
+   "longitude": -104.902954,
+   "geohash": "9xj3su",
+   "affinity_rank": 0.393365,
+   "affinity": 0.3011422637590862,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -105.0238,
+   "geohash": "9xj3dn",
+   "affinity_rank": 0.392661,
+   "affinity": 0.3001038421599169,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -104.80408,
+   "geohash": "9xj3x4",
+   "affinity_rank": 0.390845,
+   "affinity": 0.29906542056074764,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.811707,
+   "longitude": -105.12268,
+   "geohash": "9xj4rz",
+   "affinity_rank": 0.388158,
+   "affinity": 0.2980269989615784,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.55902,
+   "longitude": -104.782104,
+   "geohash": "9xj3p9",
+   "affinity_rank": 0.386707,
+   "affinity": 0.29698857736240913,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.613953,
+   "longitude": -104.990845,
+   "geohash": "9xj36g",
+   "affinity_rank": 0.385488,
+   "affinity": 0.29595015576323985,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.619446,
+   "longitude": -104.990845,
+   "geohash": "9xj36u",
+   "affinity_rank": 0.385291,
+   "affinity": 0.2949117341640706,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.839172,
+   "longitude": -105.08972,
+   "geohash": "9xj68s",
+   "affinity_rank": 0.384434,
+   "affinity": 0.29387331256490135,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -105.01282,
+   "geohash": "9xj366",
+   "affinity_rank": 0.383721,
+   "affinity": 0.29283489096573206,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.83368,
+   "longitude": -105.05676,
+   "geohash": "9xj697",
+   "affinity_rank": 0.382766,
+   "affinity": 0.29179646936656284,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.5755,
+   "longitude": -104.79309,
+   "geohash": "9xj3pk",
+   "affinity_rank": 0.382155,
+   "affinity": 0.29075804776739356,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.960022,
+   "longitude": -105.04578,
+   "geohash": "9xj73d",
+   "affinity_rank": 0.381215,
+   "affinity": 0.2897196261682243,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.828186,
+   "longitude": -105.05676,
+   "geohash": "9xj696",
+   "affinity_rank": 0.381132,
+   "affinity": 0.28868120456905505,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.62494,
+   "longitude": -105.01282,
+   "geohash": "9xj36m",
+   "affinity_rank": 0.380435,
+   "affinity": 0.28764278296988577,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -105.10071,
+   "geohash": "9xj3b7",
+   "affinity_rank": 0.379645,
+   "affinity": 0.2866043613707165,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -104.93591,
+   "geohash": "9xj6h4",
+   "affinity_rank": 0.379464,
+   "affinity": 0.28556593977154726,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -104.782104,
+   "geohash": "9xj3xe",
+   "affinity_rank": 0.37931,
+   "affinity": 0.284527518172378,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.553528,
+   "longitude": -104.869995,
+   "geohash": "9xj3j8",
+   "affinity_rank": 0.378738,
+   "affinity": 0.2834890965732087,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.916077,
+   "longitude": -104.92493,
+   "geohash": "9xj7h6",
+   "affinity_rank": 0.377399,
+   "affinity": 0.2824506749740395,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -104.81506,
+   "geohash": "9xj3yu",
+   "affinity_rank": 0.376068,
+   "affinity": 0.2814122533748702,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -104.81506,
+   "geohash": "9xj3yc",
+   "affinity_rank": 0.37276,
+   "affinity": 0.2803738317757009,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.91394,
+   "geohash": "9xj3sw",
+   "affinity_rank": 0.371084,
+   "affinity": 0.2793354101765317,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.5755,
+   "longitude": -105.06775,
+   "geohash": "9xj31h",
+   "affinity_rank": 0.370766,
+   "affinity": 0.2782969885773624,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -105.199585,
+   "geohash": "9xj1yp",
+   "affinity_rank": 0.370602,
+   "affinity": 0.2772585669781931,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.580994,
+   "longitude": -104.71619,
+   "geohash": "9xj91j",
+   "affinity_rank": 0.368821,
+   "affinity": 0.2762201453790239,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.822693,
+   "longitude": -105.04578,
+   "geohash": "9xj699",
+   "affinity_rank": 0.36875,
+   "affinity": 0.2751817237798546,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -104.88098,
+   "geohash": "9xj6j6",
+   "affinity_rank": 0.368741,
+   "affinity": 0.27414330218068533,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.5755,
+   "longitude": -104.990845,
+   "geohash": "9xj34u",
+   "affinity_rank": 0.366667,
+   "affinity": 0.2731048805815161,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -105.03479,
+   "geohash": "9xj3cv",
+   "affinity_rank": 0.366197,
+   "affinity": 0.2720664589823468,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.981995,
+   "longitude": -105.08972,
+   "geohash": "9xj72w",
+   "affinity_rank": 0.363222,
+   "affinity": 0.27102803738317754,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.619446,
+   "longitude": -105.0238,
+   "geohash": "9xj36h",
+   "affinity_rank": 0.361719,
+   "affinity": 0.2699896157840083,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -104.92493,
+   "geohash": "9xj3k6",
+   "affinity_rank": 0.361393,
+   "affinity": 0.26895119418483904,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.586487,
+   "longitude": -105.00183,
+   "geohash": "9xj34w",
+   "affinity_rank": 0.360996,
+   "affinity": 0.26791277258566976,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.844666,
+   "longitude": -105.111694,
+   "geohash": "9xj68j",
+   "affinity_rank": 0.359873,
+   "affinity": 0.26687435098650053,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -105.0238,
+   "geohash": "9xj3f0",
+   "affinity_rank": 0.359447,
+   "affinity": 0.26583592938733125,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.55902,
+   "longitude": -105.00183,
+   "geohash": "9xj349",
+   "affinity_rank": 0.359136,
+   "affinity": 0.26479750778816197,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.630432,
+   "longitude": -104.89197,
+   "geohash": "9xj3mn",
+   "affinity_rank": 0.359122,
+   "affinity": 0.26375908618899274,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.811707,
+   "longitude": -105.05676,
+   "geohash": "9xj63r",
+   "affinity_rank": 0.358939,
+   "affinity": 0.26272066458982346,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.59198,
+   "longitude": -104.749146,
+   "geohash": "9xj90r",
+   "affinity_rank": 0.357798,
+   "affinity": 0.2616822429906542,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.66339,
+   "longitude": -105.08972,
+   "geohash": "9xj38s",
+   "affinity_rank": 0.356589,
+   "affinity": 0.26064382139148495,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.95453,
+   "longitude": -105.14465,
+   "geohash": "9xj5r3",
+   "affinity_rank": 0.356467,
+   "affinity": 0.25960539979231567,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -105.0238,
+   "geohash": "9xj640",
+   "affinity_rank": 0.355341,
+   "affinity": 0.2585669781931464,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -104.91394,
+   "geohash": "9xj3us",
+   "affinity_rank": 0.353814,
+   "affinity": 0.25752855659397716,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -105.01282,
+   "geohash": "9xj643",
+   "affinity_rank": 0.352434,
+   "affinity": 0.2564901349948079,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -105.06775,
+   "geohash": "9xj630",
+   "affinity_rank": 0.352299,
+   "affinity": 0.2554517133956386,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -105.17761,
+   "geohash": "9xj4n8",
+   "affinity_rank": 0.35079,
+   "affinity": 0.2544132917964694,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.910583,
+   "longitude": -105.05676,
+   "geohash": "9xj713",
+   "affinity_rank": 0.349206,
+   "affinity": 0.2533748701973001,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -105.29846,
+   "geohash": "9xj1gv",
+   "affinity_rank": 0.348977,
+   "affinity": 0.2523364485981308,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -105.166626,
+   "geohash": "9xj1qz",
+   "affinity_rank": 0.348424,
+   "affinity": 0.2512980269989616,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.92157,
+   "longitude": -105.06775,
+   "geohash": "9xj715",
+   "affinity_rank": 0.347023,
+   "affinity": 0.2502596053997923,
+   "popularity": 0.3592938733125649
+  },
+  {
+   "latitude": 39.85565,
+   "longitude": -104.93591,
+   "geohash": "9xj6sp",
+   "affinity_rank": 0.346214,
+   "affinity": 0.24922118380062305,
+   "popularity": 0.32710280373831774
+  },
+  {
+   "latitude": 39.580994,
+   "longitude": -104.957886,
+   "geohash": "9xj35t",
+   "affinity_rank": 0.345828,
+   "affinity": 0.2481827622014538,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.844666,
+   "longitude": -105.04578,
+   "geohash": "9xj69t",
+   "affinity_rank": 0.345304,
+   "affinity": 0.24714434060228452,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -104.77112,
+   "geohash": "9xj6py",
+   "affinity_rank": 0.345291,
+   "affinity": 0.24610591900311526,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.668884,
+   "longitude": -104.91394,
+   "geohash": "9xj3st",
+   "affinity_rank": 0.343612,
+   "affinity": 0.245067497403946,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.92157,
+   "longitude": -105.08972,
+   "geohash": "9xj70e",
+   "affinity_rank": 0.342644,
+   "affinity": 0.24402907580477673,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.613953,
+   "longitude": -104.902954,
+   "geohash": "9xj3kg",
+   "affinity_rank": 0.342152,
+   "affinity": 0.24299065420560748,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -105.111694,
+   "geohash": "9xj32p",
+   "affinity_rank": 0.339869,
+   "affinity": 0.24195223260643822,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -105.12268,
+   "geohash": "9xj4rb",
+   "affinity_rank": 0.339568,
+   "affinity": 0.24091381100726894,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -105.10071,
+   "geohash": "9xj387",
+   "affinity_rank": 0.338759,
+   "affinity": 0.2398753894080997,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -105.0238,
+   "geohash": "9xj3f1",
+   "affinity_rank": 0.338685,
+   "affinity": 0.23883696780893043,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.493103,
+   "longitude": -104.869995,
+   "geohash": "9xj2tt",
+   "affinity_rank": 0.338362,
+   "affinity": 0.23779854620976115,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -104.9469,
+   "geohash": "9xj3gz",
+   "affinity_rank": 0.336588,
+   "affinity": 0.2367601246105919,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.78424,
+   "longitude": -105.12268,
+   "geohash": "9xj4rf",
+   "affinity_rank": 0.335725,
+   "affinity": 0.23572170301142265,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -105.13367,
+   "geohash": "9xj1xe",
+   "affinity_rank": 0.33189,
+   "affinity": 0.23468328141225336,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -104.869995,
+   "geohash": "9xj6j8",
+   "affinity_rank": 0.331492,
+   "affinity": 0.2336448598130841,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -104.93591,
+   "geohash": "9xj6hh",
+   "affinity_rank": 0.330366,
+   "affinity": 0.23260643821391486,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -105.078735,
+   "geohash": "9xj60v",
+   "affinity_rank": 0.329073,
+   "affinity": 0.23156801661474558,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.85016,
+   "longitude": -105.15564,
+   "geohash": "9xj4xn",
+   "affinity_rank": 0.328302,
+   "affinity": 0.23052959501557632,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.66339,
+   "longitude": -105.199585,
+   "geohash": "9xj1wh",
+   "affinity_rank": 0.327471,
+   "affinity": 0.22949117341640707,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.822693,
+   "longitude": -104.96887,
+   "geohash": "9xj6e3",
+   "affinity_rank": 0.326531,
+   "affinity": 0.2284527518172378,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.619446,
+   "longitude": -105.04578,
+   "geohash": "9xj33s",
+   "affinity_rank": 0.326049,
+   "affinity": 0.22741433021806853,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -104.957886,
+   "geohash": "9xj3gt",
+   "affinity_rank": 0.325792,
+   "affinity": 0.22637590861889928,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.987488,
+   "longitude": -105.111694,
+   "geohash": "9xj72p",
+   "affinity_rank": 0.324873,
+   "affinity": 0.22533748701973,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -105.03479,
+   "geohash": "9xj39f",
+   "affinity_rank": 0.324468,
+   "affinity": 0.22429906542056074,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -105.05676,
+   "geohash": "9xj3ck",
+   "affinity_rank": 0.323907,
+   "affinity": 0.2232606438213915,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -105.05676,
+   "geohash": "9xj3cm",
+   "affinity_rank": 0.3232,
+   "affinity": 0.2222222222222222,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -105.111694,
+   "geohash": "9xj600",
+   "affinity_rank": 0.322761,
+   "affinity": 0.22118380062305296,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -105.15564,
+   "geohash": "9xj1z1",
+   "affinity_rank": 0.320553,
+   "affinity": 0.2201453790238837,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -105.078735,
+   "geohash": "9xj3bf",
+   "affinity_rank": 0.31768,
+   "affinity": 0.21910695742471442,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.987488,
+   "longitude": -105.078735,
+   "geohash": "9xj72z",
+   "affinity_rank": 0.31746,
+   "affinity": 0.21806853582554517,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -104.85901,
+   "geohash": "9xj6jf",
+   "affinity_rank": 0.317215,
+   "affinity": 0.21703011422637591,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -105.078735,
+   "geohash": "9xj3bb",
+   "affinity_rank": 0.316,
+   "affinity": 0.21599169262720663,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -105.1886,
+   "geohash": "9xj1y6",
+   "affinity_rank": 0.315985,
+   "affinity": 0.21495327102803738,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.943542,
+   "longitude": -104.88098,
+   "geohash": "9xj7jr",
+   "affinity_rank": 0.315789,
+   "affinity": 0.21391484942886813,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.548035,
+   "longitude": -105.10071,
+   "geohash": "9xj2br",
+   "affinity_rank": 0.315217,
+   "affinity": 0.21287642782969884,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.613953,
+   "longitude": -104.71619,
+   "geohash": "9xj935",
+   "affinity_rank": 0.313953,
+   "affinity": 0.2118380062305296,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.602966,
+   "longitude": -104.957886,
+   "geohash": "9xj379",
+   "affinity_rank": 0.3137,
+   "affinity": 0.21079958463136034,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.85016,
+   "longitude": -105.08972,
+   "geohash": "9xj68w",
+   "affinity_rank": 0.306931,
+   "affinity": 0.20976116303219106,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.548035,
+   "longitude": -104.990845,
+   "geohash": "9xj2fz",
+   "affinity_rank": 0.306911,
+   "affinity": 0.2087227414330218,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -104.957886,
+   "geohash": "9xj65s",
+   "affinity_rank": 0.306278,
+   "affinity": 0.20768431983385255,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.932556,
+   "longitude": -105.15564,
+   "geohash": "9xj5pj",
+   "affinity_rank": 0.305437,
+   "affinity": 0.2066458982346833,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -104.902954,
+   "geohash": "9xj3kz",
+   "affinity_rank": 0.305195,
+   "affinity": 0.205607476635514,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.822693,
+   "longitude": -105.00183,
+   "geohash": "9xj6d9",
+   "affinity_rank": 0.302738,
+   "affinity": 0.20456905503634476,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.55902,
+   "longitude": -104.89197,
+   "geohash": "9xj3j1",
+   "affinity_rank": 0.300813,
+   "affinity": 0.2035306334371755,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -104.91394,
+   "geohash": "9xj3u8",
+   "affinity_rank": 0.300741,
+   "affinity": 0.20249221183800623,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.64142,
+   "longitude": -105.01282,
+   "geohash": "9xj3d2",
+   "affinity_rank": 0.300079,
+   "affinity": 0.20145379023883697,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.53705,
+   "longitude": -104.85901,
+   "geohash": "9xj2vv",
+   "affinity_rank": 0.298658,
+   "affinity": 0.20041536863966772,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.981995,
+   "longitude": -105.0238,
+   "geohash": "9xj76n",
+   "affinity_rank": 0.298462,
+   "affinity": 0.19937694704049844,
+   "popularity": 0.2762201453790239
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -104.82605,
+   "geohash": "9xj3yw",
+   "affinity_rank": 0.298113,
+   "affinity": 0.19833852544132918,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -105.21057,
+   "geohash": "9xj4jf",
+   "affinity_rank": 0.29595,
+   "affinity": 0.19730010384215993,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.822693,
+   "longitude": -104.68323,
+   "geohash": "9xjd9c",
+   "affinity_rank": 0.291765,
+   "affinity": 0.19626168224299065,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.883118,
+   "longitude": -105.10071,
+   "geohash": "9xj6bk",
+   "affinity_rank": 0.291566,
+   "affinity": 0.1952232606438214,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -105.14465,
+   "geohash": "9xj4pm",
+   "affinity_rank": 0.289823,
+   "affinity": 0.19418483904465214,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.844666,
+   "longitude": -105.03479,
+   "geohash": "9xj69v",
+   "affinity_rank": 0.287356,
+   "affinity": 0.19314641744548286,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.548035,
+   "longitude": -105.0238,
+   "geohash": "9xj2fp",
+   "affinity_rank": 0.286857,
+   "affinity": 0.1921079958463136,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.62494,
+   "longitude": -105.14465,
+   "geohash": "9xj1rm",
+   "affinity_rank": 0.286207,
+   "affinity": 0.19106957424714435,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.97101,
+   "longitude": -105.13367,
+   "geohash": "9xj5rs",
+   "affinity_rank": 0.28599,
+   "affinity": 0.19003115264797507,
+   "popularity": 0.29595015576323985
+  },
+  {
+   "latitude": 39.64142,
+   "longitude": -105.06775,
+   "geohash": "9xj390",
+   "affinity_rank": 0.285714,
+   "affinity": 0.18795430944963656,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -104.837036,
+   "geohash": "9xj3yk",
+   "affinity_rank": 0.285714,
+   "affinity": 0.18795430944963656,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -105.14465,
+   "geohash": "9xj4r3",
+   "affinity_rank": 0.280992,
+   "affinity": 0.18691588785046728,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.602966,
+   "longitude": -105.14465,
+   "geohash": "9xj1r3",
+   "affinity_rank": 0.278195,
+   "affinity": 0.18587746625129803,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -105.166626,
+   "geohash": "9xj1wz",
+   "affinity_rank": 0.278019,
+   "affinity": 0.18483904465212878,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -104.79309,
+   "geohash": "9xj3r6",
+   "affinity_rank": 0.277937,
+   "affinity": 0.1838006230529595,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.92157,
+   "longitude": -104.957886,
+   "geohash": "9xj75e",
+   "affinity_rank": 0.276596,
+   "affinity": 0.18276220145379024,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.86664,
+   "longitude": -105.0238,
+   "geohash": "9xj6f1",
+   "affinity_rank": 0.274194,
+   "affinity": 0.181723779854621,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -104.869995,
+   "geohash": "9xj3vw",
+   "affinity_rank": 0.272926,
+   "affinity": 0.1806853582554517,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.54254,
+   "longitude": -104.77112,
+   "geohash": "9xj2zy",
+   "affinity_rank": 0.269841,
+   "affinity": 0.17964693665628245,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.54254,
+   "longitude": -105.03479,
+   "geohash": "9xj2cy",
+   "affinity_rank": 0.268817,
+   "affinity": 0.1786085150571132,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.822693,
+   "longitude": -105.03479,
+   "geohash": "9xj69c",
+   "affinity_rank": 0.26875,
+   "affinity": 0.17757009345794392,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.883118,
+   "longitude": -105.08972,
+   "geohash": "9xj6bs",
+   "affinity_rank": 0.267552,
+   "affinity": 0.17653167185877466,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -104.957886,
+   "geohash": "9xj679",
+   "affinity_rank": 0.266575,
+   "affinity": 0.1754932502596054,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.54254,
+   "longitude": -104.91394,
+   "geohash": "9xj2uw",
+   "affinity_rank": 0.263636,
+   "affinity": 0.17445482866043613,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.515076,
+   "longitude": -104.9469,
+   "geohash": "9xj2gc",
+   "affinity_rank": 0.262411,
+   "affinity": 0.17341640706126688,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.564514,
+   "longitude": -105.0238,
+   "geohash": "9xj344",
+   "affinity_rank": 0.260274,
+   "affinity": 0.17237798546209762,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.828186,
+   "longitude": -105.04578,
+   "geohash": "9xj69d",
+   "affinity_rank": 0.258278,
+   "affinity": 0.17133956386292834,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -105.01282,
+   "geohash": "9xj3f7",
+   "affinity_rank": 0.258096,
+   "affinity": 0.1703011422637591,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -105.111694,
+   "geohash": "9xj385",
+   "affinity_rank": 0.258065,
+   "affinity": 0.16926272066458983,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -104.91394,
+   "geohash": "9xj3kx",
+   "affinity_rank": 0.257908,
+   "affinity": 0.16822429906542055,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.619446,
+   "longitude": -104.72717,
+   "geohash": "9xj92u",
+   "affinity_rank": 0.253968,
+   "affinity": 0.1671858774662513,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -105.17761,
+   "geohash": "9xj4nt",
+   "affinity_rank": 0.253294,
+   "affinity": 0.16614745586708204,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.811707,
+   "longitude": -105.21057,
+   "geohash": "9xj4mz",
+   "affinity_rank": 0.251037,
+   "affinity": 0.16510903426791276,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -104.77112,
+   "geohash": "9xj3zy",
+   "affinity_rank": 0.250474,
+   "affinity": 0.1640706126687435,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.932556,
+   "longitude": -105.01282,
+   "geohash": "9xj74m",
+   "affinity_rank": 0.25,
+   "affinity": 0.16303219106957426,
+   "popularity": 0.24714434060228452
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -105.03479,
+   "geohash": "9xj39y",
+   "affinity_rank": 0.247619,
+   "affinity": 0.16199376947040497,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -104.79309,
+   "geohash": "9xj3rr",
+   "affinity_rank": 0.247525,
+   "affinity": 0.16095534787123572,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -105.15564,
+   "geohash": "9xj4ph",
+   "affinity_rank": 0.245504,
+   "affinity": 0.15991692627206647,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -104.9469,
+   "geohash": "9xj65z",
+   "affinity_rank": 0.244761,
+   "affinity": 0.1588785046728972,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.93805,
+   "longitude": -104.92493,
+   "geohash": "9xj7hq",
+   "affinity_rank": 0.244726,
+   "affinity": 0.15784008307372793,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -105.10071,
+   "geohash": "9xj623",
+   "affinity_rank": 0.244286,
+   "affinity": 0.15680166147455868,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.883118,
+   "longitude": -104.93591,
+   "geohash": "9xj6uh",
+   "affinity_rank": 0.242291,
+   "affinity": 0.1557632398753894,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -104.89197,
+   "geohash": "9xj3mp",
+   "affinity_rank": 0.239382,
+   "affinity": 0.15472481827622014,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -105.06775,
+   "geohash": "9xj610",
+   "affinity_rank": 0.239344,
+   "affinity": 0.1536863966770509,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -105.04578,
+   "geohash": "9xj39e",
+   "affinity_rank": 0.238189,
+   "affinity": 0.1526479750778816,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -105.03479,
+   "geohash": "9xj61c",
+   "affinity_rank": 0.238019,
+   "affinity": 0.15160955347871236,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -105.08972,
+   "geohash": "9xj32x",
+   "affinity_rank": 0.237668,
+   "affinity": 0.1505711318795431,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -105.0238,
+   "geohash": "9xj641",
+   "affinity_rank": 0.237576,
+   "affinity": 0.14953271028037382,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.806213,
+   "longitude": -104.91394,
+   "geohash": "9xj6kw",
+   "affinity_rank": 0.236181,
+   "affinity": 0.14849428868120457,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -105.14465,
+   "geohash": "9xj4pq",
+   "affinity_rank": 0.234568,
+   "affinity": 0.1474558670820353,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -104.91394,
+   "geohash": "9xj6h9",
+   "affinity_rank": 0.232441,
+   "affinity": 0.14641744548286603,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.90509,
+   "longitude": -104.97986,
+   "geohash": "9xj750",
+   "affinity_rank": 0.231738,
+   "affinity": 0.14537902388369678,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -104.85901,
+   "geohash": "9xj6jv",
+   "affinity_rank": 0.231386,
+   "affinity": 0.14434060228452752,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.83368,
+   "longitude": -105.0238,
+   "geohash": "9xj6d5",
+   "affinity_rank": 0.230392,
+   "affinity": 0.14330218068535824,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.619446,
+   "longitude": -104.837036,
+   "geohash": "9xj3qk",
+   "affinity_rank": 0.230337,
+   "affinity": 0.142263759086189,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -104.91394,
+   "geohash": "9xj3sx",
+   "affinity_rank": 0.230263,
+   "affinity": 0.14122533748701974,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -105.0238,
+   "geohash": "9xj3fn",
+   "affinity_rank": 0.228519,
+   "affinity": 0.14018691588785046,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -105.01282,
+   "geohash": "9xj662",
+   "affinity_rank": 0.228311,
+   "affinity": 0.1391484942886812,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -105.166626,
+   "geohash": "9xj4nf",
+   "affinity_rank": 0.228098,
+   "affinity": 0.13811007268951195,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.916077,
+   "longitude": -104.9469,
+   "geohash": "9xj75f",
+   "affinity_rank": 0.227848,
+   "affinity": 0.13707165109034267,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.685364,
+   "longitude": -104.88098,
+   "geohash": "9xj3v2",
+   "affinity_rank": 0.226721,
+   "affinity": 0.1360332294911734,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.602966,
+   "longitude": -104.96887,
+   "geohash": "9xj373",
+   "affinity_rank": 0.226333,
+   "affinity": 0.13499480789200416,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -104.782104,
+   "geohash": "9xj3rx",
+   "affinity_rank": 0.22619,
+   "affinity": 0.13395638629283488,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -105.12268,
+   "geohash": "9xj1zc",
+   "affinity_rank": 0.225926,
+   "affinity": 0.13291796469366562,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.55902,
+   "longitude": -104.93591,
+   "geohash": "9xj3h1",
+   "affinity_rank": 0.224576,
+   "affinity": 0.13187954309449637,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -104.93591,
+   "geohash": "9xj3un",
+   "affinity_rank": 0.224111,
+   "affinity": 0.1308411214953271,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -105.06775,
+   "geohash": "9xj615",
+   "affinity_rank": 0.218437,
+   "affinity": 0.12980269989615784,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -104.749146,
+   "geohash": "9xjd0k",
+   "affinity_rank": 0.218241,
+   "affinity": 0.12876427829698858,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.811707,
+   "longitude": -105.166626,
+   "geohash": "9xj4qz",
+   "affinity_rank": 0.218107,
+   "affinity": 0.1277258566978193,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.828186,
+   "longitude": -104.902954,
+   "geohash": "9xj6sf",
+   "affinity_rank": 0.216867,
+   "affinity": 0.12668743509865005,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.613953,
+   "longitude": -105.00183,
+   "geohash": "9xj36e",
+   "affinity_rank": 0.216216,
+   "affinity": 0.1256490134994808,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.902954,
+   "geohash": "9xj3sy",
+   "affinity_rank": 0.21589,
+   "affinity": 0.12461059190031153,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -104.749146,
+   "geohash": "9xj987",
+   "affinity_rank": 0.211921,
+   "affinity": 0.12357217030114226,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.5755,
+   "longitude": -104.82605,
+   "geohash": "9xj3ns",
+   "affinity_rank": 0.211382,
+   "affinity": 0.122533748701973,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.553528,
+   "longitude": -105.078735,
+   "geohash": "9xj30b",
+   "affinity_rank": 0.21135,
+   "affinity": 0.12149532710280374,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.80072,
+   "longitude": -105.111694,
+   "geohash": "9xj62j",
+   "affinity_rank": 0.210031,
+   "affinity": 0.12045690550363447,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.916077,
+   "longitude": -104.957886,
+   "geohash": "9xj75d",
+   "affinity_rank": 0.209836,
+   "affinity": 0.11941848390446522,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.828186,
+   "longitude": -105.00183,
+   "geohash": "9xj6dd",
+   "affinity_rank": 0.209567,
+   "affinity": 0.11838006230529595,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -105.03479,
+   "geohash": "9xj3cu",
+   "affinity_rank": 0.207792,
+   "affinity": 0.11734164070612668,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.93805,
+   "longitude": -104.88098,
+   "geohash": "9xj7jq",
+   "affinity_rank": 0.206897,
+   "affinity": 0.11630321910695743,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -104.91394,
+   "geohash": "9xj6k8",
+   "affinity_rank": 0.205479,
+   "affinity": 0.11526479750778816,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.943542,
+   "longitude": -105.01282,
+   "geohash": "9xj74r",
+   "affinity_rank": 0.20442,
+   "affinity": 0.1142263759086189,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -105.03479,
+   "geohash": "9xj3cy",
+   "affinity_rank": 0.20347,
+   "affinity": 0.11318795430944964,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.822693,
+   "longitude": -104.93591,
+   "geohash": "9xj6s1",
+   "affinity_rank": 0.202381,
+   "affinity": 0.11214953271028037,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -104.85901,
+   "geohash": "9xj3vu",
+   "affinity_rank": 0.198925,
+   "affinity": 0.1111111111111111,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -104.80408,
+   "geohash": "9xj3z1",
+   "affinity_rank": 0.194969,
+   "affinity": 0.11007268951194185,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.740295,
+   "longitude": -105.10071,
+   "geohash": "9xj606",
+   "affinity_rank": 0.194526,
+   "affinity": 0.10903426791277258,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.60846,
+   "longitude": -104.80408,
+   "geohash": "9xj3r4",
+   "affinity_rank": 0.192453,
+   "affinity": 0.10799584631360332,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.88861,
+   "longitude": -105.22156,
+   "geohash": "9xj4vt",
+   "affinity_rank": 0.191554,
+   "affinity": 0.10695742471443406,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.690857,
+   "longitude": -104.7052,
+   "geohash": "9xj9c3",
+   "affinity_rank": 0.191235,
+   "affinity": 0.1059190031152648,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.64691,
+   "longitude": -105.08972,
+   "geohash": "9xj389",
+   "affinity_rank": 0.189278,
+   "affinity": 0.10488058151609553,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -105.12268,
+   "geohash": "9xj1xz",
+   "affinity_rank": 0.188925,
+   "affinity": 0.10384215991692627,
+   "popularity": 0.21391484942886813
+  },
+  {
+   "latitude": 39.86664,
+   "longitude": -104.990845,
+   "geohash": "9xj6fc",
+   "affinity_rank": 0.184848,
+   "affinity": 0.102803738317757,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -104.91394,
+   "geohash": "9xj3ud",
+   "affinity_rank": 0.184597,
+   "affinity": 0.10176531671858775,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.811707,
+   "longitude": -105.14465,
+   "geohash": "9xj4rr",
+   "affinity_rank": 0.184532,
+   "affinity": 0.10072689511941849,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.927063,
+   "longitude": -104.957886,
+   "geohash": "9xj75s",
+   "affinity_rank": 0.184116,
+   "affinity": 0.09968847352024922,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -104.9469,
+   "geohash": "9xj3ey",
+   "affinity_rank": 0.181234,
+   "affinity": 0.09865005192107996,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.910583,
+   "longitude": -105.078735,
+   "geohash": "9xj70c",
+   "affinity_rank": 0.180591,
+   "affinity": 0.0976116303219107,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.5755,
+   "longitude": -104.88098,
+   "geohash": "9xj3jk",
+   "affinity_rank": 0.180556,
+   "affinity": 0.09657320872274143,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -104.91394,
+   "geohash": "9xj3ut",
+   "affinity_rank": 0.17951,
+   "affinity": 0.09553478712357218,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.64691,
+   "longitude": -104.73816,
+   "geohash": "9xj989",
+   "affinity_rank": 0.179361,
+   "affinity": 0.09449636552440291,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.64142,
+   "longitude": -104.88098,
+   "geohash": "9xj3t2",
+   "affinity_rank": 0.179272,
+   "affinity": 0.09345794392523364,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.66339,
+   "longitude": -105.24353,
+   "geohash": "9xj1th",
+   "affinity_rank": 0.179235,
+   "affinity": 0.09241952232606439,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.883118,
+   "longitude": -104.9469,
+   "geohash": "9xj6gu",
+   "affinity_rank": 0.176471,
+   "affinity": 0.09138110072689512,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.72931,
+   "longitude": -104.88098,
+   "geohash": "9xj6j2",
+   "affinity_rank": 0.176245,
+   "affinity": 0.09034267912772585,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -105.00183,
+   "geohash": "9xj3fd",
+   "affinity_rank": 0.175987,
+   "affinity": 0.0893042575285566,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -105.232544,
+   "geohash": "9xj4m3",
+   "affinity_rank": 0.175309,
+   "affinity": 0.08826583592938733,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.723816,
+   "longitude": -105.1886,
+   "geohash": "9xj1yr",
+   "affinity_rank": 0.173864,
+   "affinity": 0.08722741433021806,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -104.9469,
+   "geohash": "9xj3gu",
+   "affinity_rank": 0.17134,
+   "affinity": 0.08618899273104881,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.570007,
+   "longitude": -104.990845,
+   "geohash": "9xj34g",
+   "affinity_rank": 0.170769,
+   "affinity": 0.08515057113187954,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.844666,
+   "longitude": -105.078735,
+   "geohash": "9xj68v",
+   "affinity_rank": 0.168639,
+   "affinity": 0.08411214953271028,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -104.957886,
+   "geohash": "9xj65w",
+   "affinity_rank": 0.168517,
+   "affinity": 0.08307372793354102,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 40.003967,
+   "longitude": -105.00183,
+   "geohash": "9xj7dd",
+   "affinity_rank": 0.161157,
+   "affinity": 0.08203530633437175,
+   "popularity": 0.18483904465212878
+  },
+  {
+   "latitude": 39.927063,
+   "longitude": -105.14465,
+   "geohash": "9xj5pk",
+   "affinity_rank": 0.16087,
+   "affinity": 0.08099688473520249,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -104.902954,
+   "geohash": "9xj6hu",
+   "affinity_rank": 0.16,
+   "affinity": 0.07995846313603323,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -105.04578,
+   "geohash": "9xj39d",
+   "affinity_rank": 0.15873,
+   "affinity": 0.07892004153686397,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.701843,
+   "longitude": -105.00183,
+   "geohash": "9xj3fe",
+   "affinity_rank": 0.15863,
+   "affinity": 0.0778816199376947,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -104.85901,
+   "geohash": "9xj6mc",
+   "affinity_rank": 0.15756,
+   "affinity": 0.07684319833852545,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.806213,
+   "longitude": -105.08972,
+   "geohash": "9xj62w",
+   "affinity_rank": 0.157068,
+   "affinity": 0.07580477673935618,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -105.05676,
+   "geohash": "9xj632",
+   "affinity_rank": 0.156398,
+   "affinity": 0.07476635514018691,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.652405,
+   "longitude": -104.92493,
+   "geohash": "9xj3s6",
+   "affinity_rank": 0.15629,
+   "affinity": 0.07372793354101766,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.718323,
+   "longitude": -105.199585,
+   "geohash": "9xj1yn",
+   "affinity_rank": 0.155797,
+   "affinity": 0.07268951194184839,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.613953,
+   "longitude": -105.12268,
+   "geohash": "9xj1rg",
+   "affinity_rank": 0.154362,
+   "affinity": 0.07165109034267912,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.811707,
+   "longitude": -104.97986,
+   "geohash": "9xj67p",
+   "affinity_rank": 0.153963,
+   "affinity": 0.07061266874350987,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.54254,
+   "longitude": -104.84802,
+   "geohash": "9xj2yn",
+   "affinity_rank": 0.153257,
+   "affinity": 0.0695742471443406,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.531555,
+   "longitude": -104.79309,
+   "geohash": "9xj2zk",
+   "affinity_rank": 0.152893,
+   "affinity": 0.06853582554517133,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.580994,
+   "longitude": -105.13367,
+   "geohash": "9xj1pt",
+   "affinity_rank": 0.151751,
+   "affinity": 0.06749740394600208,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.55902,
+   "longitude": -105.10071,
+   "geohash": "9xj303",
+   "affinity_rank": 0.151188,
+   "affinity": 0.06645898234683281,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.773254,
+   "longitude": -105.00183,
+   "geohash": "9xj668",
+   "affinity_rank": 0.150959,
+   "affinity": 0.06542056074766354,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.526062,
+   "longitude": -104.93591,
+   "geohash": "9xj2u5",
+   "affinity_rank": 0.146718,
+   "affinity": 0.06438213914849429,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.586487,
+   "longitude": -104.81506,
+   "geohash": "9xj3ny",
+   "affinity_rank": 0.145963,
+   "affinity": 0.06334371754932502,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.55902,
+   "longitude": -104.902954,
+   "geohash": "9xj3hc",
+   "affinity_rank": 0.145773,
+   "affinity": 0.06230529595015576,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.910583,
+   "longitude": -105.03479,
+   "geohash": "9xj71c",
+   "affinity_rank": 0.14539,
+   "affinity": 0.0612668743509865,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -104.85901,
+   "geohash": "9xj3tg",
+   "affinity_rank": 0.144578,
+   "affinity": 0.060228452751817235,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.789734,
+   "longitude": -105.10071,
+   "geohash": "9xj627",
+   "affinity_rank": 0.144522,
+   "affinity": 0.059190031152647975,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.67987,
+   "longitude": -105.111694,
+   "geohash": "9xj38p",
+   "affinity_rank": 0.143902,
+   "affinity": 0.058151609553478714,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.570007,
+   "longitude": -105.04578,
+   "geohash": "9xj31e",
+   "affinity_rank": 0.142582,
+   "affinity": 0.05711318795430945,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.734802,
+   "longitude": -105.21057,
+   "geohash": "9xj4jc",
+   "affinity_rank": 0.142329,
+   "affinity": 0.056074766355140186,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -105.08972,
+   "geohash": "9xj60e",
+   "affinity_rank": 0.14218,
+   "affinity": 0.055036344755970926,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.548035,
+   "longitude": -104.902954,
+   "geohash": "9xj2uz",
+   "affinity_rank": 0.139608,
+   "affinity": 0.05399792315680166,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.76776,
+   "longitude": -105.17761,
+   "geohash": "9xj4nx",
+   "affinity_rank": 0.139286,
+   "affinity": 0.0529595015576324,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.80072,
+   "longitude": -105.24353,
+   "geohash": "9xj4mj",
+   "affinity_rank": 0.139011,
+   "affinity": 0.05192107995846314,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.5755,
+   "longitude": -105.13367,
+   "geohash": "9xj1ps",
+   "affinity_rank": 0.138655,
+   "affinity": 0.05088265835929388,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.602966,
+   "longitude": -105.15564,
+   "geohash": "9xj1r1",
+   "affinity_rank": 0.136842,
+   "affinity": 0.04984423676012461,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.597473,
+   "longitude": -104.957886,
+   "geohash": "9xj378",
+   "affinity_rank": 0.136273,
+   "affinity": 0.04880581516095535,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.64142,
+   "longitude": -105.00183,
+   "geohash": "9xj3d8",
+   "affinity_rank": 0.130233,
+   "affinity": 0.04776739356178609,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.8172,
+   "longitude": -105.078735,
+   "geohash": "9xj68b",
+   "affinity_rank": 0.129841,
+   "affinity": 0.04672897196261682,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.78424,
+   "longitude": -104.88098,
+   "geohash": "9xj6m6",
+   "affinity_rank": 0.129568,
+   "affinity": 0.04569055036344756,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.55902,
+   "longitude": -104.91394,
+   "geohash": "9xj3h9",
+   "affinity_rank": 0.124481,
+   "affinity": 0.0446521287642783,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.55902,
+   "longitude": -104.837036,
+   "geohash": "9xj3n3",
+   "affinity_rank": 0.121849,
+   "affinity": 0.04361370716510903,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.949036,
+   "longitude": -104.82605,
+   "geohash": "9xj7q8",
+   "affinity_rank": 0.120459,
+   "affinity": 0.04257528556593977,
+   "popularity": 0.14537902388369678
+  },
+  {
+   "latitude": 39.570007,
+   "longitude": -105.12268,
+   "geohash": "9xj1pg",
+   "affinity_rank": 0.119149,
+   "affinity": 0.04153686396677051,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.80072,
+   "longitude": -105.05676,
+   "geohash": "9xj63m",
+   "affinity_rank": 0.119048,
+   "affinity": 0.040498442367601244,
+   "popularity": 0.11007268951194185
+  },
+  {
+   "latitude": 39.707336,
+   "longitude": -105.13367,
+   "geohash": "9xj1zs",
+   "affinity_rank": 0.118919,
+   "affinity": 0.03946002076843198,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.789734,
+   "longitude": -105.01282,
+   "geohash": "9xj667",
+   "affinity_rank": 0.118118,
+   "affinity": 0.03842159916926272,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.630432,
+   "longitude": -104.73816,
+   "geohash": "9xj92w",
+   "affinity_rank": 0.117647,
+   "affinity": 0.037383177570093455,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.828186,
+   "longitude": -104.91394,
+   "geohash": "9xj6sd",
+   "affinity_rank": 0.116505,
+   "affinity": 0.036344755970924195,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -104.89197,
+   "geohash": "9xj6jh",
+   "affinity_rank": 0.115789,
+   "affinity": 0.035306334371754934,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.619446,
+   "longitude": -105.232544,
+   "geohash": "9xj1mk",
+   "affinity_rank": 0.114754,
+   "affinity": 0.03426791277258567,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.762268,
+   "longitude": -105.15564,
+   "geohash": "9xj4pn",
+   "affinity_rank": 0.114664,
+   "affinity": 0.033229491173416406,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.932556,
+   "longitude": -105.078735,
+   "geohash": "9xj70v",
+   "affinity_rank": 0.11,
+   "affinity": 0.032191069574247146,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.515076,
+   "longitude": -104.92493,
+   "geohash": "9xj2u3",
+   "affinity_rank": 0.109718,
+   "affinity": 0.03115264797507788,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.657898,
+   "longitude": -105.287476,
+   "geohash": "9xj1s5",
+   "affinity_rank": 0.109677,
+   "affinity": 0.030114226375908618,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.789734,
+   "longitude": -105.111694,
+   "geohash": "9xj625",
+   "affinity_rank": 0.109375,
+   "affinity": 0.029075804776739357,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.570007,
+   "longitude": -105.00183,
+   "geohash": "9xj34e",
+   "affinity_rank": 0.109177,
+   "affinity": 0.028037383177570093,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.795227,
+   "longitude": -105.320435,
+   "geohash": "9xj47k",
+   "affinity_rank": 0.107744,
+   "affinity": 0.02699896157840083,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.78424,
+   "longitude": -104.91394,
+   "geohash": "9xj6kd",
+   "affinity_rank": 0.107483,
+   "affinity": 0.02596053997923157,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.960022,
+   "longitude": -105.15564,
+   "geohash": "9xj5r4",
+   "affinity_rank": 0.107356,
+   "affinity": 0.024922118380062305,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.64691,
+   "longitude": -104.82605,
+   "geohash": "9xj3w9",
+   "affinity_rank": 0.107309,
+   "affinity": 0.023883696780893044,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.69635,
+   "longitude": -104.96887,
+   "geohash": "9xj3g6",
+   "affinity_rank": 0.107143,
+   "affinity": 0.02284527518172378,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.99298,
+   "longitude": -105.03479,
+   "geohash": "9xj79b",
+   "affinity_rank": 0.104803,
+   "affinity": 0.021806853582554516,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.53705,
+   "longitude": -104.92493,
+   "geohash": "9xj2um",
+   "affinity_rank": 0.104615,
+   "affinity": 0.020768431983385256,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -105.27649,
+   "geohash": "9xj1kr",
+   "affinity_rank": 0.103154,
+   "affinity": 0.01973001038421599,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -104.957886,
+   "geohash": "9xj65t",
+   "affinity_rank": 0.100769,
+   "affinity": 0.018691588785046728,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.74579,
+   "longitude": -105.21057,
+   "geohash": "9xj4jg",
+   "affinity_rank": 0.100758,
+   "affinity": 0.017653167185877467,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -105.0238,
+   "geohash": "9xj661",
+   "affinity_rank": 0.100121,
+   "affinity": 0.016614745586708203,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.668884,
+   "longitude": -105.111694,
+   "geohash": "9xj38j",
+   "affinity_rank": 0.099515,
+   "affinity": 0.01557632398753894,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.630432,
+   "longitude": -105.01282,
+   "geohash": "9xj36q",
+   "affinity_rank": 0.096774,
+   "affinity": 0.014537902388369679,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.602966,
+   "longitude": -104.81506,
+   "geohash": "9xj3qc",
+   "affinity_rank": 0.09589,
+   "affinity": 0.013499480789200415,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.756775,
+   "longitude": -105.05676,
+   "geohash": "9xj61m",
+   "affinity_rank": 0.095047,
+   "affinity": 0.012461059190031152,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.71283,
+   "longitude": -105.10071,
+   "geohash": "9xj3bm",
+   "affinity_rank": 0.092754,
+   "affinity": 0.01142263759086189,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.668884,
+   "longitude": -105.22156,
+   "geohash": "9xj1tt",
+   "affinity_rank": 0.091904,
+   "affinity": 0.010384215991692628,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.97101,
+   "longitude": -104.89197,
+   "geohash": "9xj7mh",
+   "affinity_rank": 0.09116,
+   "affinity": 0.009345794392523364,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.53705,
+   "longitude": -104.79309,
+   "geohash": "9xj2zm",
+   "affinity_rank": 0.088339,
+   "affinity": 0.008307372793354102,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.943542,
+   "longitude": -104.97986,
+   "geohash": "9xj75p",
+   "affinity_rank": 0.084011,
+   "affinity": 0.007268951194184839,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.674377,
+   "longitude": -105.199585,
+   "geohash": "9xj1wn",
+   "affinity_rank": 0.081818,
+   "affinity": 0.006230529595015576,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.778748,
+   "longitude": -105.111694,
+   "geohash": "9xj621",
+   "affinity_rank": 0.080645,
+   "affinity": 0.005192107995846314,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.75128,
+   "longitude": -104.92493,
+   "geohash": "9xj6hk",
+   "affinity_rank": 0.08,
+   "affinity": 0.004153686396677051,
+   "popularity": 0.059190031152647975
+  },
+  {
+   "latitude": 39.943542,
+   "longitude": -104.93591,
+   "geohash": "9xj7hp",
+   "affinity_rank": 0.076023,
+   "affinity": 0.003115264797507788,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.59198,
+   "longitude": -104.92493,
+   "geohash": "9xj3hr",
+   "affinity_rank": 0.053968,
+   "affinity": 0.0020768431983385254,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.553528,
+   "longitude": -105.111694,
+   "geohash": "9xj300",
+   "affinity_rank": 0.046816,
+   "affinity": 0.0010384215991692627,
+   "popularity": 0
+  },
+  {
+   "latitude": 39.635925,
+   "longitude": -104.76013,
+   "geohash": "9xj92p",
+   "affinity_rank": 0.043228,
+   "affinity": 0,
+   "popularity": 0
+  }
+ ]
+}

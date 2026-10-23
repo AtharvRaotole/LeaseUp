@@ -10,6 +10,24 @@ export function percentile(sortedAsc: number[], p: number): number {
   return sortedAsc[lo]! * (1 - w) + sortedAsc[hi]! * w;
 }
 
+/** Heatmap weights in [0,1] from Qloo affinity_rank (0 to 1), 50th to 99th percentile spread. */
+export function heatmapWeightsFromAffinityRanks(ranks: number[]): number[] {
+  const values = ranks.map((r) => (r > 0 ? r : 0));
+  const positive = values.filter((v) => v > 0);
+  if (positive.length === 0) {
+    return values.map(() => 0);
+  }
+  const sorted = [...positive].sort((a, b) => a - b);
+  const lo = percentile(sorted, 0.5);
+  const hi = percentile(sorted, 0.99);
+  const span = hi - lo;
+  return values.map((v) => {
+    if (v <= 0) return 0;
+    if (span <= 1e-9) return 0.15;
+    return Math.min(1, Math.max(0, (v - lo) / span));
+  });
+}
+
 /** Heatmap weights in [0,1] using 50th to 99th percentile of affinity. */
 export function heatmapWeightsFromAffinity(affinities: number[]): number[] {
   const values = affinities.map((a) => (a > 0 ? a : 0));

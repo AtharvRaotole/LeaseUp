@@ -79,6 +79,29 @@ describe('PortfolioService', () => {
     vi.unstubAllGlobals();
   });
 
+  it('resets analyzing rows stuck longer than 60 seconds', async () => {
+    const service = new PortfolioService(demoEnv());
+    const created = await service.create({ addresses: [DEMO_CHIP_ADDRESSES.wicker] });
+    const geocoded = await service.geocodeAll(created.id);
+    geocoded.rows[0]!.status = 'analyzing';
+    geocoded.rows[0]!.analyzingStartedAt = new Date(Date.now() - 120_000).toISOString();
+    portfolioStore.set(geocoded.id, JSON.stringify(geocoded));
+    const resumed = await service.resumeStaleAnalyzing(geocoded.id);
+    expect(resumed?.rows[0]?.status).toBe('ready');
+  });
+
+  it('finishes analysis when progress callback fails (disconnect)', async () => {
+    const service = new PortfolioService(demoEnv());
+    const created = await service.create({ addresses: [DEMO_CHIP_ADDRESSES.wicker] });
+    await service.geocodeAll(created.id);
+    let calls = 0;
+    const result = await service.runAnalyses(created.id, 'ip', async () => {
+      calls += 1;
+      if (calls === 1) throw new Error('client disconnected');
+    });
+    expect(result.rows[0]?.status).toBe('complete');
+  });
+
   it('creates and exports a portfolio csv', async () => {
     const service = new PortfolioService(demoEnv());
     const created = await service.create({

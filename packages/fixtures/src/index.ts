@@ -53,5 +53,6 @@ export {
 export type { OverpassBrand } from './overpass-types.js';
 export {
   brandReverseChicagoDemo,
+  brandReverseFixtures,
   type BrandReverseDemoFixture,
 } from './brand-reverse-chicago.js';

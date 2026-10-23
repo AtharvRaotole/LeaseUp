@@ -1,5 +1,6 @@
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { BrandReverseResponse, MetroOption, TrackedBrand } from '@leaseup/contracts';
+import type { BrandReverseOpportunity, BrandReverseResponse, MetroOption, TrackedBrand } from '@leaseup/contracts';
 import { apiUrl } from '../lib/api';
 
 export function useMetros() {
@@ -29,7 +30,9 @@ export function useBrandSearch(query: string) {
 }
 
 export function useBrandReverse(entityId: string | undefined, metroId: string) {
-  return useQuery({
+  const [hoodByRank, setHoodByRank] = useState<Record<number, string>>({});
+
+  const query = useQuery({
     queryKey: ['brand-reverse', entityId, metroId],
     enabled: !!entityId && !!metroId,
     queryFn: async () => {
@@ -42,4 +45,36 @@ export function useBrandReverse(entityId: string | undefined, metroId: string) {
       return (await res.json()) as BrandReverseResponse;
     },
   });
+
+  useEffect(() => {
+    if (!entityId || !metroId || !query.data) return;
+    if (!query.data.opportunities.some((o) => !o.neighborhood)) return;
+
+    const params = new URLSearchParams({ metro: metroId });
+    const es = new EventSource(apiUrl(`/api/brand/${entityId}/reverse/stream?${params}`));
+
+    es.addEventListener('neighborhood', (ev) => {
+      const row = JSON.parse((ev as MessageEvent).data) as BrandReverseOpportunity;
+      if (row.neighborhood) {
+        setHoodByRank((prev) => ({ ...prev, [row.rank]: row.neighborhood! }));
+      }
+    });
+
+    es.addEventListener('error', () => es.close());
+
+    return () => es.close();
+  }, [entityId, metroId, query.data]);
+
+  const data = useMemo(() => {
+    if (!query.data) return undefined;
+    return {
+      ...query.data,
+      opportunities: query.data.opportunities.map((o) => ({
+        ...o,
+        neighborhood: hoodByRank[o.rank] ?? o.neighborhood,
+      })),
+    };
+  }, [query.data, hoodByRank]);
+
+  return { ...query, data };
 }

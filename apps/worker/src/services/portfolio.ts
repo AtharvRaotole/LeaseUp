@@ -12,9 +12,12 @@ import { NominatimClient } from './nominatim';
 import { displayBrandName } from '../lib/brand-display';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import { matchDemoFixtureId } from '@leaseup/fixtures';
+import { rankGeocodeCandidates } from '../lib/geocode-rank';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
+
+const STALE_ANALYZING_MS = 60_000;
 
 export class PortfolioService {
   private db: D1Database;
@@ -60,6 +63,34 @@ export class PortfolioService {
     return JSON.parse(row.payload) as PortfolioResponse;
   }
 
+  /** Rows stuck in analyzing (e.g. client disconnected) become ready again after 60s. */
+  async resumeStaleAnalyzing(id: string): Promise<PortfolioResponse | null> {
+    const portfolio = await this.get(id);
+    if (!portfolio) return null;
+    const now = Date.now();
+    let changed = false;
+    for (const row of portfolio.rows) {
+      if (row.status !== 'analyzing' || !row.analyzingStartedAt) continue;
+      const started = Date.parse(row.analyzingStartedAt);
+      if (Number.isFinite(started) && now - started > STALE_ANALYZING_MS) {
+        row.status = 'ready';
+        row.analyzingStartedAt = undefined;
+        changed = true;
+      }
+    }
+    if (changed) await this.save(portfolio);
+    return portfolio;
+  }
+
+  private async resolveNeighborhood(
+    latitude: number,
+    longitude: number,
+    candidate?: GeocodeCandidate
+  ): Promise<string | undefined> {
+    if (candidate?.neighborhood) return candidate.neighborhood;
+    return this.nominatim.reverseGeocode(latitude, longitude);
+  }
+
   async geocodeAll(id: string): Promise<PortfolioResponse> {
     const portfolio = await this.get(id);
     if (!portfolio) throw new Error('Portfolio not found');
@@ -74,15 +105,20 @@ export class PortfolioService {
           continue;
         }
 
-        const candidates = await this.nominatim.geocodeCandidates(row.inputAddress, 5);
+        const candidates = rankGeocodeCandidates(
+          row.inputAddress,
+          await this.nominatim.geocodeCandidates(row.inputAddress, 5)
+        );
         if (candidates.length === 0) {
           row.status = 'error';
           row.error = 'No match found for this address.';
           continue;
         }
         if (candidates.length === 1) {
-          row.location = this.candidateToLocation(row.inputAddress, candidates[0]!);
-          row.neighborhood = row.location.neighborhood;
+          const c0 = candidates[0]!;
+          const neighborhood = await this.resolveNeighborhood(c0.latitude, c0.longitude, c0);
+          row.location = this.candidateToLocation(row.inputAddress, c0, neighborhood);
+          row.neighborhood = neighborhood;
           row.status = 'ready';
         } else {
           row.geocodeCandidates = candidates;
@@ -109,8 +145,13 @@ export class PortfolioService {
     const candidate = row.geocodeCandidates[body.candidateIndex];
     if (!candidate) throw new Error('Invalid candidate index');
 
-    row.location = this.candidateToLocation(row.inputAddress, candidate);
-    row.neighborhood = row.location.neighborhood;
+    const neighborhood = await this.resolveNeighborhood(
+      candidate.latitude,
+      candidate.longitude,
+      candidate
+    );
+    row.location = this.candidateToLocation(row.inputAddress, candidate, neighborhood);
+    row.neighborhood = neighborhood;
     row.status = 'ready';
     row.geocodeCandidates = undefined;
 
@@ -123,6 +164,7 @@ export class PortfolioService {
     ipHash: string,
     onRow?: (row: PortfolioRow) => Promise<void>
   ): Promise<PortfolioResponse> {
+    await this.resumeStaleAnalyzing(id);
     const portfolio = await this.get(id);
     if (!portfolio) throw new Error('Portfolio not found');
 
@@ -133,8 +175,15 @@ export class PortfolioService {
       if (!row.location) continue;
 
       row.status = 'analyzing';
+      row.analyzingStartedAt = new Date().toISOString();
       await this.save(portfolio);
-      if (onRow) await onRow(row);
+      if (onRow) {
+        try {
+          await onRow(row);
+        } catch {
+          /* SSE client disconnected; keep analyzing in waitUntil */
+        }
+      }
 
       try {
         const runId = randomUUID();
@@ -150,9 +199,18 @@ export class PortfolioService {
           affinityRank: p.brand.affinityRank,
         }));
         row.backtestHitRate = result.backtest.precisionAt10;
-        row.neighborhood = result.location.neighborhood ?? row.neighborhood;
+        const confirmedHood = row.location.neighborhood ?? row.neighborhood;
+        row.neighborhood =
+          confirmedHood ??
+          result.location.neighborhood ??
+          (await this.nominatim.reverseGeocode(
+            row.location.latitude,
+            row.location.longitude
+          ));
         row.status = 'complete';
+        row.analyzingStartedAt = undefined;
       } catch (err) {
+        row.analyzingStartedAt = undefined;
         if (err instanceof DemoModeRequiredError) {
           row.status = 'error';
           row.error = 'Demo mode only supports the three example addresses.';
@@ -163,7 +221,13 @@ export class PortfolioService {
       }
 
       await this.save(portfolio);
-      if (onRow) await onRow(row);
+      if (onRow) {
+        try {
+          await onRow(row);
+        } catch {
+          /* SSE client disconnected */
+        }
+      }
     }
 
     return portfolio;
@@ -200,13 +264,17 @@ export class PortfolioService {
     return lines.join('\n');
   }
 
-  private candidateToLocation(inputAddress: string, candidate: GeocodeCandidate) {
+  private candidateToLocation(
+    inputAddress: string,
+    candidate: GeocodeCandidate,
+    neighborhood?: string
+  ) {
     return {
       address: inputAddress,
       latitude: candidate.latitude,
       longitude: candidate.longitude,
       city: candidate.city,
-      neighborhood: candidate.neighborhood,
+      neighborhood: neighborhood ?? candidate.neighborhood,
       resolvedAddress: candidate.resolvedAddress,
     };
   }

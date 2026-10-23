@@ -23,7 +23,9 @@ portfolioRouter.post('/portfolio', async (c) => {
 
 portfolioRouter.get('/portfolio/:id', async (c) => {
   const service = new PortfolioService(c.env);
-  const portfolio = await service.get(c.req.param('id'));
+  const id = c.req.param('id');
+  await service.resumeStaleAnalyzing(id);
+  const portfolio = await service.get(id);
   if (!portfolio) {
     return c.json({ error: 'Portfolio not found', code: 'NOT_FOUND' }, 404);
   }
@@ -48,22 +50,36 @@ portfolioRouter.post('/portfolio/:id/run', async (c) => {
   const encoder = new TextEncoder();
 
   const send = async (event: string, data: unknown) => {
-    await writer.write(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+    try {
+      await writer.write(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+    } catch {
+      /* client disconnected */
+    }
   };
 
-  void (async () => {
-    try {
-      await send('start', { portfolioId: id });
-      const portfolio = await service.runAnalyses(id, ipHash, async (row) => {
-        await send('row', row);
-      });
-      await send('complete', portfolio);
-    } catch (error) {
-      await send('error', { message: (error as Error).message });
-    } finally {
-      await writer.close();
-    }
-  })();
+  const run = async () => {
+      try {
+        await send('start', { portfolioId: id });
+        const portfolio = await service.runAnalyses(id, ipHash, async (row) => {
+          await send('row', row);
+        });
+        await send('complete', portfolio);
+      } catch (error) {
+        await send('error', { message: (error as Error).message });
+      } finally {
+        try {
+          await writer.close();
+        } catch {
+          /* already closed */
+        }
+      }
+  };
+
+  if (c.executionCtx) {
+    c.executionCtx.waitUntil(run());
+  } else {
+    void run();
+  }
 
   return new Response(readable, {
     headers: {

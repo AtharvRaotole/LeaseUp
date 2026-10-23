@@ -73,6 +73,14 @@ export const METROS: MetroDefinition[] = [
     longitude: -80.1918,
     radiusKm: 30,
   },
+  {
+    id: 'austin',
+    label: 'Austin',
+    query: 'Austin, TX',
+    latitude: 30.2672,
+    longitude: -97.7431,
+    radiusKm: 30,
+  },
 ];
 
 export function getMetro(id: string): MetroDefinition | undefined {
