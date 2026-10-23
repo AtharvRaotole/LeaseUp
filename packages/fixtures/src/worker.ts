@@ -1,0 +1,93 @@
+/**
+ * Worker-safe exports: no large eval result JSON bundles.
+ */
+export type { EvalSiteDensity } from './eval/types.js';
+export type { EvalDensityStratum } from './eval-density-stratum.js';
+export { adaptiveRadiusKmForStratum, densityToDefaultStratum, demoFixtureStratum } from './eval-density-stratum.js';
+export {
+  DEMO_CHIP_ADDRESSES,
+  matchDemoFixtureId,
+  normalizeAddress,
+  type DemoFixtureId,
+} from './demo-addresses.js';
+export {
+  demoAdaptiveProofRow,
+  DEMO_ADAPTIVE_PROOF_AGG,
+  DEMO_ADAPTIVE_PROOF_ROWS,
+} from './demo-adaptive-proof.js';
+export {
+  demoAnalyzeStrictEval,
+  demoAnalyzeBacktests,
+} from './demo-analyze-precomputed.js';
+export {
+  computeBacktest,
+  calculateAUC,
+  filterInsightsToStoreBrands,
+  type ComputedBacktest,
+} from './backtest.js';
+export {
+  orderInsightsByNationalStoreCount,
+  type RankedInsight,
+} from './ranking.js';
+export {
+  haversineDistance,
+  findStoresNearby,
+  getNationalStoreCount,
+  getStoreBrandIds,
+  getStoreBrandIdSet,
+  nearestStoreDistanceKm,
+  mapStoresForTopBrands,
+} from './store-geo.js';
+export {
+  orderInsightsByLogisticBlend,
+  DEMO_LOGISTIC_SITE_CONTEXT,
+  defaultLogisticSiteContext,
+  getLogisticBlendCoefficients,
+  type LogisticBlendSiteContext,
+} from './logistic-blend.js';
+export {
+  chainSizeTierFromStoreCount,
+  isProspectChainTier,
+  chainSizeTierLabel,
+  type ChainSizeTier,
+} from './chain-size-tier.js';
+export { buildTierFitByEntityId, type TierFitContext } from './taste-fit-beyond-chain.js';
+export {
+  METRIC_ID_SPEARMAN_PRESENCE,
+  adaptiveEvalRadiusKm,
+  computeStrictEval,
+  demoFixtureDensity,
+  type StrictEvalSiteMetrics,
+} from './strict-eval.js';
+export { buildEvalSiteSnapshot } from './eval/build-snapshot.js';
+export { wickerparkFixture } from './wicker-park.js';
+export { boulderFixture } from './boulder.js';
+export { seviervilleFixture } from './sevierville.js';
+export {
+  DEMO_CHIP_DISPLAYS,
+  matchDemoChipWithinMeters,
+  type DemoChipDisplay,
+} from './demo-chip-proximity.js';
+export {
+  demoChipPresentInTop10,
+  demoChipHitRateLabel,
+} from './demo-chip-hit-rates.js';
+export {
+  demoChipQlooProof,
+  demoChipTopRankMovers,
+  demoChipIdsByQlooLift,
+  demoChipProofHitRateLabel,
+  type DemoChipQlooProof,
+} from './demo-chip-qloo-proof.js';
+export {
+  parseQlooExplainabilityRows,
+  topOverIndexRows,
+  type TradeAreaTasteRow,
+} from './qloo-explainability.js';
+export {
+  brandExplainabilityForDemo,
+  listDemoExplainabilityRecordings,
+} from './brand-explainability-loader.js';
+export { overpassDemoByFixture, DEMO_OSM_UNRECORDED_NOTE } from './overpass-demo.js';
+export { brandReverseFixtures, type BrandReverseDemoFixture } from './brand-reverse-chicago.js';
+export { storeLocationsEmbedded as storeLocations } from './store-locations-data.js';

@@ -4,7 +4,7 @@ import {
   matchDemoFixtureId,
   seviervilleFixture,
   wickerparkFixture,
-} from '@leaseup/fixtures';
+} from '@leaseup/fixtures/worker';
 import { GeocodeAmbiguousError } from '../lib/errors';
 import { candidateToLocation, resolveGeocodeFromCandidates } from '../lib/geocode-resolve';
 import { NominatimClient } from './nominatim';

@@ -1,7 +1,7 @@
 import type { TradeAreaTasteContext } from '@leaseup/contracts';
 import type { QlooLocation } from '../providers/qloo';
 import type { QlooClient } from '../providers/qloo';
-import { brandExplainabilityForDemo, matchDemoFixtureId, topOverIndexRows } from '@leaseup/fixtures';
+import { brandExplainabilityForDemo, matchDemoFixtureId, topOverIndexRows } from '@leaseup/fixtures/worker';
 
 export async function loadTradeAreaTasteForProspect(
   qloo: QlooClient,

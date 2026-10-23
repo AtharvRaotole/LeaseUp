@@ -5,39 +5,36 @@ import {
   adaptiveEvalRadiusKm,
   computeStrictEval,
   buildEvalSiteSnapshot,
+  demoAnalyzeStrictEval,
+  matchDemoFixtureId,
   type EvalSiteDensity,
   type EvalDensityStratum,
-} from '@leaseup/fixtures';
+} from '@leaseup/fixtures/worker';
 import type { StoreCatalog } from '../services/store-catalog';
+import { NearbyPresenceCache } from './nearby-presence-cache';
 
 export async function buildStrictEvalSnapshot(
   location: Location,
   insights: QlooInsight[],
   radiusKm: number,
   density: EvalSiteDensity | EvalDensityStratum,
-  catalog: StoreCatalog
+  catalog: StoreCatalog,
+  presence?: NearbyPresenceCache
 ): Promise<StrictEvalSnapshot> {
+  const demoFixtureId = matchDemoFixtureId(location.address);
+  if (demoFixtureId) {
+    return demoAnalyzeStrictEval(demoFixtureId, radiusKm) as StrictEvalSnapshot;
+  }
+
+  const cache = presence ?? new NearbyPresenceCache(catalog, location);
   const brandIds = new Set(catalog.getBrandIds());
   const adaptiveRadiusKm = adaptiveEvalRadiusKm(density, radiusKm);
   const radii = [radiusKm, adaptiveRadiusKm];
-  const cache = new Map<string, Map<number, Array<{ distance: number }>>>();
+  const poolIds = insights.filter((i) => brandIds.has(i.entity_id)).map((i) => i.entity_id);
+  await cache.warmBrandRadii(poolIds, radii);
 
-  for (const insight of insights.filter((i) => brandIds.has(i.entity_id))) {
-    const byRadius = new Map<number, Array<{ distance: number }>>();
-    for (const r of radii) {
-      const rows = await catalog.findStoresNearby(
-        insight.entity_id,
-        location.latitude,
-        location.longitude,
-        r
-      );
-      byRadius.set(r, rows.map((s) => ({ distance: s.distance })));
-    }
-    cache.set(insight.entity_id, byRadius);
-  }
-
-  const findNearby = (brandId: string, _lat: number, _lon: number, r: number) =>
-    cache.get(brandId)?.get(r) ?? [];
+  const findNearby = (brandId: string, lat: number, lon: number, r: number) =>
+    cache.findNearbyFn(r)(brandId, lat, lon, r);
 
   const metrics = computeStrictEval(
     insights,
@@ -45,7 +42,8 @@ export async function buildStrictEvalSnapshot(
     location.longitude,
     radiusKm,
     density,
-    findNearby
+    findNearby,
+    { monteCarloDraws: 0 }
   );
 
   return buildEvalSiteSnapshot(metrics);
