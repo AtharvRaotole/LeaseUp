@@ -35,7 +35,7 @@ for (const { label, fixture } of fixtures) {
   );
 }
 
-console.log(`\nATP snapshot brands tracked: ${getStoreBrandIds().length}`);
+console.log(`\nATP snapshot brands tracked: ${storeMeta.brands ?? Object.keys(storeMeta.data || {}).length}`);
 
 const neighPath = join(process.cwd(), 'data/research/round2/neigh_test_10km.json');
 try {
