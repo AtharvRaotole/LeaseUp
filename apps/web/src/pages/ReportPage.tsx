@@ -15,6 +15,8 @@ import { OutreachSheet } from '../components/report/OutreachSheet';
 import { DemoBanner } from '../components/report/DemoBanner';
 import { ReportStickyHeader } from '../components/report/ReportStickyHeader';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
+import { ReportErrorBanner } from '../components/report/ReportErrorBanner';
+import type { ApiErrorInfo } from '../lib/api-error';
 
 type MobilePane = 'report' | 'map';
 
@@ -25,7 +27,7 @@ export function ReportPage() {
   const request = useMemo(() => parseReportSearch(searchParams), [searchParams]);
   const simulateError = searchParams.get('simulateError') === '1';
   const emptyPitch = searchParams.get('emptyPitch') === '1';
-  const { steps, results, error, loading, elapsedMs, slowHint, run } = useAnalysisRun();
+  const { steps, results, error, loading, elapsedMs, slowHint, run, retry } = useAnalysisRun();
   const [selected, setSelected] = useState<ProspectPack | null>(null);
   const [mapBrand, setMapBrand] = useState<MapBrandSelection | null>(null);
   const [outreach, setOutreach] = useState<ProspectPack | null>(null);
@@ -73,9 +75,9 @@ export function ReportPage() {
 
   if (!request) return null;
 
-  const displayError =
+  const displayError: ApiErrorInfo | null =
     simulateError
-      ? 'We could not load this report. Check your connection and try again.'
+      ? { message: 'We could not load this report. Check your connection and try again.' }
       : error;
 
   const reportSections = results && (
@@ -150,12 +152,7 @@ export function ReportPage() {
               <p className="text-sm text-ink-2">Still working. Large cities take a few extra seconds.</p>
             )}
             {displayError && (
-              <div
-                className="rounded-card border border-danger/30 bg-surface px-4 py-3 text-sm text-danger"
-                data-testid="report-error"
-              >
-                {displayError}
-              </div>
+              <ReportErrorBanner error={displayError} onRetry={() => { ranKey.current = ''; retry(); }} />
             )}
             {reportSections}
             {!results && loading && !simulateError && (
@@ -171,6 +168,7 @@ export function ReportPage() {
               <ReportMap
                 results={results}
                 selectedBrand={mapBrand}
+                pitchBrandIds={results.prospects.map((p) => p.brand.entityId)}
                 radiusKm={request.radius}
                 className="h-[max(400px,calc(100vh-11rem))] w-full md:sticky md:top-[7.5rem] md:h-[max(520px,calc(100vh-8rem))]"
               />

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import type { FeatureCollection, Point } from 'geojson';
 import type { AnalysisResponse } from '@leaseup/contracts';
@@ -17,10 +17,12 @@ function mapStyle() {
 export default function ReportMapInner({
   results,
   selectedBrand,
+  pitchBrandIds,
   radiusKm,
 }: {
   results: AnalysisResponse;
   selectedBrand: MapBrandSelection | null;
+  pitchBrandIds: string[];
   radiusKm: number;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -29,6 +31,8 @@ export default function ReportMapInner({
   const [showStores, setShowStores] = useState(true);
   const [showRadius, setShowRadius] = useState(true);
   const [mapReady, setMapReady] = useState(false);
+
+  const pitchIdSet = useMemo(() => new Set(pitchBrandIds), [pitchBrandIds]);
 
   const resizeMap = useCallback(() => {
     mapRef.current?.resize();
@@ -74,39 +78,52 @@ export default function ReportMapInner({
     const map = mapRef.current;
     if (!map || !mapReady) return;
     const visibility = showStores ? 'visible' : 'none';
-    if (map.getLayer('stores')) map.setLayoutProperty('stores', 'visibility', visibility);
+    if (map.getLayer('stores-pitch')) map.setLayoutProperty('stores-pitch', 'visibility', visibility);
+    if (map.getLayer('stores-other')) map.setLayoutProperty('stores-other', 'visibility', visibility);
   }, [showStores, mapReady]);
 
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapReady) return;
     const stores = results.mapStores ?? [];
-    const geojson: FeatureCollection<Point> = {
-      type: 'FeatureCollection',
-      features: stores.map((store) => ({
-        type: 'Feature',
+    const pitchFeatures = stores
+      .filter((s) => pitchIdSet.has(s.entityId))
+      .map((store) => ({
+        type: 'Feature' as const,
         properties: { brand: store.brandName },
-        geometry: { type: 'Point', coordinates: [store.longitude, store.latitude] },
-      })),
+        geometry: { type: 'Point' as const, coordinates: [store.longitude, store.latitude] },
+      }));
+    const otherFeatures = stores
+      .filter((s) => !pitchIdSet.has(s.entityId))
+      .map((store) => ({
+        type: 'Feature' as const,
+        properties: { brand: store.brandName },
+        geometry: { type: 'Point' as const, coordinates: [store.longitude, store.latitude] },
+      }));
+
+    const upsert = (id: string, data: FeatureCollection<Point>, color: string) => {
+      if (map.getSource(id)) {
+        (map.getSource(id) as maplibregl.GeoJSONSource).setData(data);
+      } else {
+        map.addSource(id, { type: 'geojson', data });
+        map.addLayer({
+          id,
+          type: 'circle',
+          source: id,
+          paint: {
+            'circle-radius': 5,
+            'circle-color': color,
+            'circle-stroke-width': 1,
+            'circle-stroke-color': '#ffffff',
+          },
+        });
+      }
     };
-    if (map.getSource('stores')) {
-      (map.getSource('stores') as maplibregl.GeoJSONSource).setData(geojson);
-    } else {
-      map.addSource('stores', { type: 'geojson', data: geojson });
-      map.addLayer({
-        id: 'stores',
-        type: 'circle',
-        source: 'stores',
-        paint: {
-          'circle-radius': 5,
-          'circle-color': '#2b59c3',
-          'circle-stroke-width': 1,
-          'circle-stroke-color': '#ffffff',
-        },
-      });
-    }
+
+    upsert('stores-pitch', { type: 'FeatureCollection', features: pitchFeatures }, '#0f6b4f');
+    upsert('stores-other', { type: 'FeatureCollection', features: otherFeatures }, '#8fa3c4');
     resizeMap();
-  }, [results.mapStores, mapReady, resizeMap]);
+  }, [results.mapStores, mapReady, resizeMap, pitchIdSet]);
 
   useEffect(() => {
     if (!selectedBrand || !mapRef.current) return;
@@ -189,7 +206,7 @@ export default function ReportMapInner({
 
   return (
     <div className="relative h-full min-h-[520px] w-full">
-      <div className="absolute left-3 top-3 z-10 w-[min(100%,240px)] rounded-card border border-border bg-surface/95 p-3 shadow-pop">
+      <div className="absolute left-3 top-3 z-10 w-[min(100%,252px)] rounded-card border border-border bg-surface/95 p-3 pr-4 shadow-pop">
         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-3">Map</p>
         <div className="grid grid-cols-1 gap-y-2">
           <Switch
@@ -202,16 +219,30 @@ export default function ReportMapInner({
           <Switch checked={showStores} onCheckedChange={setShowStores} label="Stores" />
           <Switch checked={showRadius} onCheckedChange={setShowRadius} label="Radius" />
         </div>
-        <div className="mt-3 grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
+        <div className="mt-3 grid grid-cols-[auto_1fr_auto] items-center gap-x-1.5 px-0.5">
           <span className="text-[10px] leading-none text-ink-3">Less</span>
           <div
-            className="h-2 w-full rounded-pill"
+            className="h-2 min-w-0 w-full rounded-pill"
             style={{
               background: 'linear-gradient(90deg, #fff4d6, #fdba74, #f97316, #c2410c)',
             }}
           />
-          <span className="text-[10px] leading-none text-ink-3">More</span>
+          <span className="text-[10px] leading-none text-ink-3 pr-0.5">More</span>
         </div>
+        <ul className="mt-3 space-y-1.5 border-t border-border pt-2 text-[10px] text-ink-3">
+          <li className="flex items-center gap-2">
+            <span className="h-2.5 w-2.5 rounded-full bg-accent" aria-hidden />
+            Your pin
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#8fa3c4]" aria-hidden />
+            Nearby stores of top brands
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="h-2.5 w-2.5 rounded-full bg-accent ring-2 ring-accent/30" aria-hidden />
+            Pitch brand stores
+          </li>
+        </ul>
       </div>
       <div ref={containerRef} className="absolute inset-0 rounded-card border border-border overflow-hidden" />
     </div>

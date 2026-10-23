@@ -2,17 +2,20 @@ import { useCallback, useRef, useState } from 'react';
 import type { AnalysisRequest, AnalysisResponse, AnalysisStep } from '@leaseup/contracts';
 import { analyzeWithStream } from '../lib/analyzeStream';
 import { apiUrl } from '../lib/api';
+import { parseApiErrorResponse, type ApiErrorInfo } from '../lib/api-error';
 
 export function useAnalysisRun() {
   const [steps, setSteps] = useState<AnalysisStep[]>([]);
   const [results, setResults] = useState<AnalysisResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ApiErrorInfo | null>(null);
   const [loading, setLoading] = useState(false);
   const [elapsedMs, setElapsedMs] = useState<number | null>(null);
   const [slowHint, setSlowHint] = useState(false);
   const startedRef = useRef<number>(0);
+  const lastRequestRef = useRef<AnalysisRequest | null>(null);
 
   const run = useCallback(async (request: AnalysisRequest) => {
+    lastRequestRef.current = request;
     setLoading(true);
     setError(null);
     setResults(null);
@@ -58,7 +61,7 @@ export function useAnalysisRun() {
             );
           }
         },
-        onError: (message) => setError(message),
+        onError: (info) => setError(info),
       });
     } catch {
       /* stream race */
@@ -72,17 +75,24 @@ export function useAnalysisRun() {
           body: JSON.stringify(request),
         });
         if (!response.ok) {
-          const err = await response.json().catch(() => ({}));
-          throw new Error(err.error || 'Analysis failed');
+          throw await parseApiErrorResponse(response);
         }
         finish((await response.json()) as AnalysisResponse);
       } catch (err) {
-        setError((err as Error).message);
+        if (err && typeof err === 'object' && 'message' in err) {
+          setError(err as ApiErrorInfo);
+        } else {
+          setError({ message: 'Analysis failed. Try again.' });
+        }
         setLoading(false);
       }
     }
     window.clearTimeout(slowTimer);
   }, []);
 
-  return { steps, results, error, loading, elapsedMs, slowHint, run };
+  const retry = useCallback(() => {
+    if (lastRequestRef.current) void run(lastRequestRef.current);
+  }, [run]);
+
+  return { steps, results, error, loading, elapsedMs, slowHint, run, retry };
 }
