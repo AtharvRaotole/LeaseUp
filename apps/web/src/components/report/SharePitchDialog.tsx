@@ -1,10 +1,11 @@
-import { useState, type RefObject } from 'react';
+import { useRef, useState, type RefObject } from 'react';
 import type { AnalysisRequest, AnalysisResponse, VacancyCalculatorInput } from '@leaseup/contracts';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { VacancyCostCalculator } from './VacancyCostCalculator';
 import { apiUrl } from '../../lib/api';
 import type { ReportMapCaptureRef } from './ReportMap';
+import { copyPitchLinkToClipboard } from '../../lib/share-pitch-copy';
 
 export function SharePitchDialog({
   open,
@@ -27,12 +28,22 @@ export function SharePitchDialog({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pitchUrl, setPitchUrl] = useState<string | null>(null);
+  const [copyHint, setCopyHint] = useState<string | null>(null);
+  const linkInputRef = useRef<HTMLInputElement>(null);
 
   if (!open) return null;
+
+  const selectLink = () => {
+    const el = linkInputRef.current;
+    if (!el) return;
+    el.focus();
+    el.select();
+  };
 
   const create = async () => {
     setBusy(true);
     setError(null);
+    setCopyHint(null);
     try {
       const mapImage = mapCaptureRef.current?.captureSnapshot() ?? undefined;
       const res = await fetch(apiUrl('/api/pitch'), {
@@ -56,12 +67,30 @@ export function SharePitchDialog({
       const snapshot = (await res.json()) as { id: string };
       const url = `${window.location.origin}/pitch/${snapshot.id}`;
       setPitchUrl(url);
-      await navigator.clipboard.writeText(url);
+      const copy = await copyPitchLinkToClipboard(url);
+      if (copy.copied) {
+        setCopyHint('Link copied to your clipboard.');
+      } else {
+        setCopyHint('Select the link below and copy it (clipboard access was blocked).');
+        requestAnimationFrame(() => selectLink());
+      }
     } catch (e) {
       setError((e as Error).message);
     } finally {
       setBusy(false);
     }
+  };
+
+  const copyAgain = async () => {
+    if (!pitchUrl) return;
+    setCopyHint(null);
+    const copy = await copyPitchLinkToClipboard(pitchUrl);
+    if (copy.copied) {
+      setCopyHint('Link copied to your clipboard.');
+      return;
+    }
+    setCopyHint('Select the link below and copy it.');
+    selectLink();
   };
 
   return (
@@ -97,15 +126,32 @@ export function SharePitchDialog({
 
         {error && <p className="mt-3 text-sm text-danger">{error}</p>}
         {pitchUrl && (
-          <p className="mt-3 break-all text-sm text-ink-2">
-            Link copied:{' '}
-            <a href={pitchUrl} className="text-accent hover:underline">{pitchUrl}</a>
-          </p>
+          <div className="mt-4 space-y-2">
+            <label className="block text-sm">
+              <span className="text-label uppercase text-ink-3">Public pitch link</span>
+              <Input
+                ref={linkInputRef}
+                readOnly
+                className="mt-1 h-11 font-mono text-sm"
+                value={pitchUrl}
+                data-testid="share-pitch-link"
+                onFocus={(e) => e.currentTarget.select()}
+              />
+            </label>
+            {copyHint && (
+              <p className="text-sm text-ink-2" data-testid="share-pitch-copy-hint">
+                {copyHint}
+              </p>
+            )}
+            <Button type="button" variant="secondary" size="sm" onClick={() => void copyAgain()}>
+              Select and copy
+            </Button>
+          </div>
         )}
 
         <div className="mt-5 flex flex-wrap gap-2">
           <Button type="button" onClick={() => void create()} disabled={busy}>
-            {busy ? 'Creating…' : pitchUrl ? 'Copy link again' : 'Create public link'}
+            {busy ? 'Creating…' : pitchUrl ? 'Create another link' : 'Create public link'}
           </Button>
           {pitchUrl && (
             <Button type="button" variant="secondary" onClick={() => window.open(pitchUrl, '_blank')}>
