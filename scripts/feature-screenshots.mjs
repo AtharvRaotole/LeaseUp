@@ -30,10 +30,26 @@ if (!pitchPath) {
   console.log('pitch screenshot path', pitchPath);
 }
 
+const prospectRes = await fetch(`${API}/api/prospecting`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ address: WICKER, radius: 10 }),
+});
+const prospectJob = await prospectRes.json();
+const prospectPath = `/prospect/${prospectJob.id}`;
+console.log('prospect screenshot path', prospectPath);
+
 const pages = [
-  { name: 'brand-reverse', path: '/brand/54617D9D-5EC7-45E0-8B7F-360DADB0FE7E' },
-  { name: 'portfolio', path: '/portfolio' },
+  {
+    name: 'report-qloo-proof',
+    path: `/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`,
+    testId: 'qloo-proof-banner',
+    timeout: 120000,
+  },
+  { name: 'brand-reverse', path: '/brand/54617D9D-5EC7-45E0-8B7F-360DADB0FE7E', testId: 'brand-opportunities' },
+  { name: 'portfolio', path: '/portfolio', testId: 'portfolio-input' },
   { name: 'pitch-pack', path: pitchPath, testId: 'pitch-page' },
+  { name: 'prospecting-agent', path: prospectPath, testId: 'prospecting-page', timeout: 240000, extraTestId: 'pitch-pack-ready' },
 ];
 
 await mkdir(OUT, { recursive: true });
@@ -48,12 +64,12 @@ for (const theme of ['light', 'dark']) {
       });
       const page = await context.newPage();
       await page.goto(`${BASE}${pageDef.path}`, { waitUntil: 'networkidle' });
-      if (pageDef.name === 'brand-reverse') {
-        await page.getByTestId('brand-opportunities').waitFor({ timeout: 90000 });
-      } else if (pageDef.testId) {
-        await page.getByTestId(pageDef.testId).waitFor({ timeout: 90000 });
-      } else {
-        await page.getByTestId('portfolio-input').waitFor({ timeout: 30000 });
+      const waitMs = pageDef.timeout ?? 90000;
+      if (pageDef.testId) {
+        await page.getByTestId(pageDef.testId).waitFor({ timeout: waitMs });
+      }
+      if (pageDef.extraTestId) {
+        await page.getByRole('link', { name: 'Open pitch pack' }).waitFor({ timeout: waitMs });
       }
       await page.waitForTimeout(800);
       const file = `${pageDef.name}-${theme}-${width}.png`;

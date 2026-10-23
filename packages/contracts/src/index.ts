@@ -357,3 +357,76 @@ export const PitchCreateSchema = z.object({
 });
 
 export type PitchCreate = z.infer<typeof PitchCreateSchema>;
+
+export const ProspectingStepIdSchema = z.enum([
+  'geocode',
+  'taste',
+  'scan_stores',
+  'verify_osm',
+  'rank_backtest',
+  'explain_top5',
+  'draft_outreach',
+  'pitch_pack',
+]);
+
+export type ProspectingStepId = z.infer<typeof ProspectingStepIdSchema>;
+
+export const ProspectingStepSchema = z.object({
+  id: ProspectingStepIdSchema,
+  label: z.string(),
+  status: z.enum(['pending', 'running', 'complete', 'error']),
+  durationMs: z.number().optional(),
+  summary: z.string().optional(),
+  detail: z.record(z.unknown()).optional(),
+});
+
+export type ProspectingStep = z.infer<typeof ProspectingStepSchema>;
+
+export const ProspectingOutreachDraftSchema = z.object({
+  entityId: z.string(),
+  brandName: z.string(),
+  subject: z.string(),
+  body: z.string(),
+  model: z.string().optional(),
+});
+
+export type ProspectingOutreachDraft = z.infer<typeof ProspectingOutreachDraftSchema>;
+
+export const ProspectingJobStatusSchema = z.enum([
+  'pending',
+  'needs_geocode',
+  'ready',
+  'running',
+  'complete',
+  'error',
+]);
+
+export type ProspectingJobStatus = z.infer<typeof ProspectingJobStatusSchema>;
+
+export const ProspectingCreateSchema = AnalysisRequestSchema;
+
+export type ProspectingCreate = z.infer<typeof ProspectingCreateSchema>;
+
+export const ProspectingConfirmGeocodeSchema = z.object({
+  candidateIndex: z.number().int().min(0),
+});
+
+export type ProspectingConfirmGeocode = z.infer<typeof ProspectingConfirmGeocodeSchema>;
+
+export const ProspectingJobSchema = z.object({
+  id: z.string().uuid(),
+  status: ProspectingJobStatusSchema,
+  input: AnalysisRequestSchema,
+  geocodeCandidates: z.array(GeocodeCandidateSchema).optional(),
+  confirmedLocation: LocationSchema.optional(),
+  steps: z.array(ProspectingStepSchema),
+  outreachDrafts: z.array(ProspectingOutreachDraftSchema).optional(),
+  pitchId: z.string().optional(),
+  analysisRunId: z.string().optional(),
+  createdAt: z.string(),
+  mode: z.enum(['live', 'demo']),
+  error: z.string().optional(),
+  runningStartedAt: z.string().optional(),
+});
+
+export type ProspectingJob = z.infer<typeof ProspectingJobSchema>;

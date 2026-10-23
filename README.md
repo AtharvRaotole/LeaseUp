@@ -36,6 +36,8 @@ Mobile landing:
 | **Brand sites** (`/brand`) | Qloo heatmap by chain and metro, ATP store overlay, ranked white-space cells |
 | **Portfolio** (`/portfolio`) | Batch up to 10 addresses, confirm geocodes, sequential analyses, shareable CSV |
 | **Pitch pack** (`/pitch/:id`) | Shareable read-only snapshot from a site report, map image, top 5 prospects, print/PDF |
+| **Qloo proof** (report) | Toggle Qloo vs national chain-size baseline with computed backtest comparison |
+| **Full prospecting** (`/prospect/:id`) | Agent timeline over SSE: geocode through pitch pack and draft outreach |
 
 Brand reverse (recorded Chicago heatmap, light 1440px):
 
@@ -48,6 +50,14 @@ Portfolio batch (light 390px):
 Pitch pack (light 1440px):
 
 ![Pitch pack](docs/screenshots/features/pitch-pack-light-1440.png)
+
+Qloo proof on report (light 1440px):
+
+![Qloo proof toggle](docs/screenshots/features/report-qloo-proof-light-1440.png)
+
+Autonomous prospecting (light 390px):
+
+![Prospecting agent](docs/screenshots/features/prospecting-agent-light-390.png)
 
 ## Architecture
 
