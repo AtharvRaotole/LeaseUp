@@ -6,6 +6,13 @@ import { Card } from '../ui/Card';
 import { ShowMethod } from '../ui/ShowMethod';
 import { affinitiesAllIdentical, fitPercentileLabel } from '../../lib/fit-display';
 import { presentInTop10Count } from '../../lib/hit-rate';
+import {
+  proofSectionLead,
+  movementColumnTooltip,
+  storeNearbyColumnTooltip,
+  localFitTooltip,
+} from '../../lib/broker-copy';
+import { InfoTooltip } from '../ui/InfoTooltip';
 import { displayBrandName } from '../../lib/brand-display';
 import { rankMovementLabel, rankMovementLabelTechnical } from '../../lib/qloo-proof';
 
@@ -38,9 +45,7 @@ export function ProofSection({
   return (
     <section>
       <h3 className="text-h3 font-semibold text-ink">Do the rankings match what is on the ground?</h3>
-      <p className="mt-2 text-sm text-ink-2">
-        {present} of 10 top-ranked brands already have a store within {radiusKm} km.
-      </p>
+      <p className="mt-2 text-sm text-ink-2">{proofSectionLead(present, radiusKm)}</p>
       <ShowMethod>
         <p>
           We compare taste-ordered (or chain-size-ordered) rankings with All The Places store
@@ -55,10 +60,25 @@ export function ProofSection({
               <th className="px-4 py-2 font-medium">Rank</th>
               <th className="px-4 py-2 font-medium">Brand</th>
               {!hideFit && rankingMode === 'qloo' && (
-                <th className="px-4 py-2 font-medium">Fit</th>
+                <th className="px-4 py-2 font-medium">
+                  <span className="inline-flex items-center gap-1">
+                    Local fit
+                    <InfoTooltip label={localFitTooltip()} />
+                  </span>
+                </th>
               )}
-              <th className="px-4 py-2 font-medium">vs chain size</th>
-              <th className="px-4 py-2 font-medium">Store nearby</th>
+              <th className="px-4 py-2 font-medium">
+                <span className="inline-flex items-center gap-1">
+                  vs chain size
+                  <InfoTooltip label={movementColumnTooltip()} />
+                </span>
+              </th>
+              <th className="px-4 py-2 font-medium">
+                <span className="inline-flex items-center gap-1">
+                  Store nearby
+                  <InfoTooltip label={storeNearbyColumnTooltip(radiusKm)} />
+                </span>
+              </th>
             </tr>
           </thead>
           <tbody>

@@ -22,12 +22,22 @@ export function ReportErrorBanner({
 
   const canRetry = !error.retryAfterSec || seconds <= 0;
 
+  const headline =
+    error.code === 'RATE_LIMIT_EXCEEDED'
+      ? 'Too many searches at once'
+      : 'We could not finish this report';
+
   return (
     <div
-      className="rounded-card border border-danger/30 bg-surface px-4 py-3 text-sm text-danger"
+      className="rounded-card border border-danger/30 bg-surface px-4 py-3 text-sm"
       data-testid="report-error"
+      role="alert"
     >
-      <p>{error.message}</p>
+      <p className="font-medium text-ink">{headline}</p>
+      <p className="mt-1 text-ink-2">{error.message}</p>
+      <p className="mt-2 text-ink-3">
+        You can edit the address, pick a demo example, or try again in a moment.
+      </p>
       {error.retryAfterSec !== undefined && seconds > 0 && (
         <p className="mt-1 text-ink-2">Try again in {seconds} s.</p>
       )}

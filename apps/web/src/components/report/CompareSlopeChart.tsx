@@ -112,7 +112,7 @@ export function CompareSlopeChart({
             <span className="rounded-pill border border-accent/30 bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent">
               Higher in {shortLeft}
             </span>
-            <span className="rounded-pill border border-border bg-surface-2 px-2.5 py-1 text-xs font-medium text-ink-4">
+            <span className="rounded-pill border border-border bg-surface-2 px-2.5 py-1 text-xs font-medium text-ink-3">
               Higher in {shortRight}
             </span>
           </div>

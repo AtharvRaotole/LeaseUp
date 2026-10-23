@@ -22,11 +22,13 @@ export function AddToPipelineButton({
   const onClick = async () => {
     setBusy(true);
     setError(null);
+    const payload = buildPayload();
+    setDone(true);
     try {
-      await addPipelineCard(buildPayload());
-      setDone(true);
+      await addPipelineCard(payload);
       window.setTimeout(() => setDone(false), 4000);
     } catch (e) {
+      setDone(false);
       setError((e as Error).message);
     } finally {
       setBusy(false);
@@ -39,7 +41,7 @@ export function AddToPipelineButton({
         type="button"
         size={size}
         variant={variant}
-        disabled={busy}
+        disabled={busy && !done}
         onClick={() => void onClick()}
         data-testid="add-to-pipeline"
       >

@@ -54,7 +54,8 @@ export function HowWeKnowSection({ results }: { results: AnalysisResponse }) {
       <ShowMethod>
         <p>
           We rank brands for the pin, then measure how often top-ranked brands already have a real store
-          nearby. AUC here is {auc}: the chance a random present store ranks above a random absent one
+          nearby. Precision at 10 (P@10) counts how many of the top 10 already have a store in your trade area.
+          AUC here is {auc}: the chance a random present store ranks above a random absent one
           (1.0 is perfect separation).
         </p>
       </ShowMethod>
