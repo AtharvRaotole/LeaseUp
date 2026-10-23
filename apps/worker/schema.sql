@@ -56,4 +56,13 @@ CREATE TABLE IF NOT EXISTS pitch_packs (
 
 CREATE INDEX IF NOT EXISTS idx_pitch_packs_created ON pitch_packs(created_at);
 
+-- Autonomous full prospecting agent runs
+CREATE TABLE IF NOT EXISTS prospecting_jobs (
+  job_id TEXT PRIMARY KEY,
+  payload TEXT NOT NULL,
+  created_at INTEGER NOT NULL DEFAULT (unixepoch())
+);
+
+CREATE INDEX IF NOT EXISTS idx_prospecting_jobs_created ON prospecting_jobs(created_at);
+
 -- Store locations are served from static geotiles (apps/worker/public/tiles), not D1.

@@ -17,6 +17,7 @@ import {
   CATEGORY_OPTIONS,
   type CategoryKey,
 } from '../lib/report-params';
+import { startProspectingJob } from '../lib/start-prospecting';
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -83,6 +84,25 @@ export function LandingPage() {
             </div>
             <Button type="submit" size="lg" className="sm:min-w-[120px]">
               Analyze
+            </Button>
+          </div>
+          <div className="mt-3 flex justify-end">
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              data-testid="landing-run-prospecting"
+              onClick={() => {
+                const trimmed = address.trim();
+                if (!trimmed) return;
+                void startProspectingJob({
+                  address: trimmed,
+                  radius: Number(radiusKm),
+                  categoryTags: categoryToTags(category),
+                }).then((id) => navigate(`/prospect/${id}`));
+              }}
+            >
+              Run full prospecting
             </Button>
           </div>
           <div className="mt-4 flex flex-wrap items-end gap-4">

@@ -5,6 +5,7 @@ import { ReportPage } from './pages/ReportPage';
 import { BrandPage } from './pages/BrandPage';
 import { PortfolioPage } from './pages/PortfolioPage';
 import { PitchPage } from './pages/PitchPage';
+import { ProspectingPage } from './pages/ProspectingPage';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/portfolio/:id" element={<PortfolioPage />} />
         <Route path="/r/:slug" element={<ReportPage />} />
         <Route path="/pitch/:id" element={<PitchPage />} />
+        <Route path="/prospect/:id" element={<ProspectingPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
