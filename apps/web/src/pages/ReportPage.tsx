@@ -8,7 +8,8 @@ import { AgentRunStrip } from '../components/report/AgentRunStrip';
 import { HeadlineCard } from '../components/report/HeadlineCard';
 import { BrandsToPitch } from '../components/report/BrandsToPitch';
 import { ProofSection } from '../components/report/ProofSection';
-import { CompareSection } from '../components/report/CompareSection';
+import { CompareSection, CompareUnavailable } from '../components/report/CompareSection';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import { HowWeKnowSection } from '../components/report/HowWeKnowSection';
 import { ReportMap, type MapBrandSelection } from '../components/report/ReportMap';
 import { OutreachSheet } from '../components/report/OutreachSheet';
@@ -82,7 +83,9 @@ export function ReportPage() {
 
   const reportSections = results && (
     <>
-      <HeadlineCard results={results} radiusKm={request.radius} chipSlug={slug} />
+      <ErrorBoundary fallback={<SectionUnavailable />}>
+        <HeadlineCard results={results} radiusKm={request.radius} chipSlug={slug} />
+      </ErrorBoundary>
       {(loading || steps.length > 0) && (
         <AgentRunStrip
           steps={steps}
@@ -92,19 +95,27 @@ export function ReportPage() {
           recordedAt={results?.timestamp}
         />
       )}
-      <BrandsToPitch
-        results={results}
-        request={request}
-        slug={slug ?? 'run'}
-        selectedId={selected?.brand.entityId ?? null}
-        onSelect={selectProspect}
-        onDraft={(p) => setOutreach(p)}
-        radiusKm={request.radius}
-        forceEmpty={emptyPitch}
-      />
-      <ProofSection results={results} radiusKm={request.radius} onBrandSelect={selectMapBrand} />
-      <CompareSection />
-      <HowWeKnowSection results={results} />
+      <ErrorBoundary fallback={<SectionUnavailable />}>
+        <BrandsToPitch
+          results={results}
+          request={request}
+          slug={slug ?? 'run'}
+          selectedId={selected?.brand.entityId ?? null}
+          onSelect={selectProspect}
+          onDraft={(p) => setOutreach(p)}
+          radiusKm={request.radius}
+          forceEmpty={emptyPitch}
+        />
+      </ErrorBoundary>
+      <ErrorBoundary fallback={<SectionUnavailable />}>
+        <ProofSection results={results} radiusKm={request.radius} onBrandSelect={selectMapBrand} />
+      </ErrorBoundary>
+      <ErrorBoundary fallback={<CompareUnavailable />}>
+        <CompareSection />
+      </ErrorBoundary>
+      <ErrorBoundary fallback={<SectionUnavailable />}>
+        <HowWeKnowSection results={results} />
+      </ErrorBoundary>
     </>
   );
 
@@ -165,13 +176,15 @@ export function ReportPage() {
             }`}
           >
             {results && (
-              <ReportMap
-                results={results}
-                selectedBrand={mapBrand}
-                pitchBrandIds={results.prospects.map((p) => p.brand.entityId)}
-                radiusKm={request.radius}
-                className="h-[max(400px,calc(100vh-11rem))] w-full md:sticky md:top-[7.5rem] md:h-[max(520px,calc(100vh-8rem))]"
-              />
+              <ErrorBoundary fallback={<SectionUnavailable label="Map unavailable right now." />}>
+                <ReportMap
+                  results={results}
+                  selectedBrand={mapBrand}
+                  pitchBrandIds={results.prospects.map((p) => p.brand.entityId)}
+                  radiusKm={request.radius}
+                  className="h-[max(400px,calc(100vh-11rem))] w-full md:sticky md:top-[7.5rem] md:h-[max(520px,calc(100vh-8rem))]"
+                />
+              </ErrorBoundary>
             )}
           </div>
         </div>
@@ -188,5 +201,11 @@ export function ReportPage() {
         <Link to="/" className="text-accent hover:underline">Back to search</Link>
       </footer>
     </div>
+  );
+}
+
+function SectionUnavailable({ label = 'This section is unavailable right now.' }: { label?: string }) {
+  return (
+    <p className="rounded-card border border-border bg-surface p-4 text-sm text-ink-2">{label}</p>
   );
 }

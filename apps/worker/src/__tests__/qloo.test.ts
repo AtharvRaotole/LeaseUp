@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { QlooClient, normalizeHeatmapCells } from '../providers/qloo';
+import { QlooClient, normalizeHeatmapCells, clampQlooTake, QLOO_MAX_TAKE } from '../providers/qloo';
 import { ConfigurationError } from '../lib/errors';
 import { getStoreBrandIds } from '@leaseup/fixtures';
 import { sha256Short } from '../lib/cache-key';
@@ -75,6 +75,33 @@ describe('QlooClient', () => {
     expect(cacheKey).not.toContain(brandIds[0]);
     const hash = await sha256Short(brandIds.join(','));
     expect(cacheKey).toContain(hash);
+  });
+
+  it('never sends take greater than 50 to Qloo', async () => {
+    const client = new QlooClient(makeEnv({ APP_MODE: 'live', QLOO_API_KEY: 'test-key' }));
+    const brandIds = getStoreBrandIds();
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ results: { entities: [] } }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await client.getBrandInsights({
+      location: { kind: 'point', latitude: 41.9, longitude: -87.67, radiusKm: 10 },
+      brandIds,
+      take: 227,
+    });
+
+    for (const call of fetchMock.mock.calls) {
+      const url = decodeURIComponent(call[0] as string);
+      const match = url.match(/take=(\d+)/);
+      expect(match).toBeTruthy();
+      expect(Number(match![1])).toBeLessThanOrEqual(QLOO_MAX_TAKE);
+    }
+    expect(clampQlooTake(227)).toBe(50);
+    expect(clampQlooTake(0)).toBe(1);
   });
 
   it('sends geocoded point + radius to Qloo in live mode', async () => {

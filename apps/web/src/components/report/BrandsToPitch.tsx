@@ -14,7 +14,7 @@ import { verificationShortLabel, verificationTooltip } from '../../lib/copy';
 import { pitchExpandedLines } from '../../lib/pitch-detail-copy';
 import { cn } from '../../lib/cn';
 
-const OSM_VERIFY_WAIT_MS = 20_000;
+const OSM_VERIFY_WAIT_MS = 30_000;
 
 function PitchPill({
   children,

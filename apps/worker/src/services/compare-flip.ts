@@ -1,5 +1,5 @@
 import type { Env } from '../index';
-import { QlooClient } from '../providers/qloo';
+import { QlooClient, QLOO_MAX_TAKE } from '../providers/qloo';
 import { wickerparkFixture, seviervilleFixture } from '@leaseup/fixtures';
 import { createStoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
@@ -110,7 +110,7 @@ export async function getCompareFlip(env: Env): Promise<CompareFlipPayload> {
     radiusKm,
   };
 
-  const take = Math.max(brandIds.length, 50);
+  const take = QLOO_MAX_TAKE;
   const [wickerInsights, seviervilleInsights] = await Promise.all([
     qloo.getBrandInsights({ location: wickerLoc, brandIds, take }),
     qloo.getBrandInsights({ location: seviervilleLoc, brandIds, take }),

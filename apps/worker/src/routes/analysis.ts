@@ -1,8 +1,35 @@
 import { Hono } from 'hono';
+import type { Context } from 'hono';
 import type { Env } from '../index';
-import { AnalysisRequestSchema, OutreachRequestSchema } from '@leaseup/contracts';
+import {
+  AnalysisRequestSchema,
+  OutreachRequestSchema,
+  type ProspectPack,
+  type Location,
+} from '@leaseup/contracts';
 import { AnalysisService } from '../services/analysis';
 import { randomUUID } from 'node:crypto';
+
+function scheduleOsmWarmup(
+  c: Context<{ Bindings: Env }>,
+  location: Location,
+  radiusKm: number,
+  prospects: ProspectPack[]
+) {
+  if (c.env.APP_MODE !== 'live') return;
+  if (!prospects.some((p) => p.brand.verified === 'verifying...')) return;
+  const service = new AnalysisService(c.env);
+  c.executionCtx.waitUntil(
+    service.warmOsmVerification(location, radiusKm, prospects).catch((err) => {
+      console.warn(
+        JSON.stringify({
+          event: 'osm_warmup_failed',
+          message: (err as Error).message,
+        })
+      );
+    })
+  );
+}
 
 export const analysisRouter = new Hono<{ Bindings: Env }>();
 
@@ -27,6 +54,7 @@ analysisRouter.post('/analyze', async (c) => {
 
   const service = new AnalysisService(c.env);
   const result = await service.analyze(request, runId, ipHash);
+  scheduleOsmWarmup(c, result.location, request.radius, result.prospects);
 
   return c.json(result);
 });
@@ -54,6 +82,7 @@ analysisRouter.post('/analyze/stream', async (c) => {
       const result = await service.analyzeWithSteps(request, runId, ipHash, async (step) => {
         await send('step', step);
       });
+      scheduleOsmWarmup(c, result.location, request.radius, result.prospects);
       await send('complete', result);
       const needsOsm = result.prospects.some((p) => p.brand.verified === 'verifying...');
       if (needsOsm) {
