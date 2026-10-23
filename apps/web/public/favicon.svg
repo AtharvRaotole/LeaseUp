@@ -5,6 +5,6 @@
       .fg { stroke: #3FBF8F; fill: #3FBF8F; }
     }
   </style>
-  <rect class="fg" x="5" y="5" width="22" height="22" rx="5.5" fill="none" stroke-width="2.25" />
-  <path class="fg" d="M10 23V12h4.25v6.75H21v4.25H10z" />
+  <rect class="fg" x="5" y="5" width="22" height="22" rx="4" fill="none" stroke-width="2.9" />
+  <path class="fg" d="M8 25.15V11.05H14.35V18.25H25.15V25.15H8Z" />
 </svg>

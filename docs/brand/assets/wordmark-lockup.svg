@@ -1,16 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 32" fill="none" role="img" aria-label="LeaseUp">
-  <g transform="translate(0 0)" fill="none">
-    <rect x="5" y="5" width="22" height="22" rx="5.5" stroke="#0F6B4F" stroke-width="2.25" />
-    <path fill="#0F6B4F" d="M10 23V12h4.25v6.75H21v4.25H10z" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 28" fill="none" role="img" aria-label="LeaseUp">
+  <g transform="translate(0 2)">
+    <rect x="0" y="0" width="24" height="24" rx="3" stroke="#0F6B4F" stroke-width="2.2" />
+    <path fill="#0F6B4F" d="M2.5 20.15V8.55H8.1V14.45H18.5V20.15H2.5Z" />
   </g>
   <text
-    x="38"
-    y="22"
+    x="32"
+    y="19"
     fill="#121212"
     font-family="Geist, system-ui, sans-serif"
-    font-size="17.5"
+    font-size="16"
     font-weight="600"
-    letter-spacing="-0.04em"
+    letter-spacing="-0.02em"
   >
     LeaseUp
   </text>

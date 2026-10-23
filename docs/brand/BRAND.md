@@ -18,7 +18,7 @@ Source files: `docs/brand/concepts/concept-corner-l.svg`, production mark `docs/
 
 ## Logo lockup
 
-- **Mark:** 32px artboard, 5.5px corner radius on the outer frame, 2.25px stroke.
+- **Mark:** 32px artboard, 4px corner radius on the outer frame, 2.9px stroke; L fill hugs the bottom-left grid corner. Use `mark-16.svg` for 16px raster exports.
 - **Wordmark:** Geist semibold (600), letter-spacing `-0.04em`, optical alignment with mark cap height.
 - **Variants:** full color (`wordmark-lockup.svg`), mono (`wordmark-lockup-mono.svg`, `currentColor`), reversed (`wordmark-lockup-reversed.svg`).
 - **React:** `apps/web/src/components/brand/Logo.tsx` (`mark` | `wordmark` | `lockup`, `xs`–`lg`).

@@ -1,7 +1,7 @@
 {
   "name": "LeaseUp",
   "short_name": "LeaseUp",
-  "description": "Find the tenants your neighborhood already wants.",
+  "description": "Find the tenants your space is missing.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FAFAF7",

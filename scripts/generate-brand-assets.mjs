@@ -7,32 +7,297 @@ import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { Resvg } from '@resvg/resvg-js';
 import pngToIco from 'png-to-ico';
+import satori from 'satori';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const brand = join(root, 'docs/brand');
 const publicDir = join(root, 'apps/web/public');
+const fontRoot = join(root, 'apps/web/node_modules/@fontsource');
 
 mkdirSync(join(brand, 'generated'), { recursive: true });
+
+const FONT_FILES = [
+  join(fontRoot, 'geist/files/geist-latin-400-normal.woff2'),
+  join(fontRoot, 'geist/files/geist-latin-600-normal.woff2'),
+  join(fontRoot, 'instrument-serif/files/instrument-serif-latin-400-normal.woff2'),
+];
 
 const COLORS = {
   light: { bg: '#FAFAF7', fg: '#0F6B4F' },
   dark: { bg: '#0B0B0C', fg: '#3FBF8F' },
 };
 
+function resvgOpts(extra = {}) {
+  return {
+    font: {
+      loadSystemFonts: false,
+      defaultFontFamily: 'Geist',
+      fontFiles: FONT_FILES,
+    },
+    ...extra,
+  };
+}
+
 function renderSvgToPng(svgString, size, { bg, fg }) {
   const tinted = svgString.replace(/currentColor/g, fg);
   const resvg = new Resvg(tinted, {
-    fitTo: { mode: 'width', value: size },
-    background: bg,
+    ...resvgOpts({
+      fitTo: { mode: 'width', value: size },
+      background: bg,
+    }),
+  });
+  return resvg.render().asPng();
+}
+
+function renderMarkFile(svgPath, size, theme) {
+  const { bg, fg } = COLORS[theme];
+  const svg = readFileSync(svgPath, 'utf8');
+  const tinted = svg.replace(/currentColor/g, fg);
+  const resvg = new Resvg(tinted, {
+    ...resvgOpts({
+      fitTo: { mode: 'width', value: size },
+      background: bg,
+    }),
   });
   return resvg.render().asPng();
 }
 
 async function renderMarkOnBg(svgPath, size, theme) {
-  const { bg, fg } = COLORS[theme];
-  const svg = readFileSync(svgPath, 'utf8');
-  const icon = renderSvgToPng(svg, size, { bg, fg });
-  return sharp(icon).png().toBuffer();
+  const png = renderMarkFile(svgPath, size, theme);
+  return sharp(png).png().toBuffer();
+}
+
+function h(type, props, ...children) {
+  const flat = children.flat().filter((c) => c !== false && c != null);
+  if (flat.length === 0) {
+    return { type, props };
+  }
+  const next = { ...props };
+  if (flat.length === 1 && (typeof flat[0] === 'string' || typeof flat[0] === 'number')) {
+    next.children = flat[0];
+  } else {
+    next.children = flat;
+  }
+  return { type, props: next };
+}
+
+function ogFonts() {
+  return [
+    {
+      name: 'Geist',
+      data: readFileSync(join(fontRoot, 'geist/files/geist-latin-400-normal.woff')),
+      weight: 400,
+      style: 'normal',
+    },
+    {
+      name: 'Geist',
+      data: readFileSync(join(fontRoot, 'geist/files/geist-latin-600-normal.woff')),
+      weight: 600,
+      style: 'normal',
+    },
+    {
+      name: 'Instrument Serif',
+      data: readFileSync(join(fontRoot, 'instrument-serif/files/instrument-serif-latin-400-normal.woff')),
+      weight: 400,
+      style: 'normal',
+    },
+  ];
+}
+
+function buildOgTextTree() {
+  return h(
+    'div',
+    {
+      style: {
+        width: 1200,
+        height: 630,
+        backgroundColor: '#FAFAF7',
+        padding: '52px 72px 56px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 36,
+      },
+    },
+    h(
+      'div',
+      { style: { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 } },
+      h(
+        'div',
+        {
+          style: {
+            width: 28,
+            height: 28,
+            borderRadius: 3,
+            border: '2.4px solid #0F6B4F',
+            position: 'relative',
+          },
+        },
+        h('div', {
+          style: {
+            position: 'absolute',
+            left: 3,
+            bottom: 3,
+            width: 6,
+            height: 14,
+            backgroundColor: '#0F6B4F',
+          },
+        }),
+        h('div', {
+          style: {
+            position: 'absolute',
+            left: 3,
+            bottom: 3,
+            width: 17,
+            height: 6,
+            backgroundColor: '#0F6B4F',
+          },
+        })
+      ),
+      h('div', {
+        style: {
+          fontSize: 18,
+          fontWeight: 600,
+          letterSpacing: '-0.02em',
+          color: '#121212',
+        },
+        children: 'LeaseUp',
+      })
+    ),
+    h('div', {
+      style: {
+        fontFamily: 'Instrument Serif',
+        fontSize: 56,
+        lineHeight: 1.08,
+        letterSpacing: '-0.02em',
+        color: '#121212',
+        width: 560,
+      },
+      children: 'Find the tenants your space is missing.',
+    }),
+    h('div', {
+      style: {
+        fontSize: 20,
+        lineHeight: 1.45,
+        letterSpacing: '-0.01em',
+        color: '#77756E',
+        width: 500,
+      },
+      children: 'Qloo taste data, verified against real stores.',
+    }),
+    h('div', {
+      style: { width: 120, height: 3, backgroundColor: 'rgba(15,107,79,0.35)' },
+    })
+  );
+}
+
+function buildOgGridTree() {
+  const prospectDots = [
+    { left: 120, top: 72 },
+    { left: 240, top: 160 },
+    { left: 320, top: 48 },
+    { left: 180, top: 240 },
+    { left: 380, top: 300 },
+    { left: 60, top: 190 },
+  ].map(({ left, top }) =>
+    h('div', {
+      style: {
+        position: 'absolute',
+        left,
+        top,
+        width: 14,
+        height: 14,
+        borderRadius: 999,
+        backgroundColor: '#0F6B4F',
+        border: '3px solid #FAFAF7',
+      },
+    })
+  );
+
+  return h(
+    'div',
+    {
+      style: {
+        width: 560,
+        height: 630,
+        position: 'relative',
+        backgroundColor: '#F7F6F2',
+        backgroundImage:
+          'linear-gradient(#E7E5DF 1px, transparent 1px), linear-gradient(90deg, #E7E5DF 1px, transparent 1px)',
+        backgroundSize: '68px 48px',
+      },
+    },
+      h('div', {
+        style: {
+          position: 'absolute',
+          left: -30,
+          top: 80,
+          width: 620,
+          height: 4,
+          backgroundColor: '#D6D3CB',
+          transform: 'rotate(24deg)',
+        },
+      }),
+      h('div', {
+        style: {
+          position: 'absolute',
+          left: 10,
+          top: 20,
+          width: 520,
+          height: 3,
+          backgroundColor: '#D6D3CB',
+          transform: 'rotate(18deg)',
+        },
+      }),
+      h('div', {
+        style: {
+          position: 'absolute',
+          left: -20,
+          top: 380,
+          width: 500,
+          height: 3,
+          backgroundColor: '#D6D3CB',
+          transform: 'rotate(-22deg)',
+        },
+      }),
+      ...prospectDots
+  );
+}
+
+async function renderOgPng() {
+  const textSvg = await satori(buildOgTextTree(), {
+    width: 1200,
+    height: 630,
+    fonts: ogFonts(),
+  });
+  const gridSvg = await satori(buildOgGridTree(), {
+    width: 560,
+    height: 630,
+    fonts: [],
+  });
+  writeFileSync(
+    join(brand, 'assets', 'og-template.svg'),
+    `<!-- LeaseUp OG: text layer (Satori + Geist / Instrument Serif) composited with grid layer -->\n${textSvg}\n`
+  );
+  if (!textSvg.includes('fill=\"#121212\"')) {
+    throw new Error('OG text SVG from satori missing headline paths; fonts may not have loaded.');
+  }
+  const textPng = new Resvg(textSvg, {
+    fitTo: { mode: 'width', value: 1200 },
+    font: { loadSystemFonts: false },
+  }).render().asPng();
+  const gridPng = new Resvg(gridSvg, {
+    fitTo: { mode: 'width', value: 560 },
+    font: { loadSystemFonts: false },
+  }).render().asPng();
+  return sharp({
+    create: { width: 1200, height: 630, channels: 4, background: '#FAFAF7' },
+  })
+    .composite([
+      { input: textPng, left: 0, top: 0 },
+      { input: gridPng, left: 640, top: 0 },
+    ])
+    .png()
+    .toBuffer();
 }
 
 const concepts = [
@@ -60,7 +325,15 @@ for (const concept of concepts) {
     for (let col = 0; col < sizes.length; col++) {
       const size = sizes[col];
       const buf = await renderMarkOnBg(svgPath, size, theme);
-      const padded = await sharp(buf)
+      const displayScale = size === 16 || size === 32 ? 4 : 1;
+      const displayBuf =
+        displayScale > 1
+          ? await sharp(buf)
+              .resize(size * displayScale, size * displayScale, { kernel: 'nearest' })
+              .png()
+              .toBuffer()
+          : buf;
+      const padded = await sharp(displayBuf)
         .extend({
           top: cellPad,
           bottom: cellPad + labelH,
@@ -95,6 +368,7 @@ await sharp({
 console.log('Wrote', contactPath);
 
 const markSvg = readFileSync(join(brand, 'assets/mark.svg'), 'utf8');
+const mark16Svg = readFileSync(join(brand, 'assets/mark-16.svg'), 'utf8');
 
 writeFileSync(
   join(publicDir, 'favicon.svg'),
@@ -105,12 +379,12 @@ writeFileSync(
       .fg { stroke: #3FBF8F; fill: #3FBF8F; }
     }
   </style>
-  <rect class="fg" x="5" y="5" width="22" height="22" rx="5.5" fill="none" stroke-width="2.25" />
-  <path class="fg" d="M10 23V12h4.25v6.75H21v4.25H10z" />
+  <rect class="fg" x="5" y="5" width="22" height="22" rx="4" fill="none" stroke-width="2.9" />
+  <path class="fg" d="M8 25.15V11.05H14.35V18.25H25.15V25.15H8Z" />
 </svg>\n`
 );
 
-const ico16 = renderSvgToPng(markSvg, 16, { bg: '#FAFAF7', fg: '#0F6B4F' });
+const ico16 = renderSvgToPng(mark16Svg, 16, { bg: '#FAFAF7', fg: '#0F6B4F' });
 const ico32 = renderSvgToPng(markSvg, 32, { bg: '#FAFAF7', fg: '#0F6B4F' });
 const ico48 = renderSvgToPng(markSvg, 48, { bg: '#FAFAF7', fg: '#0F6B4F' });
 
@@ -141,9 +415,14 @@ for (const size of [192, 512]) {
     .toFile(join(publicDir, `icon-${size}.png`));
 }
 
-const ogSvg = readFileSync(join(brand, 'assets/og-template.svg'), 'utf8');
-const ogPng = new Resvg(ogSvg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
+const ogPng = await renderOgPng();
+const ogInkLeft = await sharp(ogPng).extract({ left: 72, top: 160, width: 520, height: 180 }).stats();
+if (ogInkLeft.channels[0].min > 80) {
+  console.error('OG headline region lacks dark ink; serif may not have rendered.');
+  process.exit(1);
+}
 await sharp(ogPng).png().toFile(join(publicDir, 'og.png'));
+console.log('OG PNG verified (satori paths + headline ink sample)');
 
 writeFileSync(
   join(publicDir, 'site.webmanifest'),
@@ -151,7 +430,7 @@ writeFileSync(
     {
       name: 'LeaseUp',
       short_name: 'LeaseUp',
-      description: 'Find the tenants your neighborhood already wants.',
+      description: 'Find the tenants your space is missing.',
       start_url: '/',
       display: 'standalone',
       background_color: '#FAFAF7',
