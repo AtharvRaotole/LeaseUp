@@ -56,7 +56,9 @@ export function normalizePipelineCard(raw: unknown): PipelineCard {
   if (parsed.success) return parsed.data;
 
   const legacy = raw as LegacyCard;
-  const { column: _c, outreachStatus: _o, ...rest } = legacy;
+  const { column, outreachStatus, ...rest } = legacy;
+  void column;
+  void outreachStatus;
   return PipelineCardSchema.parse({
     ...rest,
     prospectStatus: legacyProspectStatus(legacy),
