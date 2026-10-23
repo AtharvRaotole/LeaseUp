@@ -19,7 +19,7 @@ describe('GeocodeNotFoundError', () => {
   it('error handler returns 404 GEOCODE_NOT_FOUND', async () => {
     const res = await errorHandler(new GeocodeNotFoundError(), mockContext());
     expect(res.status).toBe(404);
-    const body = await res.json();
+    const body = (await res.json()) as { code?: string };
     expect(body.code).toBe('GEOCODE_NOT_FOUND');
   });
 });
