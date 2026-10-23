@@ -80,7 +80,7 @@ export function OwnerUpdatePanel() {
                 {preview.brands.map((row) => (
                   <li key={row.brandEntityId} className="rounded-control border border-border px-3 py-2">
                     <p className="font-medium text-ink">{row.brandName}</p>
-                    <p className="text-ink-3">{row.columnLabel} · outreach {row.outreachStatus}</p>
+                    <p className="text-ink-3">{row.prospectStatusLabel}</p>
                     <p className="mt-1 text-ink-2">{row.nextStep}</p>
                   </li>
                 ))}

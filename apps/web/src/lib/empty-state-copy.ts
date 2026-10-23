@@ -1,5 +1,5 @@
 export const pipelineEmptyLine =
-  'Save brands from a report or pitch pack to track outreach here.';
+  'No prospects saved yet. Add brands from a site report when you are ready to track outreach yourself.';
 export const pipelineEmptyAction = 'Run a site analysis';
 
 export const portfolioEmptyLine =

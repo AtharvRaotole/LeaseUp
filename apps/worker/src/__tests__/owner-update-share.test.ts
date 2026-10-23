@@ -39,7 +39,7 @@ const board: PipelineBoard = {
   cards: [
     {
       id: 'c1',
-      column: 'contacted',
+      prospectStatus: 'drafted',
       sortOrder: 0,
       brandEntityId: 'B13C02E3-BA3C-4B39-85B4-ACF12FEBC892',
       brandName: 'Starbucks',
@@ -49,7 +49,6 @@ const board: PipelineBoard = {
       verification: 'verified (2 sources)',
       notes: '',
       lastTouchedAt: '2026-10-22T00:00:00.000Z',
-      outreachStatus: 'drafted',
     },
   ],
 };

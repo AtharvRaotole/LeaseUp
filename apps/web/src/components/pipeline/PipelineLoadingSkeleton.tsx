@@ -1,4 +1,4 @@
-import { PIPELINE_COLUMNS } from '../../lib/pipeline-columns';
+import { PIPELINE_STATUSES } from '../../lib/pipeline-status';
 import { Skeleton } from '../ui/Skeleton';
 
 export function PipelineLoadingSkeleton() {
@@ -9,7 +9,7 @@ export function PipelineLoadingSkeleton() {
       aria-busy="true"
       aria-label="Loading pipeline"
     >
-      {PIPELINE_COLUMNS.map((col) => (
+      {PIPELINE_STATUSES.map((col) => (
         <div
           key={col.id}
           className="flex w-[min(100%,280px)] shrink-0 flex-col rounded-card border border-border bg-surface-2/40"

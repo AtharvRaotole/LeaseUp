@@ -48,7 +48,7 @@ export function PipelinePage() {
             <p className="mt-2 max-w-xl text-sm text-ink-2">
               {readOnly
                 ? 'Read-only view of a shared board. Outreach and contacts are not shown here.'
-                : 'Track prospects from report to signed lease. Drag cards between stages or use arrow keys in a card.'}
+                : 'Your lightweight CRM for leasing outreach. Set status, notes, and reminders by hand. LeaseUp never sends email for you.'}
             </p>
           </div>
           {!readOnly && board && (
