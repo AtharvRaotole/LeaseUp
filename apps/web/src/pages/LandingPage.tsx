@@ -3,10 +3,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 import { MapPin } from 'lucide-react';
 import { TopBar } from '../components/layout/TopBar';
-import { Logo } from '../components/brand/Logo';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { Card } from '../components/ui/Card';
+import { LandingBelowFold } from '../components/landing/LandingBelowFold';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { Select } from '../components/ui/Select';
 import { DEMO_EXAMPLES } from '../data/demo-examples';
@@ -135,28 +134,7 @@ export function LandingPage() {
         </div>
       </main>
 
-      <section id="how-it-works" className="border-t border-border bg-surface-2 py-16">
-        <div className="mx-auto grid max-w-[960px] gap-8 px-4 md:grid-cols-3">
-          {[
-            { n: '1', title: 'Read the neighborhood', body: 'Qloo ranks brands by local taste at your pin.' },
-            { n: '2', title: 'Prove it on real stores', body: 'We compare the ranking to All The Places locations nearby.' },
-            { n: '3', title: 'Pitch who is missing', body: 'High-fit chains with no store in your radius surface first.' },
-          ].map((step) => (
-            <Card key={step.n} className="bg-surface">
-              <p className="font-mono text-sm text-ink-3">{step.n}</p>
-              <h2 className="mt-2 text-h3 font-semibold text-ink">{step.title}</h2>
-              <p className="mt-2 text-sm text-ink-2">{step.body}</p>
-            </Card>
-          ))}
-        </div>
-        <p className="mx-auto mt-10 max-w-[960px] px-4 text-center text-sm text-ink-3">
-          Data: Qloo Taste AI, All The Places (CC0), OpenStreetMap
-        </p>
-      </section>
-      <footer className="flex flex-col items-center gap-3 py-8 text-center text-meta text-ink-3">
-        <Logo variant="lockup" size="xs" className="justify-center opacity-80" />
-        <p>Qloo Agentic Hackathon 2026</p>
-      </footer>
+      <LandingBelowFold />
     </div>
   );
 }
