@@ -129,7 +129,7 @@ describe('KV usage on share / portfolio / job routes', () => {
 
     await new ProspectingService(env).create({
       address: DEMO_CHIP_ADDRESSES.boulder,
-      radiusKm: 10,
+      radius: 10,
     });
 
     expect(kv.puts).toHaveLength(0);

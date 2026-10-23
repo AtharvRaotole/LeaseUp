@@ -45,7 +45,7 @@ Ephemeral caches (Qloo, geocode, Overpass, tiles, verify, compare flip, OG PNG) 
 
 ## Measured on demo fixture (CI)
 
-`apps/worker/src/__tests__/kv-analyze-ops.test.ts` runs in **CI / Test** (`pnpm --filter @leaseup/worker test`). It calls `AnalysisService.analyze` twice on `DEMO_CHIP_ADDRESSES.wicker` with a counting `CACHE` mock:
+`apps/worker/src/__tests__/kv-analyze-ops.test.ts` runs in **CI / Test** (`pnpm --filter @leaseup/worker test`). It calls `AnalysisService.analyze` twice on `DEMO_CHIP_ADDRESSES.wicker` with a counting `CACHE` mock, asserting `tradeAreaShoppers` (Who shops here / fixture snapshot from `loadTradeAreaShoppersSnapshot`) on cold and warm:
 
 | Call | KV gets | KV puts |
 | --- | ---: | ---: |

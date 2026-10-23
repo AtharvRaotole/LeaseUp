@@ -72,11 +72,19 @@ describe('/api/analyze KV operations (fixture-backed demo)', () => {
     const service = new AnalysisService(env);
     const req = { address: DEMO_CHIP_ADDRESSES.wicker, radius: 10 };
 
-    await service.analyze(req, 'run-cold', 'test-ip');
+    const coldResult = await service.analyze(req, 'run-cold', 'test-ip');
+    expect(coldResult.tradeAreaShoppers?.groups.some((g) => g.id === 'customer_identity')).toBe(
+      true
+    );
+    expect(
+      coldResult.tradeAreaShoppers?.groups.find((g) => g.id === 'customer_identity')?.names
+    ).toContain('Beer Enthusiasts');
+
     const coldGets = kv.gets.length;
     const coldPuts = kv.puts.length;
 
-    await service.analyze(req, 'run-warm', 'test-ip');
+    const warmResult = await service.analyze(req, 'run-warm', 'test-ip');
+    expect(warmResult.tradeAreaShoppers?.groups.length).toBeGreaterThan(0);
     const warmGets = kv.gets.length - coldGets;
     const warmPuts = kv.puts.length - coldPuts;
 
