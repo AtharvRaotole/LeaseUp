@@ -4,6 +4,7 @@ import {
   getStoreBrandIds as demoGetStoreBrandIds,
 } from '@leaseup/fixtures';
 import { TRACKED_BRAND_IDS } from '../data/tracked-brand-ids';
+import { coveringGeohash3 } from '../lib/geohash';
 
 export interface NearbyStore {
   lat: number;
@@ -20,7 +21,7 @@ export interface StoreCatalog {
     radiusKm: number
   ): Promise<NearbyStore[]>;
   getNationalStoreCount(brandId: string): Promise<number>;
-  hasD1Stores(): Promise<boolean>;
+  getCoverageNote(brandId: string, nationalCount: number): string | undefined;
 }
 
 function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -34,6 +35,8 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): nu
       Math.sin(dLon / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
+
+const LOW_COVERAGE_THRESHOLD = 25;
 
 export class DemoStoreCatalog implements StoreCatalog {
   getBrandIds(): string[] {
@@ -53,29 +56,69 @@ export class DemoStoreCatalog implements StoreCatalog {
     return demoGetNationalStoreCount(brandId);
   }
 
-  async hasD1Stores(): Promise<boolean> {
-    return false;
+  getCoverageNote(_brandId: string, nationalCount: number): string | undefined {
+    if (nationalCount < LOW_COVERAGE_THRESHOLD) {
+      return `ATP snapshot may under-count this chain (${nationalCount} US points in our extract). Treat absence as preliminary.`;
+    }
+    return undefined;
   }
 }
 
-export class D1StoreCatalog implements StoreCatalog {
-  private db: D1Database;
-  private demoFallback: DemoStoreCatalog;
+type BrandsIndex = {
+  brands: Array<{ id: string; name: string; displayName: string; count: number }>;
+};
 
-  constructor(db: D1Database) {
-    this.db = db;
-    this.demoFallback = new DemoStoreCatalog();
+type TilePayload = { gh: string; stores: Array<[number, number, number]> };
+
+export class GeoTileStoreCatalog implements StoreCatalog {
+  private assets: Fetcher;
+  private cache: KVNamespace;
+  private brandsIndex: BrandsIndex | null = null;
+  private tileMemory = new Map<string, TilePayload>();
+  private demoFallback = new DemoStoreCatalog();
+
+  constructor(assets: Fetcher, cache: KVNamespace) {
+    this.assets = assets;
+    this.cache = cache;
   }
 
   getBrandIds(): string[] {
     return TRACKED_BRAND_IDS;
   }
 
-  async hasD1Stores(): Promise<boolean> {
-    const row = await this.db
-      .prepare('SELECT COUNT(*) as c FROM stores LIMIT 1')
-      .first<{ c: number }>();
-    return (row?.c ?? 0) > 0;
+  private async loadBrandsIndex(): Promise<BrandsIndex> {
+    if (this.brandsIndex) return this.brandsIndex;
+    const cached = await this.cache.get('tiles:brands', 'json') as BrandsIndex | null;
+    if (cached) {
+      this.brandsIndex = cached;
+      return cached;
+    }
+    const res = await this.assets.fetch('https://tiles.local/tiles/brands.json');
+    if (!res.ok) {
+      throw new Error(`Failed to load brands.json (${res.status})`);
+    }
+    const data = (await res.json()) as BrandsIndex;
+    this.brandsIndex = data;
+    await this.cache.put('tiles:brands', JSON.stringify(data), { expirationTtl: 86400 });
+    return data;
+  }
+
+  private async loadTile(gh: string): Promise<TilePayload | null> {
+    if (this.tileMemory.has(gh)) {
+      return this.tileMemory.get(gh)!;
+    }
+    const kvKey = `tiles:${gh}`;
+    const cached = await this.cache.get(kvKey, 'json') as TilePayload | null;
+    if (cached) {
+      this.tileMemory.set(gh, cached);
+      return cached;
+    }
+    const res = await this.assets.fetch(`https://tiles.local/tiles/${gh}.json`);
+    if (!res.ok) return null;
+    const data = (await res.json()) as TilePayload;
+    this.tileMemory.set(gh, data);
+    await this.cache.put(kvKey, JSON.stringify(data), { expirationTtl: 86400 });
+    return data;
   }
 
   async findStoresNearby(
@@ -84,46 +127,57 @@ export class D1StoreCatalog implements StoreCatalog {
     lon: number,
     radiusKm: number
   ): Promise<NearbyStore[]> {
-    if (!(await this.hasD1Stores())) {
+    try {
+      const index = await this.loadBrandsIndex();
+      const brandIdx = index.brands.findIndex((b) => b.id === brandId);
+      if (brandIdx < 0) return [];
+
+      const tiles = coveringGeohash3(lat, lon, radiusKm);
+      const nearby: NearbyStore[] = [];
+
+      for (const gh of tiles) {
+        const tile = await this.loadTile(gh);
+        if (!tile) continue;
+        for (const [bIdx, tLat, tLon] of tile.stores) {
+          if (bIdx !== brandIdx) continue;
+          const distance = haversineKm(lat, lon, tLat, tLon);
+          if (distance <= radiusKm) {
+            nearby.push({ lat: tLat, lon: tLon, distance });
+          }
+        }
+      }
+
+      nearby.sort((a, b) => a.distance - b.distance);
+      return nearby;
+    } catch {
       return this.demoFallback.findStoresNearby(brandId, lat, lon, radiusKm);
     }
-
-    const latDelta = radiusKm / 111;
-    const lonDelta = radiusKm / (111 * Math.cos((lat * Math.PI) / 180));
-
-    const rows = await this.db
-      .prepare(
-        `SELECT lat, lon FROM stores
-         WHERE brand_id = ?
-           AND lat BETWEEN ? AND ?
-           AND lon BETWEEN ? AND ?`
-      )
-      .bind(brandId, lat - latDelta, lat + latDelta, lon - lonDelta, lon + lonDelta)
-      .all<{ lat: number; lon: number }>();
-
-    const nearby: NearbyStore[] = [];
-    for (const row of rows.results ?? []) {
-      const distance = haversineKm(lat, lon, row.lat, row.lon);
-      if (distance <= radiusKm) {
-        nearby.push({ lat: row.lat, lon: row.lon, distance });
-      }
-    }
-    nearby.sort((a, b) => a.distance - b.distance);
-    return nearby;
   }
 
   async getNationalStoreCount(brandId: string): Promise<number> {
-    if (!(await this.hasD1Stores())) {
+    try {
+      const index = await this.loadBrandsIndex();
+      const row = index.brands.find((b) => b.id === brandId);
+      return row?.count ?? 0;
+    } catch {
       return this.demoFallback.getNationalStoreCount(brandId);
     }
-    const row = await this.db
-      .prepare('SELECT store_count FROM brands WHERE brand_id = ?')
-      .bind(brandId)
-      .first<{ store_count: number }>();
-    return row?.store_count ?? 0;
+  }
+
+  getCoverageNote(_brandId: string, nationalCount: number): string | undefined {
+    if (nationalCount < LOW_COVERAGE_THRESHOLD) {
+      return `ATP snapshot may under-count this chain (${nationalCount} US points). Absence is not confirmed without OpenStreetMap.`;
+    }
+    return undefined;
   }
 }
 
-export function createStoreCatalog(db: D1Database, mode: 'live' | 'demo'): StoreCatalog {
-  return mode === 'live' ? new D1StoreCatalog(db) : new DemoStoreCatalog();
+export function createStoreCatalog(
+  env: { ASSETS?: Fetcher; CACHE: KVNamespace },
+  mode: 'live' | 'demo'
+): StoreCatalog {
+  if (mode === 'live' && env.ASSETS) {
+    return new GeoTileStoreCatalog(env.ASSETS, env.CACHE);
+  }
+  return new DemoStoreCatalog();
 }

@@ -7,7 +7,7 @@ export function formatWktPoint(longitude: number, latitude: number): string {
   return `POINT(${longitude} ${latitude})`;
 }
 
-export function applyQlooLocationParams(url: URL, location: QlooLocation): void {
+export function applyQlooInsightsLocationParams(url: URL, location: QlooLocation): void {
   if (location.kind === 'point') {
     url.searchParams.set(
       'signal.location',
@@ -18,6 +18,22 @@ export function applyQlooLocationParams(url: URL, location: QlooLocation): void 
   }
   url.searchParams.set('signal.location.query', location.query);
 }
+
+/** Heatmaps require filter.location WKT (not signal.location). */
+export function applyQlooHeatmapLocationParams(url: URL, location: QlooLocation): void {
+  if (location.kind === 'point') {
+    url.searchParams.set(
+      'filter.location',
+      formatWktPoint(location.longitude, location.latitude)
+    );
+    url.searchParams.set('filter.location.radius', String(Math.round(location.radiusKm * 1000)));
+    return;
+  }
+  url.searchParams.set('filter.location.query', location.query);
+}
+
+/** @deprecated use applyQlooInsightsLocationParams */
+export const applyQlooLocationParams = applyQlooInsightsLocationParams;
 
 export function chunkBrandIds(brandIds: string[], size = QLOO_MAX_BRANDS_PER_REQUEST): string[][] {
   const chunks: string[][] = [];

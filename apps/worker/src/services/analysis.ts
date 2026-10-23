@@ -20,6 +20,7 @@ import {
   matchDemoFixtureId,
 } from '@leaseup/fixtures';
 import { createStoreCatalog, type StoreCatalog } from './store-catalog';
+import { displayBrandName } from '../lib/brand-display';
 import type { QlooLocation } from '../providers/qloo';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
@@ -53,7 +54,7 @@ export class AnalysisService {
       env.NOMINATIM_CONTACT || DEFAULT_NOMINATIM_CONTACT
     );
     this.db = env.DB;
-    this.catalog = createStoreCatalog(env.DB, this.mode);
+    this.catalog = createStoreCatalog(env, this.mode);
   }
 
   async analyze(request: AnalysisRequest, runId: string, ipHash: string): Promise<AnalysisResponse> {
@@ -342,6 +343,10 @@ export class AnalysisService {
             )
           : { status: 'verifying...' as const, sources: ['All The Places (CC0)'] };
 
+      if (verification.status === 'conflict - likely present') {
+        continue;
+      }
+
       const reasons = this.generateReasons(
         candidate,
         location,
@@ -350,10 +355,13 @@ export class AnalysisService {
         rankedCount
       );
 
+      const coverageNote = this.catalog.getCoverageNote(candidate.entity_id, nationalCount);
+
       prospectPacks.push({
+        coverageNote,
         brand: {
           entityId: candidate.entity_id,
-          name: candidate.name,
+          name: displayBrandName(candidate.entity_id, candidate.name),
           affinity: candidate.query?.affinity || 0,
           affinityRank: candidate.qlooRank,
           popularity: undefined,
@@ -388,20 +396,22 @@ export class AnalysisService {
       location.address
     );
 
-    return prospects.map((pack) => {
-      if (pack.brand.verified !== 'verifying...') {
-        return pack;
-      }
-      const verification = this.verifyAbsence(cached, pack.brand.name);
-      return {
-        ...pack,
-        brand: {
-          ...pack.brand,
-          verified: verification.status,
-          verificationSources: verification.sources,
-        },
-      };
-    });
+    return prospects
+      .map((pack) => {
+        if (pack.brand.verified !== 'verifying...') {
+          return pack;
+        }
+        const verification = this.verifyAbsence(cached, pack.brand.name);
+        return {
+          ...pack,
+          brand: {
+            ...pack.brand,
+            verified: verification.status,
+            verificationSources: verification.sources,
+          },
+        };
+      })
+      .filter((pack) => pack.brand.verified !== 'conflict - likely present');
   }
 
   private verifyAbsence(
@@ -413,7 +423,8 @@ export class AnalysisService {
       | 'conflict'
       | 'unverified (1 source)'
       | 'unverified'
-      | 'verifying...';
+      | 'verifying...'
+      | 'conflict - likely present';
     sources: string[];
   } {
     const sources: string[] = ['All The Places (CC0)'];
@@ -433,10 +444,9 @@ export class AnalysisService {
     );
 
     if (osmHasBrand) {
-      sources.push('OpenStreetMap (conflict)');
       return {
-        status: 'conflict',
-        sources,
+        status: 'conflict - likely present',
+        sources: [...sources, 'OpenStreetMap (store found)'],
       };
     }
 
@@ -513,7 +523,7 @@ export class AnalysisService {
     }
 
     warnings.push(
-      `Absence verification is limited to brands in the ATP catalog (${this.catalog.getBrandIds().length} chains; seed D1 for full expansion)`
+      `Absence uses ATP geotiles + OpenStreetMap when available (${this.catalog.getBrandIds().length} chains). Single-source absence is never shown as confirmed.`
     );
 
     return warnings;
@@ -553,8 +563,8 @@ export class AnalysisService {
       neighborhood?: string;
       nearestStoreKm?: number;
     }
-  ): Promise<string> {
-    const draft = await this.openai.generateOutreach({
+  ): Promise<{ draft: string; model: string }> {
+    const result = await this.openai.generateOutreach({
       brandName,
       address,
       reasons,
@@ -564,6 +574,9 @@ export class AnalysisService {
       nearestStoreKm: context?.nearestStoreKm,
     });
 
-    return `${draft.subject}\n\n${draft.body}`;
+    return {
+      draft: `${result.subject}\n\n${result.body}`,
+      model: result.model,
+    };
   }
 }

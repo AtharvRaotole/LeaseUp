@@ -51,6 +51,7 @@ describe('OpenAIClient', () => {
 
       expect(result).toHaveProperty('subject');
       expect(result).toHaveProperty('body');
+      expect(result.model).toBe('gpt-4o-mini');
       expect(result.subject).toContain('Test Brand');
       expect(result.body).toContain('Wicker Park');
       expect(result.body).not.toContain('foot traffic');

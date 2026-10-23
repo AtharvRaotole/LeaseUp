@@ -4,6 +4,7 @@ import { recordApiMetric } from '../middleware/metrics';
 export interface OutreachDraft {
   subject: string;
   body: string;
+  model: string;
 }
 
 export interface OutreachFacts {
@@ -113,13 +114,17 @@ export class OpenAIClient {
       };
 
       const content = data.choices[0]?.message.content || '{}';
-      const parsed = JSON.parse(content) as OutreachDraft;
+      const parsed = JSON.parse(content) as { subject: string; body: string };
 
-      return parsed;
+      return { ...parsed, model: this.model };
     } catch (err) {
       console.error('OpenAI error:', err);
       return this.getDemoOutreach(params);
     }
+  }
+
+  getModelName(): string {
+    return this.model;
   }
 
   private getDemoOutreach(params: OutreachFacts): OutreachDraft {
@@ -148,6 +153,7 @@ We have a storefront at ${params.address} and would like to share the analysis. 
 
 Best regards,
 LeaseUp`,
+      model: this.model,
     };
   }
 }
