@@ -119,7 +119,7 @@ export function MethodologyPage() {
             {evalBundle.recordingNote && (
               <p className="mt-3 text-sm text-ink-2">{evalBundle.recordingNote}</p>
             )}
-            <div className="mt-6 overflow-x-auto rounded-card border border-border">
+            <div className="mt-6 overflow-x-auto rounded-card border border-border" tabIndex={0}>
               <table className="w-full min-w-[720px] border-collapse text-left text-sm">
                 <caption className="sr-only">Evaluation metrics by site (Qloo / chain)</caption>
                 <thead>
@@ -189,7 +189,7 @@ export function MethodologyPage() {
               {adaptiveEval.agg.same_size_auc_ci[1].toFixed(3)}). Qloo taste may partly reflect brands that
               already operate nearby.
             </p>
-            <div className="mt-6 overflow-x-auto rounded-card border border-border">
+            <div className="mt-6 overflow-x-auto rounded-card border border-border" tabIndex={0}>
               <table className="w-full min-w-[960px] border-collapse text-left text-sm">
                 <caption className="sr-only">Adaptive-radius eval by address</caption>
                 <thead>

@@ -1,5 +1,5 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
-import { DEMO_OSM_UNRECORDED_NOTE } from '@leaseup/fixtures';
+const DEMO_OSM_UNRECORDED_NOTE = 'OSM check not recorded for demo';
 
 function sourceChecked(sources: string[], needle: string): boolean {
   return sources.some((s) => s.toLowerCase().includes(needle.toLowerCase()));

@@ -23,7 +23,6 @@ export function LandingHeroProductPreview() {
       <Link
         to={landingWickerReportPath}
         className="group relative block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-        aria-label="Open the Wicker Park demo report"
       >
         <div
           className="pointer-events-none absolute -inset-1 rounded-[14px] bg-accent/10 opacity-0 transition-opacity group-hover:opacity-100"
@@ -64,7 +63,7 @@ export function LandingHeroProductPreview() {
                 height={HERO_DISPLAY_HEIGHT}
                 loading="eager"
                 decoding="async"
-                fetchPriority="low"
+                fetchPriority="high"
                 className="block h-auto w-full bg-bg"
                 onError={() => setUseFixtureFallback(true)}
               />

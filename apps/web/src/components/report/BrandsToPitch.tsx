@@ -224,20 +224,30 @@ export function BrandsToPitch({
               : `No store within ${radiusKm} km`;
             const subline = category ? `${category} · ${distanceLine}` : distanceLine;
 
+            const pill = verificationPillCopy(
+              prospect,
+              prospect.brand.entityId,
+              osmTimedOut,
+              radiusKm,
+              results
+            );
+
             return (
               <li key={prospect.brand.entityId}>
-                <button
-                  type="button"
+                <div
                   className={cn(
-                    'flex min-h-[56px] w-full flex-col gap-2 px-3 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent sm:flex-row sm:items-center sm:gap-3 sm:py-2',
+                    'flex min-h-[56px] w-full flex-col gap-2 px-3 py-3 sm:flex-row sm:items-center sm:gap-3 sm:py-2',
                     selected ? 'bg-surface-2 border-l-2 border-l-accent pl-[10px]' : 'border-l-2 border-l-transparent'
                   )}
-                  onClick={() => {
-                    onSelect(prospect);
-                    setExpanded(open ? null : prospect.brand.entityId);
-                  }}
                 >
-                  <div className="flex min-w-0 w-full items-start gap-3 sm:flex-1">
+                  <button
+                    type="button"
+                    className="flex min-w-0 flex-1 items-start gap-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
+                    onClick={() => {
+                      onSelect(prospect);
+                      setExpanded(open ? null : prospect.brand.entityId);
+                    }}
+                  >
                     <div
                       className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-xs font-semibold text-ink"
                       style={{ background: brandTint(name) }}
@@ -248,28 +258,17 @@ export function BrandsToPitch({
                       <p className="font-medium leading-snug text-ink">{name}</p>
                       <p className="mt-0.5 text-meta leading-snug text-ink-3">{subline}</p>
                     </div>
-                  </div>
-                  <div className="flex w-full flex-wrap items-center gap-1.5 sm:w-auto sm:shrink-0 sm:justify-end">
+                  </button>
+                  <div className="flex flex-wrap items-center justify-end gap-1.5 sm:shrink-0">
                     <PitchPill tone="accent" tooltip={localFitTooltip()}>{fitLabel}</PitchPill>
-                    {(() => {
-                      const pill = verificationPillCopy(
-                        prospect,
-                        prospect.brand.entityId,
-                        osmTimedOut,
-                        radiusKm,
-                        results
-                      );
-                      return (
-                        <span className="inline-flex items-center gap-0.5">
-                          <PitchPill tone="neutral" tooltip={pill.help} spinner={pill.spinner}>
-                            {pill.label}
-                          </PitchPill>
-                          <InfoPopover label={`Store check: ${pill.label}`} body={pill.help} />
-                        </span>
-                      );
-                    })()}
+                    <span className="inline-flex items-center gap-0.5">
+                      <PitchPill tone="neutral" tooltip={pill.help} spinner={pill.spinner}>
+                        {pill.label}
+                      </PitchPill>
+                      <InfoPopover label={`Store check: ${pill.label}`} body={pill.help} />
+                    </span>
                   </div>
-                </button>
+                </div>
                 {open && (
                   <div className="border-t border-border bg-surface-2/40 px-4 py-3 text-sm text-ink-2">
                     <ul className="space-y-2">

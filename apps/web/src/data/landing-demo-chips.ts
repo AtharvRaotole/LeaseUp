@@ -1,5 +1,5 @@
-import type { DemoFixtureId } from '@leaseup/fixtures';
-import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
+import type { DemoFixtureId } from '../lib/demo-chip-addresses';
+import { DEMO_CHIP_ADDRESSES } from '../lib/demo-chip-addresses';
 
 export const LANDING_DEMO_CHIPS: Array<{
   id: DemoFixtureId;

@@ -6,7 +6,7 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { Select } from '../components/ui/Select';
-import type { DemoFixtureId } from '@leaseup/fixtures';
+import type { DemoFixtureId } from '../lib/demo-chip-addresses';
 import {
   buildReportPath,
   categoryToTags,

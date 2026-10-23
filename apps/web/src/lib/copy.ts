@@ -1,5 +1,5 @@
 import type { AnalysisResponse, Location, PitchPackSnapshot, ProspectPack } from '@leaseup/contracts';
-import { DEMO_OSM_UNRECORDED_NOTE } from '@leaseup/fixtures';
+const DEMO_OSM_UNRECORDED_NOTE = 'OSM check not recorded for demo';
 
 /** Plain label for pitch packs: how many store datasets we checked for this brand. */
 export function pitchPackVerificationSummary(

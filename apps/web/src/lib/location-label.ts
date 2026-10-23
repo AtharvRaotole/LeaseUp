@@ -1,7 +1,6 @@
 import type { Location } from '@leaseup/contracts';
-import type { DemoFixtureId } from '@leaseup/fixtures';
-import { matchDemoChipWithinMeters } from '@leaseup/fixtures';
-import { DEMO_EXAMPLES } from '../data/demo-examples';
+import type { DemoFixtureId } from './demo-chip-addresses';
+import { demoChipHeadline, DEMO_CHIP_META } from './demo-chip-meta';
 
 const ZIP_RE = /\b\d{5}(-\d{4})?\b/;
 const STATE_ZIP_RE = /\b[A-Z]{2}\s+\d{5}/;
@@ -15,23 +14,11 @@ function stripZipFromPart(part: string): string {
     .replace(/,\s*$/, '');
 }
 
-function demoChipHeadline(chipId: DemoFixtureId): string | null {
-  const row = DEMO_EXAMPLES.find((e) => e.id === chipId);
-  return row ? `${row.neighborhood}, ${row.city}` : null;
-}
-
 /** Short place label for headlines: neighborhood + city, never a ZIP. */
 export function placeHeadlineLabel(location: Location, chipSlug?: string | null): string {
   const chip = chipSlug as DemoFixtureId | undefined;
-  if (chip === 'wicker' || chip === 'boulder' || chip === 'sevierville') {
-    const label = demoChipHeadline(chip);
-    if (label) return label;
-  }
-
-  const nearChip = matchDemoChipWithinMeters(location.latitude, location.longitude);
-  if (nearChip) {
-    const label = demoChipHeadline(nearChip.id);
-    if (label) return label;
+  if (chip && chip in DEMO_CHIP_META) {
+    return demoChipHeadline(chip);
   }
 
   const hood = location.neighborhood?.trim();
@@ -57,11 +44,8 @@ export function placeHeadlineLabel(location: Location, chipSlug?: string | null)
 /** Bold neighborhood for sticky header. */
 export function placeNeighborhoodBold(location: Location, chipSlug?: string | null): string {
   const chip = chipSlug as DemoFixtureId | undefined;
-  if (chip === 'wicker' || chip === 'boulder' || chip === 'sevierville') {
-    const row = DEMO_EXAMPLES.find((e) => e.id === chip);
-    if (row) return row.neighborhood;
+  if (chip && chip in DEMO_CHIP_META) {
+    return DEMO_CHIP_META[chip].neighborhood;
   }
-  const nearChip = matchDemoChipWithinMeters(location.latitude, location.longitude);
-  if (nearChip) return nearChip.neighborhood;
   return location.neighborhood || location.city || 'Location';
 }
