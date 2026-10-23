@@ -8,17 +8,17 @@ export const LANDING_DEMO_CHIPS: Array<{
 }> = [
   {
     id: 'wicker',
-    label: 'Try Wicker Park, Chicago',
+    label: 'Wicker Park, Chicago',
     address: DEMO_CHIP_ADDRESSES.wicker,
   },
   {
     id: 'boulder',
-    label: 'Try Pearl Street, Boulder',
+    label: 'Pearl Street, Boulder',
     address: DEMO_CHIP_ADDRESSES.boulder,
   },
   {
     id: 'sevierville',
-    label: 'Try Sevierville, Tennessee',
+    label: 'Sevierville, TN',
     address: DEMO_CHIP_ADDRESSES.sevierville,
   },
 ];

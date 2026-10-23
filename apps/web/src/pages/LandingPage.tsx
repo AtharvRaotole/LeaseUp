@@ -94,29 +94,35 @@ export function LandingPage() {
                 submit(address);
               }}
             >
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
-                <div className="relative min-w-0 flex-1">
+              <div className="flex flex-col gap-3">
+                <div className="relative w-full min-w-[240px]">
                   <MapPin
                     className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-3"
                     aria-hidden
                   />
                   <Input
-                    className="pl-12"
+                    data-testid="landing-address-input"
+                    className="w-full min-w-[240px] pl-12"
                     placeholder={LANDING_ADDRESS_PLACEHOLDER}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     aria-label={LANDING_ADDRESS_PLACEHOLDER}
                   />
                 </div>
-                <div className="flex flex-col gap-2 sm:shrink-0 sm:flex-row sm:items-stretch">
-                  <Button type="submit" size="lg" className="w-full sm:min-w-[128px] sm:w-auto">
+                <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full sm:w-auto sm:min-w-[128px]"
+                    data-testid="landing-analyze-button"
+                  >
                     Analyze
                   </Button>
                   <Button
                     type="button"
                     variant="ghost"
                     size="lg"
-                    className="w-full sm:min-w-0 sm:px-4"
+                    className="w-full sm:w-auto"
                     data-testid="landing-run-prospecting"
                     onClick={() => {
                       const trimmed = address.trim();
@@ -153,7 +159,7 @@ export function LandingPage() {
               </div>
             </form>
 
-            <div className="mx-auto mt-8 flex max-w-[640px] flex-col gap-2 min-[520px]:flex-row min-[520px]:flex-wrap lg:mx-0">
+            <div className="mx-auto mt-8 flex max-w-[640px] flex-wrap gap-2 lg:mx-0">
               {LANDING_DEMO_CHIPS.map((chip) => (
                 <button
                   key={chip.id}
@@ -171,7 +177,7 @@ export function LandingPage() {
                       )
                     )
                   }
-                  className="inline-flex min-h-11 w-full items-center justify-center rounded-pill border border-border bg-surface px-4 text-small font-medium text-ink transition-colors hover:border-border-strong hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg min-[520px]:w-auto min-[520px]:flex-1 min-[520px]:basis-[calc(50%-0.25rem)] min-[640px]:basis-0"
+                  className="inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-pill border border-border bg-surface px-4 text-small font-medium text-ink transition-colors hover:border-border-strong hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
                 >
                   {chip.label}
                 </button>
