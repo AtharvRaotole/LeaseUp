@@ -60,3 +60,12 @@ export function qlooProofTieDetail(rankings: BrandRankingRow[] | undefined): str
   });
   return `Same hit count; Qloo reshuffles who makes the top 10 (e.g. ${parts.join('; ')}).`;
 }
+
+/** Subtitle for the hit-rate tile when taste vs chain-size backtests tie. */
+export function qlooProofHitRateTieSubtitle(
+  rankings: BrandRankingRow[] | undefined
+): string | null {
+  const detail = qlooProofTieDetail(rankings);
+  if (!detail) return 'Hit rate tied; Qloo still changes top-10 order at this pin.';
+  return `Hit rate tied here. ${detail}`;
+}

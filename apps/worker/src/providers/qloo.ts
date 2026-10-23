@@ -4,6 +4,7 @@ import {
   wickerparkFixture,
   boulderFixture,
   seviervilleFixture,
+  parseQlooExplainabilityRows,
 } from '@leaseup/fixtures';
 import { ConfigurationError, UpstreamError } from '../lib/errors';
 import { sha256Short } from '../lib/cache-key';
@@ -228,6 +229,89 @@ export class QlooClient {
     });
 
     return insights;
+  }
+
+  async getTradeAreaTasteContext(params: {
+    location: QlooLocation;
+    brandEntityId: string;
+    runId?: string;
+  }): Promise<{ tags: ReturnType<typeof parseQlooExplainabilityRows>; audiences: ReturnType<typeof parseQlooExplainabilityRows> } | null> {
+    if (this.mode === 'demo') {
+      return null;
+    }
+
+    const take = 25;
+    const tagJson = await this.fetchExplainabilityInsights({
+      location: params.location,
+      brandEntityId: params.brandEntityId,
+      filterType: 'urn:tag',
+      take,
+      runId: params.runId,
+    });
+    const audienceJson = await this.fetchExplainabilityInsights({
+      location: params.location,
+      brandEntityId: params.brandEntityId,
+      filterType: 'urn:audience',
+      take,
+      runId: params.runId,
+    });
+
+    const tags = parseQlooExplainabilityRows(tagJson, 'tag');
+    const audiences = parseQlooExplainabilityRows(audienceJson, 'audience');
+    if (tags.length === 0 && audiences.length === 0) return null;
+    return { tags, audiences };
+  }
+
+  private async fetchExplainabilityInsights(params: {
+    location: QlooLocation;
+    brandEntityId: string;
+    filterType: 'urn:tag' | 'urn:audience';
+    take: number;
+    runId?: string;
+  }): Promise<unknown> {
+    const locationKey = this.locationCacheKey(params.location);
+    const cacheKey = `explain:${params.filterType}:${locationKey}:${params.brandEntityId}:take=${params.take}`;
+
+    const cached = await this.cache.get(cacheKey);
+    if (cached) {
+      return JSON.parse(cached) as unknown;
+    }
+
+    const url = new URL('/v2/insights', this.baseUrl);
+    url.searchParams.set('filter.type', params.filterType);
+    applyQlooInsightsLocationParams(url, params.location);
+    url.searchParams.set('signal.interests.entities', params.brandEntityId);
+    url.searchParams.set('take', params.take.toString());
+    url.searchParams.set('feature.explainability', 'true');
+
+    const start = Date.now();
+    const response = await this.fetchWithRetry(url.toString());
+    const latency = Date.now() - start;
+
+    if (!response.ok) {
+      await recordApiMetric(this.db, {
+        runId: params.runId,
+        provider: 'qloo',
+        endpoint: '/v2/insights',
+        statusCode: response.status,
+        latencyMs: latency,
+        cached: false,
+      });
+      throw this.mapQlooHttpError(response.status, response.statusText, params.filterType);
+    }
+
+    const data = await response.json();
+    await recordApiMetric(this.db, {
+      runId: params.runId,
+      provider: 'qloo',
+      endpoint: '/v2/insights',
+      statusCode: 200,
+      latencyMs: latency,
+      cached: false,
+    });
+
+    await this.cache.put(cacheKey, JSON.stringify(data), { expirationTtl: 86400 });
+    return data;
   }
 
   async getHeatmap(params: {

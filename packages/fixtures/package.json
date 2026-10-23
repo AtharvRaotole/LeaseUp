@@ -12,7 +12,7 @@
     "./eval/results.json": "./src/eval/results.json"
   },
   "scripts": {
-    "build": "node ../../scripts/embed-demo-stores.mjs && node ../../scripts/embed-overpass-demo.mjs && tsc",
+    "build": "node ../../scripts/embed-demo-stores.mjs && node ../../scripts/embed-overpass-demo.mjs && tsc && cp -r src/brand-explainability dist/brand-explainability",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts"
   },

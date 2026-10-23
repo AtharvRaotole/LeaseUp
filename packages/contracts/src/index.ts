@@ -65,6 +65,22 @@ export const TenantMixScoreSchema = z.object({
 
 export type TenantMixScore = z.infer<typeof TenantMixScoreSchema>;
 
+export const TradeAreaTasteRowSchema = z.object({
+  entityId: z.string(),
+  name: z.string(),
+  affinity: z.number(),
+  affinityRank: z.number(),
+});
+
+export type TradeAreaTasteRow = z.infer<typeof TradeAreaTasteRowSchema>;
+
+export const TradeAreaTasteContextSchema = z.object({
+  tags: z.array(TradeAreaTasteRowSchema),
+  audiences: z.array(TradeAreaTasteRowSchema),
+});
+
+export type TradeAreaTasteContext = z.infer<typeof TradeAreaTasteContextSchema>;
+
 export const ProspectPackSchema = z.object({
   coverageNote: z.string().optional(),
   brand: BrandAffinitySchema,
@@ -77,6 +93,7 @@ export const ProspectPackSchema = z.object({
   reasons: z.array(z.string()),
   nearestExistingStoreKm: z.number().optional(),
   qlooSignals: z.array(z.string()).optional(),
+  tradeAreaTaste: TradeAreaTasteContextSchema.optional(),
 });
 
 export type ProspectPack = z.infer<typeof ProspectPackSchema>;
