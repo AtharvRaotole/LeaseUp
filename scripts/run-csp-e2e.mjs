@@ -51,6 +51,7 @@ const preview = spawn(
     env: {
       ...process.env,
       CSP_E2E_WORKER_PORT: WORKER_PORT,
+      CSP_E2E_LOCAL: '1',
     },
     stdio: 'inherit',
   }

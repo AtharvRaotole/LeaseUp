@@ -15,6 +15,7 @@ import { pitchRouter } from './routes/pitch';
 import { prospectingRouter } from './routes/prospecting';
 import { geocodeRouter } from './routes/geocode';
 import { pipelineRouter } from './routes/pipeline';
+import { shareRouter } from './routes/share';
 
 export interface Env {
   DB: D1Database;
@@ -68,6 +69,7 @@ function skipRateLimit(c: Context<{ Bindings: Env }>): boolean {
   if (path === '/api/geocode') return true;
   if (path.startsWith('/api/pipeline')) return true;
   if (path === '/api/analyze/stream' || path === '/api/analyze') return true;
+  if (path.startsWith('/api/og') || path.startsWith('/api/share')) return true;
   return false;
 }
 
@@ -122,6 +124,7 @@ app.route('/api', prospectingRouter);
 app.route('/api', pipelineRouter);
 app.route('/api', analysisRouter);
 app.route('/api', geocodeRouter);
+app.route('/api', shareRouter);
 
 app.onError(errorHandler);
 
