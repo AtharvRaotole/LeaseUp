@@ -1,28 +1,39 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
+import { MapPin, Store } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import type { AnalysisRequest, AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { brandMonogram, brandTint } from '../../lib/brand-monogram';
 import { verificationLabel } from '../../lib/copy';
 import { apiUrl } from '../../lib/api';
+import { fitPercentileLabel } from '../../lib/fit-display';
+import { buildReportPath } from '../../lib/report-params';
+import { cn } from '../../lib/cn';
 
 export function BrandsToPitch({
   results,
+  request,
+  slug,
   selectedId,
   onSelect,
   onDraft,
   radiusKm,
 }: {
   results: AnalysisResponse;
+  request: AnalysisRequest;
+  slug: string;
   selectedId: string | null;
   onSelect: (p: ProspectPack) => void;
   onDraft: (p: ProspectPack) => void;
   radiusKm: number;
 }) {
+  const navigate = useNavigate();
   const [prospects, setProspects] = useState(results.prospects);
   const [expanded, setExpanded] = useState<string | null>(selectedId);
+  const totalScored = results.rankings?.length ?? 100;
 
   useEffect(() => setProspects(results.prospects), [results.prospects]);
 
@@ -43,11 +54,28 @@ export function BrandsToPitch({
 
   if (prospects.length === 0) {
     return (
-      <Card>
-        <h3 className="text-h3 font-semibold" data-testid="brands-to-pitch">Brands to pitch</h3>
-        <p className="mt-3 text-ink-2">
-          Every top brand already has a store here. That is a strong, saturated block. Try a larger radius or a category.
+      <Card className="text-center">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-surface-2 text-ink-2">
+          <Store className="h-6 w-6" aria-hidden />
+        </div>
+        <h3 className="mt-4 text-h3 font-semibold text-ink" data-testid="brands-to-pitch">No pitch list yet</h3>
+        <p className="mt-2 text-sm text-ink-2">
+          Every top brand already has a store in this radius. Try a wider search or narrow by category.
         </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() =>
+              navigate(buildReportPath({ ...request, radius: 5 }, slug), { replace: true })
+            }
+          >
+            Try 5 km
+          </Button>
+          <Button variant="secondary" size="sm" onClick={() => navigate('/')}>
+            Pick a category
+          </Button>
+        </div>
       </Card>
     );
   }
@@ -58,10 +86,23 @@ export function BrandsToPitch({
       <div className="space-y-3">
         {prospects.map((prospect, i) => {
           const open = expanded === prospect.brand.entityId;
-          const pct = Math.max(1, Math.round((1 - (prospect.brand.affinityRank - 1) / 50) * 100));
+          const selected = selectedId === prospect.brand.entityId;
+          const fitLabel = fitPercentileLabel(prospect.brand.affinityRank, totalScored);
+          const category = prospect.tenantMixScore?.categoryFit;
+
           return (
-            <motion.div key={prospect.brand.entityId} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
-              <Card className="p-0 overflow-hidden">
+            <motion.div
+              key={prospect.brand.entityId}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04 }}
+            >
+              <Card
+                className={cn(
+                  'overflow-hidden p-0 ring-1 transition-shadow',
+                  selected ? 'ring-accent shadow-sm' : 'ring-transparent'
+                )}
+              >
                 <button
                   type="button"
                   className="flex w-full gap-4 p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
@@ -79,13 +120,19 @@ export function BrandsToPitch({
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-medium text-ink">{prospect.brand.name}</span>
-                      <Badge tone="accent">Top {Math.min(99, pct)}% fit</Badge>
+                      {category && (
+                        <span className="text-xs text-ink-3">{category}</span>
+                      )}
+                    </div>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                      <Badge tone="accent">{fitLabel}</Badge>
                       <Badge tone="neutral">{verificationLabel(prospect.brand.verified)}</Badge>
                     </div>
-                    <p className="mt-1 text-sm text-ink-2">
+                    <p className="mt-2 flex items-center gap-1.5 text-sm text-ink-2">
+                      <MapPin className="h-3.5 w-3.5 shrink-0 text-ink-3" aria-hidden />
                       {prospect.nearestExistingStoreKm !== undefined
-                        ? `Closest: ${prospect.nearestExistingStoreKm.toFixed(1)} km`
-                        : 'No store in radius'}
+                        ? `Closest store ${prospect.nearestExistingStoreKm.toFixed(1)} km away`
+                        : `No store within ${radiusKm} km`}
                     </p>
                   </div>
                 </button>

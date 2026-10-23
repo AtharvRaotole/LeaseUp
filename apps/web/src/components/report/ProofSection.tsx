@@ -1,14 +1,25 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Check, X } from 'lucide-react';
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { SegmentedControl } from '../ui/SegmentedControl';
-
-export function ProofSection({ results }: { results: AnalysisResponse }) {
+import { affinitiesAllIdentical, fitPercentileLabel } from '../../lib/fit-display';
+export function ProofSection({
+  results,
+  radiusKm,
+  onBrandSelect,
+}: {
+  results: AnalysisResponse;
+  radiusKm: number;
+  onBrandSelect?: (entityId: string, name: string) => void;
+}) {
   const [mode, setMode] = useState<'raw' | 'blended'>('raw');
   const backtest = mode === 'blended' && results.backtestBlended ? results.backtestBlended : results.backtest;
   const top10 = (results.rankings ?? []).slice(0, 10);
   const present = backtest.presentInTop10 ?? Math.round(backtest.precisionAt10 * 10);
+  const totalScored = results.rankings?.length ?? top10.length;
+  const hideFit = useMemo(() => affinitiesAllIdentical(top10), [top10]);
 
   return (
     <section>
@@ -35,7 +46,7 @@ export function ProofSection({ results }: { results: AnalysisResponse }) {
             <tr>
               <th className="px-4 py-2 font-medium">Rank</th>
               <th className="px-4 py-2 font-medium">Brand</th>
-              <th className="px-4 py-2 font-medium">Fit</th>
+              {!hideFit && <th className="px-4 py-2 font-medium">Fit</th>}
               <th className="px-4 py-2 font-medium">Store nearby</th>
             </tr>
           </thead>
@@ -43,20 +54,31 @@ export function ProofSection({ results }: { results: AnalysisResponse }) {
             {top10.map((row, index) => (
               <motion.tr
                 key={row.entityId}
-                className="border-t border-border"
+                className="border-t border-border cursor-pointer hover:bg-surface-2/60"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: index * 0.04 }}
+                onClick={() => onBrandSelect?.(row.entityId, row.name)}
               >
-                <td className="px-4 py-3 font-mono tabular-nums text-ink-3">#{row.qlooRank}</td>
+                <td className="px-4 py-3 font-mono tabular-nums text-ink-2">#{row.qlooRank}</td>
                 <td className="px-4 py-3 text-ink">{row.name}</td>
-                <td className="px-4 py-3 font-mono tabular-nums text-ink-2">
-                  {(row.affinity * 100).toFixed(0)}%
-                </td>
+                {!hideFit && (
+                  <td className="px-4 py-3 font-mono tabular-nums text-ink-2">
+                    {fitPercentileLabel(row.qlooRank, totalScored)}
+                  </td>
+                )}
                 <td className="px-4 py-3">
-                  {row.presentInRadius
-                    ? `Yes, ${row.nearestStoreKm?.toFixed(1)} km`
-                    : 'No'}
+                  {row.presentInRadius && row.nearestStoreKm !== undefined ? (
+                    <span className="inline-flex items-center gap-1.5 text-success">
+                      <Check className="h-4 w-4 shrink-0" aria-hidden />
+                      <span className="font-mono tabular-nums">{row.nearestStoreKm.toFixed(1)} km</span>
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 text-ink-3">
+                      <X className="h-4 w-4 shrink-0" aria-hidden />
+                      None within {radiusKm} km
+                    </span>
+                  )}
                 </td>
               </motion.tr>
             ))}

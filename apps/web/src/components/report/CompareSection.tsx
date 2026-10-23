@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { apiUrl } from '../../lib/api';
+import { CompareSlopeChart } from './CompareSlopeChart';
 
 type ComparePayload = {
   left: { name: string };
   right: { name: string };
   flipExamples: Array<{
+    entityId: string;
     name: string;
     wickerRank: number;
     seviervilleRank: number;
@@ -25,24 +27,24 @@ export function CompareSection() {
 
   if (!data) return null;
 
-  const swings = data.flipExamples.slice(0, 8);
+  const swings = data.flipExamples
+    .slice(0, 10)
+    .map((row) => ({
+      entityId: row.entityId,
+      name: row.name,
+      leftRank: row.wickerRank,
+      rightRank: row.seviervilleRank,
+      delta: row.delta,
+    }));
+
+  const recordedDemo = data.source?.toLowerCase().includes('recorded') ?? false;
 
   return (
-    <section>
-      <h3 className="text-h3 font-semibold text-ink">Same brands, different places.</h3>
-      <p className="mt-2 text-sm text-ink-2">
-        {data.left.name} vs {data.right.name}
-        {data.source ? ` (${data.source})` : ''}
-      </p>
-      <div className="mt-4 space-y-3">
-        {swings.map((row) => (
-          <div key={row.name} className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 rounded-card border border-border bg-surface px-4 py-3 text-sm">
-            <span className="font-mono tabular-nums text-ink-2 text-right">#{row.wickerRank}</span>
-            <span className="font-medium text-ink text-center">{row.name}</span>
-            <span className="font-mono tabular-nums text-ink-2">#{row.seviervilleRank}</span>
-          </div>
-        ))}
-      </div>
-    </section>
+    <CompareSlopeChart
+      leftName={data.left.name}
+      rightName={data.right.name}
+      swings={swings}
+      recordedDemo={recordedDemo}
+    />
   );
 }
