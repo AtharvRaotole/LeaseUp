@@ -6,6 +6,7 @@ import {
   computeStrictEval,
   buildEvalSiteSnapshot,
   type EvalSiteDensity,
+  type EvalDensityStratum,
 } from '@leaseup/fixtures';
 import type { StoreCatalog } from '../services/store-catalog';
 
@@ -13,7 +14,7 @@ export async function buildStrictEvalSnapshot(
   location: Location,
   insights: QlooInsight[],
   radiusKm: number,
-  density: EvalSiteDensity,
+  density: EvalSiteDensity | EvalDensityStratum,
   catalog: StoreCatalog
 ): Promise<StrictEvalSnapshot> {
   const brandIds = new Set(catalog.getBrandIds());

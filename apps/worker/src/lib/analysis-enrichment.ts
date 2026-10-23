@@ -15,12 +15,20 @@ import {
   buildTierFitByEntityId,
   chainSizeTierFromStoreCount,
 } from '@leaseup/fixtures';
-import type { EvalSiteDensity } from '@leaseup/fixtures';
+import type { EvalDensityStratum, EvalSiteDensity } from '@leaseup/fixtures';
+
+function stratumToBlendDensity(densityOrStratum: EvalSiteDensity | EvalDensityStratum): EvalSiteDensity {
+  if (densityOrStratum === 'dense_urban') return 'urban';
+  return densityOrStratum as EvalSiteDensity;
+}
 import type { StoreCatalog } from '../services/store-catalog';
 import { displayBrandName } from './brand-display';
 
-function presenceRadiusKm(density: EvalSiteDensity, searchRadiusKm: number): number {
-  return adaptiveEvalRadiusKm(density, searchRadiusKm);
+function presenceRadiusKm(
+  densityOrStratum: EvalSiteDensity | EvalDensityStratum,
+  searchRadiusKm: number
+): number {
+  return adaptiveEvalRadiusKm(densityOrStratum, searchRadiusKm);
 }
 
 export async function buildBrandRankings(
@@ -28,12 +36,13 @@ export async function buildBrandRankings(
   insights: QlooInsight[],
   radiusKm: number,
   catalog: StoreCatalog,
-  density: EvalSiteDensity = 'urban'
+  densityOrStratum: EvalSiteDensity | EvalDensityStratum = 'urban'
 ): Promise<BrandRankingRow[]> {
-  const blended = orderInsightsByLogisticBlend(insights, density);
+  const blendDensity = stratumToBlendDensity(densityOrStratum);
+  const blended = orderInsightsByLogisticBlend(insights, blendDensity);
   const brandIds = new Set(catalog.getBrandIds());
   const tierFit = buildTierFitByEntityId(insights.map((i) => i.entity_id));
-  const scoreRadiusKm = presenceRadiusKm(density, radiusKm);
+  const scoreRadiusKm = presenceRadiusKm(densityOrStratum, radiusKm);
 
   const baselineOrdered = orderInsightsByNationalStoreCount(insights);
   const baselineRankById = new Map(
@@ -105,10 +114,10 @@ export async function buildDualBacktest(
   insights: QlooInsight[],
   radiusKm: number,
   catalog: StoreCatalog,
-  density: EvalSiteDensity = 'urban'
+  densityOrStratum: EvalSiteDensity | EvalDensityStratum = 'urban'
 ): Promise<{ raw: BacktestResult; blended: BacktestResult }> {
   const brandIds = new Set(catalog.getBrandIds());
-  const scoreRadiusKm = presenceRadiusKm(density, radiusKm);
+  const scoreRadiusKm = presenceRadiusKm(densityOrStratum, radiusKm);
   const nearbyCache = new Map<string, Array<{ distance: number }>>();
   for (const insight of insights.filter((i) => brandIds.has(i.entity_id))) {
     const rows = await catalog.findStoresNearby(
@@ -132,7 +141,7 @@ export async function buildDualBacktest(
     brandIds
   );
 
-  const blendedOrder = orderInsightsByLogisticBlend(insights, density);
+  const blendedOrder = orderInsightsByLogisticBlend(insights, stratumToBlendDensity(densityOrStratum));
   const blended = computeBacktest(
     blendedOrder,
     location.latitude,
@@ -153,11 +162,11 @@ export async function buildBaselineBacktest(
   insights: QlooInsight[],
   radiusKm: number,
   catalog: StoreCatalog,
-  density: EvalSiteDensity = 'urban'
+  densityOrStratum: EvalSiteDensity | EvalDensityStratum = 'urban'
 ): Promise<BacktestResult> {
   const brandIds = new Set(catalog.getBrandIds());
   const ordered = orderInsightsByNationalStoreCount(insights);
-  const scoreRadiusKm = presenceRadiusKm(density, radiusKm);
+  const scoreRadiusKm = presenceRadiusKm(densityOrStratum, radiusKm);
   const nearbyCache = new Map<string, Array<{ distance: number }>>();
   for (const insight of ordered.filter((i) => brandIds.has(i.entity_id))) {
     const rows = await catalog.findStoresNearby(

@@ -28,12 +28,11 @@ export function HeadlineCard({
   const hitLabel = alreadyNearbyStatLabel(activeBacktest);
   const analyzed = results.rankings?.length ?? 0;
   const baseline = results.backtestBaseline;
+  const blendBacktest = results.backtestBlended ?? results.backtest;
   const evalLead = qlooProofEvalLead(results);
   const hitTieSubtitle =
-    baseline && qlooProofWinner(results.backtest, baseline) === 'tie'
-      ? evalLead.legacySaturated && evalLead.pinDetail
-        ? evalLead.pinDetail
-        : qlooProofHitRateTieSubtitle(results.rankings)
+    baseline && qlooProofWinner(blendBacktest, baseline) === 'tie'
+      ? evalLead.tieNote ?? qlooProofHitRateTieSubtitle(results.rankings)
       : null;
 
   return (
