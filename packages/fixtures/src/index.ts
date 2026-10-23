@@ -24,6 +24,7 @@ export {
 export { EVAL_METRIC_CATALOG, evalMetricDefinition, compareEvalMetric } from './eval/metrics-catalog.js';
 export { buildEvalSiteSnapshot, type EvalSiteSnapshot } from './eval/build-snapshot.js';
 export { loadEvalRunBundle, getEvalManifestRef } from './eval/load-bundle.js';
+export { getPilotStrictEvalSnapshot } from './eval/pilot-strict-eval.js';
 
 export { wickerparkFixture } from './wicker-park.js';
 export { boulderFixture } from './boulder.js';
