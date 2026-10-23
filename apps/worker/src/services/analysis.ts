@@ -15,13 +15,11 @@ import {
   wickerparkFixture,
   boulderFixture,
   seviervilleFixture,
-  findStoresNearby,
-  getNationalStoreCount,
-  getStoreBrandIds,
   blendWithNationalPrior,
   CHAIN_PRIOR_BLEND_WEIGHT,
   matchDemoFixtureId,
 } from '@leaseup/fixtures';
+import { createStoreCatalog, type StoreCatalog } from './store-catalog';
 import type { QlooLocation } from '../providers/qloo';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
@@ -43,6 +41,7 @@ export class AnalysisService {
   private nominatim: NominatimClient;
   private db: D1Database;
   private mode: 'live' | 'demo';
+  private catalog: StoreCatalog;
 
   constructor(env: Env) {
     this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
@@ -54,6 +53,7 @@ export class AnalysisService {
       env.NOMINATIM_CONTACT || DEFAULT_NOMINATIM_CONTACT
     );
     this.db = env.DB;
+    this.catalog = createStoreCatalog(env.DB, this.mode);
   }
 
   async analyze(request: AnalysisRequest, runId: string, ipHash: string): Promise<AnalysisResponse> {
@@ -99,7 +99,7 @@ export class AnalysisService {
         async () => {
           const rows = await this.qloo.getBrandInsights({
             location: qlooLocation,
-            brandIds: getStoreBrandIds(),
+            brandIds: this.catalog.getBrandIds(),
             tags: request.categoryTags,
             take: 50,
             runId,
@@ -123,7 +123,7 @@ export class AnalysisService {
         'backtest',
         'Prove it (backtest)',
         async () => {
-          const dual = buildDualBacktest(location, insights, request.radius);
+          const dual = await buildDualBacktest(location, insights, request.radius, this.catalog);
           return {
             summary: `Raw P@10 ${(dual.raw.precisionAt10 * 100).toFixed(0)}% · Blended P@10 ${(dual.blended.precisionAt10 * 100).toFixed(0)}%`,
             detail: {
@@ -152,13 +152,13 @@ export class AnalysisService {
       );
 
       await runStep(emit, 'verify', 'Double-check absence (ATP + OSM)', async () => {
+        const pending = prospects.filter((p) => p.brand.verified === 'verifying...').length;
         const verified = prospects.filter((p) => p.brand.verified === 'verified (2 sources)').length;
         return {
-          summary: `${verified} prospects verified by ATP + OpenStreetMap`,
-          detail: {
-            verified,
-            conflicts: prospects.filter((p) => p.brand.verified === 'conflict').length,
-          },
+          summary: pending
+            ? `${pending} prospects queued for OpenStreetMap verification (non-blocking)`
+            : `${verified} prospects verified by ATP + OpenStreetMap`,
+          detail: { verified, pending },
           result: true,
         };
       });
@@ -168,9 +168,10 @@ export class AnalysisService {
         result: true,
       }));
 
-      const rankings = buildBrandRankings(location, insights, request.radius);
-      const mapStores = buildMapStores(location, insights, request.radius);
-      const enrichedProspects = enrichProspectsWithNearest(prospects, location).map((pack) => {
+      const rankings = await buildBrandRankings(location, insights, request.radius, this.catalog);
+      const mapStores = await buildMapStores(location, insights, request.radius, this.catalog);
+      const nearestEnriched = await enrichProspectsWithNearest(prospects, location, this.catalog);
+      const enrichedProspects = nearestEnriched.map((pack) => {
         const insight = insights.find((i) => i.entity_id === pack.brand.entityId);
         const signals = insight ? extractQlooSignals(insight) : [];
         return {
@@ -302,13 +303,8 @@ export class AnalysisService {
     _runId: string
   ): Promise<ProspectPack[]> {
     const prospectPacks: ProspectPack[] = [];
-    const osmSnapshot = await this.overpass.queryBrands(
-      location.latitude,
-      location.longitude,
-      radius,
-      location.address
-    );
     const blended = blendWithNationalPrior(insights);
+    const rankedCount = insights.length;
     const affinities = insights.map((i) => i.query?.affinity ?? 0).filter((a) => a > 0);
     const affinityThreshold = affinityThresholdAtPercentile(affinities, 0.75);
 
@@ -317,7 +313,7 @@ export class AnalysisService {
     );
 
     for (const candidate of candidates) {
-      const nearbyStores = findStoresNearby(
+      const nearbyStores = await this.catalog.findStoresNearby(
         candidate.entity_id,
         location.latitude,
         location.longitude,
@@ -328,14 +324,31 @@ export class AnalysisService {
         continue;
       }
 
-      const nationalCount = getNationalStoreCount(candidate.entity_id);
+      const nationalCount = await this.catalog.getNationalStoreCount(candidate.entity_id);
       if (nationalCount < 5) {
         continue;
       }
 
-      const verification = this.verifyAbsence(osmSnapshot, candidate.name);
+      const verification =
+        this.mode === 'demo'
+          ? this.verifyAbsence(
+              await this.overpass.queryBrands(
+                location.latitude,
+                location.longitude,
+                radius,
+                location.address
+              ),
+              candidate.name
+            )
+          : { status: 'verifying...' as const, sources: ['All The Places (CC0)'] };
 
-      const reasons = this.generateReasons(candidate, location, nationalCount, radius);
+      const reasons = this.generateReasons(
+        candidate,
+        location,
+        nationalCount,
+        radius,
+        rankedCount
+      );
 
       prospectPacks.push({
         brand: {
@@ -363,11 +376,44 @@ export class AnalysisService {
     return prospectPacks;
   }
 
+  async applyOsmVerification(
+    location: Location,
+    radiusKm: number,
+    prospects: ProspectPack[]
+  ): Promise<ProspectPack[]> {
+    const cached = await this.overpass.queryBrands(
+      location.latitude,
+      location.longitude,
+      radiusKm,
+      location.address
+    );
+
+    return prospects.map((pack) => {
+      if (pack.brand.verified !== 'verifying...') {
+        return pack;
+      }
+      const verification = this.verifyAbsence(cached, pack.brand.name);
+      return {
+        ...pack,
+        brand: {
+          ...pack.brand,
+          verified: verification.status,
+          verificationSources: verification.sources,
+        },
+      };
+    });
+  }
+
   private verifyAbsence(
     osmResult: { brands: Array<{ name: string; brand?: string }>; error?: string },
     brandName: string
   ): {
-    status: 'verified (2 sources)' | 'conflict' | 'unverified (1 source)' | 'unverified';
+    status:
+      | 'verified (2 sources)'
+      | 'conflict'
+      | 'unverified (1 source)'
+      | 'unverified'
+      | 'verifying...';
     sources: string[];
   } {
     const sources: string[] = ['All The Places (CC0)'];
@@ -405,18 +451,22 @@ export class AnalysisService {
     prospect: { name: string; qlooRank: number; query?: { affinity?: number } },
     location: Location,
     nationalCount: number,
-    radius: number
+    radius: number,
+    rankedCount: number
   ): string[] {
     const reasons: string[] = [];
-    const total = 50;
-    const percentile = 1 - (prospect.qlooRank - 1) / Math.max(total - 1, 1);
+    const affinity = prospect.query?.affinity ?? 0;
+    const area = location.neighborhood || location.city || 'this area';
 
-    if (percentile >= 0.95) {
-      reasons.push(`Top 5% brand affinity in ${location.neighborhood || location.city || 'this area'}`);
-    } else if (percentile >= 0.9) {
-      reasons.push(`Top 10% brand affinity in ${location.neighborhood || location.city || 'this area'}`);
-    } else if (percentile >= 0.85) {
-      reasons.push(`Top 15% brand affinity in ${location.neighborhood || location.city || 'this area'}`);
+    if (affinity > 0 && rankedCount > 1) {
+      const percentile = 1 - (prospect.qlooRank - 1) / (rankedCount - 1);
+      if (percentile >= 0.95) {
+        reasons.push(`Qloo rank #${prospect.qlooRank} (top 5% of ${rankedCount} brands) in ${area}`);
+      } else if (percentile >= 0.9) {
+        reasons.push(`Qloo rank #${prospect.qlooRank} (top 10% of ${rankedCount} brands) in ${area}`);
+      } else if (percentile >= 0.85) {
+        reasons.push(`Qloo rank #${prospect.qlooRank} (top 15% of ${rankedCount} brands) in ${area}`);
+      }
     }
 
     reasons.push(`No existing location within ${radius}km radius (verified via All The Places store data)`);
@@ -462,7 +512,9 @@ export class AnalysisService {
       warnings.push('Location resolution is approximate');
     }
 
-    warnings.push('Absence verification is limited to brands in All The Places dataset (47 major chains)');
+    warnings.push(
+      `Absence verification is limited to brands in the ATP catalog (${this.catalog.getBrandIds().length} chains; seed D1 for full expansion)`
+    );
 
     return warnings;
   }

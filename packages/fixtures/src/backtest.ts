@@ -59,20 +59,29 @@ export function calculateAUC(
  * Backtest Qloo ranking against All The Places store presence within radius.
  * Only scores brands that exist in the ATP store dataset.
  */
+export type FindStoresNearbyFn = (
+  brandId: string,
+  lat: number,
+  lon: number,
+  radiusKm: number
+) => Array<{ distance: number }>;
+
 export function computeBacktest(
   insights: Array<{ entity_id: string; name: string }>,
   lat: number,
   lon: number,
-  radiusKm: number
+  radiusKm: number,
+  findNearby: FindStoresNearbyFn = findStoresNearby,
+  brandIdSet: Set<string> = getStoreBrandIdSet()
 ): ComputedBacktest {
-  const ranked = filterInsightsToStoreBrands(insights);
+  const ranked = insights.filter((i) => brandIdSet.has(i.entity_id));
   const presentBrands = new Set<string>();
   const examples: BacktestExample[] = [];
 
   for (let index = 0; index < ranked.length; index++) {
     const insight = ranked[index]!;
     const rank = index + 1;
-    const nearby = findStoresNearby(insight.entity_id, lat, lon, radiusKm);
+    const nearby = findNearby(insight.entity_id, lat, lon, radiusKm);
 
     if (nearby.length > 0) {
       presentBrands.add(insight.entity_id);

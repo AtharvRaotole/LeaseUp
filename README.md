@@ -25,7 +25,8 @@ flowchart LR
 ### Honest limitations
 
 - Backtests and absence checks cover **~47 major chains** in the ATP snapshot (not every retailer).
-- **Demo mode** uses recorded Qloo responses; **live mode** needs `QLOO_API_KEY`.
+- **Demo mode** uses recorded Qloo responses; **live mode** needs `QLOO_API_KEY` and uses `signal.location=POINT(lon lat)` + `signal.location.radius` (meters). Brand insights are requested in batches of ≤45 IDs (cross-batch affinity comparability is an assumption).
+- **Live store catalog** uses D1 (`brands` / `stores` tables). Seed with `node scripts/seed-d1.mjs` then `wrangler d1 execute leaseup_db --local --file=data/d1-seed/001-brands.sql` (and store chunks).
 - **Heatmap overlay** appears only when Qloo returns heatmap cells (live mode); no fabricated heatmaps in demo.
 - SSE streaming may fall back to `POST /api/analyze` behind some proxies; timings still real.
 

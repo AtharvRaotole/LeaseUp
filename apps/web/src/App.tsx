@@ -46,6 +46,13 @@ function App() {
         setIsLoading(false);
         if (payload.prospects[0]) setSelectedProspect(payload.prospects[0]);
       },
+      onVerification: (payload) => {
+        setResults((prev) =>
+          prev
+            ? { ...prev, prospects: payload.prospects }
+            : prev
+        );
+      },
       onError: () => undefined,
     });
 

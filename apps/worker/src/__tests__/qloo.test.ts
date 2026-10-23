@@ -52,7 +52,14 @@ describe('QlooClient', () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       status: 200,
-      json: async () => ({ results: { entities: [{ entity_id: 'a', name: 'A' }] } }),
+      json: async () => ({
+        results: {
+          entities: [
+            { entity_id: 'id-2', name: 'B', query: { affinity: 0.8 } },
+            { entity_id: 'id-1', name: 'A', query: { affinity: 0.9 } },
+          ],
+        },
+      }),
     });
     vi.stubGlobal('fetch', fetchMock);
 
@@ -85,10 +92,12 @@ describe('QlooClient', () => {
       take: 10,
     });
 
-    const url = fetchMock.mock.calls[0]?.[0] as string;
-    expect(url).toContain('signal.location.latitude=41.9088');
-    expect(url).toContain('signal.location.longitude=-87.6776');
-    expect(url).toContain('filter.location.radius=10');
+    const url = decodeURIComponent(fetchMock.mock.calls[0]?.[0] as string);
+    expect(url).toContain('signal.location=POINT(');
+    expect(url).toContain('-87.6776');
+    expect(url).toContain('41.9088');
+    expect(url).toContain('signal.location.radius=10000');
+    expect(url).not.toContain('signal.location.latitude');
   });
 
   it('retries on 429 then succeeds', async () => {
@@ -100,15 +109,17 @@ describe('QlooClient', () => {
       .mockResolvedValueOnce({
         ok: true,
         status: 200,
-        json: async () => ({ results: { entities: [] } }),
+        json: async () => ({
+          results: { entities: [{ entity_id: 'x', name: 'X', query: { affinity: 0.2 } }] },
+        }),
       });
     vi.stubGlobal('fetch', fetchMock);
 
     const insights = await client.getBrandInsights({
-      location: { kind: 'query', query: 'Boulder, Colorado' },
+      location: { kind: 'point', latitude: 40, longitude: -105, radiusKm: 10 },
       take: 10,
     });
-    expect(insights).toEqual([]);
+    expect(insights).toHaveLength(1);
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 

@@ -1,0 +1,26 @@
+Albertsons: no Qloo hit
+AutoZone: no Qloo hit
+Big 5 Sporting Goods: top hit is a different entity: Dick's Sporting Goods
+Biggby Coffee: top hit is a different entity: Starbucks
+Dave's Hot Chicken: top hit is a different entity: Kentucky Fried Chicken
+Equinox: no US ATP points
+Five Below: top hit is a different entity: Five Daughters Bakery
+Great Clips: top hit is a different entity: Great Wolf Lodge
+Half Price Books: top hit is a different entity: Fisher-Price
+Jersey Mike's Subs: no US ATP points
+Jiffy Lube: top hit is a different entity: A.S. Volley Lube Civitanova
+Journeys: no US ATP points
+Life Time: 2 Qloo brands share this name
+Mattress Warehouse: top hit is a different entity: Lowe's
+Menards: no Qloo hit
+Nordstrom Rack: top hit is a different entity: Nordstrom
+O'Reilly Auto Parts: top hit is a different entity: Grand Theft Auto V
+Pandora: 2 Qloo brands share this name
+Pure Barre: top hit is a different entity: 100% Pure
+Scooter's Coffee: top hit is a different entity: Starbucks
+Sport Clips: top hit is a different entity: Diario Sport
+Supercuts: no Qloo hit
+Title Boxing Club: top hit is a different entity: Nike Training Club
+Tractor Supply: top hit is a different entity: Herschel Supply Co
+Uniqlo: no US ATP points
+Soma: 2 Qloo brands share this name

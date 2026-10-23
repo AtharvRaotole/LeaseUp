@@ -104,7 +104,8 @@ describe('AnalysisService live path (recorded Qloo response)', () => {
     expect(result.backtest.precisionAt10).toBeGreaterThan(0);
     const qlooUrl = (vi.mocked(fetch).mock.calls.find((c) => String(c[0]).includes('/v2/insights'))?.[0] ||
       '') as string;
-    expect(qlooUrl).toContain('signal.location.latitude=');
-    expect(qlooUrl).toContain('filter.location.radius=10');
+    const decoded = decodeURIComponent(qlooUrl);
+    expect(decoded).toContain('signal.location=POINT(');
+    expect(decoded).toContain('signal.location.radius=10000');
   });
 });

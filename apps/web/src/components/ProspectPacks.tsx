@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
@@ -10,6 +11,32 @@ interface ProspectPacksProps {
 }
 
 export function ProspectPacks({ results, selectedId, onSelect }: ProspectPacksProps) {
+  const [prospects, setProspects] = useState(results.prospects);
+
+  useEffect(() => {
+    setProspects(results.prospects);
+  }, [results.prospects]);
+
+  useEffect(() => {
+    if (results.mode !== 'live') return;
+    if (!prospects.some((p) => p.brand.verified === 'verifying...')) return;
+
+    void fetch(apiUrl('/api/verify'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: results.location,
+        radius: 10,
+        prospects,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data: { prospects?: typeof prospects }) => {
+        if (data.prospects) setProspects(data.prospects);
+      })
+      .catch(() => undefined);
+  }, [results.mode, results.location, prospects]);
+
   const outreach = useMutation({
     mutationFn: async (prospect: ProspectPack) => {
       const res = await fetch(apiUrl('/api/outreach'), {
@@ -50,13 +77,13 @@ export function ProspectPacks({ results, selectedId, onSelect }: ProspectPacksPr
         </button>
       </div>
 
-      {results.prospects.length === 0 ? (
+      {prospects.length === 0 ? (
         <p className="text-sm text-zinc-400">
           No high-confidence absent brands passed filters. Try another address or widen radius.
         </p>
       ) : (
         <div className="space-y-4">
-          {results.prospects.map((prospect, index) => {
+          {prospects.map((prospect, index) => {
             const selected = selectedId === prospect.brand.entityId;
             return (
               <motion.article

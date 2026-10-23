@@ -8,6 +8,12 @@ import {
 import { ConfigurationError, UpstreamError } from '../lib/errors';
 import { sha256Short } from '../lib/cache-key';
 import { DemoModeRequiredError } from '../lib/demo-mode';
+import {
+  applyQlooLocationParams,
+  chunkBrandIds,
+  QLOO_MAX_BRANDS_PER_REQUEST,
+} from './qloo-location';
+import { assertQlooInsightsValid } from './qloo-validate';
 
 export interface QlooInsight {
   entity_id: string;
@@ -101,10 +107,9 @@ export class QlooClient {
     }
 
     const take = params.take ?? 50;
+    const brandIds = params.brandIds ?? [];
     const locationKey = this.locationCacheKey(params.location);
-    const brandKey = params.brandIds?.length
-      ? await sha256Short(params.brandIds.join(','))
-      : 'all';
+    const brandKey = brandIds.length ? await sha256Short(brandIds.join(',')) : 'all';
     const cacheKey = `insights:${locationKey}:${params.tags?.join(',') || 'all'}:${brandKey}:take=${take}`;
 
     const cached = await this.cache.get(cacheKey);
@@ -120,11 +125,46 @@ export class QlooClient {
       return JSON.parse(cached) as QlooInsight[];
     }
 
+    const batches = brandIds.length > 0 ? chunkBrandIds(brandIds) : [[]];
+    const merged: QlooInsight[] = [];
+
+    for (const batch of batches) {
+      const batchInsights = await this.fetchInsightsBatch({
+        location: params.location,
+        brandIds: batch,
+        tags: params.tags,
+        take,
+        runId: params.runId,
+      });
+      merged.push(...batchInsights);
+      assertQlooInsightsValid(batchInsights, batch.length > 0 ? batch : undefined);
+    }
+
+    if (merged.length > 0) {
+      merged.sort(
+        (a, b) => (b.query?.affinity ?? 0) - (a.query?.affinity ?? 0)
+      );
+    }
+
+    await this.cache.put(cacheKey, JSON.stringify(merged), {
+      expirationTtl: 86400,
+    });
+
+    return merged;
+  }
+
+  private async fetchInsightsBatch(params: {
+    location: QlooLocation;
+    brandIds: string[];
+    tags?: string[];
+    take: number;
+    runId?: string;
+  }): Promise<QlooInsight[]> {
     const url = new URL('/v2/insights', this.baseUrl);
     url.searchParams.set('filter.type', 'urn:entity:brand');
-    this.applyLocationToUrl(url, params.location);
+    applyQlooLocationParams(url, params.location);
 
-    if (params.brandIds && params.brandIds.length > 0) {
+    if (params.brandIds.length > 0) {
       url.searchParams.set('filter.results.entities', params.brandIds.join(','));
     }
 
@@ -132,7 +172,7 @@ export class QlooClient {
       url.searchParams.set('filter.tags', params.tags.join(','));
     }
 
-    url.searchParams.set('take', take.toString());
+    url.searchParams.set('take', params.take.toString());
     url.searchParams.set('feature.explainability', 'true');
 
     const start = Date.now();
@@ -161,10 +201,6 @@ export class QlooClient {
       statusCode: 200,
       latencyMs: latency,
       cached: false,
-    });
-
-    await this.cache.put(cacheKey, JSON.stringify(insights), {
-      expirationTtl: 86400,
     });
 
     return insights;
@@ -197,7 +233,7 @@ export class QlooClient {
 
     const url = new URL('/v2/insights', this.baseUrl);
     url.searchParams.set('filter.type', 'urn:heatmap');
-    this.applyLocationToUrl(url, params.location, 'heatmap');
+    applyQlooLocationParams(url, params.location);
 
     if (params.entityId) {
       url.searchParams.set('signal.interests.entities', params.entityId);
@@ -243,21 +279,6 @@ export class QlooClient {
       return `${location.latitude},${location.longitude}:r${location.radiusKm}`;
     }
     return `q:${location.query}`;
-  }
-
-  private applyLocationToUrl(url: URL, location: QlooLocation, kind: 'insights' | 'heatmap' = 'insights') {
-    if (location.kind === 'point') {
-      url.searchParams.set('signal.location.latitude', String(location.latitude));
-      url.searchParams.set('signal.location.longitude', String(location.longitude));
-      url.searchParams.set('filter.location.radius', String(location.radiusKm));
-      return;
-    }
-
-    if (kind === 'heatmap') {
-      url.searchParams.set('filter.location.query', location.query);
-    } else {
-      url.searchParams.set('signal.location.query', location.query);
-    }
   }
 
   private mapQlooHttpError(statusCode: number, statusText: string, kind = 'insights'): UpstreamError {
@@ -346,3 +367,5 @@ export class QlooClient {
     throw new DemoModeRequiredError();
   }
 }
+
+export { QLOO_MAX_BRANDS_PER_REQUEST };
