@@ -72,11 +72,24 @@ test.describe('LeaseUp feature pages (demo)', () => {
     });
   });
 
+  test('pipeline add from report and show board', async ({ page }) => {
+    test.setTimeout(180_000);
+    await page.goto(`${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`);
+    await expect(page.getByTestId('brands-to-pitch')).toBeVisible({ timeout: 120000 });
+    await page.getByTestId('brands-to-pitch').locator('button').first().click();
+    await page.getByTestId('add-to-pipeline').first().click();
+    await expect(page.getByText('Added to pipeline')).toBeVisible({ timeout: 30000 });
+    await page.goto(`${BASE}/pipeline`);
+    await expect(page.getByTestId('pipeline-board')).toBeVisible();
+    await expect(page.getByTestId('pipeline-card').first()).toBeVisible();
+  });
+
   test('mobile menu exposes brand and portfolio links', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(`${BASE}/`);
     await page.getByRole('button', { name: 'Open menu' }).click();
     await expect(page.getByRole('link', { name: 'Brand sites' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Portfolio' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Pipeline' })).toBeVisible();
   });
 });
