@@ -38,6 +38,8 @@ import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton'
 import { pipelineCardFromProspect } from '../lib/build-pipeline-card';
 import { StorefrontSizeControl } from '../components/report/StorefrontSizeControl';
 import { CoTenancyMixSection } from '../components/report/CoTenancyMixSection';
+import { ShareHead } from '../components/seo/ShareHead';
+import { reportShareHead } from '../lib/share-preview';
 
 type MobilePane = 'report' | 'map';
 
@@ -141,6 +143,12 @@ export function ReportPage() {
   const selectMapBrand = (entityId: string, name: string) => {
     setMapBrand({ entityId, name });
   };
+
+  const shareHead = useMemo(() => {
+    if (!results || !request) return null;
+    const canonicalPath = `/r/${slug ?? 'run'}?${searchParams.toString()}`;
+    return reportShareHead(results, request.radius, canonicalPath, searchParams.toString());
+  }, [results, request, slug, searchParams]);
 
   if (!request) return null;
 
@@ -264,6 +272,7 @@ export function ReportPage() {
 
   return (
     <div className="min-h-screen bg-bg print-pack">
+      {shareHead && <ShareHead {...shareHead} />}
       <TopBar />
       {results?.mode === 'demo' && <DemoBanner />}
       {results && (

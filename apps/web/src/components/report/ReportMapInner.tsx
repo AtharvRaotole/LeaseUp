@@ -1,3 +1,4 @@
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, type RefObject } from 'react';
 import { ChevronDown } from 'lucide-react';
 import maplibregl from 'maplibre-gl';
@@ -279,7 +280,10 @@ export default function ReportMapInner({
             </ul>
         </div>
       </div>
-      <div ref={containerRef} className="absolute inset-0 rounded-card border border-border overflow-hidden" />
+      <div
+        ref={containerRef}
+        className="h-full min-h-[520px] w-full rounded-card border border-border overflow-hidden"
+      />
     </div>
   );
 }

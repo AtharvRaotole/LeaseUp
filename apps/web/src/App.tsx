@@ -39,6 +39,7 @@ export default function App() {
           <Route path="/portfolio/:id" element={<PortfolioPage />} />
           <Route path="/r/:slug" element={<ReportPage />} />
           <Route path="/pitch/:id" element={<PitchPage />} />
+          <Route path="/p/:id" element={<PitchPage />} />
           <Route path="/prospect/:id" element={<ProspectingPage />} />
           <Route path="/pipeline" element={<PipelinePage />} />
           <Route path="/pipeline/view/:shareId" element={<PipelinePage />} />

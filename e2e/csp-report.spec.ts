@@ -6,9 +6,10 @@ const WICKER =
   '/r/wicker?address=1574%20N%20Milwaukee%20Ave%2C%20Chicago%2C%20IL%2060622&radius=10&screenshot=1';
 const BASE = (process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:4173').replace(/\/$/, '');
 const API_ORIGIN = (process.env.PLAYWRIGHT_API_URL || 'http://127.0.0.1:8787').replace(/\/$/, '');
+const WORKER_ORIGIN = 'https://leaseup-worker.issue-atharva.workers.dev';
 
 test.describe('Production CSP on report + map', () => {
-  test('report loads API and MapLibre canvas under Pages _headers CSP', async ({ page }) => {
+  test('report loads API and MapLibre under committed _headers CSP', async ({ page }) => {
     const csp = readFileSync(join(process.cwd(), 'apps/web/public/_headers'), 'utf8');
     const cspLine = csp
       .split('\n')
@@ -16,8 +17,15 @@ test.describe('Production CSP on report + map', () => {
       .find((l) => l.startsWith('Content-Security-Policy:'));
     expect(cspLine, 'apps/web/public/_headers must define CSP').toBeTruthy();
     const policy = cspLine!.replace(/^Content-Security-Policy:\s*/, '');
-    expect(policy, 'connect-src must allow worker API origin when VITE_API_URL is set').toMatch(
-      /connect-src[^;]*(workers\.dev|127\.0\.0\.1:8787|localhost:8787)/
+    expect(policy, 'production CSP must not use workers.dev wildcard').not.toMatch(
+      /\*\.workers\.dev/
+    );
+    expect(policy, 'production CSP must not allow localhost').not.toMatch(/127\.0\.0\.1|localhost/);
+    expect(policy, 'connect-src must list exact worker origin').toContain(
+      `connect-src 'self' ${WORKER_ORIGIN}`
+    );
+    expect(policy, 'img-src must list exact worker origin for OG images').toContain(
+      `img-src 'self' data: blob: ${WORKER_ORIGIN}`
     );
 
     const violations: string[] = [];
@@ -52,8 +60,12 @@ test.describe('Production CSP on report + map', () => {
     violations.push(...pageViolations);
     expect(violations, 'CSP violations on report').toEqual([]);
 
+    const mapRoot = page.locator('.maplibregl-map').first();
+    await expect(mapRoot).toBeVisible({ timeout: 60_000 });
+    const mapHeight = await mapRoot.evaluate((el) => el.getBoundingClientRect().height);
+    expect(mapHeight, '.maplibregl-map should be taller than 200px').toBeGreaterThan(200);
+
     const mapCanvas = page.locator('.maplibregl-canvas').first();
-    await expect(mapCanvas).toBeVisible({ timeout: 60_000 });
     const mapOk = await mapCanvas.evaluate((canvas) => {
       const el = canvas as HTMLCanvasElement;
       if (el.width < 50 || el.height < 50) return false;
