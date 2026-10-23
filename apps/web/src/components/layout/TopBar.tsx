@@ -13,6 +13,12 @@ export function TopBar() {
           LeaseUp
         </Link>
         <nav className="flex items-center gap-4 text-sm text-ink-2">
+          <Link to="/brand" className="hidden md:inline hover:text-ink focus-visible:ring-2 focus-visible:ring-accent rounded-control px-1">
+            Brand sites
+          </Link>
+          <Link to="/portfolio" className="hidden md:inline hover:text-ink focus-visible:ring-2 focus-visible:ring-accent rounded-control px-1">
+            Portfolio
+          </Link>
           <a href="#how-it-works" className="hidden sm:inline hover:text-ink focus-visible:ring-2 focus-visible:ring-accent rounded-control px-1">
             How it works
           </a>
