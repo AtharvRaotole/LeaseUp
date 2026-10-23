@@ -390,6 +390,8 @@ export const VacancyCalculatorInputSchema = z.object({
   squareFeet: z.number().min(0).max(1_000_000),
   rentPerSqFtYear: z.number().min(0).max(10_000),
   monthsVacant: z.number().min(0).max(120),
+  expectedMonthsToLeaseWithShortlist: z.number().min(0).max(120).optional(),
+  expectedMonthsToLeaseWithoutShortlist: z.number().min(0).max(120).optional(),
 });
 
 export type VacancyCalculatorInput = z.infer<typeof VacancyCalculatorInputSchema>;
