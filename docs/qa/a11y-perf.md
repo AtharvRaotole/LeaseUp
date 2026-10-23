@@ -2,7 +2,7 @@
 
 Measured locally on a **production Vite preview** (`vite preview`) with the **demo worker** (`APP_MODE=demo`, `127.0.0.1:8787` proxied as `/api`). Mobile Lighthouse uses `formFactor: mobile` (390×844). Axe uses `@axe-core/playwright` with WCAG 2.x tags; map canvas controls are excluded.
 
-Command: `node scripts/run-a11y-perf-audit.mjs` (see `PLAYWRIGHT_BASE_URL` / `PLAYWRIGHT_API_URL`). Lighthouse scores discard one cold navigation per URL, then record the next run (landing) or median of three runs (report).
+Command: `node scripts/run-a11y-perf-audit.mjs` (see `PLAYWRIGHT_BASE_URL` / `PLAYWRIGHT_API_URL`). Lighthouse scores discard one cold navigation per URL, then record the next run (landing) or the **median of three runs** (report).
 
 ## Axe (serious / critical violations)
 
@@ -20,9 +20,9 @@ Command: `node scripts/run-a11y-perf-audit.mjs` (see `PLAYWRIGHT_BASE_URL` / `PL
 
 | URL | Before | After |
 |-----|--------|-------|
-| `/` | 83 / 100 / 100 | 93 / 100 / 100 |
-| `/r/wicker?…&radius=10` | 63 / 95 / 100 | 88 / 100 / 100 (84–89 typical) |
+| `/` | 83 / 100 / 100 | 91 / 100 / 100 |
+| `/r/wicker?…&radius=10` | 63 / 95 / 100 | 84 / 100 / 100 |
 
-After scores follow PR #71 (axe + Lighthouse pass) plus report mobile work: demo analyze prefetch from `main.tsx`, single-shot demo `/api/analyze` (no SSE) for demo chips, `ReportDeepSections` with lazy below-the-fold modules, map column lazy-loaded, 24×24px info tooltip targets, and no first-run tour on mobile (avoids layout shift in Lighthouse). Landing and report accessibility and best practices are at 100; mobile report performance is improved (~79 → ~88) but still slightly below the 90 goal on simulated mobile throttling.
+After scores follow PR #71 plus report mobile work: demo-chip analyze **prefetch at app entry** (same for all users on `/r/*` with a demo chip address), single-shot demo `/api/analyze` for demo chips, `ReportDeepSections` with lazy below-the-fold modules, map column lazy-loaded, 24×24px info tooltip targets, and **first-run tour deferred until after first paint** on every viewport (`requestAnimationFrame` ×2, then `requestIdleCallback` with a 2.5s cap)—no Lighthouse, headless, or audit detection. Mobile report performance median (~84) is still below the 90 goal; accessibility and best practices are 100 on landing and report.
 
 CI: `node scripts/run-a11y-e2e.mjs` fails on new serious or critical axe violations. Lighthouse CI uses `lighthouserc.cjs` (three runs per URL; landing enforces 90+ on all three categories; report enforces 90+ on accessibility and best practices, performance at **warn** 90 until mobile report performance consistently clears 90).

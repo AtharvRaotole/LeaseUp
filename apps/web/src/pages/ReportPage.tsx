@@ -94,21 +94,35 @@ export function ReportPage() {
       setDeferHeavyUi(false);
       return;
     }
-    if (expandDeepSections) {
-      setDeferHeavyUi(true);
-      return;
-    }
-    const win = window as Window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
-      cancelIdleCallback?: (id: number) => void;
+    let cancelled = false;
+    const scheduleTour = () => {
+      if (cancelled) return;
+      const win = window as Window & {
+        requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+        cancelIdleCallback?: (id: number) => void;
+      };
+      if (win.requestIdleCallback) {
+        const id = win.requestIdleCallback(() => {
+          if (!cancelled) setDeferHeavyUi(true);
+        }, { timeout: 2500 });
+        return () => win.cancelIdleCallback?.(id);
+      }
+      const t = window.setTimeout(() => {
+        if (!cancelled) setDeferHeavyUi(true);
+      }, 1200);
+      return () => window.clearTimeout(t);
     };
-    if (win.requestIdleCallback) {
-      const id = win.requestIdleCallback(() => setDeferHeavyUi(true), { timeout: 2500 });
-      return () => win.cancelIdleCallback?.(id);
-    }
-    const t = window.setTimeout(() => setDeferHeavyUi(true), 1200);
-    return () => window.clearTimeout(t);
-  }, [results, expandDeepSections]);
+    let clearIdle: (() => void) | undefined;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        clearIdle = scheduleTour();
+      });
+    });
+    return () => {
+      cancelled = true;
+      clearIdle?.();
+    };
+  }, [results]);
 
   const [geocodeCandidates, setGeocodeCandidates] = useState<GeocodeCandidate[] | null>(null);
   const [geocodeChecking, setGeocodeChecking] = useState(false);
@@ -521,7 +535,7 @@ export function ReportPage() {
           />
         </Suspense>
       )}
-      {results && deferHeavyUi && isMdUp && (
+      {results && deferHeavyUi && (
         <Suspense fallback={null}>
           <ReportFirstRunTour ready={results.prospects.length > 0} />
         </Suspense>
