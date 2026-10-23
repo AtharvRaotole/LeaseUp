@@ -1,6 +1,6 @@
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
-import { qlooProofSentence, qlooProofWinner } from '../../lib/qloo-proof';
+import { qlooProofSentence, qlooProofTieDetail, qlooProofWinner } from '../../lib/qloo-proof';
 
 export function QlooProofBanner({ results }: { results: AnalysisResponse }) {
   const baseline = results.backtestBaseline;
@@ -8,6 +8,8 @@ export function QlooProofBanner({ results }: { results: AnalysisResponse }) {
 
   const winner = qlooProofWinner(results.backtest, baseline);
   const sentence = qlooProofSentence(results.backtest, baseline);
+  const tieDetail =
+    winner === 'tie' ? qlooProofTieDetail(results.rankings) : null;
 
   return (
     <Card className="border-accent/20 bg-surface" data-testid="qloo-proof-banner">
@@ -17,8 +19,7 @@ export function QlooProofBanner({ results }: { results: AnalysisResponse }) {
           'National chain size alone misses which brands already fit this pin. Qloo ranks by local taste.'}
         {winner === 'baseline' &&
           'At this pin, chain size alone matched nearby stores as well as taste. We still show both rankings.'}
-        {winner === 'tie' &&
-          'Taste and chain-size baselines tied on this backtest. Compare row movement below.'}
+        {winner === 'tie' && (tieDetail ?? 'Taste and chain-size baselines tied on this backtest. Compare row movement below.')}
       </p>
     </Card>
   );
