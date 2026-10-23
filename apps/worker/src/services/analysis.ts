@@ -63,6 +63,9 @@ import {
   osmSnapshotRecordedAt,
 } from './osm-snapshot-catalog';
 import { loadTradeAreaTasteForProspect } from '../lib/trade-area-taste';
+import { getResponseCache } from '../lib/worker-cache';
+import type { ResponseCache } from '../lib/response-cache';
+import { tryAcquireOverpassRefreshLock } from '../lib/overpass-refresh-lock';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -73,7 +76,7 @@ export class AnalysisService {
   private overpass: OverpassClient;
   private geocode: GeocodeService;
   private db: D1Database;
-  private cache: KVNamespace;
+  private responseCache: ResponseCache;
   private mode: 'live' | 'demo';
   private catalog: StoreCatalog;
   private osmSnapshot: OsmSnapshotCatalog | null;
@@ -83,16 +86,18 @@ export class AnalysisService {
     this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
     this.qloo = new QlooClient(env);
     this.openai = new OpenAIClient(env);
-    this.overpass = new OverpassClient(env.CACHE, 12000, this.mode === 'demo');
-    this.cache = env.CACHE;
+    this.responseCache = getResponseCache();
+    this.overpass = new OverpassClient(this.responseCache, 12000, this.mode === 'demo');
     this.geocode = new GeocodeService(
-      env.CACHE,
+      this.responseCache,
       env.NOMINATIM_CONTACT || DEFAULT_NOMINATIM_CONTACT,
       this.mode
     );
     this.db = env.DB;
     this.catalog = createStoreCatalog(env, this.mode);
-    this.osmSnapshot = env.ASSETS ? new OsmSnapshotCatalog(env.ASSETS, env.CACHE) : null;
+    this.osmSnapshot = env.ASSETS
+      ? new OsmSnapshotCatalog(env.ASSETS, this.responseCache)
+      : null;
   }
 
   async analyze(request: AnalysisRequest, runId: string, ipHash: string): Promise<AnalysisResponse> {
@@ -609,9 +614,7 @@ export class AnalysisService {
     const lockKey = `verify:live-overpass:${await sha256Short(
       `${location.latitude},${location.longitude}:${radiusKm}:${pending.map((p) => p.brand.entityId).sort().join(',')}`
     )}`;
-    const existing = await this.cache.get(lockKey);
-    if (existing) return;
-    await this.cache.put(lockKey, '1', { expirationTtl: 60 });
+    if (!tryAcquireOverpassRefreshLock(lockKey)) return;
     const searchBrands = pending.map((pack) =>
       toOverpassSearchBrand(pack.brand.entityId, pack.brand.name)
     );
@@ -665,8 +668,8 @@ export class AnalysisService {
   }> {
     const verifyCacheKey = await this.verifyResultCacheKey(location, radiusKm, prospects);
     if (verifyCacheKey) {
-      const cached = await this.cache.get(verifyCacheKey);
-      if (cached) {
+      const cached = await this.responseCache.get(verifyCacheKey, 'text');
+      if (typeof cached === 'string') {
         const parsed = JSON.parse(cached) as {
           prospects: ProspectPack[];
           summary: {
@@ -731,7 +734,7 @@ export class AnalysisService {
       };
 
       if (verifyCacheKey) {
-        await this.cache.put(verifyCacheKey, JSON.stringify(payload), { expirationTtl: 3600 });
+        await this.responseCache.putJsonIfChanged(verifyCacheKey, payload, 3600);
       }
 
       return payload;

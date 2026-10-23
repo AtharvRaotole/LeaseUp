@@ -1,4 +1,5 @@
 import { coveringGeohash3 } from '../lib/geohash';
+import type { ResponseCache } from '../lib/response-cache';
 import {
   OSM_SNAPSHOT_BRAND_STATUS,
   OSM_SNAPSHOT_DISPLAY_LABEL,
@@ -40,18 +41,18 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): nu
 
 export class OsmSnapshotCatalog {
   private assets: Fetcher;
-  private cache: KVNamespace;
+  private cache: ResponseCache;
   private brandsIndex: BrandsIndex | null = null;
   private tileMemory = new Map<string, TilePayload>();
 
-  constructor(assets: Fetcher, cache: KVNamespace) {
+  constructor(assets: Fetcher, cache: ResponseCache) {
     this.assets = assets;
     this.cache = cache;
   }
 
   private async loadBrandsIndex(): Promise<BrandsIndex | null> {
     if (this.brandsIndex) return this.brandsIndex;
-    const cached = await this.cache.get('osm-tiles:brands', 'json') as BrandsIndex | null;
+    const cached = (await this.cache.get('osm-tiles:brands', 'json')) as BrandsIndex | null;
     if (cached) {
       this.brandsIndex = cached;
       return cached;
@@ -60,14 +61,14 @@ export class OsmSnapshotCatalog {
     if (!res.ok) return null;
     const data = (await res.json()) as BrandsIndex;
     this.brandsIndex = data;
-    await this.cache.put('osm-tiles:brands', JSON.stringify(data), { expirationTtl: 86400 });
+    await this.cache.putJsonIfChanged('osm-tiles:brands', data, 86400);
     return data;
   }
 
   private async loadTile(gh: string): Promise<TilePayload | null> {
     if (this.tileMemory.has(gh)) return this.tileMemory.get(gh)!;
     const kvKey = `osm-tiles:${gh}`;
-    const cached = await this.cache.get(kvKey, 'json') as TilePayload | null;
+    const cached = (await this.cache.get(kvKey, 'json')) as TilePayload | null;
     if (cached) {
       this.tileMemory.set(gh, cached);
       return cached;
@@ -76,7 +77,7 @@ export class OsmSnapshotCatalog {
     if (!res.ok) return null;
     const data = (await res.json()) as TilePayload;
     this.tileMemory.set(gh, data);
-    await this.cache.put(kvKey, JSON.stringify(data), { expirationTtl: 86400 });
+    await this.cache.putJsonIfChanged(kvKey, data, 86400);
     return data;
   }
 

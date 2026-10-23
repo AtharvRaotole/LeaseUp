@@ -3,6 +3,7 @@ import { QlooClient, normalizeHeatmapCells, clampQlooTake, QLOO_MAX_TAKE } from 
 import { ConfigurationError } from '../lib/errors';
 import { getStoreBrandIds } from '@leaseup/fixtures';
 import { sha256Short } from '../lib/cache-key';
+import { ResponseCache } from '../lib/response-cache';
 
 const db = {
   prepare: () => {
@@ -33,6 +34,12 @@ function makeEnv(overrides: Record<string, string | undefined> = {}) {
 describe('QlooClient', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    vi.stubGlobal('caches', {
+      default: {
+        match: async () => undefined,
+        put: async () => undefined,
+      },
+    });
   });
 
   afterEach(() => {
@@ -63,6 +70,8 @@ describe('QlooClient', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
+    const putSpy = vi.spyOn(ResponseCache.prototype, 'putJsonIfChanged').mockResolvedValue(true);
+
     await client.getBrandInsights({
       location: { kind: 'point', latitude: 41.9, longitude: -87.67, radiusKm: 10 },
       brandIds,
@@ -70,7 +79,7 @@ describe('QlooClient', () => {
       runId: 'test',
     });
 
-    const cacheKey = vi.mocked(kv.put).mock.calls[0]?.[0] as string;
+    const cacheKey = putSpy.mock.calls[0]?.[0] as string;
     expect(cacheKey.length).toBeLessThan(512);
     expect(cacheKey).not.toContain(brandIds[0]);
     const hash = await sha256Short(brandIds.join(','));
@@ -142,18 +151,20 @@ describe('QlooClient', () => {
       });
     vi.stubGlobal('fetch', fetchMock);
 
+    const putSpy = vi.spyOn(ResponseCache.prototype, 'putJsonIfChanged').mockResolvedValue(true);
+
     const insights = await client.getBrandInsights({
       location: { kind: 'point', latitude: 40, longitude: -105, radiusKm: 10 },
       take: 10,
     });
     expect(insights).toHaveLength(1);
     expect(fetchMock).toHaveBeenCalledTimes(2);
-    expect(kv.put).toHaveBeenCalled();
+    expect(putSpy).toHaveBeenCalled();
   });
 
   it('does not cache when all fetch attempts fail', async () => {
     const client = new QlooClient(makeEnv({ APP_MODE: 'live', QLOO_API_KEY: 'test-key' }));
-    vi.mocked(kv.put).mockClear();
+    const putSpy = vi.spyOn(ResponseCache.prototype, 'putJsonIfChanged');
 
     const fetchMock = vi.fn().mockRejectedValue(new TypeError('network down'));
     vi.stubGlobal('fetch', fetchMock);
@@ -164,7 +175,7 @@ describe('QlooClient', () => {
         take: 10,
       })
     ).rejects.toMatchObject({ code: 'QLOO_UNAVAILABLE' });
-    expect(kv.put).not.toHaveBeenCalled();
+    expect(putSpy).not.toHaveBeenCalled();
   });
 
   it('serves recorded fixture insights in demo mode (no fabricated IDs)', async () => {

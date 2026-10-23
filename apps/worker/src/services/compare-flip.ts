@@ -3,6 +3,7 @@ import { QlooClient, QLOO_MAX_TAKE } from '../providers/qloo';
 import { wickerparkFixture, seviervilleFixture } from '@leaseup/fixtures/worker';
 import { createStoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
+import { getResponseCache } from '../lib/worker-cache';
 
 const CACHE_KEY = 'compare:flip:live:v2';
 
@@ -87,8 +88,9 @@ export async function getCompareFlip(env: Env): Promise<CompareFlipPayload> {
     return fixturePayload('Recorded Qloo fixtures (demo)');
   }
 
-  const cached = await env.CACHE.get(CACHE_KEY);
-  if (cached) {
+  const edgeCache = getResponseCache();
+  const cached = await edgeCache.get(CACHE_KEY, 'text');
+  if (typeof cached === 'string') {
     return JSON.parse(cached) as CompareFlipPayload;
   }
 
@@ -153,6 +155,6 @@ export async function getCompareFlip(env: Env): Promise<CompareFlipPayload> {
     source: 'Live Qloo (cached 1h)',
   };
 
-  await env.CACHE.put(CACHE_KEY, JSON.stringify(payload), { expirationTtl: 3600 });
+  await edgeCache.putJsonIfChanged(CACHE_KEY, payload, 3600);
   return payload;
 }

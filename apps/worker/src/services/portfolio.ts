@@ -13,6 +13,7 @@ import { displayBrandName } from '../lib/brand-display';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import { matchDemoFixtureId } from '@leaseup/fixtures/worker';
 import { resolveGeocodeFromCandidates, candidateToLocation } from '../lib/geocode-resolve';
+import { getResponseCache } from '../lib/worker-cache';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -30,7 +31,7 @@ export class PortfolioService {
     this.db = env.DB;
     this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
     this.nominatim = new NominatimClient(
-      env.CACHE,
+      getResponseCache(),
       env.NOMINATIM_CONTACT || DEFAULT_NOMINATIM_CONTACT
     );
   }

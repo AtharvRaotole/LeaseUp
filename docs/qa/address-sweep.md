@@ -1,5 +1,9 @@
 # Live address robustness sweep
 
+**Production KV budget:** do not re-run against `leaseup-worker.issue-atharva.workers.dev` until after the daily KV reset (00:00 UTC). The sweep script defaults to `http://127.0.0.1:8787` and requires `ALLOW_LIVE_WORKER_QA=1` for production.
+
+**Live calls on 2026-10-23:** **84** HTTP requests total (40× `/api/geocode` + 40× `/api/analyze` in the sweep, plus 4 manual debug curls). Offline recap: `pnpm qa:address-sweep --recap docs/qa/address-sweep.md` (add `--` before flags if using pnpm).
+
 Worker: https://leaseup-worker.issue-atharva.workers.dev
 Run at: 2026-10-23T19:50:52.659Z
 Delay between analyze calls: 3500ms

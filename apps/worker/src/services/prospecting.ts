@@ -22,6 +22,7 @@ import {
 } from '@leaseup/fixtures/worker';
 import { rankGeocodeCandidates } from '../lib/geocode-rank';
 import { displayBrandName } from '../lib/brand-display';
+import { getResponseCache } from '../lib/worker-cache';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -62,7 +63,7 @@ export class ProspectingService {
     this.db = env.DB;
     this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
     this.nominatim = new NominatimClient(
-      env.CACHE,
+      getResponseCache(),
       env.NOMINATIM_CONTACT || DEFAULT_NOMINATIM_CONTACT
     );
   }
