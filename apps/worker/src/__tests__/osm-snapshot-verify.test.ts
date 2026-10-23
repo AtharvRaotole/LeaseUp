@@ -20,6 +20,22 @@ const kv = {
 function makeAssets(tiles: Record<string, unknown>) {
   return {
     fetch: vi.fn(async (url: string) => {
+      if (url.includes('tiles.local')) {
+        const path = url.replace('https://tiles.local', '');
+        if (path === '/tiles/brands.json') {
+          return new Response(
+            JSON.stringify({
+              brands: [{ id: BRAND_A, name: 'REI', displayName: 'REI', count: 193 }],
+            }),
+            { status: 200 }
+          );
+        }
+        const gh = path.match(/\/tiles\/(.+)\.json$/)?.[1];
+        if (gh && tiles[gh]) {
+          return new Response(JSON.stringify(tiles[gh]), { status: 200 });
+        }
+        return new Response('missing', { status: 404 });
+      }
       const path = url.replace('https://osm.local', '');
       if (path === '/osm-tiles/brands.json') {
         return new Response(JSON.stringify(tiles.brands), { status: 200 });

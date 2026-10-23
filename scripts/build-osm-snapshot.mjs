@@ -362,6 +362,12 @@ export const OSM_SNAPSHOT_BRAND_STATUS: Record<string, 'ok' | 'failed' | 'missin
     writeFileSync(join(publicDir, file), readFileSync(join(tilesDir, file)));
   }
 
+  const { spawnSync } = await import('node:child_process');
+  spawnSync(process.execPath, [join(root, 'scripts/apply-store-supplements.mjs')], {
+    stdio: 'inherit',
+    cwd: root,
+  });
+
   console.log(JSON.stringify(manifest.tiles, null, 2));
   console.log(
     JSON.stringify(
