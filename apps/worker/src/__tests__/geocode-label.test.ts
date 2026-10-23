@@ -37,6 +37,21 @@ describe('formatGeocodeCandidateLabel', () => {
     expect(label).not.toContain('Alabama');
   });
 
+  it('labels Pearl St restaurant POI from address parts only', () => {
+    const label = formatGeocodeCandidateLabel(
+      'West Flanders Brewing Company, 1125, Pearl Street, Boulder, Colorado, United States',
+      {
+        house_number: '1125',
+        road: 'Pearl Street',
+        neighbourhood: 'Downtown Boulder',
+        city: 'Boulder',
+        state: 'Colorado',
+      }
+    );
+    expect(label).toBe('1125 Pearl Street, Downtown Boulder, Boulder');
+    expect(label).not.toMatch(/flanders|brewing/i);
+  });
+
   it('formats Pearl St Boulder with a single leading house number', () => {
     const label = formatGeocodeCandidateLabel(
       '1600;1628;1630 Pearl Street, Boulder, Colorado, United States',
