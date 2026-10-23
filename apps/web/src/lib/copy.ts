@@ -21,7 +21,9 @@ export function pitchPackVerificationSummary(
     );
   }
   if (oneSource > 0) {
-    parts.push(`${oneSource} brand${oneSource === 1 ? '' : 's'} checked in one source only`);
+    parts.push(
+      `${oneSource} brand${oneSource === 1 ? '' : 's'} checked against All The Places only (no OSM snapshot for that chain)`
+    );
   }
   if (checking > 0) {
     parts.push(`${checking} still waiting on a second source`);
@@ -43,6 +45,7 @@ export function pitchCheckedSourcesLabel(prospect: ProspectPack): string {
     return 'Checked in 2 sources';
   }
   if (prospect.brand.verified === 'unverified (1 source)' || checked === 1) {
+    if (atp && !osm) return 'Checked against All The Places';
     return 'Checked in 1 source';
   }
   if (prospect.brand.verified === 'verifying...') {
@@ -61,7 +64,7 @@ export function verificationShortLabel(verified: ProspectPack['brand']['verified
     case 'verifying...':
       return 'Checking OSM';
     case 'unverified (1 source)':
-      return 'One source';
+      return 'Checked against All The Places';
     case 'conflict - likely present':
       return 'Likely present';
     case 'conflict':
@@ -126,7 +129,7 @@ export function verificationSourceHelp(
       if (demoOsmSkipped) {
         return `Checked: All The Places (no store within ${radiusKm} km). Not checked: ${osmLabel} (${DEMO_OSM_UNRECORDED_NOTE}).`;
       }
-      return `Checked: All The Places (no store within ${radiusKm} km). Not checked yet: ${osmLabel}.`;
+      return `Checked against All The Places (no store within ${radiusKm} km). ${osmLabel} is not in our offline snapshot for this chain.`;
     }
     if (osmChecked && !atpChecked) {
       return `Checked: ${osmLabel} (no store within ${radiusKm} km). Not checked yet: All The Places.`;
@@ -152,7 +155,7 @@ export function verificationLabel(verified: ProspectPack['brand']['verified']): 
     case 'verifying...':
       return 'Checking OpenStreetMap';
     case 'unverified (1 source)':
-      return 'One source';
+      return 'Checked against All The Places';
     case 'conflict - likely present':
       return 'Likely present';
     case 'conflict':

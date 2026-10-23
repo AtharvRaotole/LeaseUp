@@ -596,7 +596,14 @@ export class AnalysisService {
     const snapshotLabel = osmSnapshotDisplayLabel();
     const status = osmSnapshotBrandStatus(entityId);
     if (status === 'failed' || status === 'missing' || !this.osmSnapshot) {
-      return { status: 'unverified (1 source)', sources };
+      return {
+        status: 'unverified (1 source)',
+        sources,
+        metroCoverageNote:
+          status === 'missing'
+            ? 'OpenStreetMap snapshot does not include this brand; showing ATP only.'
+            : undefined,
+      };
     }
     const osmNationalCount = await this.osmSnapshot.getNationalStoreCount(entityId);
     if (!osmSnapshotBrandUsable(entityId, osmNationalCount)) {

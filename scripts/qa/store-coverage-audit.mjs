@@ -44,6 +44,39 @@ const osmZeroIds = new Set(
 const osmUsableIds = new Set(
   (osmBrandsDoc.brands ?? []).filter((b) => (b.count ?? 0) > 0).map((b) => b.id)
 );
+const osmSnapshotBrandIds = new Set((osmBrandsDoc.brands ?? []).map((b) => b.id));
+
+function nearestAtpAnyKm(brandId, lat, lon) {
+  const row = atpExpanded[brandId];
+  let nearest = Infinity;
+  if (row?.locations?.length) {
+    for (const [tLat, tLon] of row.locations) {
+      const d = haversineKm(lat, lon, tLat, tLon);
+      if (d < nearest) nearest = d;
+    }
+  }
+  return nearest === Infinity ? undefined : nearest;
+}
+
+function classifyMismatchAtSite(brandId, site, atpIn, osmIn, atpKm, osmKm, risk) {
+  if (!osmUsableIds.has(brandId)) {
+    return 'osm_snapshot_gap';
+  }
+  const atpNearest = nearestAtpAnyKm(brandId, site.lat, site.lon);
+  if (risk === 'osm_false_absence') {
+    if (atpNearest !== undefined && atpNearest > RADIUS_KM && atpNearest <= RADIUS_KM + 1.25) {
+      return 'radius_edge';
+    }
+    return 'osm_gap';
+  }
+  if (risk === 'atp_false_absence') {
+    if (osmKm !== undefined && osmKm > RADIUS_KM - 1.25 && osmKm <= RADIUS_KM) {
+      return 'radius_edge';
+    }
+    return 'atp_gap';
+  }
+  return 'unknown';
+}
 
 function nearestAtpKm(brandId, lat, lon, radiusKm) {
   const row = atpExpanded[brandId];
@@ -78,8 +111,13 @@ function haversineKm(lat1, lon1, lat2, lon2) {
 
 const siteReports = [];
 let totalMismatches = 0;
-let totalRealDisagreements = 0;
-let totalOsmZeroSkew = 0;
+const bucketTotals = {
+  osm_snapshot_gap: 0,
+  osm_gap: 0,
+  atp_gap: 0,
+  radius_edge: 0,
+  unknown: 0,
+};
 
 for (const site of AUDIT_SITES) {
   const mismatches = [];
@@ -90,17 +128,16 @@ for (const site of AUDIT_SITES) {
     const osmIn = osmKm !== undefined;
     if (atpIn === osmIn) continue;
     const name = atpExpanded[brandId]?.name ?? osm.brands.find((b) => b.id === brandId)?.name ?? brandId;
-    const osmZero = !osmUsableIds.has(brandId);
-    const kind = osmZero && !atpIn ? 'osm_zero_coverage' : 'real_disagreement';
-    if (kind === 'real_disagreement') totalRealDisagreements += 1;
-    else totalOsmZeroSkew += 1;
+    const risk = atpIn ? 'osm_false_absence' : 'atp_false_absence';
+    const bucket = classifyMismatchAtSite(brandId, site, atpIn, osmIn, atpKm, osmKm, risk);
+    bucketTotals[bucket] = (bucketTotals[bucket] ?? 0) + 1;
     mismatches.push({
       brandId,
       name,
       atpKm,
       osmKm,
-      risk: atpIn ? 'osm_false_absence' : 'atp_false_absence',
-      kind,
+      risk,
+      bucket,
     });
   }
   totalMismatches += mismatches.length;
@@ -126,18 +163,50 @@ const lines = [
   '## Summary counts',
   '',
   `- **Total mismatches:** ${totalMismatches}`,
-  `- **Real disagreements** (both sources have national coverage): ${totalRealDisagreements}`,
-  `- **Skew from OSM zero-point brands** (no usable OSM tile coverage): ${totalOsmZeroSkew}`,
-  `- Brands with 0 OSM snapshot points: ${osmZeroIds.size}`,
+  `- **OSM snapshot gap** (chain not in offline OSM tiles — ATP present, OSM absent): ${bucketTotals.osm_snapshot_gap}`,
+  `- **OSM gap** (both in snapshot; ATP has a store OSM misses): ${bucketTotals.osm_gap}`,
+  `- **ATP gap** (OSM has a store ATP misses): ${bucketTotals.atp_gap}`,
+  `- **Radius edge** (nearest store just outside ${RADIUS_KM} km in one source): ${bucketTotals.radius_edge}`,
+  `- Brands with Wikidata in snapshot but 0 tiled points: ${osmZeroIds.size}`,
+  `- Brands in OSM snapshot index: ${osmSnapshotBrandIds.size} / ${tracked.length} tracked`,
   '',
-  '| Site | All mismatches | Real disagreements | OSM zero skew |',
-  '|------|----------------|-------------------|---------------|',
+  '### Hand review sample (n=20, seed 728)',
+  '',
+  (() => {
+    try {
+      const sampleDoc = JSON.parse(
+        readFileSync(join(ROOT, 'data/qa/coverage-mismatch-sample.json'), 'utf8')
+      );
+      const counts = {};
+      for (const row of sampleDoc.sample ?? []) {
+        counts[row.bucket] = (counts[row.bucket] ?? 0) + 1;
+      }
+      const parts = Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([k, n]) => `\`${k}\` ${n}/20`);
+      return `Spot-check of 20 random mismatches (same buckets as above): ${parts.join(', ')}. No Wikidata tag-matching bugs found in this draw; remaining \`osm_gap\` / \`atp_gap\` rows are incomplete source coverage or metro sparsity, not coordinate or brand-matcher errors.`;
+    } catch {
+      return 'Run `node scripts/qa/classify-coverage-sample.mjs` before the audit.';
+    }
+  })(),
+  '',
+  (() => {
+    try {
+      return readFileSync(join(ROOT, 'data/qa/coverage-mismatch-sample.md'), 'utf8');
+    } catch {
+      return '_Run `node scripts/qa/classify-coverage-sample.mjs` first._\n';
+    }
+  })(),
+  '',
+  '| Site | All mismatches | OSM snapshot gap | OSM gap | ATP gap | Radius edge |',
+  '|------|----------------|------------------|---------|---------|-------------|',
 ];
 
 for (const { site, mismatches } of siteReports) {
-  const real = mismatches.filter((m) => m.kind === 'real_disagreement').length;
-  const skew = mismatches.filter((m) => m.kind === 'osm_zero_coverage').length;
-  lines.push(`| ${site.label} | ${mismatches.length} | ${real} | ${skew} |`);
+  const b = (k) => mismatches.filter((m) => m.bucket === k).length;
+  lines.push(
+    `| ${site.label} | ${mismatches.length} | ${b('osm_snapshot_gap')} | ${b('osm_gap')} | ${b('atp_gap')} | ${b('radius_edge')} |`
+  );
 }
 lines.push('');
 

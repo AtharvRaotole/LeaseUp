@@ -179,6 +179,7 @@ async function main() {
   const args = new Set(process.argv.slice(2));
   const dryRun = args.has('--dry-run');
   const retileOnly = args.has('--retile-only');
+  const preferRaw = retileOnly || process.env.OSM_PREFER_RAW === '1';
   const limit = Number(process.env.OSM_SNAPSHOT_LIMIT || '0');
 
   const tracked = loadTrackedIds();
@@ -230,7 +231,7 @@ async function main() {
     if (existsSync(rawPath) && !args.has('--force')) {
       const cached = JSON.parse(readFileSync(rawPath, 'utf8'));
       const cacheOk =
-        cached.meta?.status === 'ok' && (retileOnly || cached.meta?.qid === qid);
+        cached.meta?.status === 'ok' && (preferRaw || cached.meta?.qid === qid);
       if (cacheOk) {
         manifest.brands[brandId] = cached.meta;
         totalElements += cached.meta.elementCount ?? 0;
