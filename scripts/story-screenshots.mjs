@@ -1,7 +1,6 @@
 /**
  * Landing story screenshots for README and PR artifacts.
  * Prereq: pnpm --filter @leaseup/web build && pnpm --filter @leaseup/web preview (4173)
- * Optional: WORKER_URL for report shots (defaults to preview only).
  */
 import { chromium } from 'playwright';
 import { mkdir, copyFile, writeFile } from 'node:fs/promises';
@@ -11,7 +10,6 @@ import { join } from 'node:path';
 const BASE = process.env.SCREENSHOT_BASE || 'http://localhost:4173';
 const ARTIFACTS = '/opt/cursor/artifacts';
 const OUT = join(process.cwd(), 'docs/screenshots');
-const PUBLIC_IMAGES = join(process.cwd(), 'apps/web/public/images');
 
 function gitSha() {
   try {
@@ -31,7 +29,6 @@ function mergeBaseSha() {
 
 await mkdir(OUT, { recursive: true });
 await mkdir(ARTIFACTS, { recursive: true });
-await mkdir(PUBLIC_IMAGES, { recursive: true });
 
 const meta = {
   capturedAt: new Date().toISOString(),
@@ -82,14 +79,24 @@ for (const scheme of ['light', 'dark']) {
   await page.screenshot({ path, fullPage: false, clip: { x: 0, y: 0, width: 1440, height: 720 } });
   await copyFile(path, join(ARTIFACTS, `report-${scheme}-1440.png`));
   console.log('saved', path);
+  await page.close();
+}
 
-  const productPath = join(PUBLIC_IMAGES, `landing-wicker-report-${scheme}.png`);
-  await page.screenshot({
-    path: productPath,
-    fullPage: false,
-    clip: { x: 0, y: 48, width: 1440, height: 820 },
+for (const scheme of ['light', 'dark']) {
+  const page = await browser.newPage({
+    viewport: { width: 1440, height: 900 },
+    colorScheme: scheme,
   });
-  console.log('saved', productPath);
+  await page.goto(BASE, { waitUntil: 'domcontentloaded' });
+  await page.getByTestId('landing-report-preview').waitFor({ timeout: 30000 });
+  await page.waitForTimeout(400);
+  const previewPath = join(OUT, `landing-preview-${scheme}-1440.png`);
+  const clip = await page.getByTestId('landing-report-preview').boundingBox();
+  if (clip) {
+    await page.screenshot({ path: previewPath, clip });
+    await copyFile(previewPath, join(ARTIFACTS, `landing-preview-${scheme}-1440.png`));
+    console.log('saved', previewPath);
+  }
   await page.close();
 }
 
