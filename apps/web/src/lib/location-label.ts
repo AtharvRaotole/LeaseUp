@@ -1,20 +1,53 @@
 import type { Location } from '@leaseup/contracts';
+import type { DemoFixtureId } from '@leaseup/fixtures';
+import { DEMO_EXAMPLES } from '../data/demo-examples';
 
-/** Short place label for headlines (neighborhood + city, not street). */
-export function placeHeadlineLabel(location: Location): string {
-  if (location.neighborhood && location.city) {
-    return `${location.neighborhood}, ${location.city}`;
+const ZIP_RE = /\b\d{5}(-\d{4})?\b/;
+const STATE_ZIP_RE = /\b[A-Z]{2}\s+\d{5}/;
+
+function stripZipFromPart(part: string): string {
+  return part
+    .replace(ZIP_RE, '')
+    .replace(STATE_ZIP_RE, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/,\s*$/, '');
+}
+
+/** Short place label for headlines: neighborhood + city, never a ZIP. */
+export function placeHeadlineLabel(location: Location, chipSlug?: string | null): string {
+  const chip = chipSlug as DemoFixtureId | undefined;
+  if (chip === 'wicker' || chip === 'boulder' || chip === 'sevierville') {
+    const row = DEMO_EXAMPLES.find((e) => e.id === chip);
+    if (row) return `${row.neighborhood}, ${row.city}`;
   }
-  if (location.resolvedAddress && !location.resolvedAddress.includes(',')) {
-    return location.resolvedAddress;
+
+  const hood = location.neighborhood?.trim();
+  const city = location.city?.trim();
+  if (hood && city && hood !== city) {
+    return `${stripZipFromPart(hood)}, ${stripZipFromPart(city)}`;
   }
-  if (location.city) return location.city;
-  const parts = location.address.split(',').map((p) => p.trim());
-  if (parts.length >= 2) return `${parts[parts.length - 2]}, ${parts[parts.length - 1]}`;
-  return location.address;
+  if (hood) return stripZipFromPart(hood);
+  if (city) return stripZipFromPart(city);
+
+  const parts = location.address.split(',').map((p) => stripZipFromPart(p.trim())).filter(Boolean);
+  const withoutZip = parts.filter((p) => !ZIP_RE.test(p) && !STATE_ZIP_RE.test(p));
+  if (withoutZip.length >= 2) {
+    const cityPart = withoutZip[withoutZip.length - 1]!;
+    const hoodPart = withoutZip[withoutZip.length - 2]!;
+    if (/^\d/.test(hoodPart)) return cityPart;
+    return `${hoodPart}, ${cityPart}`;
+  }
+  if (withoutZip.length === 1) return withoutZip[0]!;
+  return stripZipFromPart(location.address);
 }
 
 /** Bold neighborhood for sticky header. */
-export function placeNeighborhoodBold(location: Location): string {
+export function placeNeighborhoodBold(location: Location, chipSlug?: string | null): string {
+  const chip = chipSlug as DemoFixtureId | undefined;
+  if (chip === 'wicker' || chip === 'boulder' || chip === 'sevierville') {
+    const row = DEMO_EXAMPLES.find((e) => e.id === chip);
+    if (row) return row.neighborhood;
+  }
   return location.neighborhood || location.city || 'Location';
 }

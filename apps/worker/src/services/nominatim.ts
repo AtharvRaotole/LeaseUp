@@ -13,6 +13,8 @@ type NominatimResult = {
     village?: string;
     suburb?: string;
     neighbourhood?: string;
+    quarter?: string;
+    city_district?: string;
     county?: string;
     state?: string;
   };
@@ -70,7 +72,11 @@ export class NominatimClient {
       latitude: parseFloat(result.lat),
       longitude: parseFloat(result.lon),
       city,
-      neighborhood: result.address?.neighbourhood || result.address?.suburb,
+      neighborhood:
+        result.address?.neighbourhood ||
+        result.address?.suburb ||
+        result.address?.quarter ||
+        result.address?.city_district,
       resolvedAddress: result.display_name,
     };
 

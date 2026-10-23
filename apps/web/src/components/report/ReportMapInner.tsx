@@ -202,17 +202,15 @@ export default function ReportMapInner({
           <Switch checked={showStores} onCheckedChange={setShowStores} label="Stores" />
           <Switch checked={showRadius} onCheckedChange={setShowRadius} label="Radius" />
         </div>
-        <div className="mt-3 space-y-1">
+        <div className="mt-3 grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
+          <span className="text-[10px] leading-none text-ink-3">Less</span>
           <div
             className="h-2 w-full rounded-pill"
             style={{
               background: 'linear-gradient(90deg, #fff4d6, #fdba74, #f97316, #c2410c)',
             }}
           />
-          <div className="flex justify-between text-[10px] text-ink-3">
-            <span>Less</span>
-            <span>More</span>
-          </div>
+          <span className="text-[10px] leading-none text-ink-3">More</span>
         </div>
       </div>
       <div ref={containerRef} className="absolute inset-0 rounded-card border border-border overflow-hidden" />

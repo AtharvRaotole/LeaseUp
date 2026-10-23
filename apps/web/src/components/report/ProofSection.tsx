@@ -5,6 +5,7 @@ import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { SegmentedControl } from '../ui/SegmentedControl';
 import { affinitiesAllIdentical, fitPercentileLabel } from '../../lib/fit-display';
+import { displayBrandName } from '../../lib/brand-display';
 export function ProofSection({
   results,
   radiusKm,
@@ -61,7 +62,7 @@ export function ProofSection({
                 onClick={() => onBrandSelect?.(row.entityId, row.name)}
               >
                 <td className="px-4 py-3 font-mono tabular-nums text-ink-2">#{row.qlooRank}</td>
-                <td className="px-4 py-3 text-ink">{row.name}</td>
+                <td className="px-4 py-3 text-ink">{displayBrandName(row.entityId, row.name)}</td>
                 {!hideFit && (
                   <td className="px-4 py-3 font-mono tabular-nums text-ink-2">
                     {fitPercentileLabel(row.qlooRank, totalScored)}

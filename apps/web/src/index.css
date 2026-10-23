@@ -44,6 +44,15 @@
   font-size: 10px;
 }
 
+html.screenshot-capture .sticky {
+  position: relative !important;
+  top: auto !important;
+}
+
+html.screenshot-capture [class*='backdrop-blur'] {
+  backdrop-filter: none !important;
+}
+
 @media print {
   body {
     background: white;

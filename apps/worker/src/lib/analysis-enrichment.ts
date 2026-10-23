@@ -8,6 +8,7 @@ import type { QlooInsight } from '../providers/qloo';
 import type { Location } from '@leaseup/contracts';
 import { blendWithNationalPrior, computeBacktest, CHAIN_PRIOR_BLEND_WEIGHT } from '@leaseup/fixtures';
 import type { StoreCatalog } from '../services/store-catalog';
+import { displayBrandName } from './brand-display';
 
 export async function buildBrandRankings(
   location: Location,
@@ -32,7 +33,7 @@ export async function buildBrandRankings(
 
     rows.push({
       entityId: insight.entity_id,
-      name: insight.name,
+      name: displayBrandName(insight.entity_id, insight.name),
       affinity: insight.query?.affinity ?? 0,
       qlooRank: index + 1,
       blendedRank: blendedRow?.blendedRank ?? index + 1,
@@ -63,7 +64,7 @@ export async function buildMapStores(
     for (const store of nearby.slice(0, 3)) {
       points.push({
         entityId: row.entity_id,
-        brandName: row.name,
+        brandName: displayBrandName(row.entity_id, row.name),
         latitude: store.lat,
         longitude: store.lon,
         distanceKm: store.distance,

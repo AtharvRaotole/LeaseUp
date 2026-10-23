@@ -59,13 +59,13 @@ function fixturePayload(sourceLabel: string): CompareFlipPayload {
     .map((row) => row.entity_id)
     .filter((id) => seviervilleRankById.has(id))
     .map((entityId) => {
-      const name =
+      const rawName =
         wickerparkFixture.insights.find((i) => i.entity_id === entityId)?.name ||
         seviervilleFixture.insights.find((i) => i.entity_id === entityId)?.name ||
         entityId;
       return {
         entityId,
-        name,
+        name: displayBrandName(entityId, rawName),
         wickerRank: wickerRankById.get(entityId) ?? 99,
         seviervilleRank: seviervilleRankById.get(entityId) ?? 99,
         delta: Math.abs((wickerRankById.get(entityId) ?? 99) - (seviervilleRankById.get(entityId) ?? 99)),
