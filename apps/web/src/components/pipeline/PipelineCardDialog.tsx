@@ -84,7 +84,7 @@ export function PipelineCardDialog({
         >
           <div className="flex items-start justify-between gap-3 border-b border-border px-4 py-3">
             <div className="min-w-0">
-              <Dialog.Title className="font-serif text-xl text-ink">{card.brandName}</Dialog.Title>
+              <Dialog.Title className="font-display font-semibold text-xl text-ink">{card.brandName}</Dialog.Title>
               <Dialog.Description className="mt-1 text-sm text-ink-2">
                 {card.propertyAddress}
               </Dialog.Description>

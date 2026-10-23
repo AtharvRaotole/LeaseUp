@@ -3,25 +3,42 @@ import type { PitchCreate, PitchPackSnapshot } from '@leaseup/contracts';
 import { PitchPackSnapshotSchema } from '@leaseup/contracts';
 import type { Env } from '../index';
 import { displayBrandName } from '../lib/brand-display';
+import { formatFitsStorefront } from '../lib/storefront-format';
 
 function buildWhyLine(
   prospect: PitchCreate['results']['prospects'][0],
   radiusKm: number
 ): string {
-  if (prospect.reasons[0] && !isRankOnlyReason(prospect.reasons[0])) {
-    return prospect.reasons[0];
+  const informative = prospect.reasons.find(
+    (reason) => !isRankOnlyReason(reason) && !isNearestStoreDistanceLine(reason)
+  );
+  if (informative) {
+    return informative;
   }
 
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
-  if (prospect.nearestExistingStoreKm !== undefined) {
-    return `Nearest ${name} is ${prospect.nearestExistingStoreKm.toFixed(1)} km from this pin.`;
+  if (prospect.nearestExistingStoreKm === undefined) {
+    return `No ${name} store within ${radiusKm} km in All The Places and OpenStreetMap checks.`;
   }
-  return `No ${name} store within ${radiusKm} km in All The Places and OpenStreetMap checks.`;
+  return `Verified absent within ${radiusKm} km (All The Places + OpenStreetMap).`;
 }
 
 function isRankOnlyReason(text: string): boolean {
   const lower = text.toLowerCase();
   return lower.includes('qloo') && (lower.includes('rank') || lower.includes('top '));
+}
+
+function isNearestStoreDistanceLine(line: string): boolean {
+  const trimmed = line.trim();
+  if (!/^nearest /i.test(trimmed)) return false;
+  return /\d+\.\d+ km/i.test(trimmed);
+}
+
+function prospectsForPitch(input: PitchCreate): PitchCreate['results']['prospects'] {
+  const sqFt = input.results.storefrontSqFt ?? 2_500;
+  return input.results.prospects.filter((prospect) =>
+    formatFitsStorefront(prospect.brand.entityId, sqFt)
+  );
 }
 
 export class PitchService {
@@ -35,7 +52,7 @@ export class PitchService {
     const id = randomUUID();
     const createdAt = new Date().toISOString();
     const rankingsTotal = input.results.rankings?.length ?? 0;
-    const top = input.results.prospects.slice(0, 5);
+    const top = prospectsForPitch(input).slice(0, 5);
 
     const snapshot: PitchPackSnapshot = {
       id,

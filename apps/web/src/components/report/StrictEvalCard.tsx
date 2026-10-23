@@ -2,13 +2,16 @@ import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { Link } from 'react-router-dom';
 import { evalHeadlineLabel, formatPanelValues, isHeadlinePanel } from '../../lib/eval-display';
-import { getEvalManifest } from '@leaseup/fixtures';
+import { getEvalManifest, loadLiveQlooLiftAggregates } from '@leaseup/fixtures';
 
 export function StrictEvalCard({ results }: { results: AnalysisResponse }) {
   const snapshot = results.strictEval;
   if (!snapshot) return null;
 
   const manifest = getEvalManifest();
+  const cohort = loadLiveQlooLiftAggregates();
+  const blendPct = (cohort.logisticBlendPrecisionAt10 * 100).toFixed(0);
+  const chainPct = (cohort.chainSizePrecisionAt10 * 100).toFixed(0);
   const headlinePending = !snapshot.headlineMetricId && !manifest.headlineMetricId;
 
   return (
@@ -17,8 +20,9 @@ export function StrictEvalCard({ results }: { results: AnalysisResponse }) {
         <div>
           <h3 className="text-h3 font-semibold text-ink">Evaluation metrics</h3>
           <p className="mt-1 text-sm text-ink-2">
-            {evalHeadlineLabel(snapshot)}. Data source: {snapshot.dataSource}. Legacy present-in-top-10
-            can saturate in dense trade areas; compare panels below.
+            {evalHeadlineLabel(snapshot)}. Companion logistic blend: {blendPct}% P@10 vs {chainPct}%
+            chain-only on the recorded cohort. Data source: {snapshot.dataSource}. Legacy present-in-top-10 can saturate;
+            adaptive radius panels below. Qloo can reflect brands already in the trade area.
           </p>
         </div>
         <Link to="/methodology#strict-eval-heading" className="text-sm font-medium text-accent">

@@ -3,7 +3,7 @@ import { cn } from '../../lib/cn';
 type LogoVariant = 'mark' | 'wordmark' | 'lockup';
 type LogoSize = 'xs' | 'sm' | 'md' | 'lg';
 
-/** Optical lockup: mark box sized to sit with Geist semibold cap height. */
+/** Optical lockup: mark box sized to sit with display semibold cap height. */
 const sizeMap: Record<LogoSize, { mark: number; text: string }> = {
   xs: { mark: 17, text: 'text-[13px] leading-none' },
   sm: { mark: 20, text: 'text-[15px] leading-none' },

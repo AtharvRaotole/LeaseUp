@@ -34,6 +34,12 @@ test.describe('Mobile layout (390px) has no horizontal overflow', () => {
     await assertNoHorizontalOverflow(page);
   });
 
+  test('pipeline', async ({ page }) => {
+    await page.goto(`${BASE}/pipeline`);
+    await page.getByTestId('pipeline-page').waitFor({ timeout: 30000 });
+    await assertNoHorizontalOverflow(page);
+  });
+
   test('portfolio', async ({ page }) => {
     await page.goto(`${BASE}/portfolio`);
     await page.getByTestId('portfolio-input').waitFor({ timeout: 30000 });

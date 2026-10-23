@@ -1,6 +1,8 @@
 import { getNationalStoreCount, getStoreBrandIdSet } from './store-geo.js';
 
-/** Weight on national store-count prior when ordering prospects (see README). */
+/**
+ * @deprecated Ranking uses logistic blend (see logistic-blend.ts). Kept for backward-compatible API fields.
+ */
 export const CHAIN_PRIOR_BLEND_WEIGHT = 0.25;
 
 export interface RankedInsight {
@@ -28,6 +30,7 @@ export function orderInsightsByNationalStoreCount<
   );
 }
 
+/** @deprecated Use orderInsightsByLogisticBlend from logistic-blend.ts for prospect ordering. */
 export function blendWithNationalPrior<T extends { entity_id: string; name: string; query?: { affinity?: number } }>(
   insights: T[]
 ): Array<T & { qlooRank: number; blendedRank: number }> {

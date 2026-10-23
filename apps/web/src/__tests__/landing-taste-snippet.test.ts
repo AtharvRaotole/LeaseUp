@@ -28,7 +28,7 @@ describe('landing marketing data', () => {
     for (const chip of LANDING_PROOF_CHIPS) {
       expect(chip.presentInTop10).toBeGreaterThanOrEqual(0);
       expect(chip.presentInTop10).toBeLessThanOrEqual(10);
-      expect(chip.hitRateLabel).toMatch(/^Hit rate \d+ of 10$/);
+      expect(chip.hitRateLabel).toMatch(/^\d+ of 10 already nearby$/);
     }
   });
 });

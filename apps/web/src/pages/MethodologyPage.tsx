@@ -4,7 +4,9 @@ import {
   getEvalManifest,
   evalMetricDefinition,
   formatMetricValue,
+  loadLiveQlooLiftAggregates,
 } from '@leaseup/fixtures';
+import siteTable from '@leaseup/fixtures/eval/live-qloo-lift/site-table.json';
 import evalResults from '@leaseup/fixtures/eval/results.json';
 import { TopBar } from '../components/layout/TopBar';
 import { SiteFooter } from '../components/layout/SiteFooter';
@@ -14,6 +16,7 @@ import { Badge } from '../components/ui/Badge';
 const data = evalResults as EvalMetrosResults;
 const evalBundle = loadEvalRunBundle();
 const evalManifest = getEvalManifest();
+const qlooLift = loadLiveQlooLiftAggregates();
 
 const PIPELINE = [
   {
@@ -87,14 +90,14 @@ export function MethodologyPage() {
       <main id="main-content" className="outline-none">
         <div className="mx-auto max-w-[880px] px-4 pb-16 pt-10 md:pt-14">
           <p className="text-label uppercase text-ink-3">Methodology</p>
-          <h1 className="mt-3 font-serif text-display text-ink">How LeaseUp ranks tenants</h1>
+          <h1 className="mt-3 font-display font-semibold text-display text-ink">How LeaseUp ranks tenants</h1>
           <p className="mt-4 max-w-[640px] text-lg leading-relaxed text-ink-2">
             A transparent pipeline from address to ranked brands, with backtests against real store
             footprints so judges can see where taste data helps and where it does not.
           </p>
 
           <section className="mt-12" aria-labelledby="pipeline-heading">
-            <h2 id="pipeline-heading" className="font-serif text-title text-ink">
+            <h2 id="pipeline-heading" className="font-display font-semibold text-title text-ink">
               Pipeline
             </h2>
             <p className="mt-2 text-sm text-ink-2">
@@ -202,7 +205,7 @@ export function MethodologyPage() {
           <section className="mt-14" aria-labelledby="eval-heading">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <h2 id="eval-heading" className="font-serif text-title text-ink">
+                <h2 id="eval-heading" className="font-display font-semibold text-title text-ink">
                   Metro evaluation
                 </h2>
                 <p className="mt-2 text-sm text-ink-2">
@@ -307,8 +310,60 @@ export function MethodologyPage() {
             )}
           </section>
 
+          <section className="mt-14" aria-labelledby="qloo-lift-heading">
+            <h2 id="qloo-lift-heading" className="font-display font-semibold text-title text-ink">
+              Qloo lift study (committed aggregates)
+            </h2>
+            <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
+              Raw Qloo P@10 {(qlooLift.rawQlooPrecisionAt10 * 100).toFixed(0)}% vs chain size{' '}
+              {(qlooLift.chainSizePrecisionAt10 * 100).toFixed(0)}% on the recorded cohort; legacy
+              0.75/0.25 blend {(qlooLift.legacyBlendPrecisionAt10 * 100).toFixed(0)}%. Same-size tier
+              AUC {(qlooLift.sameSizeAuc.value * 100).toFixed(1)}% (95% CI{' '}
+              {(qlooLift.sameSizeAuc.ciLow * 100).toFixed(1)}% to{' '}
+              {(qlooLift.sameSizeAuc.ciHigh * 100).toFixed(1)}%). Logistic companion blend{' '}
+              {(qlooLift.logisticBlendPrecisionAt10 * 100).toFixed(0)}% P@10 (+{qlooLift.logisticBlendLiftVsChainPp}{' '}
+              pp vs chain, 95% CI {qlooLift.logisticBlendLiftCiLowPp} to {qlooLift.logisticBlendLiftCiHighPp} pp).
+              Heatmap features did not add lift; fixed 10 km presence saturates in dense areas. Qloo partly
+              reflects brands that already operate nearby.
+            </p>
+            <p className="mt-3 text-xs text-ink-3">
+              Full write-up:{' '}
+              <code className="rounded bg-surface-2 px-1">
+                packages/fixtures/src/eval/live-qloo-lift/QLOO_LIFT_EVAL.md
+              </code>
+            </p>
+            <div className="mt-6 overflow-x-auto rounded-card border border-border">
+              <table className="w-full min-w-[640px] border-collapse text-left text-sm">
+                <caption className="sr-only">Qloo lift evaluation addresses</caption>
+                <thead>
+                  <tr className="border-b border-border bg-surface-2 text-label uppercase text-ink-3">
+                    <th scope="col" className="px-3 py-3 font-medium">Site</th>
+                    <th scope="col" className="px-3 py-3 font-medium">Address</th>
+                    <th scope="col" className="px-3 py-3 font-medium">Density</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(siteTable as { sites: Array<{ label: string; address: string; density: string }> }).sites.map(
+                    (site) => (
+                      <tr key={site.address} className="border-b border-border last:border-0">
+                        <th scope="row" className="px-3 py-3 font-medium text-ink">
+                          {site.label}
+                        </th>
+                        <td className="px-3 py-3 text-ink-2">{site.address}</td>
+                        <td className="px-3 py-3 capitalize text-ink-2">{site.density}</td>
+                      </tr>
+                    )
+                  )}
+                </tbody>
+              </table>
+            </div>
+            {(siteTable as { note?: string }).note && (
+              <p className="mt-3 text-xs text-ink-3">{(siteTable as { note?: string }).note}</p>
+            )}
+          </section>
+
           <section className="mt-14" aria-labelledby="limits-heading">
-            <h2 id="limits-heading" className="font-serif text-title text-ink">
+            <h2 id="limits-heading" className="font-display font-semibold text-title text-ink">
               Limitations and data sources
             </h2>
             <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-ink-2">

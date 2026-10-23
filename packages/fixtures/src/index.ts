@@ -55,6 +55,23 @@ export {
   type RankedInsight,
 } from './ranking.js';
 export {
+  orderInsightsByLogisticBlend,
+  getLogisticBlendCoefficients,
+  type LogisticBlendCoefficients,
+} from './logistic-blend.js';
+export {
+  chainSizeTierFromStoreCount,
+  isProspectChainTier,
+  chainSizeTierLabel,
+  type ChainSizeTier,
+} from './chain-size-tier.js';
+export {
+  buildTierFitByEntityId,
+  tasteFitPercentileWithinTier,
+  type TierFitContext,
+} from './taste-fit-beyond-chain.js';
+export { loadLiveQlooLiftAggregates, type LiveQlooLiftAggregates } from './eval/live-qloo-lift/load-aggregates.js';
+export {
   DEMO_CHIP_ADDRESSES,
   matchDemoFixtureId,
   normalizeAddress,

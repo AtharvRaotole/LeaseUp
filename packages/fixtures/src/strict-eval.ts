@@ -140,6 +140,9 @@ export type StrictEvalSiteMetrics = {
   adaptiveRadiusKm: number;
   density: EvalSiteDensity;
   poolSize: number;
+  /** Optional per-site same-size tier AUC when recorded in live eval bundles. */
+  sameSizeAucQloo?: number;
+  sameSizeAucChain?: number;
   legacyPresentAt10Qloo: number;
   legacyPresentAt10Chain: number;
   adaptivePresentAt10Qloo: number;

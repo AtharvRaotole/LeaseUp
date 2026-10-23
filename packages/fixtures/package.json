@@ -11,18 +11,22 @@
     },
     "./eval/results.json": "./src/eval/results.json",
     "./eval/strict-results.json": "./src/eval/strict-results.json",
-    "./eval/manifest.json": "./src/eval/manifest.json"
+    "./eval/manifest.json": "./src/eval/manifest.json",
+    "./eval/live-qloo-lift/aggregates.json": "./src/eval/live-qloo-lift/aggregates.json",
+    "./eval/live-qloo-lift/site-table.json": "./src/eval/live-qloo-lift/site-table.json"
   },
   "scripts": {
-    "build": "node ../../scripts/embed-demo-stores.mjs && node ../../scripts/embed-overpass-demo.mjs && tsc && cp -r src/brand-explainability dist/brand-explainability && mkdir -p dist/eval && cp src/eval/manifest.json src/eval/strict-results.json dist/eval/",
+    "build": "node ../../scripts/embed-demo-stores.mjs && node ../../scripts/embed-overpass-demo.mjs && tsc && cp -r src/brand-explainability dist/brand-explainability && mkdir -p dist/eval/live-qloo-lift && cp src/eval/manifest.json src/eval/strict-results.json dist/eval/ && cp -r src/eval/live-qloo-lift/*.json dist/eval/live-qloo-lift/",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src --ext .ts"
+    "lint": "eslint src --ext .ts",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",
     "eslint": "^9.18.0",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
   }
 }

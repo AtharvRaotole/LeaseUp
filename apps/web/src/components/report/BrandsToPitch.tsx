@@ -10,7 +10,10 @@ import { fitPercentileLabel } from '../../lib/fit-display';
 import { buildReportPath } from '../../lib/report-params';
 import { displayBrandName } from '../../lib/brand-display';
 import { brandCategoryLabel } from '../../lib/brand-category';
-import { verificationShortLabel, verificationTooltip } from '../../lib/copy';
+import { verificationShortLabel, verificationSourceHelp } from '../../lib/copy';
+import { localFitTooltip } from '../../lib/broker-copy';
+import { InfoPopover } from '../ui/InfoPopover';
+import { InfoTooltip } from '../ui/InfoTooltip';
 import { pitchExpandedLines } from '../../lib/pitch-detail-copy';
 import { cn } from '../../lib/cn';
 import { AddToPipelineButton } from '../pipeline/AddToPipelineButton';
@@ -21,17 +24,17 @@ const OSM_VERIFY_WAIT_MS = 30_000;
 function PitchPill({
   children,
   tone,
-  title,
+  tooltip,
   spinner,
 }: {
   children: ReactNode;
   tone: 'accent' | 'neutral';
-  title?: string;
+  tooltip?: string;
   spinner?: boolean;
 }) {
   return (
     <span
-      title={title}
+      title={tooltip}
       className={cn(
         'inline-flex h-[22px] max-w-[9.5rem] items-center gap-1 truncate rounded-pill px-2 text-[11px] font-medium leading-none',
         tone === 'accent' ? 'bg-accent-soft text-accent' : 'border border-border bg-surface text-ink-2'
@@ -49,22 +52,24 @@ function PitchPill({
 }
 
 function verificationPillCopy(
-  verified: ProspectPack['brand']['verified'],
+  prospect: ProspectPack,
   entityId: string,
   osmTimedOut: Set<string>,
   radiusKm: number,
-  osmSnapshotLabel?: string
-): { label: string; title: string; spinner: boolean } {
+  results: AnalysisResponse
+): { label: string; help: string; spinner: boolean } {
+  const verified = prospect.brand.verified;
   if (verified === 'verifying...' && osmTimedOut.has(entityId)) {
+    const osmLabel = results.osmSnapshotLabel ?? 'OpenStreetMap';
     return {
-      label: 'Only 1 source',
-      title: 'OpenStreetMap did not respond in time',
+      label: 'One source',
+      help: `Checked: All The Places (no store within ${radiusKm} km). Not checked: ${osmLabel} (timed out).`,
       spinner: false,
     };
   }
   return {
     label: verificationShortLabel(verified),
-    title: verificationTooltip(verified, radiusKm, osmSnapshotLabel),
+    help: verificationSourceHelp(prospect, radiusKm, results.osmSnapshotLabel, results),
     spinner: verified === 'verifying...',
   };
 }
@@ -156,11 +161,11 @@ export function BrandsToPitch({
 
   if (forceEmpty || prospects.length === 0) {
     return (
-      <Card className="text-center">
+      <Card className="text-center" data-testid="brands-to-pitch">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-surface-2 text-ink-2">
           <Store className="h-6 w-6" aria-hidden />
         </div>
-        <h3 className="mt-4 text-h3 font-semibold text-ink" data-testid="brands-to-pitch">No pitch list yet</h3>
+        <h3 className="mt-4 text-h3 font-semibold text-ink">No pitch list yet</h3>
         <p className="mt-2 text-sm text-ink-2">
           Every top brand already has a store in this radius. Try a wider search or narrow by category.
         </p>
@@ -183,8 +188,11 @@ export function BrandsToPitch({
   }
 
   return (
-    <section>
-      <h3 className="mb-3 text-h3 font-semibold text-ink" data-testid="brands-to-pitch">Brands to pitch</h3>
+    <section data-testid="brands-to-pitch">
+      <div className="mb-3 flex items-center gap-2">
+        <h3 className="text-h3 font-semibold text-ink">Brands to pitch</h3>
+        <InfoTooltip label="Brands local shoppers love that we did not find in your trade area." />
+      </div>
       {dropNotes.length > 0 && (
         <div className="mb-3 space-y-2" aria-live="polite">
           {dropNotes.map((note) => (
@@ -203,7 +211,11 @@ export function BrandsToPitch({
             const open = expanded === prospect.brand.entityId;
             const selected = selectedId === prospect.brand.entityId;
             const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
-            const fitLabel = fitPercentileLabel(prospect.brand.affinityRank, totalScored);
+            const fitLabel = fitPercentileLabel(
+              prospect.brand.affinityRank,
+              totalScored,
+              prospect.brand.tasteFitBeyondChainPercentile
+            );
             const category =
               prospect.tenantMixScore?.categoryFit ?? brandCategoryLabel(prospect.brand.entityId);
             const distanceLine = prospect.nearestExistingStoreKm !== undefined
@@ -235,19 +247,22 @@ export function BrandsToPitch({
                     <p className="mt-0.5 truncate text-xs text-ink-3">{subline}</p>
                   </div>
                   <div className="flex shrink-0 items-center gap-1.5">
-                    <PitchPill tone="accent">{fitLabel}</PitchPill>
+                    <PitchPill tone="accent" tooltip={localFitTooltip()}>{fitLabel}</PitchPill>
                     {(() => {
                       const pill = verificationPillCopy(
-                        prospect.brand.verified,
+                        prospect,
                         prospect.brand.entityId,
                         osmTimedOut,
                         radiusKm,
-                        results.osmSnapshotLabel
+                        results
                       );
                       return (
-                        <PitchPill tone="neutral" title={pill.title} spinner={pill.spinner}>
-                          {pill.label}
-                        </PitchPill>
+                        <span className="inline-flex items-center gap-0.5">
+                          <PitchPill tone="neutral" tooltip={pill.help} spinner={pill.spinner}>
+                            {pill.label}
+                          </PitchPill>
+                          <InfoPopover label={`Store check: ${pill.label}`} body={pill.help} />
+                        </span>
                       );
                     })()}
                   </div>

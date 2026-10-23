@@ -40,7 +40,7 @@ function StepRow({ step, active }: { step: ProspectingStep; active: boolean }) {
           <p className="font-medium text-ink">{step.label}</p>
           {step.summary && <p className="mt-1 text-sm text-ink-2">{step.summary}</p>}
           {step.durationMs !== undefined && step.status === 'complete' && (
-            <p className="mt-1 font-mono text-xs tabular-nums text-ink-3">
+            <p className="mt-1 text-xs tabular-nums text-ink-3">
               {(step.durationMs / 1000).toFixed(1)} s
             </p>
           )}
