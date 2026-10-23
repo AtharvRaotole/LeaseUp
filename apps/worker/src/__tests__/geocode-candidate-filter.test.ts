@@ -33,7 +33,7 @@ describe('filterCandidatesByInputPostalCode', () => {
   });
 
   it('keeps candidates with no ZIP in the label when the input has a ZIP', () => {
-    const input = DEMO_CHIP_ADDRESSES.wicker;
+    const input = '1574 N Milwaukee Ave, Chicago, IL 60622';
     const kept = filterCandidatesByInputPostalCode(input, [
       {
         address: input,
