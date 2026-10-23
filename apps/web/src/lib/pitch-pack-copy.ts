@@ -15,20 +15,23 @@ export function pitchExecutiveSummaryLines(snapshot: PitchPackSnapshot): string[
   ];
 }
 
-export function pitchProspectFact(
-  prospect: ProspectPack,
-  radiusKm: number,
-  searchRadiusKm = 25
-): string {
+export function pitchProspectFact(prospect: ProspectPack, radiusKm: number): string {
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   const km = prospect.nearestExistingStoreKm;
   if (km !== undefined) {
-    if (km <= searchRadiusKm) {
-      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (closest gap in the trade area).`;
+    if (km > radiusKm) {
+      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (no store within ${radiusKm} km).`;
     }
-    return `Nearest ${name} is ${km.toFixed(1)} km away, outside the ${searchRadiusKm} km trade-area check.`;
+    return `Nearest ${name} is ${km.toFixed(1)} km from this pin.`;
   }
   return `No ${name} store within ${radiusKm} km of this pin in our store data.`;
+}
+
+/** Matches worker pitch why lines and other nearest-store distance copy. */
+export function isNearestStoreDistanceLine(line: string): boolean {
+  const trimmed = line.trim();
+  if (!/^nearest /i.test(trimmed)) return false;
+  return /\d+\.\d+ km/i.test(trimmed);
 }
 
 /** Skip stored why lines that only repeat Qloo rank wording already shown above. */
@@ -36,5 +39,6 @@ export function shouldShowStoredWhyLine(whyLine: string): boolean {
   const lower = whyLine.toLowerCase();
   if (lower.includes('qloo #') || lower.includes('qloo rank')) return false;
   if (/\btop \d+%\b/.test(lower) && lower.includes('rank')) return false;
+  if (isNearestStoreDistanceLine(whyLine)) return false;
   return whyLine.trim().length > 0;
 }
