@@ -1,7 +1,7 @@
-import aggregates from './aggregates.json' with { type: 'json' };
+import { liveQlooLiftAggregates } from './aggregates-data.js';
 
-export type LiveQlooLiftAggregates = typeof aggregates;
+export type LiveQlooLiftAggregates = typeof liveQlooLiftAggregates;
 
 export function loadLiveQlooLiftAggregates(): LiveQlooLiftAggregates {
-  return aggregates;
+  return liveQlooLiftAggregates;
 }
