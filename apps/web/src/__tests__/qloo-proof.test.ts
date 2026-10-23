@@ -1,11 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import {
   qlooEvalHeadlineParts,
+  qlooProofEvalLead,
   qlooProofSentence,
   qlooProofTieDetail,
   qlooProofWinner,
 } from '../lib/qloo-proof';
-import type { BacktestResult } from '@leaseup/contracts';
+import type { AnalysisResponse, BacktestResult } from '@leaseup/contracts';
+import { LANDING_WICKER_PREVIEW } from '../data/landing-wicker-preview';
 
 function bt(present: number): BacktestResult {
   return {
@@ -27,6 +29,19 @@ describe('qlooEvalHeadlineParts', () => {
     expect(companion).toMatch(/76%/);
     expect(caveat).toMatch(/partly reflect/);
     expect(headline.toLowerCase()).not.toMatch(/raw qloo beats/);
+  });
+});
+
+describe('qlooProofEvalLead', () => {
+  it('does not lead with 10 of 10 tie for Wicker demo; cites cohort and adaptive radius', () => {
+    const copy = qlooProofEvalLead(LANDING_WICKER_PREVIEW as AnalysisResponse);
+    expect(copy.lead).toMatch(/two-thirds of the time/);
+    expect(copy.lead).toMatch(/82%/);
+    expect(copy.lead).not.toMatch(/^Local taste ranking: 10 of 10/);
+    expect(copy.pinDetail).toMatch(/3 km/);
+    expect(copy.pinDetail).toMatch(/7 of 10/);
+    expect(copy.pinDetail).toMatch(/9/);
+    expect(copy.legacySaturated).toBe(true);
   });
 });
 

@@ -1,5 +1,9 @@
-import type { BacktestResult, BrandRankingRow } from '@leaseup/contracts';
-import { loadLiveQlooLiftAggregates } from '@leaseup/fixtures';
+import type { AnalysisResponse, BacktestResult, BrandRankingRow, StrictEvalSnapshot } from '@leaseup/contracts';
+import {
+  getPilotStrictEvalSnapshot,
+  loadLiveQlooLiftAggregates,
+  matchDemoFixtureId,
+} from '@leaseup/fixtures';
 import { displayBrandName } from './brand-display';
 import { presentInTop10Count } from './hit-rate';
 
@@ -26,6 +30,87 @@ export function qlooEvalHeadlineParts(): {
 export function qlooEvalHeadlineCopy(): string {
   const { headline, companion, caveat } = qlooEvalHeadlineParts();
   return `${headline} ${companion} ${caveat}`;
+}
+
+export function resolveStrictEvalSnapshot(results: AnalysisResponse): StrictEvalSnapshot | null {
+  if (results.strictEval) return results.strictEval;
+  const fixtureId = matchDemoFixtureId(results.location.address);
+  if (!fixtureId) return null;
+  return getPilotStrictEvalSnapshot(fixtureId);
+}
+
+function formatCountOf10(n: number): string {
+  return Number.isInteger(n) ? `${n} of 10` : `${n.toFixed(1)} of 10`;
+}
+
+/** Plain-language proof copy that does not lead with saturated legacy hit rates. */
+export function qlooProofEvalLead(results: AnalysisResponse): {
+  lead: string;
+  pinDetail: string;
+  caveat: string;
+  legacySaturated: boolean;
+} {
+  const { headline, companion, caveat } = qlooEvalHeadlineParts();
+  const lead = `${headline} ${companion}`;
+  const strict = resolveStrictEvalSnapshot(results);
+  const baseline = results.backtestBaseline;
+  const legacyQloo = presentInTop10Count(results.backtest);
+  const legacyChain = baseline ? presentInTop10Count(baseline) : legacyQloo;
+  const legacySaturated = legacyQloo >= 10 && legacyChain >= 10;
+
+  const pinParts: string[] = [];
+  if (strict) {
+    const legacyPanel = strict.panels.find((p) => p.id === 'legacy_present_at10');
+    const adaptivePanel = strict.panels.find((p) => p.id === 'adaptive_present_at10');
+    if (
+      legacyPanel?.qloo !== undefined &&
+      legacyPanel.chain !== undefined &&
+      legacyPanel.qloo >= 10 &&
+      legacyPanel.chain >= 10
+    ) {
+      pinParts.push(
+        `At this address, the full ${strict.searchRadiusKm} km search radius maxes out at 10 of 10 nearby matches for both taste order and chain-size order, so that score cannot separate the methods.`
+      );
+    } else if (legacyPanel?.qloo !== undefined && legacyPanel.chain !== undefined) {
+      if (legacyPanel.qloo === legacyPanel.chain) {
+        pinParts.push(
+          `At this address, taste and chain size tie at ${formatCountOf10(legacyPanel.qloo)} nearby matches in the top 10 within ${strict.searchRadiusKm} km.`
+        );
+      } else if (legacyPanel.qloo > legacyPanel.chain) {
+        pinParts.push(
+          `At this address, taste reaches ${formatCountOf10(legacyPanel.qloo)} nearby matches in the top 10 vs ${formatCountOf10(legacyPanel.chain)} for chain size alone (${strict.searchRadiusKm} km).`
+        );
+      } else {
+        pinParts.push(
+          `At this address, chain size reaches ${formatCountOf10(legacyPanel.chain)} nearby matches in the top 10 vs ${formatCountOf10(legacyPanel.qloo)} for taste (${strict.searchRadiusKm} km).`
+        );
+      }
+    }
+
+    if (adaptivePanel?.qloo !== undefined && adaptivePanel.chain !== undefined) {
+      const r = strict.adaptiveRadiusKm;
+      if (adaptivePanel.qloo === adaptivePanel.chain) {
+        pinParts.push(
+          `With a tighter ${r} km density-based radius, taste and chain size still tie at ${formatCountOf10(adaptivePanel.qloo)} in the top 10.`
+        );
+      } else if (adaptivePanel.qloo > adaptivePanel.chain) {
+        pinParts.push(
+          `With a tighter ${r} km density-based radius, taste lands ${formatCountOf10(adaptivePanel.qloo)} in the top 10 vs ${formatCountOf10(adaptivePanel.chain)} for chain size.`
+        );
+      } else {
+        pinParts.push(
+          `With a tighter ${r} km density-based radius, chain size lands ${formatCountOf10(adaptivePanel.chain)} in the top 10 vs ${formatCountOf10(adaptivePanel.qloo)} for taste.`
+        );
+      }
+    }
+  } else if (legacySaturated) {
+    pinParts.push(
+      'This pin saturates the legacy nearby-match score at 10 of 10 for both orderings; see the evaluation card for density-based radius metrics.'
+    );
+  }
+
+  const pinDetail = pinParts.join(' ');
+  return { lead, pinDetail, caveat, legacySaturated };
 }
 
 export function qlooProofSentence(
