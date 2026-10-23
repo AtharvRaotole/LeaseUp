@@ -123,7 +123,18 @@ export function LandingPage() {
               <button
                 key={ex.id}
                 type="button"
-                onClick={() => submit(ex.address)}
+                onClick={() =>
+                  navigate(
+                    buildReportPath(
+                      {
+                        address: ex.address,
+                        radius: Number(radiusKm),
+                        categoryTags: categoryToTags(category),
+                      },
+                      ex.id
+                    )
+                  )
+                }
                 className="text-left rounded-card border border-border bg-surface p-4 transition-colors hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
                 <p className="font-medium text-ink">{ex.neighborhood}</p>

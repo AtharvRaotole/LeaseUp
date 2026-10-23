@@ -18,6 +18,8 @@ import { ReportStickyHeader } from '../components/report/ReportStickyHeader';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { ReportErrorBanner } from '../components/report/ReportErrorBanner';
 import type { ApiErrorInfo } from '../lib/api-error';
+import { QlooRankingToggle, type QlooRankingMode } from '../components/report/QlooRankingToggle';
+import { WhyThisBrandCard } from '../components/report/WhyThisBrandCard';
 
 type MobilePane = 'report' | 'map';
 
@@ -33,6 +35,7 @@ export function ReportPage() {
   const [mapBrand, setMapBrand] = useState<MapBrandSelection | null>(null);
   const [outreach, setOutreach] = useState<ProspectPack | null>(null);
   const [mobilePane, setMobilePane] = useState<MobilePane>('report');
+  const [rankingMode, setRankingMode] = useState<QlooRankingMode>('raw');
   const ranKey = useRef('');
 
   useEffect(() => {
@@ -81,10 +84,22 @@ export function ReportPage() {
       ? { message: 'We could not load this report. Check your connection and try again.' }
       : error;
 
+  const activeBacktest =
+    results &&
+    (rankingMode === 'blended' && results.backtestBlended ? results.backtestBlended : results.backtest);
+
   const reportSections = results && (
     <>
       <ErrorBoundary fallback={<SectionUnavailable />}>
-        <HeadlineCard results={results} radiusKm={request.radius} chipSlug={slug} />
+        <div className="print-pitch-block space-y-4">
+          <QlooRankingToggle mode={rankingMode} onChange={setRankingMode} className="no-print" />
+          <HeadlineCard
+            results={results}
+            radiusKm={request.radius}
+            chipSlug={slug}
+            backtestOverride={activeBacktest ?? undefined}
+          />
+        </div>
       </ErrorBoundary>
       {(loading || steps.length > 0) && (
         <AgentRunStrip
@@ -96,25 +111,38 @@ export function ReportPage() {
         />
       )}
       <ErrorBoundary fallback={<SectionUnavailable />}>
-        <BrandsToPitch
-          results={results}
-          request={request}
-          slug={slug ?? 'run'}
-          selectedId={selected?.brand.entityId ?? null}
-          onSelect={selectProspect}
-          onDraft={(p) => setOutreach(p)}
-          radiusKm={request.radius}
-          forceEmpty={emptyPitch}
-        />
+        <div className="print-pitch-block">
+          <BrandsToPitch
+            results={results}
+            request={request}
+            slug={slug ?? 'run'}
+            selectedId={selected?.brand.entityId ?? null}
+            onSelect={selectProspect}
+            onDraft={(p) => setOutreach(p)}
+            radiusKm={request.radius}
+            forceEmpty={emptyPitch}
+          />
+        </div>
       </ErrorBoundary>
       <ErrorBoundary fallback={<SectionUnavailable />}>
-        <ProofSection results={results} radiusKm={request.radius} onBrandSelect={selectMapBrand} />
+        <div className="no-print">
+          <ProofSection
+            results={results}
+            radiusKm={request.radius}
+            onBrandSelect={selectMapBrand}
+            rankingMode={rankingMode}
+          />
+        </div>
       </ErrorBoundary>
       <ErrorBoundary fallback={<CompareUnavailable />}>
-        <CompareSection />
+        <div className="no-print">
+          <CompareSection />
+        </div>
       </ErrorBoundary>
       <ErrorBoundary fallback={<SectionUnavailable />}>
-        <HowWeKnowSection results={results} />
+        <div className="no-print">
+          <HowWeKnowSection results={results} />
+        </div>
       </ErrorBoundary>
     </>
   );
@@ -177,6 +205,7 @@ export function ReportPage() {
           >
             {results && (
               <ErrorBoundary fallback={<SectionUnavailable label="Map unavailable right now." />}>
+                <WhyThisBrandCard prospect={selected} results={results} radiusKm={request.radius} />
                 <ReportMap
                   results={results}
                   selectedBrand={mapBrand}
