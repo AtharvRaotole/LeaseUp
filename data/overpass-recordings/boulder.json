@@ -1,0 +1,31 @@
+{
+  "endpoint": "https://overpass-api.de/api/interpreter",
+  "query": "[out:json][timeout:8];\n(\n  node[\"brand\"~\"^(Nike|Vans|Nordstrom|Victoria's Secret|Crumbl Cookies|Crumbl|Ulta|Kate Spade New York|Kate Spade|Pottery Barn|MAC Cosmetics|Williams-Sonoma)$\",i](around:10000,40.0179234,-105.2805434);\n  way[\"brand\"~\"^(Nike|Vans|Nordstrom|Victoria's Secret|Crumbl Cookies|Crumbl|Ulta|Kate Spade New York|Kate Spade|Pottery Barn|MAC Cosmetics|Williams-Sonoma)$\",i](around:10000,40.0179234,-105.2805434);\n  node[\"name\"~\"^(Nike|Vans|Nordstrom|Victoria's Secret|Crumbl Cookies|Crumbl|Ulta|Kate Spade New York|Kate Spade|Pottery Barn|MAC Cosmetics|Williams-Sonoma)$\",i](around:10000,40.0179234,-105.2805434)[\"shop\"];\n  way[\"name\"~\"^(Nike|Vans|Nordstrom|Victoria's Secret|Crumbl Cookies|Crumbl|Ulta|Kate Spade New York|Kate Spade|Pottery Barn|MAC Cosmetics|Williams-Sonoma)$\",i](around:10000,40.0179234,-105.2805434)[\"shop\"];\n);\nout center tags;",
+  "recordedAt": "2026-10-23T03:39:17.080Z",
+  "response": {
+    "version": 0.6,
+    "generator": "Overpass API 0.7.62.11 87bfad18",
+    "osm3s": {
+      "timestamp_osm_base": "2026-10-23T03:38:31Z",
+      "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+    },
+    "elements": [
+      {
+        "type": "node",
+        "id": 4624402971,
+        "lat": 40.018576,
+        "lon": -105.256674,
+        "tags": {
+          "addr:unit": "1136",
+          "brand": "Crumbl Cookies",
+          "brand:wikidata": "Q106924414",
+          "name": "Crumbl Cookies",
+          "opening_hours": "Mo-Th 08:00-22:00; Fr,Sa 08:00-24:00",
+          "shop": "pastry",
+          "short_name": "Crumbl",
+          "website": "https://crumblcookies.com/stores"
+        }
+      }
+    ]
+  }
+}

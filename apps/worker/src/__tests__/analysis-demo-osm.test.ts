@@ -1,6 +1,12 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { AnalysisService } from '../services/analysis';
 import { DEMO_CHIP_ADDRESSES, DEMO_OSM_UNRECORDED_NOTE } from '@leaseup/fixtures';
+
+// All demo chips now ship Overpass recordings; simulate an unrecorded chip.
+vi.mock('@leaseup/fixtures', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@leaseup/fixtures')>()),
+  overpassDemoByFixture: {},
+}));
 
 const db = {
   prepare: () => {
