@@ -84,6 +84,16 @@ html.screenshot-capture [class*='backdrop-blur'] {
   backdrop-filter: none !important;
 }
 
+.pitch-map-frame {
+  max-height: 45vh;
+}
+
+.pitch-map-image {
+  max-height: 45vh;
+  object-position: center;
+  filter: saturate(0.92) hue-rotate(118deg) contrast(1.02);
+}
+
 @media print {
   body {
     background: white;
@@ -142,5 +152,32 @@ html.screenshot-capture [class*='backdrop-blur'] {
 
   .pitch-methodology {
     break-inside: avoid;
+  }
+
+  .pitch-print-page-1 {
+    page-break-after: always;
+  }
+
+  .pitch-print-page-2 {
+    page-break-before: avoid;
+  }
+
+  .pitch-map-frame {
+    max-height: none;
+  }
+
+  .pitch-map-image {
+    max-height: 34vh;
+    filter: none;
+  }
+
+  .print-pitch-page .pitch-prospect-block {
+    margin: 0;
+    padding-bottom: 0.35rem;
+  }
+
+  .print-pitch-page h1 {
+    font-size: 1.75rem;
+    line-height: 1.2;
   }
 }

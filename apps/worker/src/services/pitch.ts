@@ -4,33 +4,24 @@ import { PitchPackSnapshotSchema } from '@leaseup/contracts';
 import type { Env } from '../index';
 import { displayBrandName } from '../lib/brand-display';
 
-function tasteFitPhrase(rank: number, total: number): string {
-  const pct = total > 0 ? Math.max(1, Math.min(99, Math.round((rank / total) * 100))) : 1;
-  return `top ${pct}%`;
-}
-
 function buildWhyLine(
   prospect: PitchCreate['results']['prospects'][0],
-  rankingsTotal: number
+  radiusKm: number
 ): string {
-  const rank = prospect.brand.affinityRank;
-  const total = rankingsTotal || rank;
-  const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
-  const fitPhrase = tasteFitPhrase(rank, total);
-
-  if (prospect.reasons[0]) return prospect.reasons[0];
-
-  const verify =
-    prospect.brand.verified === 'verified (2 sources)'
-      ? 'Verified absent nearby'
-      : prospect.brand.verified === 'unverified (1 source)'
-        ? 'Only one source checked'
-        : 'Checked against store data';
-
-  if (prospect.nearestExistingStoreKm !== undefined) {
-    return `${name} ranks ${fitPhrase} for taste (Qloo #${rank}); nearest store ${prospect.nearestExistingStoreKm.toFixed(1)} km away. ${verify}.`;
+  if (prospect.reasons[0] && !isRankOnlyReason(prospect.reasons[0])) {
+    return prospect.reasons[0];
   }
-  return `${name} ranks ${fitPhrase} for taste (Qloo #${rank}); no store in search radius. ${verify}.`;
+
+  const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
+  if (prospect.nearestExistingStoreKm !== undefined) {
+    return `Nearest ${name} is ${prospect.nearestExistingStoreKm.toFixed(1)} km from this pin.`;
+  }
+  return `No ${name} store within ${radiusKm} km in All The Places and OpenStreetMap checks.`;
+}
+
+function isRankOnlyReason(text: string): boolean {
+  const lower = text.toLowerCase();
+  return lower.includes('qloo') && (lower.includes('rank') || lower.includes('top '));
 }
 
 export class PitchService {
@@ -61,7 +52,7 @@ export class PitchService {
       mapImage: input.mapImage,
       prospects: top.map((prospect) => ({
         prospect,
-        whyLine: buildWhyLine(prospect, rankingsTotal),
+        whyLine: buildWhyLine(prospect, input.radiusKm),
       })),
       rankingsTotal: rankingsTotal || undefined,
       landlord: input.landlord,

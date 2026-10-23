@@ -1,4 +1,5 @@
 import type { GeocodeCandidate } from '@leaseup/contracts';
+import { dedupeGeocodeCandidatesWithinMeters } from './geocode-label';
 
 /** Prefer candidates whose city or borough appears in the user's input string. */
 export function rankGeocodeCandidates(
@@ -37,5 +38,6 @@ export function rankGeocodeCandidates(
     seen.add(k);
     return true;
   });
-  return unique.sort((a, b) => score(b) - score(a));
+  const spaced = dedupeGeocodeCandidatesWithinMeters(unique, 50);
+  return spaced.sort((a, b) => score(b) - score(a));
 }
