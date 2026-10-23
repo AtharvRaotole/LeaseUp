@@ -48,7 +48,7 @@ describe('loadTradeAreaShoppersSnapshot', () => {
     });
 
     expect(snap?.groups).toHaveLength(2);
-    expect(snap?.groups[0].names).toContain('Beer Enthusiasts');
+    expect(snap?.groups[0]?.names).toContain('Beer Enthusiasts');
   });
 });
 
