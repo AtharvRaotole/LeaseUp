@@ -6,6 +6,7 @@ import { TopBar } from '../components/layout/TopBar';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { LandingBelowFold } from '../components/landing/LandingBelowFold';
+import { LandingProductVisual } from '../components/landing/LandingProductVisual';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { Select } from '../components/ui/Select';
 import { DEMO_EXAMPLES } from '../data/demo-examples';
@@ -134,6 +135,7 @@ export function LandingPage() {
         </div>
       </main>
 
+      <LandingProductVisual />
       <LandingBelowFold />
     </div>
   );

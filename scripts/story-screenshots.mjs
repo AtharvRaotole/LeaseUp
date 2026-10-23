@@ -11,6 +11,7 @@ import { join } from 'node:path';
 const BASE = process.env.SCREENSHOT_BASE || 'http://localhost:4173';
 const ARTIFACTS = '/opt/cursor/artifacts';
 const OUT = join(process.cwd(), 'docs/screenshots');
+const PUBLIC_IMAGES = join(process.cwd(), 'apps/web/public/images');
 
 function gitSha() {
   try {
@@ -30,6 +31,7 @@ function mergeBaseSha() {
 
 await mkdir(OUT, { recursive: true });
 await mkdir(ARTIFACTS, { recursive: true });
+await mkdir(PUBLIC_IMAGES, { recursive: true });
 
 const meta = {
   capturedAt: new Date().toISOString(),
@@ -75,11 +77,19 @@ for (const scheme of ['light', 'dark']) {
     .first()
     .waitFor({ timeout: 45000 })
     .catch(() => undefined);
-  await page.waitForTimeout(1200);
+  await page.waitForTimeout(2000);
   const path = join(OUT, `report-${scheme}-1440.png`);
   await page.screenshot({ path, fullPage: false, clip: { x: 0, y: 0, width: 1440, height: 720 } });
   await copyFile(path, join(ARTIFACTS, `report-${scheme}-1440.png`));
   console.log('saved', path);
+
+  const productPath = join(PUBLIC_IMAGES, `landing-wicker-report-${scheme}.png`);
+  await page.screenshot({
+    path: productPath,
+    fullPage: false,
+    clip: { x: 0, y: 48, width: 1440, height: 820 },
+  });
+  console.log('saved', productPath);
   await page.close();
 }
 
