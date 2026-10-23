@@ -161,11 +161,11 @@ export function BrandsToPitch({
 
   if (forceEmpty || prospects.length === 0) {
     return (
-      <Card className="text-center">
+      <Card className="text-center" data-testid="brands-to-pitch">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-surface-2 text-ink-2">
           <Store className="h-6 w-6" aria-hidden />
         </div>
-        <h3 className="mt-4 text-h3 font-semibold text-ink" data-testid="brands-to-pitch">No pitch list yet</h3>
+        <h3 className="mt-4 text-h3 font-semibold text-ink">No pitch list yet</h3>
         <p className="mt-2 text-sm text-ink-2">
           Every top brand already has a store in this radius. Try a wider search or narrow by category.
         </p>
@@ -188,9 +188,9 @@ export function BrandsToPitch({
   }
 
   return (
-    <section>
+    <section data-testid="brands-to-pitch">
       <div className="mb-3 flex items-center gap-2">
-        <h3 className="text-h3 font-semibold text-ink" data-testid="brands-to-pitch">Brands to pitch</h3>
+        <h3 className="text-h3 font-semibold text-ink">Brands to pitch</h3>
         <InfoTooltip label="Brands local shoppers love that we did not find in your trade area." />
       </div>
       {dropNotes.length > 0 && (
