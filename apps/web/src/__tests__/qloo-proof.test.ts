@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { qlooProofSentence, qlooProofWinner } from '../lib/qloo-proof';
+import {
+  qlooProofSentence,
+  qlooProofTieDetail,
+  qlooProofWinner,
+} from '../lib/qloo-proof';
 import type { BacktestResult } from '@leaseup/contracts';
 
 function bt(present: number): BacktestResult {
@@ -22,5 +26,32 @@ describe('qlooProofSentence', () => {
 
   it('detects when baseline wins', () => {
     expect(qlooProofWinner(bt(3), bt(6))).toBe('baseline');
+  });
+
+  it('explains tie with row movement', () => {
+    const detail = qlooProofTieDetail([
+      {
+        entityId: 'a',
+        name: 'REI',
+        affinity: 1,
+        qlooRank: 1,
+        blendedRank: 1,
+        baselineRank: 42,
+        nationalStoreCount: 1,
+        presentInRadius: true,
+      },
+      {
+        entityId: 'b',
+        name: 'Chick-fil-A',
+        affinity: 0.5,
+        qlooRank: 15,
+        blendedRank: 15,
+        baselineRank: 1,
+        nationalStoreCount: 99,
+        presentInRadius: true,
+      },
+    ]);
+    expect(detail).toMatch(/Same hit count/);
+    expect(detail).toMatch(/REI/);
   });
 });
