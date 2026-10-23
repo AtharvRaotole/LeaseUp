@@ -12,12 +12,11 @@ describe('brandReachPlainLine', () => {
     expect(line).toContain('https://example.com/real-estate');
   });
 
-  it('uses search fallback', () => {
+  it('uses plain copy when not verified', () => {
     const line = brandReachPlainLine({
       status: 'not_yet_found',
       searchUrl: 'https://www.google.com/search?q=test',
     });
-    expect(line).toContain('not verified');
-    expect(line).toContain('google.com');
+    expect(line).toBe('How to reach them: Search for their real estate contact.');
   });
 });

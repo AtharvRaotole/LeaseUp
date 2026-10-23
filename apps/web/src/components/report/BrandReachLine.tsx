@@ -20,22 +20,6 @@ export function BrandReachLine({ reach }: { reach: BrandReachContact }) {
     );
   }
 
-  if (reach.searchUrl) {
-    return (
-      <p className="text-sm text-ink-2" data-testid="brand-reach-line">
-        How to reach them: official page not yet found in our dataset.{' '}
-        <a
-          href={reach.searchUrl}
-          className="text-accent underline-offset-2 hover:underline"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Search the brand site
-        </a>
-      </p>
-    );
-  }
-
   return (
     <p className="text-sm text-ink-2" data-testid="brand-reach-line">
       {text}
