@@ -5,6 +5,10 @@ import {
   buildGroundedSubject,
   polishOutreachDraft,
 } from '../lib/outreach-draft';
+import {
+  OUTREACH_TEMPLATE_DEMO_LABEL,
+  OUTREACH_TEMPLATE_FALLBACK_LABEL,
+} from '../lib/outreach-model-labels';
 
 export interface OutreachDraft {
   subject: string;
@@ -135,7 +139,7 @@ export class OpenAIClient {
       return { ...polished, model: this.model };
     } catch (err) {
       console.error('OpenAI error:', err);
-      return this.getDemoOutreach(params);
+      return this.getTemplateOutreach(params, OUTREACH_TEMPLATE_FALLBACK_LABEL);
     }
   }
 
@@ -144,8 +148,12 @@ export class OpenAIClient {
   }
 
   private getDemoOutreach(params: OutreachFacts): OutreachDraft {
+    return this.getTemplateOutreach(params, OUTREACH_TEMPLATE_DEMO_LABEL);
+  }
+
+  private getTemplateOutreach(params: OutreachFacts, modelLabel: string): OutreachDraft {
     const subject = buildGroundedSubject(params);
     const body = buildGroundedOutreachBody(params);
-    return { subject, body, model: this.model };
+    return { subject, body, model: modelLabel };
   }
 }

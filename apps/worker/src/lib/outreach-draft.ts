@@ -44,7 +44,7 @@ export function buildGroundedOutreachBody(facts: OutreachFacts): string {
 
 export function buildGroundedSubject(facts: OutreachFacts): string {
   const place = facts.neighborhood ?? 'site';
-  return `${facts.brandName} — ${place} storefront`;
+  return `${facts.brandName} · ${place} storefront`;
 }
 
 export function polishOutreachDraft(
