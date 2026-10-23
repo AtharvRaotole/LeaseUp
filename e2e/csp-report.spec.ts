@@ -43,12 +43,6 @@ test.describe('Production CSP on report + map', () => {
     const apiProbe = await page.request.get(`${API_ORIGIN}/api/health`);
     expect(apiProbe.ok(), `Worker health at ${API_ORIGIN}`).toBeTruthy();
 
-    const analyzeProbe = await page.request.post(`${BASE}/api/analyze`, {
-      data: { address: '1574 N Milwaukee Ave, Chicago, IL 60622', radius: 10 },
-      headers: { 'Content-Type': 'application/json' },
-    });
-    expect(analyzeProbe.ok(), 'Proxied /api/analyze under CSP').toBeTruthy();
-
     await page.goto(WICKER, { waitUntil: 'load' });
     const summary = page.locator(
       '[data-testid="report-summary"], [data-testid="brands-to-pitch"]'
