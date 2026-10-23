@@ -1,10 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { GeocodeCandidate, Location } from '@leaseup/contracts';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { cn } from '../../lib/cn';
+import {
+  distanceFromFirstLabel,
+  geocodeCandidateSubtitle,
+  geocodeCandidateTitle,
+  mapThumbnailUrl,
+} from '../../lib/geocode-display';
 
 function mapStyle() {
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -18,12 +24,15 @@ export function GeocodeConfirmPanel({
   candidates,
   onConfirm,
   onCancel,
+  onNoneOfThese,
 }: {
   address: string;
   candidates: GeocodeCandidate[];
   onConfirm: (location: Location) => void;
   onCancel: () => void;
+  onNoneOfThese?: () => void;
 }) {
+  const listId = useId();
   const [selected, setSelected] = useState(0);
   const [pin, setPin] = useState<{ lat: number; lng: number }>(() => ({
     lat: candidates[0]!.latitude,
@@ -32,6 +41,7 @@ export function GeocodeConfirmPanel({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markerRef = useRef<maplibregl.Marker | null>(null);
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   useEffect(() => {
     const c = candidates[selected];
@@ -91,30 +101,83 @@ export function GeocodeConfirmPanel({
     });
   };
 
+  const onListKeyDown = useCallback(
+    (ev: React.KeyboardEvent) => {
+      if (ev.key === 'ArrowDown') {
+        ev.preventDefault();
+        setSelected((i) => Math.min(candidates.length - 1, i + 1));
+      } else if (ev.key === 'ArrowUp') {
+        ev.preventDefault();
+        setSelected((i) => Math.max(0, i - 1));
+      } else if (ev.key === 'Home') {
+        ev.preventDefault();
+        setSelected(0);
+      } else if (ev.key === 'End') {
+        ev.preventDefault();
+        setSelected(candidates.length - 1);
+      }
+    },
+    [candidates.length]
+  );
+
+  useEffect(() => {
+    optionRefs.current[selected]?.focus();
+  }, [selected]);
+
+  const first = candidates[0]!;
+
   return (
     <Card className="p-5" data-testid="geocode-confirm">
-      <h2 className="text-h3 font-semibold text-ink">Did you mean?</h2>
+      <h2 className="text-h3 font-semibold text-ink">Which storefront did you mean?</h2>
       <p className="mt-1 text-sm text-ink-2">
-        We found more than one match for this address. Pick the right place, drag the pin on the map,
-        then continue.
+        We found a few close matches for &quot;{address}&quot;. Pick the one you are leasing, then
+        fine tune the pin on the map.
       </p>
-      <ul className="mt-4 space-y-2">
-        {candidates.map((c, i) => (
-          <li key={`${c.resolvedAddress}-${i}`}>
+      <div
+        role="listbox"
+        aria-label="Address matches"
+        aria-activedescendant={`${listId}-opt-${selected}`}
+        tabIndex={0}
+        className="mt-4 space-y-2 outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
+        onKeyDown={onListKeyDown}
+        data-testid="geocode-candidate-list"
+      >
+        {candidates.map((c, i) => {
+          const distance = i > 0 ? distanceFromFirstLabel(first, c) : null;
+          return (
             <button
+              key={`${c.resolvedAddress}-${i}`}
+              id={`${listId}-opt-${i}`}
+              ref={(el) => {
+                optionRefs.current[i] = el;
+              }}
               type="button"
+              role="option"
+              aria-selected={i === selected}
               className={cn(
-                'w-full rounded-lg border px-3 py-2 text-left text-sm transition',
+                'flex w-full gap-3 rounded-lg border px-3 py-2.5 text-left text-sm transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
                 i === selected ? 'border-accent bg-accent/5 text-ink' : 'border-border text-ink-2 hover:border-ink-3'
               )}
               onClick={() => setSelected(i)}
             >
-              <span className="font-medium text-ink">{c.neighborhood ?? c.city ?? 'Match'}</span>
-              <span className="mt-0.5 block text-xs text-ink-3">{c.resolvedAddress}</span>
+              <img
+                src={mapThumbnailUrl(c.latitude, c.longitude)}
+                alt=""
+                className="h-14 w-20 shrink-0 rounded-control border border-border object-cover bg-surface-2"
+                width={80}
+                height={56}
+                loading="lazy"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="font-medium text-ink">{geocodeCandidateTitle(c)}</p>
+                <p className="mt-0.5 text-xs text-ink-3">{geocodeCandidateSubtitle(c)}</p>
+                <p className="mt-1 truncate text-[11px] text-ink-3">{c.resolvedAddress}</p>
+                {distance && <p className="mt-1 text-[11px] text-ink-3">{distance}</p>}
+              </div>
             </button>
-          </li>
-        ))}
-      </ul>
+          );
+        })}
+      </div>
       <div
         ref={containerRef}
         className="mt-4 h-[min(52vh,360px)] min-h-[280px] w-full overflow-hidden rounded-lg border border-border sm:min-h-[220px] sm:h-[220px]"
@@ -122,8 +185,18 @@ export function GeocodeConfirmPanel({
         data-testid="geocode-confirm-map"
       />
       <div className="mt-4 flex flex-wrap gap-3">
-        <Button type="button" onClick={confirm}>Use this pin</Button>
+        <Button type="button" onClick={confirm} data-testid="geocode-confirm-use">
+          Use this pin
+        </Button>
         <Button type="button" variant="secondary" onClick={onCancel}>Back</Button>
+        <Button
+          type="button"
+          variant="ghost"
+          data-testid="geocode-none-of-these"
+          onClick={() => (onNoneOfThese ? onNoneOfThese() : onCancel())}
+        >
+          None of these
+        </Button>
       </div>
     </Card>
   );

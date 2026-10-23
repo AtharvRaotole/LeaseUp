@@ -93,10 +93,16 @@ export function PipelinePage() {
         )}
 
         {error && (
-          <p className="mt-8 text-center text-ink-2">
-            {error}
-            <Link to="/" className="mt-2 block text-accent hover:underline">Back home</Link>
-          </p>
+          <div
+            className="mx-auto mt-8 max-w-md rounded-card border border-border bg-surface px-4 py-4 text-center text-sm"
+            data-testid="pipeline-error"
+            role="alert"
+          >
+            <p className="font-medium text-ink">Pipeline unavailable</p>
+            <p className="mt-2 text-ink-2">{error}</p>
+            <p className="mt-2 text-ink-3">Open a report and use Add to pipeline, or start a new search.</p>
+            <Link to="/" className="mt-4 inline-block text-accent hover:underline">Back to home</Link>
+          </div>
         )}
 
         {!error && !board && (

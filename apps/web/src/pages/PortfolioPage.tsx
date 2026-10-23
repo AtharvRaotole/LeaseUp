@@ -9,6 +9,9 @@ import { Skeleton } from '../components/ui/Skeleton';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { apiUrl } from '../lib/api';
 import { buildReportPath } from '../lib/report-params';
+import { CalmErrorPanel } from '../components/ui/CalmErrorPanel';
+import type { ApiErrorInfo } from '../lib/api-error';
+import { SERVER_BUSY_MESSAGE } from '../lib/calm-error-copy';
 
 type SortKey = 'property' | 'neighborhood' | 'hitRate' | 'status';
 
@@ -28,6 +31,16 @@ function parseAddressesFromCsv(text: string): string[] {
     if (cell) out.push(cell);
   }
   return out;
+}
+
+function portfolioErrorInfo(message: string): ApiErrorInfo {
+  if (/missing|not found|expired/i.test(message)) {
+    return { message, code: 'NOT_FOUND' };
+  }
+  if (/csv|address column/i.test(message)) {
+    return { message, code: 'VALIDATION' };
+  }
+  return { message: SERVER_BUSY_MESSAGE, code: 'SERVER_BUSY' };
 }
 
 function statusLabel(status: PortfolioRow['status']): string {
@@ -63,7 +76,7 @@ export function PortfolioPage() {
 
   const loadPortfolio = useCallback(async (portfolioId: string) => {
     const res = await fetch(apiUrl(`/api/portfolio/${portfolioId}`));
-    if (!res.ok) throw new Error('Portfolio not found');
+    if (!res.ok) throw new Error('This portfolio link is missing or expired.');
     setPortfolio((await res.json()) as PortfolioResponse);
   }, []);
 
@@ -78,7 +91,7 @@ export function PortfolioPage() {
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
-        throw new Error(body.error || 'Could not create portfolio');
+        throw new Error(body.error || 'We could not start this portfolio. Try again in a moment.');
       }
       const data = (await res.json()) as PortfolioResponse;
       setPortfolio(data);
@@ -95,7 +108,7 @@ export function PortfolioPage() {
     const res = await fetch(apiUrl(`/api/portfolio/${portfolioId}/run`), { method: 'POST' });
     if (!res.ok || !res.body) {
       setBusy(false);
-      setError('Analysis stream failed to start');
+      setError('We could not run analyses right now. Try again in a moment.');
       return;
     }
     const reader = res.body.getReader();
@@ -200,7 +213,7 @@ export function PortfolioPage() {
     if (!id) return;
     setLoadingPortfolio(true);
     void loadPortfolio(id)
-      .catch(() => setError('Could not load this portfolio link.'))
+      .catch(() => setError('This portfolio link is missing or expired.'))
       .finally(() => setLoadingPortfolio(false));
   }, [id, loadPortfolio]);
 
@@ -254,7 +267,13 @@ export function PortfolioPage() {
                   </label>
                 </div>
                 {error && (
-                  <p className="mt-3 text-sm text-red-600" role="alert">{error}</p>
+                  <div className="mt-3" data-testid="portfolio-error">
+                    <CalmErrorPanel
+                      error={portfolioErrorInfo(error)}
+                      onRetry={() => setError(null)}
+                      testId="portfolio-error"
+                    />
+                  </div>
                 )}
               </Card>
             )}

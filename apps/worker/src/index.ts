@@ -5,6 +5,7 @@ import { secureHeaders } from 'hono/secure-headers';
 import { logger } from 'hono/logger';
 import { rateLimiter } from './middleware/rate-limit';
 import { errorHandler } from './middleware/error-handler';
+import { corsHeadersForRequest } from './middleware/cors-headers';
 import { metricsMiddleware } from './middleware/metrics';
 import { analysisRouter } from './routes/analysis';
 import { healthRouter } from './routes/health';
@@ -43,6 +44,9 @@ app.use(
       const allowed = c.env.ALLOWED_ORIGINS?.split(',') || [
         'http://localhost:5173',
         'http://localhost:3000',
+        'http://localhost:4173',
+        'http://127.0.0.1:4173',
+        'http://127.0.0.1:5173',
       ];
       return allowed.includes(origin) ? origin : allowed[0]!;
     },
@@ -129,7 +133,7 @@ app.route('/api', shareRouter);
 app.onError(errorHandler);
 
 app.notFound((c) => {
-  return c.json({ error: 'Not Found', code: 'NOT_FOUND' }, 404);
+  return c.json({ error: 'Not Found', code: 'NOT_FOUND' }, 404, corsHeadersForRequest(c));
 });
 
 export default app;

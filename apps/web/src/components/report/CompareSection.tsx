@@ -45,6 +45,7 @@ export function CompareUnavailable() {
     <section>
       <h3 className="text-h3 font-semibold text-ink">Same brands, different places.</h3>
       <p className="mt-2 text-sm text-ink-2">Comparison unavailable right now.</p>
+      <p className="mt-2 text-sm text-ink-3">Refresh the page to try again.</p>
     </section>
   );
 }
