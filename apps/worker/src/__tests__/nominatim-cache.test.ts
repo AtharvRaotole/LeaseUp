@@ -1,10 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { NominatimClient } from '../services/nominatim';
 import { ResponseCache } from '../lib/response-cache';
-import {
-  NOMINATIM_CANDIDATES_CACHE_TTL_EMPTY,
-  NOMINATIM_CANDIDATES_CACHE_TTL_OK,
-} from '../lib/nominatim-cache';
+import { NOMINATIM_CANDIDATES_CACHE_TTL_OK } from '../lib/nominatim-cache';
 
 describe('NominatimClient candidate cache', () => {
   afterEach(() => {
@@ -47,7 +44,7 @@ describe('NominatimClient candidate cache', () => {
     expect(putJson.mock.calls.at(-1)?.[2]).toBe(NOMINATIM_CANDIDATES_CACHE_TTL_OK);
   });
 
-  it('caches empty results for at most 60 seconds', async () => {
+  it('does not write cache when all lookups return empty', async () => {
     vi.spyOn(ResponseCache.prototype, 'get').mockResolvedValue(null);
     const putJson = vi.spyOn(ResponseCache.prototype, 'putJsonIfChanged').mockResolvedValue(true);
     const client = new NominatimClient(new ResponseCache(), 'LeaseUp-Test/1.0');
@@ -55,7 +52,7 @@ describe('NominatimClient candidate cache', () => {
 
     const candidates = await client.geocodeCandidates('nowhere on mars', 5);
     expect(candidates).toEqual([]);
-    expect(putJson.mock.calls[0]?.[2]).toBe(NOMINATIM_CANDIDATES_CACHE_TTL_EMPTY);
+    expect(putJson).not.toHaveBeenCalled();
   });
 
   it('falls back to legacy free-text search when structured search is empty', async () => {

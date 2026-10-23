@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   dedupeGeocodeCandidatesWithinMeters,
   formatGeocodeCandidateLabel,
+  formatPoiAddressLabel,
+  isPoiOnlyResult,
   primaryHouseNumber,
 } from '../lib/geocode-label';
 
@@ -38,20 +40,34 @@ describe('formatGeocodeCandidateLabel', () => {
   });
 
   it('labels Pearl St restaurant POI from address parts only', () => {
-    const label = formatGeocodeCandidateLabel(
-      'West Flanders Brewing Company, 1125, Pearl Street, Boulder, Colorado, United States',
-      {
-        house_number: '1125',
-        road: 'Pearl Street',
-        neighbourhood: 'Downtown Boulder',
-        city: 'Boulder',
-        state: 'Colorado',
-      }
-    );
-    expect(label).toBe('1125 Pearl Street, Downtown Boulder, Boulder');
+    const label = formatPoiAddressLabel({
+      house_number: '1125',
+      road: 'Pearl Street',
+      neighbourhood: 'Downtown Boulder',
+      city: 'Boulder',
+      state: 'Colorado',
+    });
+    expect(label).toBe('1125 Pearl Street, Downtown Boulder, Boulder, Colorado');
     expect(label).not.toMatch(/flanders|brewing/i);
   });
+});
 
+describe('isPoiOnlyResult', () => {
+  it('returns true for shop without street address', () => {
+    expect(isPoiOnlyResult({ class: 'shop', address: { city: 'Boulder' } })).toBe(true);
+  });
+
+  it('returns false for amenity with house_number and road', () => {
+    expect(
+      isPoiOnlyResult({
+        class: 'amenity',
+        address: { house_number: '1125', road: 'Pearl Street', city: 'Boulder' },
+      })
+    ).toBe(false);
+  });
+});
+
+describe('formatGeocodeCandidateLabel continued', () => {
   it('formats Pearl St Boulder with a single leading house number', () => {
     const label = formatGeocodeCandidateLabel(
       '1600;1628;1630 Pearl Street, Boulder, Colorado, United States',

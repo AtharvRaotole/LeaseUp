@@ -298,7 +298,7 @@ export default function ReportMapInner({
       </div>
       <div
         ref={containerRef}
-        className="h-full min-h-[520px] w-full rounded-card border border-border overflow-hidden"
+        className="!absolute inset-0 w-full rounded-card border border-border overflow-hidden"
       />
     </div>
   );

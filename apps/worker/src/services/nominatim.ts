@@ -3,14 +3,12 @@ import type { ResponseCache } from '../lib/response-cache';
 import {
   dedupeGeocodeCandidatesWithinMeters,
   formatGeocodeCandidateLabel,
-  primaryHouseNumber,
+  formatPoiAddressLabel,
+  isPoiClass,
+  isPoiOnlyResult,
 } from '../lib/geocode-label';
 import { UpstreamError } from '../lib/errors';
-import {
-  NOMINATIM_CANDIDATES_CACHE_TTL_EMPTY,
-  NOMINATIM_CANDIDATES_CACHE_TTL_OK,
-  nominatimCandidatesCacheKey,
-} from '../lib/nominatim-cache';
+import { NOMINATIM_CANDIDATES_CACHE_TTL_OK, nominatimCandidatesCacheKey } from '../lib/nominatim-cache';
 import { parseUsAddress, streetForGeocodeSearch } from '../lib/parse-us-address';
 import { candidateToLocation, resolveGeocodeFromCandidates } from '../lib/geocode-resolve';
 
@@ -166,9 +164,8 @@ export class NominatimClient {
   }
 
   private async writeCandidatesCache(cacheKey: string, deduped: GeocodeCandidate[]): Promise<void> {
-    const ttl =
-      deduped.length > 0 ? NOMINATIM_CANDIDATES_CACHE_TTL_OK : NOMINATIM_CANDIDATES_CACHE_TTL_EMPTY;
-    await this.cache.putJsonIfChanged(cacheKey, deduped, ttl);
+    if (deduped.length === 0) return;
+    await this.cache.putJsonIfChanged(cacheKey, deduped, NOMINATIM_CANDIDATES_CACHE_TTL_OK);
   }
 
   private buildStructuredParams(parsed: ReturnType<typeof parseUsAddress>, limit: number): Record<string, string> {
@@ -268,7 +265,10 @@ export class NominatimClient {
         result.address?.quarter ||
         result.address?.city_district ||
         result.address?.borough,
-      resolvedAddress: formatGeocodeCandidateLabel(result.display_name, result.address),
+      resolvedAddress:
+        isPoiClass(result.class) && result.address
+          ? formatPoiAddressLabel(result.address)
+          : formatGeocodeCandidateLabel(result.display_name, result.address),
     };
   }
 
@@ -282,22 +282,3 @@ export class NominatimClient {
   }
 }
 
-/** POI nodes are usable when Nominatim still attached a street address (common for storefronts). */
-export function nominatimResultHasStreetAddress(result: NominatimResult): boolean {
-  const house = primaryHouseNumber(result.address?.house_number);
-  const road = result.address?.road?.trim();
-  return Boolean(house && road);
-}
-
-function isPoiOnlyResult(result: NominatimResult): boolean {
-  if (nominatimResultHasStreetAddress(result)) return false;
-  const cls = result.class?.toLowerCase();
-  const typ = result.type?.toLowerCase();
-  if (!cls) return false;
-  if (cls === 'shop' || cls === 'amenity' || cls === 'tourism') return true;
-  if (typ === 'house' || typ === 'building' || typ === 'address' || typ === 'residential') {
-    return false;
-  }
-  if (cls === 'building' || cls === 'place') return false;
-  return cls === 'poi';
-}
