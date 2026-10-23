@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { openReportSection, waitForReportReady } from './report-helpers';
 
 const WICKER =
   '/r/wicker?address=1574%20N%20Milwaukee%20Ave%2C%20Chicago%2C%20IL%2060622&radius=10&screenshot=1';
@@ -49,10 +50,9 @@ test.describe('Production CSP on report + map', () => {
     expect(analyzeProbe.ok(), 'Proxied /api/analyze under CSP').toBeTruthy();
 
     await page.goto(WICKER, { waitUntil: 'domcontentloaded' });
-    await page
-      .locator('[data-testid="brands-to-pitch"]')
-      .first()
-      .waitFor({ timeout: 120_000 });
+    await waitForReportReady(page);
+    await openReportSection(page, 'report-section-why-brands');
+    await expect(page.getByTestId('brands-to-pitch')).toBeVisible({ timeout: 30_000 });
 
     const pageViolations = await page.evaluate(() =>
       (window as unknown as { __cspViolations?: string[] }).__cspViolations ?? []

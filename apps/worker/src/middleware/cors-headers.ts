@@ -8,7 +8,9 @@ export function corsHeadersForRequest(c: Context<{ Bindings: Env }>): Record<str
       'http://localhost:5173',
       'http://localhost:3000',
       'http://localhost:4173',
+      'http://localhost:4178',
       'http://127.0.0.1:4173',
+      'http://127.0.0.1:4178',
       'http://127.0.0.1:5173',
     ];
   const pick = allowed.includes(origin) ? origin : allowed[0]!;
