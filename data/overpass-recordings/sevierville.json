@@ -1,0 +1,14 @@
+{
+  "endpoint": "https://overpass-api.de/api/interpreter",
+  "query": "[out:json][timeout:8];\n(\n  node[\"brand\"~\"^(Sephora|Whole Foods Market|Cost Plus World Market|Pottery Barn|MAC Cosmetics|Trader Joe's|Lush|Nordstrom|Michaels|Kohl's)$\",i](around:10000,35.8365438,-83.5589482);\n  way[\"brand\"~\"^(Sephora|Whole Foods Market|Cost Plus World Market|Pottery Barn|MAC Cosmetics|Trader Joe's|Lush|Nordstrom|Michaels|Kohl's)$\",i](around:10000,35.8365438,-83.5589482);\n  node[\"name\"~\"^(Sephora|Whole Foods Market|Cost Plus World Market|Pottery Barn|MAC Cosmetics|Trader Joe's|Lush|Nordstrom|Michaels|Kohl's)$\",i](around:10000,35.8365438,-83.5589482)[\"shop\"];\n  way[\"name\"~\"^(Sephora|Whole Foods Market|Cost Plus World Market|Pottery Barn|MAC Cosmetics|Trader Joe's|Lush|Nordstrom|Michaels|Kohl's)$\",i](around:10000,35.8365438,-83.5589482)[\"shop\"];\n);\nout center tags;",
+  "recordedAt": "2026-10-23T03:37:03.657Z",
+  "response": {
+    "version": 0.6,
+    "generator": "Overpass API 0.7.62.11 87bfad18",
+    "osm3s": {
+      "timestamp_osm_base": "2026-10-23T03:35:19Z",
+      "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+    },
+    "elements": []
+  }
+}
