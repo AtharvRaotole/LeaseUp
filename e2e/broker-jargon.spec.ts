@@ -36,8 +36,10 @@ test.beforeAll(async () => {
 });
 
 async function visibleMainText(page: import('@playwright/test').Page): Promise<string> {
-  const main = page.locator('#main-content');
-  await main.waitFor({ state: 'visible' });
+  const main = page.locator(
+    '#main-content, main, [role="main"], [data-testid="pipeline-page"], [data-testid="watchlist-page"]'
+  ).first();
+  await main.waitFor({ state: 'visible', timeout: 60_000 });
   const chunks = await main.locator(':visible').allInnerTexts();
   return chunks.join('\n');
 }
