@@ -2,6 +2,8 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { PitchService } from '../services/pitch';
 import type { AnalysisResponse } from '@leaseup/contracts';
 
+const IKEA = '7E9A2E74-1CB5-43E9-8B74-69CA8283BFBD';
+
 const pitchStore = new Map<string, string>();
 
 const db = {
@@ -105,5 +107,34 @@ describe('PitchService', () => {
     const loaded = await service.get(created.id);
     expect(loaded?.location.latitude).toBe(40.73);
     expect(loaded?.mapImage).toBe('data:image/jpeg;base64,abc');
+  });
+
+  it('drops big-box brands for typical storefront sq ft and avoids nearest-store why duplicates', async () => {
+    const service = new PitchService({ DB: db } as import('../index').Env);
+    const results = minimalResults(40.73, -73.99);
+    results.storefrontSqFt = 2_500;
+    results.prospects.push({
+      brand: {
+        entityId: IKEA,
+        name: 'IKEA',
+        affinity: 0.95,
+        affinityRank: 1,
+        verified: 'verified (2 sources)',
+      },
+      outreachDraft: 'Hi',
+      reasons: ['Qloo rank #1 (top 5% of 100 brands) in NoHo'],
+      nearestExistingStoreKm: 33.8,
+    });
+
+    const created = await service.create({
+      results,
+      radiusKm: 10,
+      mapImage: 'data:image/jpeg;base64,abc',
+    });
+
+    expect(created.prospects.some((p) => p.prospect.brand.entityId === IKEA)).toBe(false);
+    const rankOnlyNearest = created.prospects.find((p) => p.prospect.brand.entityId === 'b');
+    expect(rankOnlyNearest?.whyLine).not.toMatch(/^Nearest /i);
+    expect(rankOnlyNearest?.whyLine).toContain('Verified absent within 10 km');
   });
 });
