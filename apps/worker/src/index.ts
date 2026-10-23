@@ -33,6 +33,8 @@ export interface Env {
   ALLOWED_ORIGINS?: string;
   NOMINATIM_CONTACT?: string;
   GIT_SHA?: string;
+  /** Test hook: simulate Qloo outage (local/CI only). */
+  FORCE_QLOO_DOWN?: string;
   BUILD_TIME?: string;
   CI?: string;
 }

@@ -74,6 +74,12 @@ import {
   METRO_COVERAGE_SCAN_KM,
   metroStoreCoverageIncomplete,
 } from '../lib/verification-coverage';
+import {
+  buildChainSizeInsightsFromCatalog,
+  chainRankedInsights,
+  isQlooUnavailableError,
+  TASTE_UNAVAILABLE_RANKING_NOTICE,
+} from '../lib/qloo-chain-fallback';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -146,24 +152,36 @@ export class AnalysisService {
 
       const qlooLocation = this.buildQlooLocation(location, request.address, request.radius);
 
+      let tasteUnavailable = false;
       const insights = await runStep(
         emit,
         'taste',
         "Read the neighborhood's taste (Qloo)",
         async () => {
-          const rows = await this.qloo.getBrandInsights({
-            location: qlooLocation,
-            brandIds: this.catalog.getBrandIds(),
-            tags: request.categoryTags,
-            take: 50,
-            runId,
-          });
-          const tasteLabel = tasteLocationLabel(location, qlooLocation);
-          return {
-            summary: `${rows.length} brands ranked for ${tasteLabel}`,
-            detail: { brandCount: rows.length, query: tasteLabel },
-            result: rows,
-          };
+          try {
+            const rows = await this.qloo.getBrandInsights({
+              location: qlooLocation,
+              brandIds: this.catalog.getBrandIds(),
+              tags: request.categoryTags,
+              take: 50,
+              runId,
+            });
+            const tasteLabel = tasteLocationLabel(location, qlooLocation);
+            return {
+              summary: `${rows.length} brands ranked for ${tasteLabel}`,
+              detail: { brandCount: rows.length, query: tasteLabel },
+              result: rows,
+            };
+          } catch (err) {
+            if (!isQlooUnavailableError(err)) throw err;
+            tasteUnavailable = true;
+            const rows = buildChainSizeInsightsFromCatalog(this.catalog);
+            return {
+              summary: TASTE_UNAVAILABLE_RANKING_NOTICE,
+              detail: { brandCount: rows.length, fallback: 'chain_size' },
+              result: rows,
+            };
+          }
         }
       );
 
@@ -238,7 +256,8 @@ export class AnalysisService {
             insights,
             request.radius,
             runId,
-            request.storefrontSqFt
+            request.storefrontSqFt,
+            tasteUnavailable
           );
           formatFilteredCount = generated.formatFilteredCount;
           const packs = generated.packs;
@@ -289,17 +308,20 @@ export class AnalysisService {
         request.radius,
         this.catalog,
         siteStratum,
-        presence
+        presence,
+        tasteUnavailable
       );
       const demoFixtureId = matchDemoFixtureId(location.address);
-      const strictEval = await buildStrictEvalSnapshot(
-        location,
-        insights,
-        request.radius,
-        demoFixtureId ? demoFixtureStratum(demoFixtureId) : densityToDefaultStratum(siteDensity),
-        this.catalog,
-        presence
-      );
+      const strictEval = tasteUnavailable
+        ? undefined
+        : await buildStrictEvalSnapshot(
+            location,
+            insights,
+            request.radius,
+            demoFixtureId ? demoFixtureStratum(demoFixtureId) : densityToDefaultStratum(siteDensity),
+            this.catalog,
+            presence
+          );
       const mapStores = await buildMapStores(
         location,
         insights,
@@ -317,14 +339,17 @@ export class AnalysisService {
       const enrichedProspects = await Promise.all(
         nearestEnriched.map(async (pack) => {
           const insight = insights.find((i) => i.entity_id === pack.brand.entityId);
-          const signals = insight ? extractQlooSignals(insight) : [];
-          const tradeAreaTaste = await loadTradeAreaTasteForProspect(
-            this.qloo,
-            location,
-            pack.brand.entityId,
-            request.radius,
-            runId
-          );
+          const signals =
+            !tasteUnavailable && insight ? extractQlooSignals(insight) : [];
+          const tradeAreaTaste = tasteUnavailable
+            ? undefined
+            : await loadTradeAreaTasteForProspect(
+                this.qloo,
+                location,
+                pack.brand.entityId,
+                request.radius,
+                runId
+              );
           return {
             ...pack,
             qlooSignals: signals.length > 0 ? signals : undefined,
@@ -333,17 +358,28 @@ export class AnalysisService {
         })
       );
 
-      const tradeAreaShoppers = await loadTradeAreaShoppersSnapshot({
-        qloo: this.qloo,
-        responseCache: this.responseCache,
-        location,
-        radiusKm: request.radius,
-        runId,
-        mode: this.mode,
-      });
+      const tradeAreaShoppers = tasteUnavailable
+        ? undefined
+        : await loadTradeAreaShoppersSnapshot({
+            qloo: this.qloo,
+            responseCache: this.responseCache,
+            location,
+            radiusKm: request.radius,
+            runId,
+            mode: this.mode,
+          });
 
-      const dataQuality = this.assessDataQuality(insights.length, backtestBlended);
-      const warnings = this.generateWarnings(insights.length, backtestBlended, location);
+      const effectiveBacktest =
+        tasteUnavailable && backtestBaseline ? backtestBaseline : backtestBlended;
+      const dataQuality = tasteUnavailable
+        ? 'low'
+        : this.assessDataQuality(insights.length, backtestBlended);
+      const warnings = this.generateWarnings(
+        insights.length,
+        effectiveBacktest,
+        location,
+        tasteUnavailable
+      );
       if (formatFilteredCount > 0) {
         warnings.push(
           `${formatFilteredCount} big-box or format brands hidden for ${request.storefrontSqFt ?? 2500} sq ft storefront`
@@ -352,12 +388,12 @@ export class AnalysisService {
 
       const response: AnalysisResponse = {
         location,
-        backtest: backtestBlended,
-        backtestBlended,
+        backtest: effectiveBacktest,
+        backtestBlended: tasteUnavailable ? backtestBaseline : backtestBlended,
         backtestBaseline,
         rankings,
         mapStores,
-        heatmapAvailable: this.mode === 'live',
+        heatmapAvailable: this.mode === 'live' && !tasteUnavailable,
         prospects: enrichedProspects,
         dataQuality,
         warnings,
@@ -370,6 +406,8 @@ export class AnalysisService {
         formatFilteredCount: formatFilteredCount || undefined,
         strictEval,
         tradeAreaShoppers,
+        tasteDataStatus: tasteUnavailable ? 'unavailable' : 'ok',
+        rankingNotice: tasteUnavailable ? TASTE_UNAVAILABLE_RANKING_NOTICE : undefined,
       };
 
       await this.persistRun(runId, location, response, 'completed');
@@ -449,7 +487,8 @@ export class AnalysisService {
     insights: Array<{ entity_id: string; name: string; query?: { affinity?: number; affinity_rank?: number } }>,
     radius: number,
     _runId: string,
-    storefrontSqFt?: number
+    storefrontSqFt?: number,
+    tasteUnavailable = false
   ): Promise<{ packs: ProspectPack[]; formatFilteredCount: number }> {
     const sqFt = storefrontSqFt ?? 2_500;
     let formatFilteredCount = 0;
@@ -459,7 +498,9 @@ export class AnalysisService {
     const blendSite = fixtureId
       ? DEMO_LOGISTIC_SITE_CONTEXT[fixtureId]
       : defaultLogisticSiteContext(siteDensity, radius);
-    const blended = orderInsightsByLogisticBlend(insights, blendSite);
+    const blended = tasteUnavailable
+      ? chainRankedInsights(insights)
+      : orderInsightsByLogisticBlend(insights, blendSite);
     const tierFit = buildTierFitByEntityId(insights.map((i) => i.entity_id));
     const rankedCount = insights.length;
     const affinities = insights.map((i) => i.query?.affinity ?? 0).filter((a) => a > 0);
@@ -521,7 +562,8 @@ export class AnalysisService {
         candidate,
         location,
         nationalCount,
-        rankedCount
+        rankedCount,
+        tasteUnavailable
       );
 
       let coverageNote = this.catalog.getCoverageNote(candidate.entity_id, nationalCount);
@@ -549,14 +591,16 @@ export class AnalysisService {
         brand: {
           entityId: candidate.entity_id,
           name: displayName,
-          affinity: candidate.query?.affinity || 0,
+          affinity: tasteUnavailable ? 0 : candidate.query?.affinity || 0,
           affinityRank: candidate.blendedRank,
           popularity: undefined,
           verified: verification.status,
           verificationSources: verification.sources,
           nationalStoreCount: nationalCount,
           chainSizeTier: tierContext?.tier,
-          tasteFitBeyondChainPercentile: tierContext?.tasteFitBeyondChainPercentile,
+          tasteFitBeyondChainPercentile: tasteUnavailable
+            ? undefined
+            : tierContext?.tasteFitBeyondChainPercentile,
           nearbyStoreCount: 0,
           storefrontFormat: formatSpec.format,
           minStorefrontSqFt: formatSpec.minSqFt,
@@ -886,13 +930,14 @@ export class AnalysisService {
     prospect: { name: string; qlooRank: number; query?: { affinity?: number } },
     location: Location,
     nationalCount: number,
-    rankedCount: number
+    rankedCount: number,
+    tasteUnavailable = false
   ): string[] {
     const reasons: string[] = [];
     const affinity = prospect.query?.affinity ?? 0;
     const area = location.neighborhood || location.city || 'this area';
 
-    if (affinity > 0 && rankedCount > 1) {
+    if (!tasteUnavailable && affinity > 0 && rankedCount > 1) {
       const percentile = 1 - (prospect.qlooRank - 1) / (rankedCount - 1);
       if (percentile >= 0.95) {
         reasons.push(`Qloo rank #${prospect.qlooRank} (top 5% of ${rankedCount} brands) in ${area}`);
@@ -903,9 +948,13 @@ export class AnalysisService {
       }
     }
 
-    reasons.push(
-      'Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, and trade-area density); backtest uses the same blend with adaptive-radius presence'
-    );
+    if (tasteUnavailable) {
+      reasons.push(TASTE_UNAVAILABLE_RANKING_NOTICE);
+    } else {
+      reasons.push(
+        'Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, and trade-area density); backtest uses the same blend with adaptive-radius presence'
+      );
+    }
 
     if (nationalCount >= 100) {
       reasons.push(`Established chain with ${nationalCount} US locations`);
@@ -929,9 +978,14 @@ export class AnalysisService {
   private generateWarnings(
     insightCount: number,
     backtest: BacktestResult,
-    location: Location
+    location: Location,
+    tasteUnavailable = false
   ): string[] {
     const warnings: string[] = [];
+
+    if (tasteUnavailable) {
+      warnings.push(TASTE_UNAVAILABLE_RANKING_NOTICE);
+    }
 
     if (insightCount < 20) {
       warnings.push('Limited brand data available for this location');

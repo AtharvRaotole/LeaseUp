@@ -24,6 +24,7 @@ const OutreachSheet = lazy(() =>
   import('../components/report/OutreachSheet').then((m) => ({ default: m.OutreachSheet }))
 );
 import { DemoBanner } from '../components/report/DemoBanner';
+import { TasteUnavailableBanner } from '../components/report/TasteUnavailableBanner';
 const ReportStickyHeader = lazy(() =>
   import('../components/report/ReportStickyHeader').then((m) => ({ default: m.ReportStickyHeader }))
 );
@@ -354,6 +355,9 @@ export function ReportPage() {
       {shareHead && <ShareHead {...shareHead} />}
       <TopBar />
       {results?.mode === 'demo' && <DemoBanner />}
+      {results?.tasteDataStatus === 'unavailable' && results.rankingNotice && (
+        <TasteUnavailableBanner message={results.rankingNotice} />
+      )}
       {results ? (
         <Suspense fallback={null}>
           <ReportStickyHeader

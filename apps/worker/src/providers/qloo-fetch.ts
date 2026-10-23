@@ -1,8 +1,8 @@
 import { UpstreamError } from '../lib/errors';
 
-export const QLOO_FETCH_TOTAL_BUDGET_MS = 22_000;
-export const QLOO_FETCH_MAX_RETRIES = 2;
-export const QLOO_FETCH_PER_ATTEMPT_TIMEOUT_MS = 12_000;
+export const QLOO_FETCH_TOTAL_BUDGET_MS = 8_000;
+export const QLOO_FETCH_MAX_RETRIES = 1;
+export const QLOO_FETCH_PER_ATTEMPT_TIMEOUT_MS = 4_000;
 
 export const QLOO_UNAVAILABLE_USER_MESSAGE =
   'Taste data is slow right now. Try again in a moment.';

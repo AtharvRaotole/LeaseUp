@@ -18,6 +18,8 @@ name = "leaseup-worker-prod"
 
 [vars]
 APP_MODE = "demo"
+# Local/CI only: set to "1" via wrangler dev --var FORCE_QLOO_DOWN:1 for Qloo-down e2e.
+FORCE_QLOO_DOWN = "0"
 
 # D1 database for caching and rate limiting
 # Run: wrangler d1 create leaseup_db

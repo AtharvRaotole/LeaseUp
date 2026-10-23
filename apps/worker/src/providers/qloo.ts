@@ -109,6 +109,7 @@ export class QlooClient {
   private cache: ResponseCache;
   private db: D1Database;
   private mode: 'live' | 'demo';
+  private forceQlooDown: boolean;
 
   constructor(env: Env) {
     this.baseUrl = env.QLOO_BASE_URL || 'https://hackathon.api.qloo.com';
@@ -123,6 +124,7 @@ export class QlooClient {
     }
 
     this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
+    this.forceQlooDown = env.FORCE_QLOO_DOWN === '1';
   }
 
   async getBrandInsights(params: {
@@ -132,6 +134,10 @@ export class QlooClient {
     take?: number;
     runId?: string;
   }): Promise<QlooInsight[]> {
+    if (this.forceQlooDown) {
+      throw qlooUnavailableError('Qloo forced unavailable');
+    }
+
     if (this.mode === 'demo') {
       if (params.location.kind !== 'query') {
         throw new DemoModeRequiredError();

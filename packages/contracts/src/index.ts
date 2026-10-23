@@ -265,6 +265,10 @@ export const AnalysisResponseSchema = z.object({
   formatFilteredCount: z.number().int().optional(),
   strictEval: StrictEvalSnapshotSchema.optional(),
   tradeAreaShoppers: TradeAreaShoppersSnapshotSchema.optional(),
+  /** When Qloo is down, prospects still return but taste scores are omitted. */
+  tasteDataStatus: z.enum(['ok', 'unavailable']).optional(),
+  /** Plain-language ranking disclaimer when tasteDataStatus is unavailable. */
+  rankingNotice: z.string().optional(),
 });
 
 export type AnalysisResponse = z.infer<typeof AnalysisResponseSchema>;
