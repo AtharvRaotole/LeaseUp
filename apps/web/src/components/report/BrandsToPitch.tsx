@@ -21,6 +21,7 @@ export function BrandsToPitch({
   onSelect,
   onDraft,
   radiusKm,
+  forceEmpty,
 }: {
   results: AnalysisResponse;
   request: AnalysisRequest;
@@ -29,6 +30,7 @@ export function BrandsToPitch({
   onSelect: (p: ProspectPack) => void;
   onDraft: (p: ProspectPack) => void;
   radiusKm: number;
+  forceEmpty?: boolean;
 }) {
   const navigate = useNavigate();
   const [prospects, setProspects] = useState(results.prospects);
@@ -52,7 +54,7 @@ export function BrandsToPitch({
       .catch(() => undefined);
   }, [results, radiusKm]);
 
-  if (prospects.length === 0) {
+  if (forceEmpty || prospects.length === 0) {
     return (
       <Card className="text-center">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-surface-2 text-ink-2">
