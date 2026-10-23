@@ -9,7 +9,7 @@ import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const BASE = (process.env.SCREENSHOT_BASE || 'http://127.0.0.1:4173').replace(/\/$/, '');
-const OUT = join(process.cwd(), 'apps/web/public/landing');
+const OUT = join(process.cwd(), 'apps/web/src/assets/landing-hero');
 
 await mkdir(OUT, { recursive: true });
 

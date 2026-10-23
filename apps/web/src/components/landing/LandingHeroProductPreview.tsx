@@ -1,10 +1,18 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { landingWickerReportPath } from './LandingReportPreview';
+import { LandingHeroFixtureFrame } from './LandingHeroFixtureFrame';
+import heroLightAvif from '../../assets/landing-hero/hero-wicker-light.avif';
+import heroLightWebp from '../../assets/landing-hero/hero-wicker-light.webp';
+import heroDarkAvif from '../../assets/landing-hero/hero-wicker-dark.avif';
+import heroDarkWebp from '../../assets/landing-hero/hero-wicker-dark.webp';
 
 const HERO_WIDTH = 720;
 const HERO_HEIGHT = 400;
 
 export function LandingHeroProductPreview() {
+  const [useFixtureFallback, setUseFixtureFallback] = useState(false);
+
   return (
     <div className="mx-auto w-full max-w-[720px] lg:mx-0" data-testid="landing-hero-product-preview">
       <Link
@@ -27,29 +35,32 @@ export function LandingHeroProductPreview() {
               leaseup.app{landingWickerReportPath}
             </div>
           </div>
-          <picture className="block">
-            <source
-              type="image/avif"
-              media="(prefers-color-scheme: dark)"
-              srcSet="/landing/hero-wicker-dark.avif"
-            />
-            <source
-              type="image/webp"
-              media="(prefers-color-scheme: dark)"
-              srcSet="/landing/hero-wicker-dark.webp"
-            />
-            <source type="image/avif" srcSet="/landing/hero-wicker-light.avif" />
-            <img
-              src="/landing/hero-wicker-light.webp"
-              alt="Wicker Park demo: top three brands to pitch and map preview"
-              width={HERO_WIDTH}
-              height={HERO_HEIGHT}
-              loading="lazy"
-              decoding="async"
-              fetchPriority="low"
-              className="block h-auto w-full bg-bg"
-            />
-          </picture>
+          {useFixtureFallback ? (
+            <LandingHeroFixtureFrame />
+          ) : (
+            <picture className="block">
+              <source
+                type="image/avif"
+                media="(prefers-color-scheme: dark)"
+                srcSet={heroDarkAvif}
+              />
+              <source type="image/webp" media="(prefers-color-scheme: dark)" srcSet={heroDarkWebp} />
+              <source type="image/avif" srcSet={heroLightAvif} />
+              <source type="image/webp" srcSet={heroLightWebp} />
+              <img
+                data-testid="landing-hero-preview-img"
+                src={heroLightWebp}
+                alt=""
+                width={HERO_WIDTH}
+                height={HERO_HEIGHT}
+                loading="eager"
+                decoding="async"
+                fetchPriority="low"
+                className="block h-auto w-full bg-bg"
+                onError={() => setUseFixtureFallback(true)}
+              />
+            </picture>
+          )}
         </div>
         <p className="mt-3 text-center text-meta text-ink-2 lg:text-left">
           <span className="text-ink-3">Recorded demo</span>
