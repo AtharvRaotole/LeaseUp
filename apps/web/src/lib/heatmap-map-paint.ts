@@ -1,5 +1,7 @@
+import type { ExpressionSpecification } from 'maplibre-gl';
+
 /** MapLibre heatmap-density paint ramp (matches report map legend). */
-export const HEATMAP_COLOR_EXPRESSION = [
+export const HEATMAP_COLOR_EXPRESSION: ExpressionSpecification = [
   'interpolate',
   ['linear'],
   ['heatmap-density'],
@@ -9,4 +11,4 @@ export const HEATMAP_COLOR_EXPRESSION = [
   '#fdba74',
   1,
   '#c2410c',
-] as const;
+];
