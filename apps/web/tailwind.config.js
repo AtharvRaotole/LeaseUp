@@ -4,21 +4,44 @@ export default {
   theme: {
     extend: {
       colors: {
-        surface: {
-          DEFAULT: '#0a0a0b',
-          raised: '#111113',
-          border: '#27272a',
-        },
-        accent: {
-          DEFAULT: '#8b5cf6',
-          muted: '#6d28d9',
-        },
+        bg: 'var(--bg)',
+        surface: 'var(--surface)',
+        'surface-2': 'var(--surface-2)',
+        border: 'var(--border)',
+        'border-strong': 'var(--border-strong)',
+        ink: 'var(--ink)',
+        'ink-2': 'var(--ink-2)',
+        'ink-3': 'var(--ink-3)',
+        accent: 'var(--accent)',
+        'accent-soft': 'var(--accent-soft)',
+        success: 'var(--success)',
+        warn: 'var(--warn)',
+        danger: 'var(--danger)',
+        info: 'var(--info)',
       },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+      borderRadius: {
+        card: 'var(--radius-card)',
+        control: 'var(--radius-control)',
+        pill: '999px',
       },
       boxShadow: {
-        glow: '0 0 40px rgba(139, 92, 246, 0.15)',
+        pop: 'var(--shadow-pop)',
+      },
+      fontFamily: {
+        sans: ['var(--font-sans)'],
+        mono: ['var(--font-mono)'],
+        serif: ['var(--font-serif)'],
+      },
+      fontSize: {
+        meta: ['12px', { lineHeight: '16px' }],
+        small: ['13px', { lineHeight: '20px' }],
+        body: ['14px', { lineHeight: '22px' }],
+        'body-lg': ['16px', { lineHeight: '24px' }],
+        h3: ['20px', { lineHeight: '28px', letterSpacing: '-0.01em' }],
+        h2: ['28px', { lineHeight: '34px', letterSpacing: '-0.01em' }],
+        h1: ['44px', { lineHeight: '48px', letterSpacing: '-0.01em' }],
+        display: ['56px', { lineHeight: '60px', letterSpacing: '-0.02em' }],
+        label: ['11px', { lineHeight: '16px', letterSpacing: '0.04em' }],
       },
     },
   },

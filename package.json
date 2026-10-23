@@ -10,7 +10,7 @@
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "verify:ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
-    "screenshots": "node scripts/capture-screenshots.mjs",
+    "screenshots": "node scripts/ui-snapshots.mjs",
     "deploy": "pnpm --filter @leaseup/worker deploy"
   },
   "devDependencies": {
