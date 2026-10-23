@@ -17,6 +17,8 @@ import {
   boulderFixture,
   seviervilleFixture,
   orderInsightsByLogisticBlend,
+  DEMO_LOGISTIC_SITE_CONTEXT,
+  defaultLogisticSiteContext,
   buildTierFitByEntityId,
   chainSizeTierFromStoreCount,
   isProspectChainTier,
@@ -406,7 +408,10 @@ export class AnalysisService {
     const prospectPacks: ProspectPack[] = [];
     const fixtureId = matchDemoFixtureId(location.address);
     const siteDensity = fixtureId ? demoFixtureDensity(fixtureId) : 'urban';
-    const blended = orderInsightsByLogisticBlend(insights, siteDensity);
+    const blendSite = fixtureId
+      ? DEMO_LOGISTIC_SITE_CONTEXT[fixtureId]
+      : defaultLogisticSiteContext(siteDensity, radius);
+    const blended = orderInsightsByLogisticBlend(insights, blendSite);
     const tierFit = buildTierFitByEntityId(insights.map((i) => i.entity_id));
     const rankedCount = insights.length;
     const affinities = insights.map((i) => i.query?.affinity ?? 0).filter((a) => a > 0);

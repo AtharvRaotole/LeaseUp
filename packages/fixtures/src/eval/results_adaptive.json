@@ -1,38 +1,898 @@
 {
   "agg": {
     "n_sites": 40,
-    "p10_raw": 0.54,
-    "p10_chain": 0.76,
+    "p10_raw": 0.5375,
+    "p10_chain": 0.755,
     "p10_blend": 0.82,
-    "p10_legacy_blend": 0.59,
-    "same_size_auc": 0.672,
-    "same_size_auc_ci": [0.65, 0.693],
-    "blend_lift_vs_chain_pp": 6.5,
-    "blend_lift_vs_chain_ci": [3.2, 9.5]
+    "p10_legacy_blend": 0.5900000000000001,
+    "same_size_auc": 0.6717189444462172,
+    "same_size_auc_ci": [
+      0.6501677017209393,
+      0.6934039360158937
+    ],
+    "blend_lift_vs_chain_pp": 6.499999999999999,
+    "blend_lift_vs_chain_ci": [
+      3.2499999999999996,
+      9.499999999999998
+    ]
   },
   "by_stratum": {
-    "dense_urban": { "radius_km": 1.5 },
-    "urban": { "radius_km": 2.5 },
-    "suburban": { "radius_km": 5 },
-    "exurban": { "radius_km": 7 },
-    "tourist": { "radius_km": 4 }
+    "0": {
+      "count_range": [
+        24,
+        176
+      ],
+      "n_brands": 46,
+      "pooled_within_stratum_auc": 0.7152503503631036,
+      "pos_rate": 0.1373913043478261
+    },
+    "1": {
+      "count_range": [
+        177,
+        438
+      ],
+      "n_brands": 45,
+      "pooled_within_stratum_auc": 0.6168469354310062,
+      "pos_rate": 0.24441900400686892
+    },
+    "2": {
+      "count_range": [
+        439,
+        864
+      ],
+      "n_brands": 45,
+      "pooled_within_stratum_auc": 0.7343454326509548,
+      "pos_rate": 0.24821852731591448
+    },
+    "3": {
+      "count_range": [
+        865,
+        1771
+      ],
+      "n_brands": 45,
+      "pooled_within_stratum_auc": 0.6195291058789542,
+      "pos_rate": 0.3096476025418833
+    },
+    "4": {
+      "count_range": [
+        1810,
+        20496
+      ],
+      "n_brands": 46,
+      "pooled_within_stratum_auc": 0.6905206086398881,
+      "pos_rate": 0.5431675242995998
+    }
   },
-  "by_cat": {},
+  "by_cat": {
+    "affluent_suburban": {
+      "n": 6,
+      "qloo.p10": [
+        0.7166666666666667,
+        0.5166666666666666,
+        0.9166666666666666
+      ],
+      "chain.p10": [
+        0.7666666666666666,
+        0.6166666666666667,
+        0.9166666666666666
+      ],
+      "qloo.auc": [
+        0.7079181774753195,
+        0.6433954685750264,
+        0.7729043012882354
+      ],
+      "chain.auc": [
+        0.5962544059963488,
+        0.5404764389320578,
+        0.648345396741869
+      ],
+      "logit_blend.auc": [
+        0.6797989592274369,
+        0.6132040259086239,
+        0.7450697522115721
+      ],
+      "strat_auc_qloo": [
+        0.7234269614957739,
+        0.6459358561004581,
+        0.8004670912951167
+      ],
+      "partial_rho": [
+        0.3487042508318197,
+        0.23910223901214947,
+        0.46061418013814986
+      ]
+    },
+    "college_town": {
+      "n": 6,
+      "qloo.p10": [
+        0.5833333333333334,
+        0.46666666666666656,
+        0.7166666666666667
+      ],
+      "chain.p10": [
+        0.7999999999999999,
+        0.7333333333333334,
+        0.8833333333333333
+      ],
+      "qloo.auc": [
+        0.6217727217346805,
+        0.6122934390919228,
+        0.6319796748855022
+      ],
+      "chain.auc": [
+        0.7480768643157226,
+        0.708385079882539,
+        0.7914349757176061
+      ],
+      "logit_blend.auc": [
+        0.7829379651825357,
+        0.7511213152093812,
+        0.8183583365558125
+      ],
+      "strat_auc_qloo": [
+        0.6708952145214522,
+        0.6476339187586357,
+        0.6923397602918187
+      ],
+      "partial_rho": [
+        0.2464413049438062,
+        0.22151230219162518,
+        0.2711453672280688
+      ]
+    },
+    "dense_urban": {
+      "n": 9,
+      "qloo.p10": [
+        0.5333333333333333,
+        0.39999999999999997,
+        0.6777777777777777
+      ],
+      "chain.p10": [
+        0.6000000000000001,
+        0.5222222222222223,
+        0.6666666666666667
+      ],
+      "qloo.auc": [
+        0.6762724653817217,
+        0.6492664655065769,
+        0.7024549942781114
+      ],
+      "chain.auc": [
+        0.6010352204190473,
+        0.5683760701794525,
+        0.6424409011167111
+      ],
+      "logit_blend.auc": [
+        0.6771259222461105,
+        0.6465781441744203,
+        0.7137875119491088
+      ],
+      "strat_auc_qloo": [
+        0.6838619028502609,
+        0.6507843164538254,
+        0.7131542153225133
+      ],
+      "partial_rho": [
+        0.27596043933670183,
+        0.2367345394775102,
+        0.31268207875338044
+      ]
+    },
+    "small_town": {
+      "n": 6,
+      "qloo.p10": [
+        0.19999999999999996,
+        0.14999999999999997,
+        0.25
+      ],
+      "chain.p10": [
+        0.7833333333333333,
+        0.7166666666666668,
+        0.8500000000000001
+      ],
+      "qloo.auc": [
+        0.519377738861086,
+        0.4847390419022777,
+        0.5582564179132484
+      ],
+      "chain.auc": [
+        0.9032266162587502,
+        0.8858826337225412,
+        0.9168806429790961
+      ],
+      "logit_blend.auc": [
+        0.866291269825716,
+        0.8399876078395777,
+        0.8914284931858698
+      ],
+      "strat_auc_qloo": [
+        0.6069455406471981,
+        0.5691282620766241,
+        0.6398932297985925
+      ],
+      "partial_rho": [
+        0.11066544352776114,
+        0.07253418065213406,
+        0.15006307186313442
+      ]
+    },
+    "sunbelt_growth": {
+      "n": 7,
+      "qloo.p10": [
+        0.6428571428571429,
+        0.5428571428571428,
+        0.7428571428571428
+      ],
+      "chain.p10": [
+        0.8142857142857142,
+        0.7710714285714285,
+        0.8571428571428571
+      ],
+      "qloo.auc": [
+        0.5841438172240746,
+        0.5532355203396807,
+        0.6114957357646268
+      ],
+      "chain.auc": [
+        0.752400337813225,
+        0.69716305692101,
+        0.8027307733674046
+      ],
+      "logit_blend.auc": [
+        0.7734440507511653,
+        0.7203234946192094,
+        0.8247525921450407
+      ],
+      "strat_auc_qloo": [
+        0.6343836508711936,
+        0.5990334273056787,
+        0.6693638007614132
+      ],
+      "partial_rho": [
+        0.1973571928701017,
+        0.13809742896705815,
+        0.24583410742587122
+      ]
+    },
+    "tourist": {
+      "n": 6,
+      "qloo.p10": [
+        0.5333333333333334,
+        0.3333333333333334,
+        0.6833333333333336
+      ],
+      "chain.p10": [
+        0.8333333333333334,
+        0.7000000000000001,
+        0.9666666666666667
+      ],
+      "qloo.auc": [
+        0.6322124151545913,
+        0.5611728951079499,
+        0.6891860061684016
+      ],
+      "chain.auc": [
+        0.7096902430223233,
+        0.6084110201262479,
+        0.7960950260585823
+      ],
+      "logit_blend.auc": [
+        0.7521242142714469,
+        0.6726999367126837,
+        0.8027610723201385
+      ],
+      "strat_auc_qloo": [
+        0.664453125,
+        0.6223052077105279,
+        0.7013509886373803
+      ],
+      "partial_rho": [
+        0.24270998547955017,
+        0.15173665517894974,
+        0.31639854641180354
+      ]
+    }
+  },
   "per_address": [
     {
+      "id": "annarbor_mi",
+      "eval_id": "annarbor_mi",
+      "label": "Potbelly's Sandwich Shop",
+      "address": "300 S State St, Ann Arbor, MI 48104",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 222,
+      "n_present": 102,
+      "p10_raw": 0.7000000000000002,
+      "p10_chain": 0.7999999999999998,
+      "p10_blend": 1,
+      "same_size_auc": 0.6719445818901534,
+      "taste_percentile": 51
+    },
+    {
+      "id": "athens_ga",
+      "eval_id": "athens_ga",
+      "label": "200",
+      "address": "200 E Clayton St, Athens, GA 30601",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 223,
+      "n_present": 64,
+      "p10_raw": 0.7000000000000002,
+      "p10_chain": 1,
+      "p10_blend": 1,
+      "same_size_auc": 0.7048951048951049,
+      "taste_percentile": 79
+    },
+    {
+      "id": "austin_soco",
+      "eval_id": "austin_soco",
+      "label": "1400",
+      "address": "1400 S Congress Ave, Austin, TX 78704",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 224,
+      "n_present": 75,
+      "p10_raw": 0.7999999999999998,
+      "p10_chain": 0.7000000000000002,
+      "p10_blend": 0.7999999999999998,
+      "same_size_auc": 0.6523076923076923,
+      "taste_percentile": 41
+    },
+    {
+      "id": "bemidji_mn",
+      "eval_id": "bemidji_mn",
+      "label": "Tutto Bene",
+      "address": "300 Beltrami Ave NW, Bemidji, MN 56601",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 182,
+      "n_present": 37,
+      "p10_raw": 0.30000000000000004,
+      "p10_chain": 0.7999999999999998,
+      "p10_blend": 0.6000000000000001,
+      "same_size_auc": 0.6551724137931034,
+      "taste_percentile": 44
+    },
+    {
+      "id": "bethesda_md",
+      "eval_id": "bethesda_md",
+      "label": "True Food Kitchen",
+      "address": "7100 Wisconsin Ave, Bethesda, MD 20814",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 224,
+      "n_present": 68,
+      "p10_raw": 0.30000000000000004,
+      "p10_chain": 0.6000000000000001,
+      "p10_blend": 0.7999999999999998,
+      "same_size_auc": 0.6034063260340633,
+      "taste_percentile": 21
+    },
+    {
+      "id": "boise_id",
+      "eval_id": "boise_id",
+      "label": "Eighth & Main",
+      "address": "800 W Main St, Boise, ID 83702",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 220,
+      "n_present": 43,
+      "p10_raw": 0.5,
+      "p10_chain": 0.7999999999999998,
+      "p10_blend": 0.7999999999999998,
+      "same_size_auc": 0.5414673046251993,
+      "taste_percentile": 4
+    },
+    {
+      "id": "boulder",
+      "eval_id": "boulder_co",
+      "label": "Rocky Mountain Chocolate Factory",
+      "address": "1300 Pearl St, Boulder, CO 80302",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 224,
+      "n_present": 72,
+      "p10_raw": 0.7999999999999998,
+      "p10_chain": 0.7999999999999998,
+      "p10_blend": 0.9,
+      "same_size_auc": 0.6839938239835306,
+      "taste_percentile": 59
+    },
+    {
+      "id": "branson_mo",
+      "eval_id": "branson_mo",
+      "label": "Branson Landing",
+      "address": "100 Branson Landing Blvd, Branson, MO 65616",
+      "stratum": "tourist",
+      "adaptive_radius_km": 5,
+      "n_brands": 219,
+      "n_present": 74,
+      "p10_raw": 0.7000000000000002,
+      "p10_chain": 0.9,
+      "p10_blend": 0.9,
+      "same_size_auc": 0.7211538461538461,
+      "taste_percentile": 86
+    },
+    {
+      "id": "cary_nc",
+      "eval_id": "cary_nc",
+      "label": "300",
+      "address": "300 S Academy St, Cary, NC 27511",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 219,
+      "n_present": 94,
+      "p10_raw": 0.7999999999999998,
+      "p10_chain": 0.9,
+      "p10_blend": 1,
+      "same_size_auc": 0.6984126984126984,
+      "taste_percentile": 71
+    },
+    {
+      "id": "chapelhill_nc",
+      "eval_id": "chapelhill_nc",
+      "label": "150",
+      "address": "150 E Franklin St, Chapel Hill, NC 27514",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 221,
+      "n_present": 42,
+      "p10_raw": 0.5,
+      "p10_chain": 0.7000000000000002,
+      "p10_blend": 0.7999999999999998,
+      "same_size_auc": 0.6506386175807664,
+      "taste_percentile": 36
+    },
+    {
+      "id": "charlotte_se",
+      "eval_id": "charlotte_se",
+      "label": "ClipperCole",
+      "address": "2000 South Blvd, Charlotte, NC 28203",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 224,
+      "n_present": 78,
+      "p10_raw": 0.6000000000000001,
+      "p10_chain": 0.7999999999999998,
+      "p10_blend": 0.7999999999999998,
+      "same_size_auc": 0.5756181713628522,
+      "taste_percentile": 11
+    },
+    {
+      "id": "chi_lakeview",
+      "eval_id": "chi_lakeview",
+      "label": "3400",
+      "address": "3400 N Southport Ave, Chicago, IL 60657",
+      "stratum": "dense_urban",
+      "adaptive_radius_km": 1.5,
+      "n_brands": 224,
+      "n_present": 53,
+      "p10_raw": 0.5,
+      "p10_chain": 0.6000000000000001,
+      "p10_blend": 0.7000000000000002,
+      "same_size_auc": 0.6761734997029115,
+      "taste_percentile": 54
+    },
+    {
       "id": "wicker-park",
-      "label": "Wicker Park, Chicago",
+      "eval_id": "chi_wicker",
+      "label": "1560",
       "address": "1560 N Milwaukee Ave, Chicago, IL 60622",
       "stratum": "dense_urban",
       "adaptive_radius_km": 1.5,
       "n_brands": 224,
       "n_present": 42,
-      "p10_raw": 0.3,
-      "p10_chain": 0.7,
+      "p10_raw": 0.30000000000000004,
+      "p10_chain": 0.7000000000000002,
       "p10_blend": 0.9,
-      "same_size_auc": 0.688,
-      "same_size_auc_ci": [0.6, 0.78],
+      "same_size_auc": 0.6884709730171709,
       "taste_percentile": 64
+    },
+    {
+      "id": "dc_14th",
+      "eval_id": "dc_14th",
+      "label": "United States Post Office",
+      "address": "1400 14th St NW, Washington, DC 20005",
+      "stratum": "dense_urban",
+      "adaptive_radius_km": 1.5,
+      "n_brands": 224,
+      "n_present": 67,
+      "p10_raw": 0.3999999999999999,
+      "p10_chain": 0.6000000000000001,
+      "p10_blend": 0.7000000000000002,
+      "same_size_auc": 0.589906908378246,
+      "taste_percentile": 14
+    },
+    {
+      "id": "edina_mn",
+      "eval_id": "edina_mn",
+      "label": "3911",
+      "address": "3911 W 50th St, Edina, MN 55424",
+      "stratum": "urban",
+      "adaptive_radius_km": 15,
+      "n_brands": 224,
+      "n_present": 162,
+      "p10_raw": 1,
+      "p10_chain": 1,
+      "p10_blend": 1,
+      "same_size_auc": 0.8335106382978723,
+      "taste_percentile": 99
+    },
+    {
+      "id": "elko_nv",
+      "eval_id": "elko_nv",
+      "label": "400",
+      "address": "400 Idaho St, Elko, NV 89801",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 170,
+      "n_present": 23,
+      "p10_raw": 0.19999999999999996,
+      "p10_chain": 0.7000000000000002,
+      "p10_blend": 0.5,
+      "same_size_auc": 0.5419222903885481,
+      "taste_percentile": 6
+    },
+    {
+      "id": "frisco_tx",
+      "eval_id": "frisco_tx",
+      "label": "Dallas Parkway",
+      "address": "3300 Dallas Pkwy, Frisco, TX 75034",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 224,
+      "n_present": 67,
+      "p10_raw": 0.3999999999999999,
+      "p10_chain": 0.7999999999999998,
+      "p10_blend": 1,
+      "same_size_auc": 0.6656738644825019,
+      "taste_percentile": 49
+    },
+    {
+      "id": "gilbert_az",
+      "eval_id": "gilbert_az",
+      "label": "NuView Pools & Landscape",
+      "address": "2218 E Williams Field Rd, Gilbert, AZ 85295",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 218,
+      "n_present": 104,
+      "p10_raw": 0.7000000000000002,
+      "p10_chain": 0.7999999999999998,
+      "p10_blend": 1,
+      "same_size_auc": 0.6793361884368309,
+      "taste_percentile": 56
+    },
+    {
+      "id": "greenwich_ct",
+      "eval_id": "greenwich_ct",
+      "label": "100",
+      "address": "100 Greenwich Ave, Greenwich, CT 06830",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 224,
+      "n_present": 37,
+      "p10_raw": 0.5,
+      "p10_chain": 0.7000000000000002,
+      "p10_blend": 0.7999999999999998,
+      "same_size_auc": 0.7471698113207547,
+      "taste_percentile": 91
+    },
+    {
+      "id": "hutchinson_ks",
+      "eval_id": "hutchinson_ks",
+      "label": "100",
+      "address": "100 N Main St, Hutchinson, KS 67501",
+      "stratum": "urban",
+      "adaptive_radius_km": 15,
+      "n_brands": 201,
+      "n_present": 42,
+      "p10_raw": 0.19999999999999996,
+      "p10_chain": 0.9,
+      "p10_blend": 0.9,
+      "same_size_auc": 0.6511904761904762,
+      "taste_percentile": 39
+    },
+    {
+      "id": "ithaca_ny",
+      "eval_id": "ithaca_ny",
+      "label": "200",
+      "address": "200 E State St, Ithaca, NY 14850",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 221,
+      "n_present": 47,
+      "p10_raw": 0.3999999999999999,
+      "p10_chain": 0.7000000000000002,
+      "p10_blend": 0.7999999999999998,
+      "same_size_auc": 0.6950037285607755,
+      "taste_percentile": 69
+    },
+    {
+      "id": "keywest_fl",
+      "eval_id": "keywest_fl",
+      "label": "Margaritaville",
+      "address": "500 Duval St, Key West, FL 33040",
+      "stratum": "tourist",
+      "adaptive_radius_km": 15,
+      "n_brands": 224,
+      "n_present": 30,
+      "p10_raw": 0.09999999999999998,
+      "p10_chain": 0.9,
+      "p10_blend": 0.9,
+      "same_size_auc": 0.5382857142857143,
+      "taste_percentile": 1
+    },
+    {
+      "id": "laramie_wy",
+      "eval_id": "laramie_wy",
+      "label": "WEST Inc.",
+      "address": "200 S 2nd St, Laramie, WY 82070",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 205,
+      "n_present": 28,
+      "p10_raw": 0.09999999999999998,
+      "p10_chain": 0.7000000000000002,
+      "p10_blend": 0.7999999999999998,
+      "same_size_auc": 0.5648148148148148,
+      "taste_percentile": 9
+    },
+    {
+      "id": "lasvegas_strip",
+      "eval_id": "lasvegas_strip",
+      "label": "The Escape Game Las Vegas",
+      "address": "3500 Las Vegas Blvd S, Las Vegas, NV 89109",
+      "stratum": "tourist",
+      "adaptive_radius_km": 1.5,
+      "n_brands": 224,
+      "n_present": 72,
+      "p10_raw": 0.7000000000000002,
+      "p10_chain": 0.6000000000000001,
+      "p10_blend": 0.7000000000000002,
+      "same_size_auc": 0.6990108337258596,
+      "taste_percentile": 74
+    },
+    {
+      "id": "madison_wi",
+      "eval_id": "madison_wi",
+      "label": "500",
+      "address": "500 State St, Madison, WI 53703",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 223,
+      "n_present": 60,
+      "p10_raw": 0.3999999999999999,
+      "p10_chain": 0.7999999999999998,
+      "p10_blend": 0.9,
+      "same_size_auc": 0.6208588957055214,
+      "taste_percentile": 31
+    },
+    {
+      "id": "myrtle_sc",
+      "eval_id": "myrtle_sc",
+      "label": "1301",
+      "address": "1301 N Ocean Blvd, Myrtle Beach, SC 29577",
+      "stratum": "tourist",
+      "adaptive_radius_km": 5,
+      "n_brands": 224,
+      "n_present": 78,
+      "p10_raw": 0.6000000000000001,
+      "p10_chain": 1,
+      "p10_blend": 1,
+      "same_size_auc": 0.6322222222222222,
+      "taste_percentile": 34
+    },
+    {
+      "id": "naperville_il",
+      "eval_id": "naperville_il",
+      "label": "100",
+      "address": "100 W Jefferson Ave, Naperville, IL 60540",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 224,
+      "n_present": 98,
+      "p10_raw": 0.7000000000000002,
+      "p10_chain": 0.7999999999999998,
+      "p10_blend": 0.9,
+      "same_size_auc": 0.6140350877192983,
+      "taste_percentile": 26
+    },
+    {
+      "id": "nashville_12s",
+      "eval_id": "nashville_12s",
+      "label": "2400",
+      "address": "2400 12th Ave S, Nashville, TN 37204",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 224,
+      "n_present": 103,
+      "p10_raw": 0.7000000000000002,
+      "p10_chain": 0.9,
+      "p10_blend": 0.9,
+      "same_size_auc": 0.6086484137331595,
+      "taste_percentile": 24
+    },
+    {
+      "id": "nyc_uws",
+      "eval_id": "nyc_uws",
+      "label": "Canine Styles",
+      "address": "2200 Broadway, New York, NY 10024",
+      "stratum": "dense_urban",
+      "adaptive_radius_km": 1.5,
+      "n_brands": 224,
+      "n_present": 47,
+      "p10_raw": 0.3999999999999999,
+      "p10_chain": 0.5,
+      "p10_blend": 0.6000000000000001,
+      "same_size_auc": 0.7010372178157414,
+      "taste_percentile": 76
+    },
+    {
+      "id": "nyc_williamsburg",
+      "eval_id": "nyc_williamsburg",
+      "label": "Duane Reade",
+      "address": "250 Bedford Ave, Brooklyn, NY 11249",
+      "stratum": "dense_urban",
+      "adaptive_radius_km": 1.5,
+      "n_brands": 224,
+      "n_present": 43,
+      "p10_raw": 0.3999999999999999,
+      "p10_chain": 0.7000000000000002,
+      "p10_blend": 0.7000000000000002,
+      "same_size_auc": 0.6883116883116883,
+      "taste_percentile": 61
+    },
+    {
+      "id": "ottumwa_ia",
+      "eval_id": "ottumwa_ia",
+      "label": "105",
+      "address": "105 E Main St, Ottumwa, IA 52501",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 145,
+      "n_present": 25,
+      "p10_raw": 0.19999999999999996,
+      "p10_chain": 0.7000000000000002,
+      "p10_blend": 0.6000000000000001,
+      "same_size_auc": 0.5977011494252874,
+      "taste_percentile": 16
+    },
+    {
+      "id": "palo_alto_ca",
+      "eval_id": "palo_alto_ca",
+      "label": "Union Bank",
+      "address": "400 University Ave, Palo Alto, CA 94301",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 224,
+      "n_present": 62,
+      "p10_raw": 0.7999999999999998,
+      "p10_chain": 0.5,
+      "p10_blend": 0.7000000000000002,
+      "same_size_auc": 0.7417322834645669,
+      "taste_percentile": 89
+    },
+    {
+      "id": "parkcity_ut",
+      "eval_id": "parkcity_ut",
+      "label": "500",
+      "address": "500 Main St, Park City, UT 84060",
+      "stratum": "tourist",
+      "adaptive_radius_km": 15,
+      "n_brands": 220,
+      "n_present": 51,
+      "p10_raw": 0.3999999999999999,
+      "p10_chain": 0.6000000000000001,
+      "p10_blend": 0.7000000000000002,
+      "same_size_auc": 0.7124542124542125,
+      "taste_percentile": 84
+    },
+    {
+      "id": "phl_walnut",
+      "eval_id": "phl_walnut",
+      "label": "1600",
+      "address": "1600 Walnut St, Philadelphia, PA 19103",
+      "stratum": "dense_urban",
+      "adaptive_radius_km": 1.5,
+      "n_brands": 224,
+      "n_present": 83,
+      "p10_raw": 0.7999999999999998,
+      "p10_chain": 0.7999999999999998,
+      "p10_blend": 0.7999999999999998,
+      "same_size_auc": 0.6909986565158979,
+      "taste_percentile": 66
+    },
+    {
+      "id": "sea_caphill",
+      "eval_id": "sea_caphill",
+      "label": "Mattress Firm",
+      "address": "400 Broadway E, Seattle, WA 98102",
+      "stratum": "dense_urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 224,
+      "n_present": 69,
+      "p10_raw": 0.9,
+      "p10_chain": 0.6000000000000001,
+      "p10_blend": 0.7999999999999998,
+      "same_size_auc": 0.7087517934002869,
+      "taste_percentile": 81
+    },
+    {
+      "id": "sedalia_mo",
+      "eval_id": "sedalia_mo",
+      "label": "200",
+      "address": "200 S Ohio Ave, Sedalia, MO 65301",
+      "stratum": "urban",
+      "adaptive_radius_km": 5,
+      "n_brands": 151,
+      "n_present": 33,
+      "p10_raw": 0.19999999999999996,
+      "p10_chain": 0.9,
+      "p10_blend": 1,
+      "same_size_auc": 0.5989208633093526,
+      "taste_percentile": 19
+    },
+    {
+      "id": "sevierville",
+      "eval_id": "sevierville_tn",
+      "label": "Chop House",
+      "address": "1645 Parkway, Sevierville, TN 37862",
+      "stratum": "tourist",
+      "adaptive_radius_km": 5,
+      "n_brands": 224,
+      "n_present": 88,
+      "p10_raw": 0.7000000000000002,
+      "p10_chain": 1,
+      "p10_blend": 0.9,
+      "same_size_auc": 0.6180124223602484,
+      "taste_percentile": 29
+    },
+    {
+      "id": "sf_fillmore",
+      "eval_id": "sf_fillmore",
+      "label": "Wells Fargo",
+      "address": "2100 Fillmore St, San Francisco, CA 94115",
+      "stratum": "dense_urban",
+      "adaptive_radius_km": 1.5,
+      "n_brands": 224,
+      "n_present": 42,
+      "p10_raw": 0.7999999999999998,
+      "p10_chain": 0.5,
+      "p10_blend": 0.6000000000000001,
+      "same_size_auc": 0.7657103825136612,
+      "taste_percentile": 94
+    },
+    {
+      "id": "sf_mission",
+      "eval_id": "sf_mission",
+      "label": "16th Street Mission",
+      "address": "2000 Mission St, San Francisco, CA 94110",
+      "stratum": "dense_urban",
+      "adaptive_radius_km": 1.5,
+      "n_brands": 224,
+      "n_present": 29,
+      "p10_raw": 0.30000000000000004,
+      "p10_chain": 0.3999999999999999,
+      "p10_blend": 0.6000000000000001,
+      "same_size_auc": 0.6627592425608656,
+      "taste_percentile": 46
+    },
+    {
+      "id": "wellesley_ma",
+      "eval_id": "wellesley_ma",
+      "label": "Central Street",
+      "address": "60 Central St, Wellesley, MA 02482",
+      "stratum": "urban",
+      "adaptive_radius_km": 15,
+      "n_brands": 224,
+      "n_present": 134,
+      "p10_raw": 1,
+      "p10_chain": 1,
+      "p10_blend": 1,
+      "same_size_auc": 0.8165591397849462,
+      "taste_percentile": 96
     }
   ]
 }

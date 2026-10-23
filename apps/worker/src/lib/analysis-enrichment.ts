@@ -8,18 +8,32 @@ import type { QlooInsight } from '../providers/qloo';
 import type { Location } from '@leaseup/contracts';
 import {
   orderInsightsByLogisticBlend,
+  DEMO_LOGISTIC_SITE_CONTEXT,
+  defaultLogisticSiteContext,
   computeBacktest,
   orderInsightsByNationalStoreCount,
   getNationalStoreCount,
   adaptiveEvalRadiusKm,
   buildTierFitByEntityId,
   chainSizeTierFromStoreCount,
+  matchDemoFixtureId,
 } from '@leaseup/fixtures';
 import type { EvalDensityStratum, EvalSiteDensity } from '@leaseup/fixtures';
 
 function stratumToBlendDensity(densityOrStratum: EvalSiteDensity | EvalDensityStratum): EvalSiteDensity {
   if (densityOrStratum === 'dense_urban') return 'urban';
   return densityOrStratum as EvalSiteDensity;
+}
+
+function logisticSiteForBlend(
+  location: Location,
+  densityOrStratum: EvalSiteDensity | EvalDensityStratum,
+  searchRadiusKm: number
+) {
+  const fixtureId = matchDemoFixtureId(location.address);
+  if (fixtureId) return DEMO_LOGISTIC_SITE_CONTEXT[fixtureId];
+  const blendDensity = stratumToBlendDensity(densityOrStratum);
+  return defaultLogisticSiteContext(blendDensity, searchRadiusKm);
 }
 import type { StoreCatalog } from '../services/store-catalog';
 import { displayBrandName } from './brand-display';
@@ -38,8 +52,10 @@ export async function buildBrandRankings(
   catalog: StoreCatalog,
   densityOrStratum: EvalSiteDensity | EvalDensityStratum = 'urban'
 ): Promise<BrandRankingRow[]> {
-  const blendDensity = stratumToBlendDensity(densityOrStratum);
-  const blended = orderInsightsByLogisticBlend(insights, blendDensity);
+  const blended = orderInsightsByLogisticBlend(
+    insights,
+    logisticSiteForBlend(location, densityOrStratum, radiusKm)
+  );
   const brandIds = new Set(catalog.getBrandIds());
   const tierFit = buildTierFitByEntityId(insights.map((i) => i.entity_id));
   const scoreRadiusKm = presenceRadiusKm(densityOrStratum, radiusKm);
@@ -141,7 +157,10 @@ export async function buildDualBacktest(
     brandIds
   );
 
-  const blendedOrder = orderInsightsByLogisticBlend(insights, stratumToBlendDensity(densityOrStratum));
+  const blendedOrder = orderInsightsByLogisticBlend(
+    insights,
+    logisticSiteForBlend(location, densityOrStratum, radiusKm)
+  );
   const blended = computeBacktest(
     blendedOrder,
     location.latitude,
