@@ -20,6 +20,9 @@ const PipelinePage = lazy(() =>
 const NotFoundPage = lazy(() =>
   import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage }))
 );
+const MethodologyPage = lazy(() =>
+  import('./pages/MethodologyPage').then((m) => ({ default: m.MethodologyPage }))
+);
 
 export default function App() {
   return (
@@ -29,6 +32,7 @@ export default function App() {
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/methodology" element={<MethodologyPage />} />
           <Route path="/brand" element={<BrandPage />} />
           <Route path="/brand/:id" element={<BrandPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />

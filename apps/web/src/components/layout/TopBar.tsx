@@ -9,8 +9,8 @@ const NAV_LINKS = [
   { to: '/brand', label: 'Brand sites' },
   { to: '/portfolio', label: 'Portfolio' },
   { to: '/pipeline', label: 'Pipeline' },
-  { href: '#how-it-works', label: 'How it works' },
-] as const;
+  { to: '/methodology', label: 'How it works' },
+];
 
 export function TopBar() {
   const { data } = useHealth();
@@ -28,8 +28,7 @@ export function TopBar() {
           <Logo size="sm" hideWordmarkFromA11y />
         </Link>
         <nav className="hidden items-center gap-4 text-sm text-ink-2 md:flex" aria-label="Primary">
-          {NAV_LINKS.map((item) =>
-            'to' in item ? (
+          {NAV_LINKS.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
@@ -37,16 +36,7 @@ export function TopBar() {
               >
                 {item.label}
               </Link>
-            ) : (
-              <a
-                key={item.href}
-                href={item.href}
-                className="hover:text-ink focus-visible:ring-2 focus-visible:ring-accent rounded-control px-1"
-              >
-                {item.label}
-              </a>
-            )
-          )}
+            ))}
           <a
             href="https://github.com/AtharvRaotole/LeaseUp"
             className="hover:text-ink focus-visible:ring-2 focus-visible:ring-accent rounded-control px-1"
@@ -83,24 +73,14 @@ export function TopBar() {
         >
           <ul className="flex flex-col gap-2 text-sm">
             {NAV_LINKS.map((item) => (
-              <li key={'to' in item ? item.to : item.href}>
-                {'to' in item ? (
-                  <Link
-                    to={item.to}
-                    className="block rounded-control px-2 py-2 text-ink hover:bg-surface-2"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                ) : (
-                  <a
-                    href={item.href}
-                    className="block rounded-control px-2 py-2 text-ink hover:bg-surface-2"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    {item.label}
-                  </a>
-                )}
+              <li key={item.to}>
+                <Link
+                  to={item.to}
+                  className="block rounded-control px-2 py-2 text-ink hover:bg-surface-2"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
               </li>
             ))}
             <li>

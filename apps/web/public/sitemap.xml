@@ -11,6 +11,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://leaseup-59m.pages.dev/methodology</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://leaseup-59m.pages.dev/portfolio</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
