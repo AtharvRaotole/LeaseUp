@@ -23,6 +23,9 @@ export function buildReportPath(request: AnalysisRequest, slug = 'run'): string 
   if (request.categoryTags?.length) {
     params.set('category', request.categoryTags.join(','));
   }
+  if (request.storefrontSqFt !== undefined) {
+    params.set('sqft', String(request.storefrontSqFt));
+  }
   const loc = request.confirmedLocation;
   if (loc) {
     params.set('lat', String(loc.latitude));
@@ -43,6 +46,7 @@ export function parseReportSearch(params: URLSearchParams): AnalysisRequest | nu
   const lat = Number(params.get('lat'));
   const lng = Number(params.get('lng'));
   const pinConfirmed = params.get('pinConfirmed') === '1';
+  const sqft = Number(params.get('sqft') || '2500');
   const confirmedLocation =
     pinConfirmed && Number.isFinite(lat) && Number.isFinite(lng)
       ? {
@@ -58,6 +62,7 @@ export function parseReportSearch(params: URLSearchParams): AnalysisRequest | nu
     address,
     radius: Number.isFinite(radius) ? radius : 10,
     categoryTags: category ? category.split(',').filter(Boolean) : undefined,
+    storefrontSqFt: Number.isFinite(sqft) ? sqft : 2500,
     confirmedLocation,
   };
 }

@@ -131,6 +131,7 @@ export class PipelineService {
       notes: '',
       lastTouchedAt: now,
       outreachContext: input.outreachContext,
+      outreachStatus: 'none',
     };
     PipelineCardSchema.parse(card);
     board.cards.push(card);
@@ -168,6 +169,9 @@ export class PipelineService {
     if (patch.outreachDraft !== undefined) {
       card.outreachDraft = patch.outreachDraft ?? undefined;
     }
+    if (patch.outreachStatus !== undefined) {
+      card.outreachStatus = patch.outreachStatus;
+    }
     card.lastTouchedAt = now;
     board.cards[idx] = PipelineCardSchema.parse(card);
     return this.save(board);
@@ -188,6 +192,8 @@ export class PipelineService {
       affinityRank: card.affinityRank,
       neighborhood: card.propertyNeighborhood ?? ctx.neighborhood,
       nearestStoreKm: ctx.nearestStoreKm,
+      coTenantBrands: ctx.coTenantBrands,
+      verificationLabel: ctx.verificationLabel ?? card.verification,
     });
 
     card.outreachDraft = {
