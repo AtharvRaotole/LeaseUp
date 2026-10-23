@@ -6,7 +6,13 @@
  * To regenerate: node scripts/build-fixtures.mjs
  */
 
-export type { EvalMetrosResults, EvalMetroRow, EvalSiteDensity } from './eval/types.js';
+export type {
+  EvalMetrosResults,
+  EvalMetroRow,
+  EvalSiteDensity,
+  StrictEvalResults,
+  StrictEvalMetroRow,
+} from './eval/types.js';
 
 export { wickerparkFixture } from './wicker-park.js';
 export { boulderFixture } from './boulder.js';
@@ -85,6 +91,17 @@ export {
   demoChipsRandomBaselineSummary,
   type DemoRandomBaselineSummary,
 } from './landing-random-baseline.js';
+export {
+  STRICT_EVAL_PRIMARY_METRIC_ID,
+  adaptiveEvalRadiusKm,
+  spearmanRankCorrelation,
+  monteCarloRandomPresentAt10,
+  computeStrictEval,
+  strictEvalHonestSummary,
+  demoFixtureDensity,
+  type StrictEvalMetrics,
+  type StrictEvalPrimaryMetricId,
+} from './strict-eval.js';
 export {
   overpassDemoByFixture,
   DEMO_OSM_UNRECORDED_NOTE,

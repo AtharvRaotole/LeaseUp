@@ -21,6 +21,7 @@ import {
   DEMO_OSM_UNRECORDED_NOTE,
   matchDemoFixtureId,
   matchDemoChipWithinMeters,
+  demoFixtureDensity,
 } from '@leaseup/fixtures';
 import { createStoreCatalog, type StoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
@@ -40,6 +41,7 @@ import {
   enrichProspectsWithNearest,
   extractQlooSignals,
 } from '../lib/analysis-enrichment';
+import { buildStrictEvalSnapshot } from '../lib/strict-eval-snapshot';
 import { runStep, type StepEmitter } from '../lib/analysis-steps';
 import { encodeGeohash } from '../lib/geohash';
 import { sha256Short } from '../lib/cache-key';
@@ -229,6 +231,14 @@ export class AnalysisService {
       }));
 
       const rankings = await buildBrandRankings(location, insights, request.radius, this.catalog);
+      const demoFixtureId = matchDemoFixtureId(location.address);
+      const strictEval = await buildStrictEvalSnapshot(
+        location,
+        insights,
+        request.radius,
+        demoFixtureId ? demoFixtureDensity(demoFixtureId) : 'urban',
+        this.catalog
+      );
       const mapStores = await buildMapStores(location, insights, request.radius, this.catalog);
       const nearestEnriched = await enrichProspectsWithNearest(prospects, location, this.catalog);
       const enrichedProspects = await Promise.all(
@@ -277,6 +287,7 @@ export class AnalysisService {
         osmSnapshotLabel: this.osmSnapshot ? osmSnapshotDisplayLabel() : undefined,
         storefrontSqFt: request.storefrontSqFt ?? 2_500,
         formatFilteredCount: formatFilteredCount || undefined,
+        strictEval,
       };
 
       await this.persistRun(runId, location, response, 'completed');

@@ -37,7 +37,8 @@ export function ProofSection({
     <section>
       <h3 className="text-h3 font-semibold text-ink">Does the taste signal match reality?</h3>
       <p className="mt-2 text-sm text-ink-2">
-        Hit rate {present} of 10: top ranked brands that already have a store within {radiusKm} km.
+        Legacy hit rate {present} of 10: top ranked brands that already have a store within {radiusKm}{' '}
+        km. When this saturates, use the strict evaluation card above (Spearman and adaptive radius).
       </p>
       <Card className="mt-4 overflow-hidden p-0">
         <table className="w-full text-sm">

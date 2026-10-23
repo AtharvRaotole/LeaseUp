@@ -1,0 +1,110 @@
+{
+  "protocolDoc": "docs/STRICT_EVAL_PROTOCOL.md",
+  "recordedAt": "2026-10-23T16:26:18.378Z",
+  "primaryMetricId": "spearman_presence",
+  "rows": [
+    {
+      "id": "wicker-park",
+      "label": "Wicker Park, Chicago",
+      "address": "1574 N Milwaukee Ave, Chicago, IL 60622",
+      "density": "urban",
+      "status": "recorded",
+      "metrics": {
+        "primaryMetricId": "spearman_presence",
+        "searchRadiusKm": 10,
+        "adaptiveRadiusKm": 3,
+        "poolSize": 224,
+        "legacyPresentAt10Qloo": 10,
+        "legacyPresentAt10Chain": 10,
+        "adaptivePresentAt10Qloo": 7,
+        "adaptivePresentAt10Chain": 9,
+        "surprisePresentAt10Qloo": 6,
+        "surprisePresentAt10Chain": 0,
+        "spearmanQloo": -0.3709023214642744,
+        "spearmanChain": -0.230169356125897,
+        "randomExpectedPresentAt10": 6.785714285714286,
+        "randomMonteCarloPresentAt10": 6.7825,
+        "primaryWinner": "chain",
+        "qlooBelowChainAdaptive": true,
+        "qlooBelowRandomExpected": false,
+        "honestSummary": "Primary (Spearman): Qloo -0.371 vs chain -0.230 (chain). Legacy P@10 10 of 10 (chain 10 of 10). Adaptive 3 km P@10: Qloo 7 of 10, chain 9 of 10. Qloo adaptive P@10 is below the chain-size baseline on this pin."
+      }
+    },
+    {
+      "id": "west-village-bleecker",
+      "label": "West Village, Bleecker St",
+      "address": "350 Bleecker St, New York, NY 10014",
+      "density": "urban",
+      "status": "pending_qloo"
+    },
+    {
+      "id": "boulder",
+      "label": "Pearl Street, Boulder",
+      "address": "1125 Pearl St, Boulder, CO 80302",
+      "density": "urban",
+      "status": "recorded",
+      "metrics": {
+        "primaryMetricId": "spearman_presence",
+        "searchRadiusKm": 10,
+        "adaptiveRadiusKm": 3,
+        "poolSize": 224,
+        "legacyPresentAt10Qloo": 8,
+        "legacyPresentAt10Chain": 8,
+        "adaptivePresentAt10Qloo": 8,
+        "adaptivePresentAt10Chain": 7,
+        "surprisePresentAt10Qloo": 7,
+        "surprisePresentAt10Chain": 0,
+        "spearmanQloo": -0.1926208548696493,
+        "spearmanChain": -0.34178005867891736,
+        "randomExpectedPresentAt10": 3.2142857142857144,
+        "randomMonteCarloPresentAt10": 3.315,
+        "primaryWinner": "qloo",
+        "qlooBelowChainAdaptive": false,
+        "qlooBelowRandomExpected": false,
+        "honestSummary": "Primary (Spearman): Qloo -0.193 vs chain -0.342 (qloo). Legacy P@10 8 of 10 (chain 8 of 10). Adaptive 3 km P@10: Qloo 8 of 10, chain 7 of 10."
+      }
+    },
+    {
+      "id": "sevierville",
+      "label": "Sevierville, Tennessee",
+      "address": "125 Collier Dr, Sevierville, TN 37862",
+      "density": "tourist",
+      "status": "recorded",
+      "metrics": {
+        "primaryMetricId": "spearman_presence",
+        "searchRadiusKm": 10,
+        "adaptiveRadiusKm": 4,
+        "poolSize": 224,
+        "legacyPresentAt10Qloo": 9,
+        "legacyPresentAt10Chain": 10,
+        "adaptivePresentAt10Qloo": 7,
+        "adaptivePresentAt10Chain": 9,
+        "surprisePresentAt10Qloo": 6,
+        "surprisePresentAt10Chain": 0,
+        "spearmanQloo": -0.251231827058672,
+        "spearmanChain": -0.5405164571101997,
+        "randomExpectedPresentAt10": 4.464285714285714,
+        "randomMonteCarloPresentAt10": 4.45,
+        "primaryWinner": "qloo",
+        "qlooBelowChainAdaptive": true,
+        "qlooBelowRandomExpected": false,
+        "honestSummary": "Primary (Spearman): Qloo -0.251 vs chain -0.541 (qloo). Legacy P@10 9 of 10 (chain 10 of 10). Adaptive 4 km P@10: Qloo 7 of 10, chain 9 of 10. Qloo adaptive P@10 is below the chain-size baseline on this pin."
+      }
+    }
+  ],
+  "summary": {
+    "recordedCount": 3,
+    "meanSpearmanQloo": -0.2715850011308652,
+    "meanSpearmanChain": -0.37082195730500467,
+    "qlooPrimaryWins": 2,
+    "chainPrimaryWins": 1,
+    "ties": 0,
+    "sitesWhereQlooBelowChainAdaptive": [
+      "wicker-park",
+      "sevierville"
+    ],
+    "sitesWhereLegacySaturated": [
+      "wicker-park"
+    ]
+  }
+}

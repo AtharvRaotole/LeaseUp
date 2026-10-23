@@ -1,11 +1,13 @@
-import type { EvalMetroRow, EvalMetrosResults } from '@leaseup/fixtures';
+import type { EvalMetroRow, EvalMetrosResults, StrictEvalResults } from '@leaseup/fixtures';
 import evalResults from '@leaseup/fixtures/eval/results.json';
+import strictEvalResults from '@leaseup/fixtures/eval/strict-results.json';
 import { TopBar } from '../components/layout/TopBar';
 import { SiteFooter } from '../components/layout/SiteFooter';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 
 const data = evalResults as EvalMetrosResults;
+const strictData = strictEvalResults as StrictEvalResults;
 
 const PIPELINE = [
   {
@@ -26,7 +28,7 @@ const PIPELINE = [
   {
     title: 'Backtest',
     body:
-      'We score how many physically present chains appear in the top 10 ranked prospects. The same pool is re-ordered without taste (chain-size baseline and random expectation) so lift is visible.',
+      'We score how many physically present chains appear in the top 10 ranked prospects. Dense pins often saturate that legacy metric, so we also run the strict evaluation (Spearman, adaptive radius, chain-residual hits, random baselines).',
   },
   {
     title: 'Outreach',
@@ -104,6 +106,91 @@ export function MethodologyPage() {
                 </li>
               ))}
             </ol>
+          </section>
+
+          <section className="mt-14" aria-labelledby="strict-eval-heading">
+            <h2 id="strict-eval-heading" className="font-serif text-title text-ink">
+              Strict evaluation (pre-registered)
+            </h2>
+            <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
+              Before reading metro scores we fixed the primary metric to{' '}
+              <strong className="font-medium text-ink">Spearman rank correlation</strong> between Qloo
+              order and ATP store presence. Legacy present-in-top-10 can read 10 of 10 in Chicago and
+              similar corridors while still hiding ordering signal. Full rules:{' '}
+              <code className="rounded bg-surface-2 px-1 py-0.5 text-xs">
+                docs/STRICT_EVAL_PROTOCOL.md
+              </code>
+              .
+            </p>
+            {strictData.summary && (
+              <p className="mt-3 text-sm text-ink-2">
+                Recorded {strictData.summary.recordedCount} sites. Mean Spearman: Qloo{' '}
+                {strictData.summary.meanSpearmanQloo.toFixed(3)}, chain{' '}
+                {strictData.summary.meanSpearmanChain.toFixed(3)}. Primary wins: Qloo{' '}
+                {strictData.summary.qlooPrimaryWins}, chain {strictData.summary.chainPrimaryWins},
+                ties {strictData.summary.ties}.
+                {strictData.summary.sitesWhereQlooBelowChainAdaptive.length > 0 && (
+                  <>
+                    {' '}
+                    Qloo adaptive P@10 trails chain size on{' '}
+                    {strictData.summary.sitesWhereQlooBelowChainAdaptive.join(', ')}.
+                  </>
+                )}
+              </p>
+            )}
+            <div className="mt-6 overflow-x-auto rounded-card border border-border">
+              <table className="w-full min-w-[720px] border-collapse text-left text-sm">
+                <caption className="sr-only">Strict evaluation by site</caption>
+                <thead>
+                  <tr className="border-b border-border bg-surface-2 text-label uppercase text-ink-3">
+                    <th scope="col" className="px-3 py-3 font-medium">Site</th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">Legacy P@10</th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">Adaptive P@10</th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">Spearman</th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">Surprise hits</th>
+                    <th scope="col" className="px-3 py-3 font-medium">Primary</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {strictData.rows.map((row) => (
+                    <tr key={row.id} className="border-b border-border last:border-0">
+                      <th scope="row" className="px-3 py-3 font-medium text-ink">
+                        {row.label}
+                        {row.status === 'pending_qloo' && (
+                          <span className="mt-1 block text-xs font-normal text-ink-3">
+                            Needs live Qloo recording
+                          </span>
+                        )}
+                      </th>
+                      {row.status === 'recorded' && row.metrics ? (
+                        <>
+                          <td className="px-3 py-3 text-right tabular-nums text-ink-2">
+                            {row.metrics.legacyPresentAt10Qloo} / {row.metrics.legacyPresentAt10Chain}
+                          </td>
+                          <td className="px-3 py-3 text-right tabular-nums text-ink-2">
+                            {row.metrics.adaptivePresentAt10Qloo} / {row.metrics.adaptivePresentAt10Chain}{' '}
+                            <span className="text-ink-3">({row.metrics.adaptiveRadiusKm} km)</span>
+                          </td>
+                          <td className="px-3 py-3 text-right font-mono tabular-nums text-ink">
+                            {row.metrics.spearmanQloo.toFixed(3)} / {row.metrics.spearmanChain.toFixed(3)}
+                          </td>
+                          <td className="px-3 py-3 text-right tabular-nums text-ink-2">
+                            {row.metrics.surprisePresentAt10Qloo} / {row.metrics.surprisePresentAt10Chain}
+                          </td>
+                          <td className="px-3 py-3 capitalize text-ink-2">{row.metrics.primaryWinner}</td>
+                        </>
+                      ) : (
+                        <td colSpan={5} className="px-3 py-3 text-ink-3">n/a</td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3 text-xs text-ink-3">
+              Recompute: <code className="rounded bg-surface-2 px-1">node scripts/strict-eval.mjs</code>
+              . Bleecker St needs <code className="rounded bg-surface-2 px-1">QLOO_API_KEY</code>.
+            </p>
           </section>
 
           <section className="mt-14" aria-labelledby="eval-heading">
