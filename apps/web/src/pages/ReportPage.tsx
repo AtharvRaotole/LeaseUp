@@ -21,6 +21,7 @@ export function ReportPage() {
   const [searchParams] = useSearchParams();
   const request = useMemo(() => parseReportSearch(searchParams), [searchParams]);
   const simulateError = searchParams.get('simulateError') === '1';
+  const emptyPitch = searchParams.get('emptyPitch') === '1';
   const { steps, results, error, loading, elapsedMs, slowHint, run } = useAnalysisRun();
   const [selected, setSelected] = useState<ProspectPack | null>(null);
   const [mapBrand, setMapBrand] = useState<MapBrandSelection | null>(null);
@@ -112,6 +113,7 @@ export function ReportPage() {
                   onSelect={selectProspect}
                   onDraft={(p) => setOutreach(p)}
                   radiusKm={request.radius}
+                  forceEmpty={emptyPitch}
                 />
                 <ProofSection results={results} radiusKm={request.radius} onBrandSelect={selectMapBrand} />
                 <CompareSection />

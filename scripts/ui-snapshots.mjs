@@ -45,13 +45,14 @@ for (const demo of demos) {
 }
 
 const sevierville = demos.find((d) => d.slug === 'sevierville');
+const wicker = demos[0];
 const pageExpand = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-await pageExpand.goto(`${BASE}/r/sevierville?${sevierville.query}`, { waitUntil: 'networkidle' });
+await pageExpand.goto(`${BASE}/r/wicker?${wicker.query}`, { waitUntil: 'networkidle' });
 await pageExpand.waitForSelector('[data-testid="brands-to-pitch"]', { timeout: 90000 });
 const pitchCard = pageExpand.locator('[data-testid="brands-to-pitch"]').locator('xpath=../following-sibling::*//button').first();
 if (await pitchCard.count()) await pitchCard.click();
 await pageExpand.waitForTimeout(500);
-await shot(pageExpand, 'report-sevierville-expanded.png', { fullPage: true });
+await shot(pageExpand, 'report-wicker-expanded.png', { fullPage: true });
 await pageExpand.close();
 
 const pageOutreach = await browser.newPage({ viewport: { width: 1440, height: 900 } });
@@ -65,7 +66,7 @@ await pageOutreach.waitForTimeout(1200);
 await shot(pageOutreach, 'report-outreach-sheet.png', { fullPage: false });
 
 const pageEmpty = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-await pageEmpty.goto(`${BASE}/r/wicker?${demos[0].query}`, { waitUntil: 'networkidle' });
+await pageEmpty.goto(`${BASE}/r/wicker?${demos[0].query}&emptyPitch=1`, { waitUntil: 'networkidle' });
 await pageEmpty.waitForSelector('text=No pitch list yet', { timeout: 90000 });
 await shot(pageEmpty, 'report-empty-state.png', { fullPage: true });
 
