@@ -1,4 +1,8 @@
 import type { GeocodeCandidate, Location } from '@leaseup/contracts';
+import {
+  dedupeGeocodeCandidatesWithinMeters,
+  formatGeocodeCandidateLabel,
+} from '../lib/geocode-label';
 
 const NOMINATIM_BASE = 'https://nominatim.openstreetmap.org/search';
 const NOMINATIM_REVERSE = 'https://nominatim.openstreetmap.org/reverse';
@@ -8,7 +12,11 @@ type NominatimResult = {
   lat: string;
   lon: string;
   display_name: string;
+  type?: string;
+  class?: string;
   address?: {
+    house_number?: string;
+    road?: string;
     city?: string;
     town?: string;
     village?: string;
@@ -16,6 +24,7 @@ type NominatimResult = {
     neighbourhood?: string;
     quarter?: string;
     city_district?: string;
+    borough?: string;
     county?: string;
     state?: string;
   };
@@ -73,7 +82,11 @@ export class NominatimClient {
     }
 
     const results = (await response.json()) as NominatimResult[];
-    const candidates = results.map((result) => this.toCandidate(address, result));
+    const filtered = results.filter((r) => !isPoiOnlyResult(r));
+    const candidates = dedupeGeocodeCandidatesWithinMeters(
+      filtered.map((result) => this.toCandidate(address, result)),
+      50
+    );
 
     await this.cache.put(cacheKey, JSON.stringify(candidates), { expirationTtl: 86400 });
 
@@ -134,7 +147,7 @@ export class NominatimClient {
         result.address?.suburb ||
         result.address?.quarter ||
         result.address?.city_district,
-      resolvedAddress: result.display_name,
+      resolvedAddress: formatGeocodeCandidateLabel(result.display_name, result.address),
     };
   }
 
@@ -146,4 +159,16 @@ export class NominatimClient {
     }
     this.lastRequestAt = Date.now();
   }
+}
+
+function isPoiOnlyResult(result: NominatimResult): boolean {
+  const cls = result.class?.toLowerCase();
+  const typ = result.type?.toLowerCase();
+  if (!cls) return false;
+  if (cls === 'shop' || cls === 'amenity' || cls === 'tourism') return true;
+  if (typ === 'house' || typ === 'building' || typ === 'address' || typ === 'residential') {
+    return false;
+  }
+  if (cls === 'building' || cls === 'place') return false;
+  return cls === 'poi';
 }

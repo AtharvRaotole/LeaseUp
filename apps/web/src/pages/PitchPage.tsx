@@ -9,6 +9,11 @@ import { displayBrandName } from '../lib/brand-display';
 import { verificationShortLabel } from '../lib/copy';
 import { fitPercentileLabel } from '../lib/fit-display';
 import { formatUserFacingDate } from '../lib/format-date';
+import {
+  pitchExecutiveSummaryLines,
+  pitchProspectFact,
+  shouldShowStoredWhyLine,
+} from '../lib/pitch-pack-copy';
 import { DEFAULT_VACANCY_INPUT } from '../lib/vacancy-cost';
 
 export function PitchPage() {
@@ -36,6 +41,11 @@ export function PitchPage() {
     if (!snapshot) return '';
     return snapshot.neighborhood ?? snapshot.location.neighborhood ?? snapshot.location.city ?? 'Site';
   }, [snapshot]);
+
+  const summaryLines = useMemo(
+    () => (snapshot ? pitchExecutiveSummaryLines(snapshot) : []),
+    [snapshot]
+  );
 
   if (error) {
     return (
@@ -71,84 +81,94 @@ export function PitchPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-[880px] px-4 py-12 print:py-8">
-        <p className="text-label uppercase tracking-wide text-ink-3">Tenant pitch pack</p>
-        <h1 className="mt-3 font-serif text-display text-ink">{neighborhood}</h1>
-        <p className="mt-2 text-lg text-ink-2">{snapshot.address}</p>
-        <p className="mt-1 text-sm text-ink-3">
-          Snapshot from {formatUserFacingDate(snapshot.createdAt)} · {snapshot.radiusKm} km radius · Qloo run{' '}
-          {snapshot.runId.slice(0, 8)}
-        </p>
+      <main className="mx-auto max-w-[880px] min-w-0 px-4 py-12 print:py-4">
+        <section className="pitch-print-page-1">
+          <p className="text-label uppercase tracking-wide text-ink-3">Tenant pitch pack</p>
+          <h1 className="mt-3 break-words font-serif text-display text-ink">{neighborhood}</h1>
+          <p className="mt-2 break-words text-lg text-ink-2">{snapshot.address}</p>
+          <p className="mt-1 text-sm text-ink-3">
+            Snapshot {formatUserFacingDate(snapshot.createdAt)} · {snapshot.radiusKm} km radius
+          </p>
 
-        {(snapshot.landlord?.name || snapshot.landlord?.contact) && (
-          <div className="mt-6 rounded-card border border-border bg-surface px-5 py-4">
-            <p className="text-label uppercase text-ink-3">Prepared for</p>
-            {snapshot.landlord?.name && <p className="mt-1 font-medium text-ink">{snapshot.landlord.name}</p>}
-            {snapshot.landlord?.contact && <p className="text-sm text-ink-2">{snapshot.landlord.contact}</p>}
+          <div className="mt-6 space-y-2 border-l-2 border-accent pl-4" data-testid="pitch-executive-summary">
+            {summaryLines.map((line) => (
+              <p key={line} className="text-ink">{line}</p>
+            ))}
           </div>
-        )}
 
-        {snapshot.mapImage && (
-          <figure className="mt-10 overflow-hidden rounded-card border border-border">
-            <img src={snapshot.mapImage} alt="Map of the site and nearby stores" className="w-full" />
-            <figcaption className="border-t border-border px-4 py-2 text-meta text-ink-3">
-              Site pin and pitch brands at snapshot time
-            </figcaption>
-          </figure>
-        )}
+          {(snapshot.landlord?.name || snapshot.landlord?.contact) && (
+            <div className="mt-6 rounded-card border border-border bg-surface px-5 py-4 print:py-2">
+              <p className="text-label uppercase text-ink-3">Prepared for</p>
+              {snapshot.landlord?.name && <p className="mt-1 font-medium text-ink">{snapshot.landlord.name}</p>}
+              {snapshot.landlord?.contact && <p className="text-sm text-ink-2">{snapshot.landlord.contact}</p>}
+            </div>
+          )}
 
-        <section className="mt-12">
+          {snapshot.mapImage && (
+            <figure className="pitch-map-frame mt-8 overflow-hidden rounded-card border-2 border-accent/40 bg-surface-2 print:mt-4">
+              <img
+                src={snapshot.mapImage}
+                alt="Map of the site and nearby stores"
+                className="pitch-map-image w-full object-cover"
+              />
+              <figcaption className="border-t border-border px-4 py-2 text-meta text-ink-3">
+                Site pin and pitch brands (accent ramp)
+              </figcaption>
+            </figure>
+          )}
+        </section>
+
+        <section className="pitch-print-page-2 mt-12 print:mt-0">
           <h2 className="font-serif text-2xl text-ink">Top brands to pitch</h2>
-          <ol className="mt-6 space-y-8">
+          <ol className="mt-4 space-y-5 print:space-y-3">
             {snapshot.prospects.map(({ prospect, whyLine }, index) => {
               const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
               const rankLabel = fitPercentileLabel(prospect.brand.affinityRank, totalScored);
+              const fact = pitchProspectFact(prospect, snapshot.radiusKm);
               return (
-                <li key={prospect.brand.entityId} className="pitch-prospect-block border-b border-border pb-8 last:border-0">
+                <li key={prospect.brand.entityId} className="pitch-prospect-block border-b border-border pb-5 last:border-0 print:pb-2">
                   <div className="flex flex-wrap items-baseline gap-2">
                     <span className="font-mono text-sm text-ink-3">#{index + 1}</span>
-                    <h3 className="font-serif text-xl text-ink">{name}</h3>
+                    <h3 className="font-serif text-xl text-ink print:text-lg">{name}</h3>
                   </div>
-                  <p className="mt-2 text-sm text-ink-2">
-                    Qloo rank #{prospect.brand.affinityRank} in this area ({rankLabel}) ·{' '}
+                  <p className="mt-1 text-sm text-ink-2">
+                    Qloo rank #{prospect.brand.affinityRank} ({rankLabel}) ·{' '}
                     {verificationShortLabel(prospect.brand.verified)}
-                    {prospect.nearestExistingStoreKm !== undefined
-                      ? ` · Nearest store ${prospect.nearestExistingStoreKm.toFixed(1)} km`
-                      : ' · No store in radius'}
                   </p>
-                  <p className="mt-3 text-ink">{whyLine}</p>
+                  <p className="mt-2 text-ink print:text-sm">{fact}</p>
+                  {shouldShowStoredWhyLine(whyLine) && (
+                    <p className="mt-1 text-sm text-ink-2">{whyLine}</p>
+                  )}
                 </li>
               );
             })}
           </ol>
+
+          <div className="mt-8 print-pitch-block print:mt-4">
+            <VacancyCostCalculator
+              key={snapshot.id}
+              initial={snapshot.vacancy ?? vacancy}
+              onChange={setVacancy}
+            />
+          </div>
+
+          <footer className="mt-10 border-t border-border pt-6 text-sm text-ink-2 pitch-methodology print:mt-4 print:pt-3">
+            <h2 className="font-serif text-lg text-ink">Methodology and data sources</h2>
+            <ul className="mt-2 list-disc space-y-1 pl-5 print:text-xs">
+              <li>Qloo Taste AI rankings ({snapshot.mode ?? 'demo'}) for affinity at this pin</li>
+              <li>All The Places store locations (CC0)</li>
+              <li>
+                {snapshot.osmSnapshotLabel ?? 'OpenStreetMap'} for second source checks
+                {snapshot.osmSnapshotRecordedAt
+                  ? ` (${formatUserFacingDate(snapshot.osmSnapshotRecordedAt)})`
+                  : ''}
+              </li>
+            </ul>
+            <p className="mt-3 text-ink-3 print:text-xs">
+              Vacancy cost figures are calculated from your inputs only and are not verified by LeaseUp.
+            </p>
+          </footer>
         </section>
-
-        <div className="mt-12 print-pitch-block">
-          <VacancyCostCalculator
-            key={snapshot.id}
-            initial={snapshot.vacancy ?? vacancy}
-            onChange={setVacancy}
-          />
-        </div>
-
-        <footer className="mt-16 border-t border-border pt-8 text-sm text-ink-2 pitch-methodology">
-          <h2 className="font-serif text-lg text-ink">Methodology and data sources</h2>
-          <ul className="mt-3 list-disc space-y-1 pl-5">
-            <li>Qloo Taste AI rankings ({snapshot.mode ?? 'demo'}) for affinity at this pin</li>
-            <li>All The Places store locations (CC0)</li>
-            <li>
-              {snapshot.osmSnapshotLabel ?? 'OpenStreetMap'} for second source checks
-              {snapshot.osmSnapshotRecordedAt
-                ? ` (${formatUserFacingDate(snapshot.osmSnapshotRecordedAt)})`
-                : ''}
-            </li>
-            <li>Analysis recorded {formatUserFacingDate(snapshot.analysisTimestamp)}</li>
-          </ul>
-          <p className="mt-4 text-ink-3">
-            Vacancy cost figures are calculated from your inputs only and are not verified by LeaseUp.
-          </p>
-          <p className="mt-6 text-meta text-ink-3">LeaseUp · pitch pack {snapshot.id.slice(0, 8)}</p>
-        </footer>
       </main>
     </div>
   );
