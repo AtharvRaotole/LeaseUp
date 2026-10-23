@@ -23,7 +23,8 @@ export const BrandAffinitySchema = z.object({
     z.literal('verified (2 sources)'),
     z.literal('unverified (1 source)'),
     z.literal('conflict'),
-    z.literal('unverified')
+    z.literal('unverified'),
+    z.literal('verifying...'),
   ]),
   verificationSources: z.array(z.string()).optional(),
   explanation: z.string().optional(),

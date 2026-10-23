@@ -1,0 +1,1773 @@
+{
+ "AT&T": {
+  "slug": "at_t",
+  "spider": "att_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1380
+ },
+ "Academy Sports + Outdoors": {
+  "slug": "academy_sports_outdoors",
+  "spider": "academy_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 347
+ },
+ "Adidas": {
+  "slug": "adidas",
+  "spider": "adidas",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 177
+ },
+ "Albertsons": {
+  "slug": "albertsons",
+  "spider": "albertsons",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 668
+ },
+ "American Eagle Outfitters": {
+  "slug": "american_eagle_outfitters",
+  "spider": "american_eagle_outfitters",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 712
+ },
+ "Ann Taylor": {
+  "slug": "ann_taylor",
+  "spider": "ann_taylor_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 221
+ },
+ "Anytime Fitness": {
+  "slug": "anytime_fitness",
+  "spider": "anytime_fitness",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2328
+ },
+ "Apple": {
+  "slug": "apple",
+  "spider": "apple",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 269
+ },
+ "Applebee's": {
+  "slug": "applebees",
+  "spider": "applebees",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1452
+ },
+ "Arby's": {
+  "slug": "arbys",
+  "spider": "arbys_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 3188
+ },
+ "Ashley Furniture": {
+  "slug": "ashley_furniture",
+  "spider": "ashley_furniture",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1814
+ },
+ "Athleta": {
+  "slug": "athleta",
+  "spider": "athleta",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 240
+ },
+ "Au Bon Pain": {
+  "slug": "au_bon_pain",
+  "spider": "au_bon_pain",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 24
+ },
+ "AutoZone": {
+  "slug": "autozone",
+  "spider": "autozone",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 6395
+ },
+ "Aveda": {
+  "slug": "aveda",
+  "spider": "aveda",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 125
+ },
+ "Banana Republic": {
+  "slug": "banana_republic",
+  "spider": "banana_republic",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 290
+ },
+ "Baskin-Robbins": {
+  "slug": "baskin_robbins",
+  "spider": "baskin_robbins_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2108
+ },
+ "Bass Pro Shops": {
+  "slug": "bass_pro_shops",
+  "spider": "bass_pro_shops",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 129
+ },
+ "Best Buy": {
+  "slug": "best_buy",
+  "spider": "best_buy",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1058
+ },
+ "Big 5 Sporting Goods": {
+  "slug": "big_5_sporting_goods",
+  "spider": "big_5_sporting_goods_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 380
+ },
+ "Big Lots": {
+  "slug": "big_lots",
+  "spider": "big_lots_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 216
+ },
+ "Biggby Coffee": {
+  "slug": "biggby_coffee",
+  "spider": "biggby_coffee_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 499
+ },
+ "Blaze Pizza": {
+  "slug": "blaze_pizza",
+  "spider": "blaze_pizza",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 219
+ },
+ "Bloomingdale's": {
+  "slug": "bloomingdales",
+  "spider": "bloomingdales_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 97
+ },
+ "Blue Bottle Coffee": {
+  "slug": "blue_bottle_coffee",
+  "spider": "blue_bottle_coffee",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 84
+ },
+ "Bojangles": {
+  "slug": "bojangles",
+  "spider": "bojangles",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 881
+ },
+ "Bonefish Grill": {
+  "slug": "bonefish_grill",
+  "spider": "bonefish_grill",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 156
+ },
+ "Boot Barn": {
+  "slug": "boot_barn",
+  "spider": "boot_barn_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 95
+ },
+ "Brooks Brothers": {
+  "slug": "brooks_brothers",
+  "spider": "brooks_brothers_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 143
+ },
+ "Buffalo Wild Wings": {
+  "slug": "buffalo_wild_wings",
+  "spider": "buffalo_wild_wings_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1415
+ },
+ "Build-A-Bear Workshop": {
+  "slug": "build_a_bear_workshop",
+  "spider": "build_a_bear_workshop_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 126
+ },
+ "Burger King": {
+  "slug": "burger_king",
+  "spider": "burger_king",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 6169
+ },
+ "Burlington": {
+  "slug": "burlington",
+  "spider": "burlington_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 601
+ },
+ "Cabela's": {
+  "slug": "cabelas",
+  "spider": "cabelas_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 36
+ },
+ "Caribou Coffee": {
+  "slug": "caribou_coffee",
+  "spider": "caribou_coffee_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 490
+ },
+ "Carl's Jr.": {
+  "slug": "carls_jr",
+  "spider": "carls_jr_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 944
+ },
+ "Carrabba's Italian Grill": {
+  "slug": "carrabbas_italian_grill",
+  "spider": "carrabbas_italian_grill",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 203
+ },
+ "Carter's": {
+  "slug": "carters",
+  "spider": "carters_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1218
+ },
+ "Casper": {
+  "slug": "casper",
+  "spider": "casper_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 995
+ },
+ "Cava": {
+  "slug": "cava",
+  "spider": "cava_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 507
+ },
+ "Chick-fil-A": {
+  "slug": "chick_fil_a",
+  "spider": "chick_fil_a",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 3435
+ },
+ "Chico's": {
+  "slug": "chicos",
+  "spider": "chicos",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 440
+ },
+ "Chili's": {
+  "slug": "chilis",
+  "spider": "chilis",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1211
+ },
+ "Chipotle Mexican Grill": {
+  "slug": "chipotle_mexican_grill",
+  "spider": "chipotle",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 4177
+ },
+ "Church's Chicken": {
+  "slug": "churchs_chicken",
+  "spider": "churchs_chicken_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 769
+ },
+ "Claire's": {
+  "slug": "claires",
+  "spider": "claires",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 802
+ },
+ "Coach": {
+  "slug": "coach",
+  "spider": "coach_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 305
+ },
+ "Columbia Sportswear": {
+  "slug": "columbia_sportswear",
+  "spider": "columbia_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 167
+ },
+ "CorePower Yoga": {
+  "slug": "corepower_yoga",
+  "spider": "corepower_yoga_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 246
+ },
+ "Cost Plus World Market": {
+  "slug": "cost_plus_world_market",
+  "spider": "cost_plus_world_market",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 250
+ },
+ "Crunch Fitness": {
+  "slug": "crunch_fitness",
+  "spider": "crunch_fitness",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 629
+ },
+ "Culver's": {
+  "slug": "culvers",
+  "spider": "culvers_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1114
+ },
+ "DSW": {
+  "slug": "dsw",
+  "spider": "dsw",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 495
+ },
+ "Dairy Queen": {
+  "slug": "dairy_queen",
+  "spider": "dairy_queen",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 4177
+ },
+ "Dave's Hot Chicken": {
+  "slug": "daves_hot_chicken",
+  "spider": "daves_hot_chicken_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 426
+ },
+ "Del Taco": {
+  "slug": "del_taco",
+  "spider": "del_taco_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 557
+ },
+ "Denny's": {
+  "slug": "dennys",
+  "spider": "dennys_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1231
+ },
+ "Dick's Sporting Goods": {
+  "slug": "dicks_sporting_goods",
+  "spider": "dicks_sporting_goods",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 778
+ },
+ "Dillard's": {
+  "slug": "dillards",
+  "spider": "dillards",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 272
+ },
+ "Dollar General": {
+  "slug": "dollar_general",
+  "spider": "dollar_general",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 20496
+ },
+ "Dollar Tree": {
+  "slug": "dollar_tree",
+  "spider": "dollar_tree_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 9094
+ },
+ "Dunkin'": {
+  "slug": "dunkin",
+  "spider": "dunkin_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 10474
+ },
+ "Dutch Bros Coffee": {
+  "slug": "dutch_bros_coffee",
+  "spider": "dutch_bros",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1274
+ },
+ "Einstein Bros. Bagels": {
+  "slug": "einstein_bros_bagels",
+  "spider": "einstein_bros_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 707
+ },
+ "El Pollo Loco": {
+  "slug": "el_pollo_loco",
+  "spider": "el_pollo_loco",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 518
+ },
+ "Equinox": {
+  "slug": "equinox",
+  "spider": "equinox",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 0
+ },
+ "European Wax Center": {
+  "slug": "european_wax_center",
+  "spider": "european_wax_center_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 986
+ },
+ "Express": {
+  "slug": "express",
+  "spider": "express",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 387
+ },
+ "F45 Training": {
+  "slug": "f45_training",
+  "spider": "f45_training",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 675
+ },
+ "Family Dollar": {
+  "slug": "family_dollar",
+  "spider": "family_dollar_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 7080
+ },
+ "Famous Footwear": {
+  "slug": "famous_footwear",
+  "spider": "famous_footwear",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 135
+ },
+ "Finish Line": {
+  "slug": "finish_line",
+  "spider": "finishline",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 153
+ },
+ "Firehouse Subs": {
+  "slug": "firehouse_subs",
+  "spider": "firehouse_subs",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1289
+ },
+ "First Watch": {
+  "slug": "first_watch",
+  "spider": "first_watch",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 673
+ },
+ "Five Below": {
+  "slug": "five_below",
+  "spider": "five_below_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2046
+ },
+ "Five Guys": {
+  "slug": "five_guys",
+  "spider": "five_guys_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1512
+ },
+ "Foot Locker": {
+  "slug": "foot_locker",
+  "spider": "foot_locker",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 622
+ },
+ "Fossil": {
+  "slug": "fossil",
+  "spider": "fossil",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 55
+ },
+ "Freddy's Frozen Custard & Steakburgers": {
+  "slug": "freddys_frozen_custard_steakburgers",
+  "spider": "freddys_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 578
+ },
+ "Fresh Market": {
+  "slug": "fresh_market",
+  "spider": "fresh_market_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 173
+ },
+ "GameStop": {
+  "slug": "gamestop",
+  "spider": "gamestop_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1562
+ },
+ "Gold's Gym": {
+  "slug": "golds_gym",
+  "spider": "golds_gym",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 177
+ },
+ "Great Clips": {
+  "slug": "great_clips",
+  "spider": "great_clips",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 4300
+ },
+ "H&M": {
+  "slug": "h_m",
+  "spider": "hm",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 478
+ },
+ "H-E-B": {
+  "slug": "h_e_b",
+  "spider": "h_e_b_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 346
+ },
+ "Half Price Books": {
+  "slug": "half_price_books",
+  "spider": "half_price_books_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 116
+ },
+ "Hardee's": {
+  "slug": "hardees",
+  "spider": "hardees_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1477
+ },
+ "Hobby Lobby": {
+  "slug": "hobby_lobby",
+  "spider": "hobby_lobby_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1097
+ },
+ "Hollister": {
+  "slug": "hollister",
+  "spider": "hollister",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 495
+ },
+ "Hooters": {
+  "slug": "hooters",
+  "spider": "hooters",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 152
+ },
+ "Hot Topic": {
+  "slug": "hot_topic",
+  "spider": "hot_topic",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 576
+ },
+ "IHOP": {
+  "slug": "ihop",
+  "spider": "ihop",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1685
+ },
+ "IKEA": {
+  "slug": "ikea",
+  "spider": "ikea",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 195
+ },
+ "Insomnia Cookies": {
+  "slug": "insomnia_cookies",
+  "spider": "insomnia_cookies",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 370
+ },
+ "J.Jill": {
+  "slug": "j_jill",
+  "spider": "jjill",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 256
+ },
+ "JCPenney": {
+  "slug": "jcpenney",
+  "spider": "jcpenney",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 622
+ },
+ "Jack in the Box": {
+  "slug": "jack_in_the_box",
+  "spider": "jack_in_the_box",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 96
+ },
+ "Jersey Mike's Subs": {
+  "slug": "jersey_mikes_subs",
+  "spider": "jersey_mikes_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 0
+ },
+ "Jiffy Lube": {
+  "slug": "jiffy_lube",
+  "spider": "jiffy_lube_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2075
+ },
+ "Jimmy John's": {
+  "slug": "jimmy_johns",
+  "spider": "jimmy_johns_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2836
+ },
+ "Journeys": {
+  "slug": "journeys",
+  "spider": "journeys",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 0
+ },
+ "KFC": {
+  "slug": "kfc",
+  "spider": "kfc_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 3746
+ },
+ "Kate Spade": {
+  "slug": "kate_spade",
+  "spider": "kate_spade",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 165
+ },
+ "Kay Jewelers": {
+  "slug": "kay_jewelers",
+  "spider": "kay_jewelers",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1005
+ },
+ "Kendra Scott": {
+  "slug": "kendra_scott",
+  "spider": "kendra_scott_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 194
+ },
+ "Kohl's": {
+  "slug": "kohls",
+  "spider": "kohls_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1150
+ },
+ "Krispy Kreme": {
+  "slug": "krispy_kreme",
+  "spider": "krispy_kreme_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 343
+ },
+ "Kroger": {
+  "slug": "kroger",
+  "spider": "kroger_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 3454
+ },
+ "LA Fitness": {
+  "slug": "la_fitness",
+  "spider": "la_fitness",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 558
+ },
+ "Lane Bryant": {
+  "slug": "lane_bryant",
+  "spider": "lane_bryant_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 362
+ },
+ "Le Pain Quotidien": {
+  "slug": "le_pain_quotidien",
+  "spider": "le_pain_quotidien",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 48
+ },
+ "Lego": {
+  "slug": "lego",
+  "spider": "lego",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 122
+ },
+ "Levi's": {
+  "slug": "levis",
+  "spider": "levis",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 262
+ },
+ "Lidl": {
+  "slug": "lidl",
+  "spider": "lidl",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 203
+ },
+ "Life Time": {
+  "slug": "life_time",
+  "spider": "life_time",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 218
+ },
+ "Little Caesars": {
+  "slug": "little_caesars",
+  "spider": "little_caesars_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2310
+ },
+ "LongHorn Steakhouse": {
+  "slug": "longhorn_steakhouse",
+  "spider": "longhorn_steakhouse",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 653
+ },
+ "Lush": {
+  "slug": "lush",
+  "spider": "lush",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 199
+ },
+ "MAC Cosmetics": {
+  "slug": "mac_cosmetics",
+  "spider": "mac_cosmetics",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1955
+ },
+ "MOD Pizza": {
+  "slug": "mod_pizza",
+  "spider": "mod_pizza",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 438
+ },
+ "Macy's": {
+  "slug": "macys",
+  "spider": "macys",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 361
+ },
+ "Madewell": {
+  "slug": "madewell",
+  "spider": "madewell_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 162
+ },
+ "Maggiano's Little Italy": {
+  "slug": "maggianos_little_italy",
+  "spider": "maggianos_little_italy",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 48
+ },
+ "Marco's Pizza": {
+  "slug": "marcos_pizza",
+  "spider": "marcos",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1210
+ },
+ "Massage Envy": {
+  "slug": "massage_envy",
+  "spider": "massage_envy",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 989
+ },
+ "Mattress Firm": {
+  "slug": "mattress_firm",
+  "spider": "mattress_firm_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2240
+ },
+ "Mattress Warehouse": {
+  "slug": "mattress_warehouse",
+  "spider": "mattress_warehouse_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 436
+ },
+ "McDonald's": {
+  "slug": "mcdonalds",
+  "spider": "mcdonalds",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 13486
+ },
+ "Men's Wearhouse": {
+  "slug": "mens_wearhouse",
+  "spider": "mens_wearhouse",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 609
+ },
+ "Menards": {
+  "slug": "menards",
+  "spider": "menards",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 341
+ },
+ "Michael Kors": {
+  "slug": "michael_kors",
+  "spider": "michael_kors",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 213
+ },
+ "Michaels": {
+  "slug": "michaels",
+  "spider": "michaels",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1215
+ },
+ "Moe's Southwest Grill": {
+  "slug": "moes_southwest_grill",
+  "spider": "moes_southwest_grill",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 540
+ },
+ "Nando's": {
+  "slug": "nandos",
+  "spider": "nandos_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 47
+ },
+ "Natural Grocers": {
+  "slug": "natural_grocers",
+  "spider": "natural_grocers_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 176
+ },
+ "Neiman Marcus": {
+  "slug": "neiman_marcus",
+  "spider": "neiman_marcus_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 33
+ },
+ "Nike": {
+  "slug": "nike",
+  "spider": "nike",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 252
+ },
+ "Nordstrom": {
+  "slug": "nordstrom",
+  "spider": "nordstrom",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 98
+ },
+ "Nordstrom Rack": {
+  "slug": "nordstrom_rack",
+  "spider": "nordstrom_rack",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 306
+ },
+ "O'Reilly Auto Parts": {
+  "slug": "oreilly_auto_parts",
+  "spider": "oreilly_auto",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 6597
+ },
+ "Old Navy": {
+  "slug": "old_navy",
+  "spider": "old_navy",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1133
+ },
+ "Ollie's Bargain Outlet": {
+  "slug": "ollies_bargain_outlet",
+  "spider": "ollies_bargain_outlet",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 720
+ },
+ "Orangetheory Fitness": {
+  "slug": "orangetheory_fitness",
+  "spider": "orangetheory_fitness",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1205
+ },
+ "Outback Steakhouse": {
+  "slug": "outback_steakhouse",
+  "spider": "outback_steakhouse",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 658
+ },
+ "P.F. Chang's": {
+  "slug": "p_f_changs",
+  "spider": "pf_changs",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 205
+ },
+ "Panda Express": {
+  "slug": "panda_express",
+  "spider": "panda_express",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2458
+ },
+ "Pandora": {
+  "slug": "pandora",
+  "spider": "pandora",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 634
+ },
+ "Panera Bread": {
+  "slug": "panera_bread",
+  "spider": "panera_bread_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2246
+ },
+ "Papa John's": {
+  "slug": "papa_johns",
+  "spider": "papa_johns",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 3086
+ },
+ "Paper Source": {
+  "slug": "paper_source",
+  "spider": "paper_source_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 106
+ },
+ "Party City": {
+  "slug": "party_city",
+  "spider": "party_city",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 864
+ },
+ "Peet's Coffee": {
+  "slug": "peets_coffee",
+  "spider": "peets_coffee_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 259
+ },
+ "PetSmart": {
+  "slug": "petsmart",
+  "spider": "petsmart",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1536
+ },
+ "Petco": {
+  "slug": "petco",
+  "spider": "petco",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1372
+ },
+ "Philz Coffee": {
+  "slug": "philz_coffee",
+  "spider": "philz_coffee_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 88
+ },
+ "Pizza Hut": {
+  "slug": "pizza_hut",
+  "spider": "pizza_hut_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 6284
+ },
+ "Planet Fitness": {
+  "slug": "planet_fitness",
+  "spider": "planet_fitness_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1771
+ },
+ "Popeyes": {
+  "slug": "popeyes",
+  "spider": "popeyes",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 3120
+ },
+ "Portillo's": {
+  "slug": "portillos",
+  "spider": "portillos",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 110
+ },
+ "Pret A Manger": {
+  "slug": "pret_a_manger",
+  "spider": "pret_a_manger",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 58
+ },
+ "Publix": {
+  "slug": "publix",
+  "spider": "publix_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 3242
+ },
+ "Pure Barre": {
+  "slug": "pure_barre",
+  "spider": "pure_barre_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 612
+ },
+ "Qdoba": {
+  "slug": "qdoba",
+  "spider": "qdoba",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 4283
+ },
+ "QuikTrip": {
+  "slug": "quiktrip",
+  "spider": "quiktrip_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1261
+ },
+ "REI": {
+  "slug": "rei",
+  "spider": "rei_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 193
+ },
+ "Raising Cane's": {
+  "slug": "raising_canes",
+  "spider": "raising_canes_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1004
+ },
+ "Red Lobster": {
+  "slug": "red_lobster",
+  "spider": "red_lobster_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 482
+ },
+ "Red Robin": {
+  "slug": "red_robin",
+  "spider": "red_robin",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 448
+ },
+ "Ross Dress for Less": {
+  "slug": "ross_dress_for_less",
+  "spider": "ross_dress_for_less_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1996
+ },
+ "Ruth's Chris Steak House": {
+  "slug": "ruths_chris_steak_house",
+  "spider": "ruths_chris_steak_house_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 137
+ },
+ "Safeway": {
+  "slug": "safeway",
+  "spider": "safeway",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1945
+ },
+ "Sally Beauty": {
+  "slug": "sally_beauty",
+  "spider": "sally_beauty_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2282
+ },
+ "Sam's Club": {
+  "slug": "sams_club",
+  "spider": "sams_club",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1133
+ },
+ "Scooter's Coffee": {
+  "slug": "scooters_coffee",
+  "spider": "scooters_coffee_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 827
+ },
+ "Sheetz": {
+  "slug": "sheetz",
+  "spider": "sheetz",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 865
+ },
+ "Skechers": {
+  "slug": "skechers",
+  "spider": "skechers",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 705
+ },
+ "Smashburger": {
+  "slug": "smashburger",
+  "spider": "smashburger",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 159
+ },
+ "Snap Fitness": {
+  "slug": "snap_fitness",
+  "spider": "snap_fitness",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 458
+ },
+ "SoulCycle": {
+  "slug": "soulcycle",
+  "spider": "soulcycle",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 53
+ },
+ "Sport Clips": {
+  "slug": "sport_clips",
+  "spider": "sport_clips_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1761
+ },
+ "Sprouts Farmers Market": {
+  "slug": "sprouts_farmers_market",
+  "spider": "sprouts_farmers_market",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 519
+ },
+ "Starbucks": {
+  "slug": "starbucks",
+  "spider": "starbucks_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 16708
+ },
+ "Steak 'n Shake": {
+  "slug": "steak_n_shake",
+  "spider": "steak_n_shake",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 387
+ },
+ "Subway": {
+  "slug": "subway",
+  "spider": "subway_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 17883
+ },
+ "Sunglass Hut": {
+  "slug": "sunglass_hut",
+  "spider": "sunglass_hut",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 1300
+ },
+ "Supercuts": {
+  "slug": "supercuts",
+  "spider": "supercuts",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1686
+ },
+ "Sweetgreen": {
+  "slug": "sweetgreen",
+  "spider": "sweetgreen_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 292
+ },
+ "T-Mobile": {
+  "slug": "t_mobile",
+  "spider": "tmobile_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 5524
+ },
+ "Taco Bell": {
+  "slug": "taco_bell",
+  "spider": "taco_bell_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 8280
+ },
+ "Target": {
+  "slug": "target",
+  "spider": "target_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2026
+ },
+ "Tempur-Pedic": {
+  "slug": "tempur_pedic",
+  "spider": "tempur_pedic_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 117
+ },
+ "Texas Roadhouse": {
+  "slug": "texas_roadhouse",
+  "spider": "texas_roadhouse",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 749
+ },
+ "The North Face": {
+  "slug": "the_north_face",
+  "spider": "the_north_face",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 126
+ },
+ "Tiffany & Co.": {
+  "slug": "tiffany_co",
+  "spider": "tiffany",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 86
+ },
+ "Tim Hortons": {
+  "slug": "tim_hortons",
+  "spider": "tim_hortons",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 694
+ },
+ "Title Boxing Club": {
+  "slug": "title_boxing_club",
+  "spider": "title_boxing_club_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 93
+ },
+ "Tommy Bahama": {
+  "slug": "tommy_bahama",
+  "spider": "tommy_bahama",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 142
+ },
+ "Top Golf": {
+  "slug": "top_golf",
+  "spider": "topgolf_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 103
+ },
+ "Torchy's Tacos": {
+  "slug": "torchys_tacos",
+  "spider": "torchys_tacos_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 120
+ },
+ "Tractor Supply": {
+  "slug": "tractor_supply",
+  "spider": "tractor_supply",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2482
+ },
+ "Trader Joe's": {
+  "slug": "trader_joes",
+  "spider": "trader_joes_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 671
+ },
+ "Tropical Smoothie Cafe": {
+  "slug": "tropical_smoothie_cafe",
+  "spider": "tropical_smoothie_cafe_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1810
+ },
+ "Twin Peaks": {
+  "slug": "twin_peaks",
+  "spider": "twin_peaks",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 110
+ },
+ "Under Armour": {
+  "slug": "under_armour",
+  "spider": "under_armour",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 172
+ },
+ "Uniqlo": {
+  "slug": "uniqlo",
+  "spider": "uniqlo",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 0
+ },
+ "Vans": {
+  "slug": "vans",
+  "spider": "vans",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 398
+ },
+ "Verizon": {
+  "slug": "verizon",
+  "spider": "verizon_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 4093
+ },
+ "Victoria's Secret": {
+  "slug": "victorias_secret",
+  "spider": "victorias_secret",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 769
+ },
+ "Vuori": {
+  "slug": "vuori",
+  "spider": "vuori",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 126
+ },
+ "Waffle House": {
+  "slug": "waffle_house",
+  "spider": "waffle_house_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2106
+ },
+ "Walgreens": {
+  "slug": "walgreens",
+  "spider": "walgreens",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 7689
+ },
+ "Walmart": {
+  "slug": "walmart",
+  "spider": "walmart_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 1477
+ },
+ "Warby Parker": {
+  "slug": "warby_parker",
+  "spider": "warby_parker",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 379
+ },
+ "Wawa": {
+  "slug": "wawa",
+  "spider": "wawa",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 943
+ },
+ "Wegmans": {
+  "slug": "wegmans",
+  "spider": "wegmans_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 114
+ },
+ "Wendy's": {
+  "slug": "wendys",
+  "spider": "wendys",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 15714
+ },
+ "Whataburger": {
+  "slug": "whataburger",
+  "spider": "whataburger",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1214
+ },
+ "Whole Foods Market": {
+  "slug": "whole_foods_market",
+  "spider": "whole_foods",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 535
+ },
+ "Williams-Sonoma": {
+  "slug": "williams_sonoma",
+  "spider": "williams_sonoma_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 145
+ },
+ "Wingstop": {
+  "slug": "wingstop",
+  "spider": "wingstop",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2731
+ },
+ "Yard House": {
+  "slug": "yard_house",
+  "spider": "yard_house",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 100
+ },
+ "Zaxby's": {
+  "slug": "zaxbys",
+  "spider": "zaxbys_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1031
+ },
+ "solidcore": {
+  "slug": "solidcore",
+  "spider": "solidcore_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 197
+ },
+ "Abercrombie & Fitch": {
+  "slug": "abercrombie_fitch",
+  "spider": "abercrombie_and_fitch",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 195
+ },
+ "Aldi": {
+  "slug": "aldi",
+  "spider": "aldi_sud_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2750
+ },
+ "Barnes & Noble": {
+  "slug": "barnes_noble",
+  "spider": "barnes_and_noble_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 731
+ },
+ "Bath & Body Works": {
+  "slug": "bath_body_works",
+  "spider": "bath_and_body_works_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1841
+ },
+ "Casey's": {
+  "slug": "caseys",
+  "spider": "caseys_general_store_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 3750
+ },
+ "Costco": {
+  "slug": "costco",
+  "spider": "costco_ca_gb_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 660
+ },
+ "Crumbl": {
+  "slug": "crumbl",
+  "spider": "crumbl_cookies_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 890
+ },
+ "Dave & Buster's": {
+  "slug": "dave_busters",
+  "spider": "dave_and_busters",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 182
+ },
+ "Gap": {
+  "slug": "gap",
+  "spider": "gap_ca_pr_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 399
+ },
+ "In-N-Out Burger": {
+  "slug": "in_n_out_burger",
+  "spider": "innout",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 445
+ },
+ "J.Crew": {
+  "slug": "j_crew",
+  "spider": "j_crew_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 693
+ },
+ "Jamba": {
+  "slug": "jamba",
+  "spider": "jamba_juice",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 687
+ },
+ "Lululemon": {
+  "slug": "lululemon",
+  "spider": "lululemon_ca_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 457
+ },
+ "Noodles & Company": {
+  "slug": "noodles_company",
+  "spider": "noodles_and_company_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 383
+ },
+ "Potbelly": {
+  "slug": "potbelly",
+  "spider": "potbelly_sandwich_shop",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 410
+ },
+ "Sephora": {
+  "slug": "sephora",
+  "spider": "sephora_us_ca",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 537
+ },
+ "Smoothie King": {
+  "slug": "smoothie_king",
+  "spider": "smoothie_king_ky_us_tt",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1293
+ },
+ "Sonic Drive-In": {
+  "slug": "sonic_drive_in",
+  "spider": "sonic_drivein_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 3354
+ },
+ "Talbots": {
+  "slug": "talbots",
+  "spider": "talbots_ca_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 437
+ },
+ "The Home Depot": {
+  "slug": "the_home_depot",
+  "spider": "home_depot",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 2026
+ },
+ "Ulta": {
+  "slug": "ulta",
+  "spider": "ulta_beauty_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": false,
+  "features_kept": 1556
+ },
+ "7-Eleven": {
+  "slug": "7_eleven",
+  "spider": "seven_eleven_ca_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 6824
+ },
+ "Aerie": {
+  "slug": "aerie",
+  "spider": "american_eagle_outfitters",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 328
+ },
+ "Pottery Barn": {
+  "slug": "pottery_barn",
+  "spider": "williams_sonoma_us",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 158
+ },
+ "LensCrafters": {
+  "slug": "lenscrafters",
+  "spider": "sunglass_hut",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 1516
+ },
+ "White House Black Market": {
+  "slug": "white_house_black_market",
+  "spider": "chicos",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 308
+ },
+ "Soma": {
+  "slug": "soma",
+  "spider": "chicos",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 259
+ },
+ "TJ Maxx": {
+  "slug": "tj_maxx",
+  "spider": "tjx",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 1281
+ },
+ "Marshalls": {
+  "slug": "marshalls",
+  "spider": "tjx",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 1203
+ },
+ "HomeGoods": {
+  "slug": "homegoods",
+  "spider": "tjx",
+  "source": "run_2026-10-10",
+  "multi_brand_spider": true,
+  "features_kept": 940
+ }
+}

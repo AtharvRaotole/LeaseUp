@@ -1,4 +1,4 @@
-import storeLocations from './store-locations.json' with { type: 'json' };
+import { storeLocationsEmbedded } from './store-locations-data.js';
 
 interface BrandData {
   name: string;
@@ -9,7 +9,7 @@ interface BrandData {
 
 type StoreData = Record<string, BrandData>;
 
-const storeData = storeLocations.data as StoreData;
+const storeData = storeLocationsEmbedded.data as StoreData;
 
 export function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371;

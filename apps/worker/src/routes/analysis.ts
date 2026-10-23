@@ -55,6 +55,14 @@ analysisRouter.post('/analyze/stream', async (c) => {
         await send('step', step);
       });
       await send('complete', result);
+      if (c.env.APP_MODE === 'live' && result.prospects.some((p) => p.brand.verified === 'verifying...')) {
+        const verified = await service.applyOsmVerification(
+          result.location,
+          request.radius,
+          result.prospects
+        );
+        await send('verification', { runId, prospects: verified });
+      }
     } catch (error) {
       await send('error', { message: (error as Error).message });
     } finally {
@@ -108,6 +116,20 @@ analysisRouter.get('/heatmap', async (c) => {
       affinityRank: cell.affinity_rank,
     })),
   });
+});
+
+analysisRouter.post('/verify', async (c) => {
+  const body = await c.req.json();
+  const location = body.location as import('@leaseup/contracts').Location;
+  const radius = Number(body.radius);
+  const prospects = body.prospects as import('@leaseup/contracts').ProspectPack[];
+  if (!location || !radius || !Array.isArray(prospects)) {
+    return c.json({ error: 'location, radius, and prospects are required', code: 'VALIDATION_ERROR' }, 400);
+  }
+
+  const service = new AnalysisService(c.env);
+  const updated = await service.applyOsmVerification(location, radius, prospects);
+  return c.json({ prospects: updated });
 });
 
 analysisRouter.post('/outreach', async (c) => {

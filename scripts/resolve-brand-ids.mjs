@@ -1,38 +1,64 @@
 #!/usr/bin/env node
 /**
- * Resolve Qloo brand entity IDs for chain names (requires QLOO_API_KEY).
+ * Resolve Qloo brand entity IDs (requires QLOO_API_KEY).
+ * Uses GET /search (results[]), sequential with 1.1s spacing and 429 backoff.
  *
  * Usage:
  *   QLOO_API_KEY=xxx node scripts/resolve-brand-ids.mjs --names "Madewell,Target"
+ *   QLOO_API_KEY=xxx node scripts/resolve-brand-ids.mjs --names-file names.txt --out resolved.jsonl
  */
 
-const QLOO_API_KEY = process.env.QLOO_API_KEY;
-if (!QLOO_API_KEY) {
+import { readFileSync, appendFileSync, writeFileSync } from 'fs';
+
+const KEY = process.env.QLOO_API_KEY;
+if (!KEY) {
   console.error('QLOO_API_KEY is required');
   process.exit(1);
 }
 
 const base = process.env.QLOO_BASE_URL || 'https://hackathon.api.qloo.com';
 const namesArg = process.argv.find((a, i) => process.argv[i - 1] === '--names');
-const names = (namesArg || '').split(',').map((n) => n.trim()).filter(Boolean);
+const namesFile = process.argv.find((a, i) => process.argv[i - 1] === '--names-file');
+const outFile = process.argv.find((a, i) => process.argv[i - 1] === '--out') || 'resolved.jsonl';
 
-if (names.length === 0) {
-  console.error('Pass --names "Brand A,Brand B"');
-  process.exit(1);
-}
+const names = namesArg
+  ? namesArg.split(',').map((n) => n.trim()).filter(Boolean)
+  : readFileSync(namesFile, 'utf8').split('\n').map((l) => l.trim()).filter(Boolean);
+
+writeFileSync(outFile, '');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 for (const name of names) {
-  const url = new URL('/v2/search', base);
-  url.searchParams.set('query', name);
-  url.searchParams.set('filter.type', 'urn:entity:brand');
-  const res = await fetch(url.toString(), {
-    headers: { 'X-Api-Key': QLOO_API_KEY, Accept: 'application/json' },
-  });
-  if (!res.ok) {
-    console.error(name, res.status, res.statusText);
-    continue;
+  let data = null;
+  let status = 0;
+  for (let attempt = 1; attempt <= 6; attempt++) {
+    const url = new URL('/search', base);
+    url.searchParams.set('query', name);
+    url.searchParams.set('types', 'urn:entity:brand');
+    url.searchParams.set('take', '5');
+    const response = await fetch(url, {
+      headers: { 'X-Api-Key': KEY, Accept: 'application/json' },
+    });
+    status = response.status;
+    if (response.status === 429) {
+      await sleep(attempt * 5000);
+      continue;
+    }
+    if (response.ok) {
+      data = await response.json();
+      break;
+    }
+    break;
   }
-  const data = await res.json();
-  const hit = data?.results?.entities?.[0];
-  console.log(JSON.stringify({ name, entity_id: hit?.entity_id, label: hit?.name }));
+
+  const hits = (data?.results || []).slice(0, 5).map((h) => ({
+    entity_id: h.entity_id,
+    name: h.name,
+    popularity: h.popularity,
+  }));
+
+  appendFileSync(outFile, `${JSON.stringify({ name, status, hits })}\n`);
+  await sleep(1100);
 }
+
+console.log(`Wrote ${names.length} rows to ${outFile}`);

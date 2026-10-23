@@ -1,0 +1,1137 @@
+{
+  "7_eleven": {
+    "query": "7-Eleven",
+    "name": "7-Eleven",
+    "id": "0B47F4FC-A267-4E07-85F4-F64511835C03"
+  },
+  "at_t": {
+    "query": "AT&T",
+    "name": "AT&T",
+    "id": "0E011D42-90B2-496E-B285-4EB2181EB0A9"
+  },
+  "abercrombie_fitch": {
+    "query": "Abercrombie & Fitch",
+    "name": "Abercrombie & Fitch",
+    "id": "5D03112C-CD2A-41C3-9ED0-D72EED8BB373"
+  },
+  "academy_sports_outdoors": {
+    "query": "Academy Sports + Outdoors",
+    "name": "Academy Sports + Outdoors",
+    "id": "81100467-8F5D-4796-B222-A84983379402"
+  },
+  "adidas": {
+    "query": "Adidas",
+    "name": "Adidas",
+    "id": "FCEA7CA1-1D40-4680-B337-E74594D9BCF1"
+  },
+  "aldi": {
+    "query": "Aldi",
+    "name": "Aldi",
+    "id": "88483819-91A9-45BE-8110-0D6CD0C9B35D"
+  },
+  "american_eagle_outfitters": {
+    "query": "American Eagle Outfitters",
+    "name": "American Eagle Outfitters",
+    "id": "2D890327-8794-4C5A-898F-FFF0323325CF"
+  },
+  "ann_taylor": {
+    "query": "Ann Taylor",
+    "name": "Ann Taylor",
+    "id": "D2AB8018-EDD0-45A4-908F-A93658E5223E"
+  },
+  "anytime_fitness": {
+    "query": "Anytime Fitness",
+    "name": "Anytime Fitness",
+    "id": "8AB653CD-7984-4263-B4B0-F3C4C02519DC"
+  },
+  "apple": {
+    "query": "Apple",
+    "name": "Apple",
+    "id": "D5B78065-6DBB-4DDB-80DF-6495B9B1006B"
+  },
+  "applebees": {
+    "query": "Applebee's",
+    "name": "Applebee's",
+    "id": "8227A628-2D77-4EB3-8F1A-2C4238997412"
+  },
+  "arbys": {
+    "query": "Arby's",
+    "name": "Arby's",
+    "id": "CE2A2DDD-3F1D-49A4-8DDF-5665365587CE"
+  },
+  "ashley_furniture": {
+    "query": "Ashley Furniture",
+    "name": "Ashley Furniture",
+    "id": "BB2ED76F-B614-4601-9C57-619025DB52CE"
+  },
+  "athleta": {
+    "query": "Athleta",
+    "name": "Athleta",
+    "id": "DFFF4470-F663-4742-A503-4FD0CB152498"
+  },
+  "au_bon_pain": {
+    "query": "Au Bon Pain",
+    "name": "Au Bon Pain",
+    "id": "86AA27A6-074F-4137-8358-FA16DBD7F34E"
+  },
+  "aveda": {
+    "query": "Aveda",
+    "name": "Aveda",
+    "id": "E00BD9FA-BE47-432E-86D1-4E0046FE73DD"
+  },
+  "banana_republic": {
+    "query": "Banana Republic",
+    "name": "Banana Republic",
+    "id": "BEE83976-354E-4991-95BB-C32595C9C96D"
+  },
+  "barnes_noble": {
+    "query": "Barnes & Noble",
+    "name": "Barnes & Noble",
+    "id": "0BAC80D0-90D5-46A8-A11F-7CC58DE74963"
+  },
+  "baskin_robbins": {
+    "query": "Baskin-Robbins",
+    "name": "Baskin-Robbins",
+    "id": "706BC87D-2A45-474B-AD67-210677434F88"
+  },
+  "bass_pro_shops": {
+    "query": "Bass Pro Shops",
+    "name": "Bass Pro Shops",
+    "id": "2D00EBC5-9F4C-46E2-86D5-99E55B8D30D9"
+  },
+  "bath_body_works": {
+    "query": "Bath & Body Works",
+    "name": "Bath & Body Works",
+    "id": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E"
+  },
+  "best_buy": {
+    "query": "Best Buy",
+    "name": "Best Buy",
+    "id": "BEF4E5D5-245C-49D5-8D20-7C8A1B3C80F5"
+  },
+  "big_lots": {
+    "query": "Big Lots",
+    "name": "Big Lots",
+    "id": "AD18E464-9E20-425E-80B3-010E665D78C1"
+  },
+  "blaze_pizza": {
+    "query": "Blaze Pizza",
+    "name": "Blaze Pizza",
+    "id": "495FBED3-17C4-484F-A208-73C0018E0463"
+  },
+  "bloomingdales": {
+    "query": "Bloomingdale's",
+    "name": "Bloomingdale's",
+    "id": "F52C8EA1-4FAC-4863-A016-2E649B81CA9F"
+  },
+  "blue_bottle_coffee": {
+    "query": "Blue Bottle Coffee",
+    "name": "Blue Bottle Coffee",
+    "id": "22B1BC87-CDFE-4340-86F8-8E0E6E1E6A7D"
+  },
+  "bojangles": {
+    "query": "Bojangles",
+    "name": "Bojangles",
+    "id": "9DBAA49C-D49D-4BBE-ADBA-FE4D090F8217"
+  },
+  "bonefish_grill": {
+    "query": "Bonefish Grill",
+    "name": "Bonefish Grill",
+    "id": "9B3F03CE-3145-4ABC-A42E-C20945BF60B8"
+  },
+  "boot_barn": {
+    "query": "Boot Barn",
+    "name": "Boot Barn",
+    "id": "14D07FA0-1C87-48E7-B19A-0D6401D2D082"
+  },
+  "brooks_brothers": {
+    "query": "Brooks Brothers",
+    "name": "Brooks Brothers",
+    "id": "5318FE99-3ADB-4E62-BFA5-DED63001E3DD"
+  },
+  "buffalo_wild_wings": {
+    "query": "Buffalo Wild Wings",
+    "name": "Buffalo Wild Wings",
+    "id": "D9E4D872-7E4D-4E5A-B94F-FFD25B7D98C2"
+  },
+  "build_a_bear_workshop": {
+    "query": "Build-A-Bear Workshop",
+    "name": "Build-A-Bear Workshop",
+    "id": "25FFE815-A824-4029-9BA5-10E70CD8EE26"
+  },
+  "burger_king": {
+    "query": "Burger King",
+    "name": "Burger King",
+    "id": "74D13B62-2C51-4D99-804F-3D338F7B0406"
+  },
+  "burlington": {
+    "query": "Burlington",
+    "name": "Burlington",
+    "id": "91491729-2989-44C6-82F1-E8EB25B9FA42"
+  },
+  "cabelas": {
+    "query": "Cabela's",
+    "name": "Cabela's",
+    "id": "D46C358B-C258-40FD-BE2F-1B03DBAC7913"
+  },
+  "caribou_coffee": {
+    "query": "Caribou Coffee",
+    "name": "Caribou Coffee",
+    "id": "0F6BCED5-19B1-4DFD-B55C-42708EE32A64"
+  },
+  "carls_jr": {
+    "query": "Carl's Jr.",
+    "name": "Carl's Jr.",
+    "id": "F1032969-49C0-4F0D-AC5C-0629C1319D81"
+  },
+  "carrabbas_italian_grill": {
+    "query": "Carrabba's Italian Grill",
+    "name": "Carrabba's Italian Grill",
+    "id": "FF45877E-0E1D-4E41-A392-7E7C18A4FE18"
+  },
+  "carters": {
+    "query": "Carter's",
+    "name": "Carter's",
+    "id": "F524E022-2389-4EA8-BF4C-8D001C6129D3"
+  },
+  "caseys": {
+    "query": "Casey's",
+    "name": "Casey's",
+    "id": "0FA366A5-34CD-4573-BF09-84A88BC24DCE"
+  },
+  "casper": {
+    "query": "Casper",
+    "name": "Casper",
+    "id": "1DDDFC7F-5407-4602-A3B4-FFFFC17B2419"
+  },
+  "cava": {
+    "query": "Cava",
+    "name": "Cava",
+    "id": "270D2B55-C8A7-4886-A46A-685B16E7D90B"
+  },
+  "chick_fil_a": {
+    "query": "Chick-fil-A",
+    "name": "Chick-fil-A",
+    "id": "B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7"
+  },
+  "chicos": {
+    "query": "Chico's",
+    "name": "Chico's",
+    "id": "9AE69D0B-DBFE-49AC-8951-499883140A89"
+  },
+  "chilis": {
+    "query": "Chili's",
+    "name": "Chili's",
+    "id": "9D8CE161-6BBD-4FE7-AA0A-DA9FB0C760DF"
+  },
+  "chipotle_mexican_grill": {
+    "query": "Chipotle Mexican Grill",
+    "name": "Chipotle Mexican Grill",
+    "id": "4CFF9589-5168-48BD-88F0-D0826466F37D"
+  },
+  "churchs_chicken": {
+    "query": "Church's Chicken",
+    "name": "Church's Chicken",
+    "id": "C628D8FF-42F1-4626-9766-274148DBAB27"
+  },
+  "claires": {
+    "query": "Claire's",
+    "name": "Claire's",
+    "id": "7F4CD3BE-477A-467D-B4F7-5F245B56B5F4"
+  },
+  "coach": {
+    "query": "Coach",
+    "name": "Coach",
+    "id": "C306B282-6425-46DF-98F0-D976C6A65B1E"
+  },
+  "columbia_sportswear": {
+    "query": "Columbia Sportswear",
+    "name": "Columbia Sportswear",
+    "id": "DD982800-A3A4-40A6-A30D-276B7FEA74A3"
+  },
+  "corepower_yoga": {
+    "query": "CorePower Yoga",
+    "name": "CorePower Yoga",
+    "id": "A17F327E-C061-477E-9B76-031DD0CDFB17"
+  },
+  "cost_plus_world_market": {
+    "query": "Cost Plus World Market",
+    "name": "Cost Plus World Market",
+    "id": "D269C836-9B58-413F-B583-CF7CC64C5BDC"
+  },
+  "costco": {
+    "query": "Costco",
+    "name": "Costco",
+    "id": "FBCBEB97-74E1-4390-984A-BC7E5EF4F2EA"
+  },
+  "crumbl": {
+    "query": "Crumbl",
+    "name": "Crumbl",
+    "id": "7C4CC0B9-1C3C-4C5C-A732-5991046EBB03"
+  },
+  "crunch_fitness": {
+    "query": "Crunch Fitness",
+    "name": "Crunch Fitness",
+    "id": "C2FBC3D3-1A7E-4DFA-8824-BEDC0EB86C57"
+  },
+  "culvers": {
+    "query": "Culver's",
+    "name": "Culver's",
+    "id": "54057197-DAD6-4798-846B-4A6EB72C8D9F"
+  },
+  "dsw": {
+    "query": "DSW",
+    "name": "DSW",
+    "id": "0A4C7FDD-C236-4255-A8C0-82F875C03EC2"
+  },
+  "dairy_queen": {
+    "query": "Dairy Queen",
+    "name": "Dairy Queen",
+    "id": "2158D476-D2CC-4FAA-BCA2-CD2B373E0CFF"
+  },
+  "dave_busters": {
+    "query": "Dave & Buster's",
+    "name": "Dave & Buster's",
+    "id": "47C8C56F-D079-451D-855A-D694B53C5A83"
+  },
+  "del_taco": {
+    "query": "Del Taco",
+    "name": "Del Taco",
+    "id": "BEFB84C0-693C-41A5-9538-A687A767DE13"
+  },
+  "dennys": {
+    "query": "Denny's",
+    "name": "Denny's",
+    "id": "D0D3D990-E5B5-4B8A-AAC1-8D97E9227B56"
+  },
+  "dicks_sporting_goods": {
+    "query": "Dick's Sporting Goods",
+    "name": "Dick's Sporting Goods",
+    "id": "CA5AE7AD-7CA2-4C8B-BC17-DC89B09ABD35"
+  },
+  "dillards": {
+    "query": "Dillard's",
+    "name": "Dillard's",
+    "id": "0E01EDE4-04E3-4801-916D-29171340AD1E"
+  },
+  "dollar_general": {
+    "query": "Dollar General",
+    "name": "Dollar General",
+    "id": "77A843BF-AA9A-4588-A44B-E8AA684A910C"
+  },
+  "dollar_tree": {
+    "query": "Dollar Tree",
+    "name": "Dollar Tree",
+    "id": "8B4368C8-ABC7-4AC4-9B8C-D47495E6EE7D"
+  },
+  "dunkin": {
+    "query": "Dunkin'",
+    "name": "Dunkin'",
+    "id": "5E978F43-4450-4F41-8EE4-A0421E8EC178"
+  },
+  "dutch_bros_coffee": {
+    "query": "Dutch Bros Coffee",
+    "name": "Dutch Bros Coffee",
+    "id": "1DCF5C56-35D6-4CCA-AF5E-13F6ACB63C0F"
+  },
+  "einstein_bros_bagels": {
+    "query": "Einstein Bros. Bagels",
+    "name": "Einstein Bros. Bagels",
+    "id": "DE5DD631-BCC4-4EC9-B684-D2C822CA8F33"
+  },
+  "el_pollo_loco": {
+    "query": "El Pollo Loco",
+    "name": "El Pollo Loco",
+    "id": "C39E890A-6D19-4A07-99A3-DAD18D1613DE"
+  },
+  "european_wax_center": {
+    "query": "European Wax Center",
+    "name": "European Wax Center",
+    "id": "3297674E-00F1-4A10-A3C7-983BDB823A0E"
+  },
+  "express": {
+    "query": "Express",
+    "name": "Express",
+    "id": "DB37F394-B330-4BFC-A14B-42A53B9CF7D9"
+  },
+  "f45_training": {
+    "query": "F45 Training",
+    "name": "F45 Training",
+    "id": "B4F15973-8C09-4ACA-8E11-5CF3437D514D"
+  },
+  "family_dollar": {
+    "query": "Family Dollar",
+    "name": "Family Dollar",
+    "id": "3ADFE43E-4C2A-421A-995B-EE896F73E6FC"
+  },
+  "famous_footwear": {
+    "query": "Famous Footwear",
+    "name": "Famous Footwear",
+    "id": "937A21AD-ACF2-4DBE-B61E-4A5466FE3E77"
+  },
+  "finish_line": {
+    "query": "Finish Line",
+    "name": "Finish Line",
+    "id": "D8183712-9EBB-49E7-A277-8E9773826156"
+  },
+  "firehouse_subs": {
+    "query": "Firehouse Subs",
+    "name": "Firehouse Subs",
+    "id": "DA4F4642-9D83-4D04-93BD-F08CF62FFD07"
+  },
+  "first_watch": {
+    "query": "First Watch",
+    "name": "First Watch",
+    "id": "1DF5514A-1819-438B-BF91-880A21169FE9"
+  },
+  "five_guys": {
+    "query": "Five Guys",
+    "name": "Five Guys",
+    "id": "6D548BAE-A999-44A2-8FEB-5E92E9AE158F"
+  },
+  "foot_locker": {
+    "query": "Foot Locker",
+    "name": "Foot Locker",
+    "id": "4C160FEA-FDB6-4DEC-99FC-13899680A0F4"
+  },
+  "fossil": {
+    "query": "Fossil",
+    "name": "Fossil",
+    "id": "76AD9E43-C469-4929-AB61-BC4DC28B9A27"
+  },
+  "freddys_frozen_custard_steakburgers": {
+    "query": "Freddy's Frozen Custard & Steakburgers",
+    "name": "Freddy's Frozen Custard & Steakburgers",
+    "id": "1A8E8332-F0D0-49AF-B4B0-EDE1C9596D65"
+  },
+  "fresh_market": {
+    "query": "Fresh Market",
+    "name": "Fresh Market",
+    "id": "DFD670C3-579A-4561-8233-B41F98A7276B"
+  },
+  "gamestop": {
+    "query": "GameStop",
+    "name": "GameStop",
+    "id": "AED3E369-28F1-4F7C-9692-832544846812"
+  },
+  "gap": {
+    "query": "Gap",
+    "name": "Gap",
+    "id": "CF7D11E7-DA78-47D9-9AE1-030366F4507B"
+  },
+  "golds_gym": {
+    "query": "Gold's Gym",
+    "name": "Gold's Gym",
+    "id": "F6AA9EB7-9F8F-4F69-8994-DE8174905983"
+  },
+  "h_m": {
+    "query": "H&M",
+    "name": "H&M",
+    "id": "108EB684-257B-42D7-84E5-6E9D8BE3E793"
+  },
+  "h_e_b": {
+    "query": "H-E-B",
+    "name": "H-E-B",
+    "id": "7E764AF0-E0F8-4CB8-82D3-0FF8232D77C6"
+  },
+  "hardees": {
+    "query": "Hardee's",
+    "name": "Hardee's",
+    "id": "7D48963B-E4CF-484F-8760-4EAF7165ECF1"
+  },
+  "hobby_lobby": {
+    "query": "Hobby Lobby",
+    "name": "Hobby Lobby",
+    "id": "423EDCAF-1289-474E-9982-0CC39A5BAEFE"
+  },
+  "hollister": {
+    "query": "Hollister",
+    "name": "Hollister",
+    "id": "5AB1F089-5965-4720-ABEE-6D59E436B7F6"
+  },
+  "hooters": {
+    "query": "Hooters",
+    "name": "Hooters",
+    "id": "E63F41C0-B5D1-41CE-89B4-D2D48EE18072"
+  },
+  "hot_topic": {
+    "query": "Hot Topic",
+    "name": "Hot Topic",
+    "id": "F53B9A6B-2646-46BD-A58A-9768801DCBA9"
+  },
+  "ihop": {
+    "query": "IHOP",
+    "name": "IHOP",
+    "id": "16C4C92D-D525-419F-9D45-DE87FA5BD757"
+  },
+  "ikea": {
+    "query": "IKEA",
+    "name": "IKEA",
+    "id": "7E9A2E74-1CB5-43E9-8B74-69CA8283BFBD"
+  },
+  "in_n_out_burger": {
+    "query": "In-N-Out Burger",
+    "name": "In-N-Out Burger",
+    "id": "EF5EE567-CAAD-4907-ACCA-95CEAD1ED92C"
+  },
+  "insomnia_cookies": {
+    "query": "Insomnia Cookies",
+    "name": "Insomnia Cookies",
+    "id": "25D4DDDD-BB86-455F-A270-816468B75651"
+  },
+  "j_crew": {
+    "query": "J.Crew",
+    "name": "J.Crew",
+    "id": "A4F0BE29-87A4-4074-9ABB-21B215E532FD"
+  },
+  "j_jill": {
+    "query": "J.Jill",
+    "name": "J.Jill",
+    "id": "018721EB-EA6B-449D-B399-143811B800AC"
+  },
+  "jcpenney": {
+    "query": "JCPenney",
+    "name": "JCPenney",
+    "id": "9F891CDB-7DDF-4F00-83FD-A6B8D0189632"
+  },
+  "jack_in_the_box": {
+    "query": "Jack in the Box",
+    "name": "Jack in the Box",
+    "id": "98440E84-530F-4A97-AC5B-3677C78A9720"
+  },
+  "jamba": {
+    "query": "Jamba",
+    "name": "Jamba",
+    "id": "F44FD58A-FCD5-4ED1-B6D1-E7E83A30B26E"
+  },
+  "jimmy_johns": {
+    "query": "Jimmy John's",
+    "name": "Jimmy John's",
+    "id": "1C26370D-CCAB-4014-9D61-F17703B7C25C"
+  },
+  "kfc": {
+    "query": "KFC",
+    "name": "KFC",
+    "id": "36588026-85C4-48C0-B555-85891F815D99"
+  },
+  "kate_spade": {
+    "query": "Kate Spade",
+    "name": "Kate Spade",
+    "id": "6C386104-464E-4FB5-8570-37B88B132875"
+  },
+  "kay_jewelers": {
+    "query": "Kay Jewelers",
+    "name": "Kay Jewelers",
+    "id": "82C555EC-DC71-4B67-B362-EB1EDB6C4819"
+  },
+  "kendra_scott": {
+    "query": "Kendra Scott",
+    "name": "Kendra Scott",
+    "id": "98110AE6-7C15-4B69-88DF-DB4E040C26B0"
+  },
+  "kohls": {
+    "query": "Kohl's",
+    "name": "Kohl's",
+    "id": "945C90D2-07D7-43B3-98FE-C437DE7A6D16"
+  },
+  "krispy_kreme": {
+    "query": "Krispy Kreme",
+    "name": "Krispy Kreme",
+    "id": "A16489A3-A51E-4DD6-9966-934C86D80FE9"
+  },
+  "kroger": {
+    "query": "Kroger",
+    "name": "Kroger",
+    "id": "0E00B261-EF66-4F74-B645-040E8C6755D3"
+  },
+  "la_fitness": {
+    "query": "LA Fitness",
+    "name": "LA Fitness",
+    "id": "45B2D126-FCBC-44EA-BD09-FFA408BC1078"
+  },
+  "lane_bryant": {
+    "query": "Lane Bryant",
+    "name": "Lane Bryant",
+    "id": "E20071C1-B899-4DCA-AF66-B5B78BD4843C"
+  },
+  "le_pain_quotidien": {
+    "query": "Le Pain Quotidien",
+    "name": "Le Pain Quotidien",
+    "id": "9218A7AB-8D8C-40F1-9E24-0B74DA03758A"
+  },
+  "lego": {
+    "query": "Lego",
+    "name": "Lego",
+    "id": "C5E85462-1B81-40FF-A7B4-849DEE5120E9"
+  },
+  "levis": {
+    "query": "Levi's",
+    "name": "Levi's",
+    "id": "EE2B58FF-37F6-4521-912F-55EBC25D83E2"
+  },
+  "lidl": {
+    "query": "Lidl",
+    "name": "Lidl",
+    "id": "860B2C89-6ED2-48E8-8C79-B5FE8A1F7F7F"
+  },
+  "little_caesars": {
+    "query": "Little Caesars",
+    "name": "Little Caesars",
+    "id": "A7EB849F-73C2-4367-AB4D-467EED8A65D4"
+  },
+  "longhorn_steakhouse": {
+    "query": "LongHorn Steakhouse",
+    "name": "LongHorn Steakhouse",
+    "id": "1D533FB9-E335-4ACA-8095-24E199049EA7"
+  },
+  "lululemon": {
+    "query": "Lululemon",
+    "name": "Lululemon",
+    "id": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E"
+  },
+  "lush": {
+    "query": "Lush",
+    "name": "Lush",
+    "id": "E4182E04-0D61-4DAD-AE66-EF4208951A5C"
+  },
+  "mac_cosmetics": {
+    "query": "MAC Cosmetics",
+    "name": "MAC Cosmetics",
+    "id": "853AD85F-89EF-4274-BD23-E2B5C1F1A8DC"
+  },
+  "mod_pizza": {
+    "query": "MOD Pizza",
+    "name": "MOD Pizza",
+    "id": "B23E595D-0C54-4B41-94F0-23C17B4075D9"
+  },
+  "macys": {
+    "query": "Macy's",
+    "name": "Macy's",
+    "id": "9AAD5961-85AE-4602-9649-6BF60D84BAF1"
+  },
+  "madewell": {
+    "query": "Madewell",
+    "name": "Madewell",
+    "id": "632FE105-DF1C-4279-85BD-5E86858E5981"
+  },
+  "maggianos_little_italy": {
+    "query": "Maggiano's Little Italy",
+    "name": "Maggiano's Little Italy",
+    "id": "9ED4457E-07D3-446A-9E16-CF8BB028D512"
+  },
+  "marcos_pizza": {
+    "query": "Marco's Pizza",
+    "name": "Marco's Pizza",
+    "id": "FF629FFA-5CDA-446C-A30E-408CC2174035"
+  },
+  "massage_envy": {
+    "query": "Massage Envy",
+    "name": "Massage Envy",
+    "id": "231BC53E-E9BE-4D78-BFFA-AA85FF2029EF"
+  },
+  "mattress_firm": {
+    "query": "Mattress Firm",
+    "name": "Mattress Firm",
+    "id": "3CCF14AE-D5B0-4CB8-A8BA-5597827E8130"
+  },
+  "mcdonalds": {
+    "query": "McDonald's",
+    "name": "McDonald's",
+    "id": "8417D6F9-C8C7-40AD-BE49-0987A4663228"
+  },
+  "mens_wearhouse": {
+    "query": "Men's Wearhouse",
+    "name": "Men's Wearhouse",
+    "id": "FF5D6B55-7FF3-432C-A0E8-CE3F790E7941"
+  },
+  "michael_kors": {
+    "query": "Michael Kors",
+    "name": "Michael Kors",
+    "id": "23A88F48-A3C6-46A5-82FB-0D862DF508C0"
+  },
+  "michaels": {
+    "query": "Michaels",
+    "name": "Michaels",
+    "id": "C69202E6-9A83-4BD6-A720-ECAB9DB2AE52"
+  },
+  "moes_southwest_grill": {
+    "query": "Moe's Southwest Grill",
+    "name": "Moe's Southwest Grill",
+    "id": "A4AF25AA-776E-4FF4-849E-4FE1BCA7B4E2"
+  },
+  "nandos": {
+    "query": "Nando's",
+    "name": "Nando's",
+    "id": "0CBF81A1-FE3A-4D7B-885C-72BC90AC55B6"
+  },
+  "natural_grocers": {
+    "query": "Natural Grocers",
+    "name": "Natural Grocers",
+    "id": "8514D2FC-583A-4C8E-A85C-F76085A91DF4"
+  },
+  "neiman_marcus": {
+    "query": "Neiman Marcus",
+    "name": "Neiman Marcus",
+    "id": "251EC16B-0469-48A1-9EDF-86A756D5F0C4"
+  },
+  "nike": {
+    "query": "Nike",
+    "name": "Nike",
+    "id": "C70CE2B8-0AD1-4150-BF18-5A6347F2E860"
+  },
+  "noodles_company": {
+    "query": "Noodles & Company",
+    "name": "Noodles & Company",
+    "id": "A409F6A6-1D61-4C4A-AD48-CB8981874F64"
+  },
+  "nordstrom": {
+    "query": "Nordstrom",
+    "name": "Nordstrom",
+    "id": "F969F822-9C3E-4044-AAF6-884AADC2064B"
+  },
+  "old_navy": {
+    "query": "Old Navy",
+    "name": "Old Navy",
+    "id": "81EC4A41-53FB-47FD-995A-B8AE3EE90652"
+  },
+  "ollies_bargain_outlet": {
+    "query": "Ollie's Bargain Outlet",
+    "name": "Ollie's Bargain Outlet",
+    "id": "1C537252-DE55-4FCF-931D-B76F157CF913"
+  },
+  "orangetheory_fitness": {
+    "query": "Orangetheory Fitness",
+    "name": "Orangetheory Fitness",
+    "id": "90390722-A8D1-4499-80FD-76703E3798A3"
+  },
+  "outback_steakhouse": {
+    "query": "Outback Steakhouse",
+    "name": "Outback Steakhouse",
+    "id": "1B29B80D-ADE8-470A-85CC-5E02AAF61368"
+  },
+  "p_f_changs": {
+    "query": "P.F. Chang's",
+    "name": "P.F. Chang's",
+    "id": "95AC081E-9DA8-4196-B5B6-283EEE33531F"
+  },
+  "panda_express": {
+    "query": "Panda Express",
+    "name": "Panda Express",
+    "id": "0E67ECB0-C65D-4221-A0A2-2E5CD84B9322"
+  },
+  "panera_bread": {
+    "query": "Panera Bread",
+    "name": "Panera Bread",
+    "id": "CCD54989-DFC4-4443-A378-72D6693B4903"
+  },
+  "papa_johns": {
+    "query": "Papa John's",
+    "name": "Papa John's",
+    "id": "A165685B-F595-457A-9DD8-E0CC8A6252B6"
+  },
+  "paper_source": {
+    "query": "Paper Source",
+    "name": "Paper Source",
+    "id": "C7CDAEC5-8939-4754-941D-0FFFE70A2172"
+  },
+  "party_city": {
+    "query": "Party City",
+    "name": "Party City",
+    "id": "93F6AA68-9168-4F6F-A27E-2508755B1690"
+  },
+  "peets_coffee": {
+    "query": "Peet's Coffee",
+    "name": "Peet's Coffee",
+    "id": "4F4B6506-341D-42FE-BC21-E440D03F60CC"
+  },
+  "petsmart": {
+    "query": "PetSmart",
+    "name": "PetSmart",
+    "id": "D019C9FF-8F94-4734-B1FC-E9D1F6541645"
+  },
+  "petco": {
+    "query": "Petco",
+    "name": "Petco",
+    "id": "0025C006-CD75-479F-B42E-DFD4D16A6DE5"
+  },
+  "philz_coffee": {
+    "query": "Philz Coffee",
+    "name": "Philz Coffee",
+    "id": "1AE523DD-3DE5-419F-9FDF-FFF48A863E5D"
+  },
+  "pizza_hut": {
+    "query": "Pizza Hut",
+    "name": "Pizza Hut",
+    "id": "16876F8E-06C7-429D-9F42-713027D90F2C"
+  },
+  "planet_fitness": {
+    "query": "Planet Fitness",
+    "name": "Planet Fitness",
+    "id": "CF8FDD0C-2601-4F42-95A7-05B5DAD71529"
+  },
+  "popeyes": {
+    "query": "Popeyes",
+    "name": "Popeyes",
+    "id": "BBF22D8D-166F-44A8-8694-3F6FF4F745AB"
+  },
+  "portillos": {
+    "query": "Portillo's",
+    "name": "Portillo's",
+    "id": "CDA781D5-B243-4EFA-A7C9-1BE6C1979397"
+  },
+  "potbelly": {
+    "query": "Potbelly",
+    "name": "Potbelly",
+    "id": "2F3A3724-27EF-45BF-B7D2-B78DFEADACEB"
+  },
+  "pret_a_manger": {
+    "query": "Pret A Manger",
+    "name": "Pret A Manger",
+    "id": "179E8DBE-E199-4E3A-96DE-175BA7707C70"
+  },
+  "publix": {
+    "query": "Publix",
+    "name": "Publix",
+    "id": "2BAF7E3C-1A8C-496D-9E3E-30E0D067DE96"
+  },
+  "qdoba": {
+    "query": "Qdoba",
+    "name": "Qdoba",
+    "id": "51D54EC5-B77F-485C-A3D8-2852EF220205"
+  },
+  "quiktrip": {
+    "query": "QuikTrip",
+    "name": "QuikTrip",
+    "id": "0EF78F2A-A8EF-4EB6-A2F0-37A8499BF9C7"
+  },
+  "rei": {
+    "query": "REI",
+    "name": "REI",
+    "id": "205AF33F-118E-4C49-9721-6BDBAF981DA0"
+  },
+  "raising_canes": {
+    "query": "Raising Cane's",
+    "name": "Raising Cane's",
+    "id": "20E485DE-70A9-4635-AF36-F1305B60827D"
+  },
+  "red_lobster": {
+    "query": "Red Lobster",
+    "name": "Red Lobster",
+    "id": "F6A198C3-A7F2-4637-95C0-F89234B788DE"
+  },
+  "red_robin": {
+    "query": "Red Robin",
+    "name": "Red Robin",
+    "id": "18F140C6-5C05-4E2B-8B54-CED41F570451"
+  },
+  "ross_dress_for_less": {
+    "query": "Ross Dress for Less",
+    "name": "Ross Dress for Less",
+    "id": "F38E6BB8-1015-439A-B574-FC38F747497E"
+  },
+  "ruths_chris_steak_house": {
+    "query": "Ruth's Chris Steak House",
+    "name": "Ruth's Chris Steak House",
+    "id": "AE59B629-0D66-40D7-9986-2F6A985A40DC"
+  },
+  "safeway": {
+    "query": "Safeway",
+    "name": "Safeway",
+    "id": "4EA947E3-F38C-4D92-8125-B3A2E0B310E9"
+  },
+  "sally_beauty": {
+    "query": "Sally Beauty",
+    "name": "Sally Beauty",
+    "id": "8D0B9212-0D30-4D8C-9134-06B7F232C642"
+  },
+  "sams_club": {
+    "query": "Sam's Club",
+    "name": "Sam's Club",
+    "id": "796DBCE4-2B75-4171-BF32-44C16EDE63D5"
+  },
+  "sephora": {
+    "query": "Sephora",
+    "name": "Sephora",
+    "id": "2C5054E1-8691-4F52-83CD-310D029BA6A3"
+  },
+  "sheetz": {
+    "query": "Sheetz",
+    "name": "Sheetz",
+    "id": "94977D7A-B380-4FCD-94E2-F0A743E2A75F"
+  },
+  "skechers": {
+    "query": "Skechers",
+    "name": "Skechers",
+    "id": "787C68A0-D33B-4C72-96BC-8AA923E55567"
+  },
+  "smashburger": {
+    "query": "Smashburger",
+    "name": "Smashburger",
+    "id": "757FC619-DB5C-44D9-B600-115E64082B42"
+  },
+  "smoothie_king": {
+    "query": "Smoothie King",
+    "name": "Smoothie King",
+    "id": "B5EA071B-4ADF-444D-A5B9-46DF53BFC4A5"
+  },
+  "snap_fitness": {
+    "query": "Snap Fitness",
+    "name": "Snap Fitness",
+    "id": "4950A64D-D8D8-4315-8925-8767AABBC7E9"
+  },
+  "sonic_drive_in": {
+    "query": "Sonic Drive-In",
+    "name": "Sonic Drive-In",
+    "id": "28C14EC0-E167-413A-9DAB-3C2A54F00072"
+  },
+  "soulcycle": {
+    "query": "SoulCycle",
+    "name": "SoulCycle",
+    "id": "864FB0EF-F55A-478E-8E02-DAFF2DE6FDC2"
+  },
+  "sprouts_farmers_market": {
+    "query": "Sprouts Farmers Market",
+    "name": "Sprouts Farmers Market",
+    "id": "A30D6F1D-AD57-4048-9597-2956EAEE8FFB"
+  },
+  "starbucks": {
+    "query": "Starbucks",
+    "name": "Starbucks",
+    "id": "B13C02E3-BA3C-4B39-85B4-ACF12FEBC892"
+  },
+  "steak_n_shake": {
+    "query": "Steak 'n Shake",
+    "name": "Steak 'n Shake",
+    "id": "2C8106F4-B33F-45DA-80E6-5DCD39826B54"
+  },
+  "subway": {
+    "query": "Subway",
+    "name": "Subway",
+    "id": "4FF960CB-CCB8-4723-8657-8E9A5F0A53E2"
+  },
+  "sunglass_hut": {
+    "query": "Sunglass Hut",
+    "name": "Sunglass Hut",
+    "id": "46ACDCB4-D58F-49E7-B5CE-80E44B78E5E1"
+  },
+  "sweetgreen": {
+    "query": "Sweetgreen",
+    "name": "Sweetgreen",
+    "id": "E515D012-5197-4B01-BFAD-5E5FAC25B525"
+  },
+  "t_mobile": {
+    "query": "T-Mobile",
+    "name": "T-Mobile",
+    "id": "118CA5C0-C148-4D07-8200-4C5B1876E2D6"
+  },
+  "taco_bell": {
+    "query": "Taco Bell",
+    "name": "Taco Bell",
+    "id": "29271B4D-CAD2-4DD4-A766-7338AEE5533D"
+  },
+  "talbots": {
+    "query": "Talbots",
+    "name": "Talbots",
+    "id": "A8861362-99E1-4513-82EA-45F9421A130A"
+  },
+  "target": {
+    "query": "Target",
+    "name": "Target",
+    "id": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A"
+  },
+  "tempur_pedic": {
+    "query": "Tempur-Pedic",
+    "name": "Tempur-Pedic",
+    "id": "D9477DA6-D020-4C27-A494-1EFF2607D594"
+  },
+  "texas_roadhouse": {
+    "query": "Texas Roadhouse",
+    "name": "Texas Roadhouse",
+    "id": "4C35AE62-092D-4110-A6DC-19F6932AE5FD"
+  },
+  "the_home_depot": {
+    "query": "The Home Depot",
+    "name": "The Home Depot",
+    "id": "CBCFD4C5-3906-4361-B56D-583B1BCB6532"
+  },
+  "the_north_face": {
+    "query": "The North Face",
+    "name": "The North Face",
+    "id": "DB03F250-64F3-47AB-8756-BC1C4E13EBFD"
+  },
+  "tiffany_co": {
+    "query": "Tiffany & Co.",
+    "name": "Tiffany & Co.",
+    "id": "CEBF621E-22D6-47C2-B02D-6C4C615BB341"
+  },
+  "tim_hortons": {
+    "query": "Tim Hortons",
+    "name": "Tim Hortons",
+    "id": "9278BB94-37C8-4C8F-908A-5067ECA014E7"
+  },
+  "tommy_bahama": {
+    "query": "Tommy Bahama",
+    "name": "Tommy Bahama",
+    "id": "FFB9D7B9-F161-4003-86BA-6FD2A860AFDA"
+  },
+  "top_golf": {
+    "query": "Top Golf",
+    "name": "Top Golf",
+    "id": "B8D1335D-EDEC-4E7B-B431-5F3082E60FE4"
+  },
+  "torchys_tacos": {
+    "query": "Torchy's Tacos",
+    "name": "Torchy's Tacos",
+    "id": "C65DC16F-5CBA-4790-A548-77BD8B014C1D"
+  },
+  "trader_joes": {
+    "query": "Trader Joe's",
+    "name": "Trader Joe's",
+    "id": "096B986E-3D63-44F4-BE44-F85D52A2979D"
+  },
+  "tropical_smoothie_cafe": {
+    "query": "Tropical Smoothie Cafe",
+    "name": "Tropical Smoothie Cafe",
+    "id": "C3195799-34B7-4AEB-92DB-7C595190B240"
+  },
+  "twin_peaks": {
+    "query": "Twin Peaks",
+    "name": "Twin Peaks",
+    "id": "5BE1CE94-DA02-4645-B26D-6BAC733D384E"
+  },
+  "ulta": {
+    "query": "Ulta",
+    "name": "Ulta",
+    "id": "0F77E9A4-121C-4941-ACE1-28502DBF1865"
+  },
+  "under_armour": {
+    "query": "Under Armour",
+    "name": "Under Armour",
+    "id": "DEFEBCC5-A986-4D7C-8408-7575210872FC"
+  },
+  "vans": {
+    "query": "Vans",
+    "name": "Vans",
+    "id": "AC8F9047-F23D-4A54-BBAA-A3CBD2991C02"
+  },
+  "verizon": {
+    "query": "Verizon",
+    "name": "Verizon",
+    "id": "FFB1123D-833E-434E-BCE6-3967F03BC854"
+  },
+  "victorias_secret": {
+    "query": "Victoria's Secret",
+    "name": "Victoria's Secret",
+    "id": "D3310425-7161-41FC-8C2C-5435AF0F0A5B"
+  },
+  "vuori": {
+    "query": "Vuori",
+    "name": "Vuori",
+    "id": "D619A0B2-F0ED-4DD3-97D9-00BDC4F32E7C"
+  },
+  "waffle_house": {
+    "query": "Waffle House",
+    "name": "Waffle House",
+    "id": "4C7C9E59-5CD7-4EDF-860D-5427FEA4046C"
+  },
+  "walgreens": {
+    "query": "Walgreens",
+    "name": "Walgreens",
+    "id": "D89FBEF9-E16C-4521-8513-20B180F56FAA"
+  },
+  "walmart": {
+    "query": "Walmart",
+    "name": "Walmart",
+    "id": "D72865CB-DDB5-4202-96A4-D0415C0ACBF3"
+  },
+  "warby_parker": {
+    "query": "Warby Parker",
+    "name": "Warby Parker",
+    "id": "AB8D769A-CCEB-4C2D-A3D8-21641E0EC664"
+  },
+  "wawa": {
+    "query": "Wawa",
+    "name": "Wawa",
+    "id": "3D47E593-FAD0-41F6-A289-CEDD54BCD8CC"
+  },
+  "wegmans": {
+    "query": "Wegmans",
+    "name": "Wegmans",
+    "id": "3ADC201F-5168-456F-A031-28B06ED86DFA"
+  },
+  "wendys": {
+    "query": "Wendy's",
+    "name": "Wendy's",
+    "id": "6AC63878-1A9C-4D43-98C7-EAF9582BE1FB"
+  },
+  "whataburger": {
+    "query": "Whataburger",
+    "name": "Whataburger",
+    "id": "48803C8A-4E24-4888-B029-CDDF0D4547CE"
+  },
+  "whole_foods_market": {
+    "query": "Whole Foods Market",
+    "name": "Whole Foods Market",
+    "id": "1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23"
+  },
+  "williams_sonoma": {
+    "query": "Williams-Sonoma",
+    "name": "Williams-Sonoma",
+    "id": "2B7931BB-8C2D-4FE0-BA41-8A5216BE6B4D"
+  },
+  "wingstop": {
+    "query": "Wingstop",
+    "name": "Wingstop",
+    "id": "0D2EF24C-80B5-4841-A2F4-47CBC9471CC1"
+  },
+  "yard_house": {
+    "query": "Yard House",
+    "name": "Yard House",
+    "id": "5BE78DDD-DFD2-40FF-8C43-502A68D0759F"
+  },
+  "zaxbys": {
+    "query": "Zaxby's",
+    "name": "Zaxby's",
+    "id": "76CDFF5F-DB77-463D-AD97-3E83618BE05C"
+  },
+  "solidcore": {
+    "query": "solidcore",
+    "name": "solidcore",
+    "id": "00DA3218-DD1E-466F-8EFD-E2E71724AD9B"
+  },
+  "aerie": {
+    "query": "Aerie",
+    "name": "Aerie",
+    "id": "09C15518-A1F2-45C3-AA01-629D86330E27"
+  },
+  "pottery_barn": {
+    "query": "Pottery Barn",
+    "name": "Pottery Barn",
+    "id": "97CC808A-759E-4CBA-B68F-655AC3FC58E8"
+  },
+  "lenscrafters": {
+    "query": "LensCrafters",
+    "name": "LensCrafters",
+    "id": "9EAF2345-B604-441C-BFF8-5C7A16AD49BD"
+  },
+  "white_house_black_market": {
+    "query": "White House Black Market",
+    "name": "White House Black Market",
+    "id": "89396A3C-043E-4B1A-B0EC-5CE441F88EE3"
+  },
+  "tj_maxx": {
+    "query": "TJ Maxx",
+    "name": "TJ Maxx",
+    "id": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6"
+  },
+  "marshalls": {
+    "query": "Marshalls",
+    "name": "Marshalls",
+    "id": "A7E4F56C-19A7-4166-A4EA-EC77A59C3DC9"
+  },
+  "homegoods": {
+    "query": "HomeGoods",
+    "name": "HomeGoods",
+    "id": "002A706B-424B-40FB-8BE5-D99E706B1CC4"
+  }
+}

@@ -6,6 +6,7 @@ export async function analyzeWithStream(
   handlers: {
     onStep: (step: AnalysisStep) => void;
     onComplete: (result: AnalysisResponse) => void;
+    onVerification?: (payload: { runId: string; prospects: AnalysisResponse['prospects'] }) => void;
     onError: (message: string) => void;
   }
 ): Promise<void> {
@@ -46,6 +47,9 @@ export async function analyzeWithStream(
       const payload = JSON.parse(data) as unknown;
       if (event === 'step') handlers.onStep(payload as AnalysisStep);
       if (event === 'complete') handlers.onComplete(payload as AnalysisResponse);
+      if (event === 'verification' && handlers.onVerification) {
+        handlers.onVerification(payload as { runId: string; prospects: AnalysisResponse['prospects'] });
+      }
       if (event === 'error') handlers.onError((payload as { message: string }).message);
     }
   }
