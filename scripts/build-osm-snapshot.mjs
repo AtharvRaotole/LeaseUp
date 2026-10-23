@@ -311,9 +311,7 @@ async function main() {
       if (!osmTagsMatchBrand(p.tags ?? {}, matchSpec)) continue;
       const gh = encodeGeohash(p.lat, p.lon, 3);
       if (!tiles.has(gh)) tiles.set(gh, []);
-      const lat5 = Math.round(p.lat * 1e5);
-      const lon5 = Math.round(p.lon * 1e5);
-      tiles.get(gh).push([bIdx, lat5, lon5]);
+      tiles.get(gh).push([bIdx, p.lat, p.lon]);
       pointCount += 1;
     }
   }
