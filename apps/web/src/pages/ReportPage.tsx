@@ -40,7 +40,8 @@ import { StorefrontSizeControl } from '../components/report/StorefrontSizeContro
 import { CoTenancyMixSection } from '../components/report/CoTenancyMixSection';
 import { ProductExplainer } from '../components/report/ProductExplainer';
 import { ReportFirstRunTour } from '../components/report/ReportFirstRunTour';
-import { ReportLoadingSkeleton } from '../components/report/ReportLoadingSkeleton';
+import { ReportLoadingPanel } from '../components/report/ReportLoadingPanel';
+import { ReportMapSkeleton } from '../components/report/ReportMapSkeleton';
 import { ShareHead } from '../components/seo/ShareHead';
 import { reportShareHead } from '../lib/share-preview';
 
@@ -167,7 +168,7 @@ export function ReportPage() {
       : results.backtest);
 
   const reportSections = results && (
-    <>
+    <div className="report-content-enter space-y-6">
       <ErrorBoundary fallback={<SectionUnavailable />}>
         <div className="print-pitch-block space-y-4">
           <ProductExplainer className="no-print rounded-card border border-border bg-surface-2/80 px-4 py-3" />
@@ -272,7 +273,7 @@ export function ReportPage() {
           <HowWeKnowSection results={results} />
         </div>
       </ErrorBoundary>
-    </>
+    </div>
   );
 
   return (
@@ -338,19 +339,12 @@ export function ReportPage() {
             )}
             {reportSections}
             {!results && (loading || geocodeChecking) && !simulateError && !geocodeCandidates && (
-              <>
-                <ReportLoadingSkeleton />
-                {(loading || geocodeChecking) && (
-                  <BrandLoading
-                    className="py-6"
-                    label={
-                      geocodeChecking
-                        ? 'Checking address on the map…'
-                        : 'Reading local taste and store locations…'
-                    }
-                  />
-                )}
-              </>
+              <ReportLoadingPanel
+                steps={steps}
+                loading={loading}
+                geocodeChecking={geocodeChecking}
+                elapsedMs={elapsedMs}
+              />
             )}
           </div>
           <div
@@ -358,6 +352,9 @@ export function ReportPage() {
               mobilePane === 'report' ? 'hidden md:block' : ''
             }`}
           >
+            {!results && (loading || geocodeChecking) && !geocodeCandidates && (
+              <ReportMapSkeleton />
+            )}
             {results && (
               <ErrorBoundary fallback={<SectionUnavailable label="Map unavailable right now." />}>
                 <div className="flex flex-col gap-4 md:sticky md:top-[7.5rem]">
