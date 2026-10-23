@@ -87,8 +87,9 @@ try {
   );
 
   await waitFor(`http://127.0.0.1:${PREVIEW_PORT}/`);
+  const testFlag = process.env.RECORD_DEMO_TEST === '1' ? 'RECORD_DEMO_TEST=1 ' : '';
   run(
-    `RECORD_DEMO_BASE=http://127.0.0.1:${PREVIEW_PORT} PLAYWRIGHT_API_URL=http://127.0.0.1:${WORKER_PORT} node scripts/record-demo.mjs`
+    `${testFlag}RECORD_DEMO_BASE=http://127.0.0.1:${PREVIEW_PORT} PLAYWRIGHT_API_URL=http://127.0.0.1:${WORKER_PORT} node scripts/record-demo.mjs`
   );
 } finally {
   worker.kill('SIGTERM');
