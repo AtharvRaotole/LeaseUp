@@ -1,5 +1,10 @@
 import type { Env } from '../index';
 import { recordApiMetric } from '../middleware/metrics';
+import {
+  buildGroundedOutreachBody,
+  buildGroundedSubject,
+  polishOutreachDraft,
+} from '../lib/outreach-draft';
 
 export interface OutreachDraft {
   subject: string;
@@ -16,6 +21,8 @@ export interface OutreachFacts {
   nearestStoreKm?: number;
   demographics?: string;
   runId?: string;
+  coTenantBrands?: string[];
+  verificationLabel?: string;
 }
 
 export function buildOutreachPrompt(facts: OutreachFacts): string {
@@ -33,15 +40,24 @@ export function buildOutreachPrompt(facts: OutreachFacts): string {
   if (facts.nearestStoreKm !== undefined) {
     lines.push(`Nearest existing ${facts.brandName} store: ${facts.nearestStoreKm.toFixed(1)} km away`);
   }
+  if (facts.verificationLabel) {
+    lines.push(`Verification: ${facts.verificationLabel}`);
+  }
+  if (facts.coTenantBrands?.length) {
+    lines.push(`Nearby co-tenants (already in radius): ${facts.coTenantBrands.join(', ')}`);
+  }
 
   lines.push(
     '',
     'Verified reasons to cite (use only these; do not add statistics or claims not listed here):',
     ...facts.reasons.map((r, i) => `${i + 1}. ${r}`),
     '',
-    'Write a concise outreach email (200-300 words) for a commercial leasing broker.',
-    'Use ONLY the facts above. Do NOT invent foot traffic, demographics, revenue, or performance statistics.',
-    'If a fact is not listed, do not mention it.',
+    'Write a broker outreach email body under 120 words.',
+    'Rules:',
+    '- First sentence must state taste rank, verified absence (or nearest store distance), and nearby co-tenants when listed.',
+    '- No placeholders (never use square brackets).',
+    '- No "Dear …", no "I hope this finds you well", no generic pleasantries.',
+    '- Use ONLY the facts above. Do NOT invent foot traffic, demographics, revenue, or performance statistics.',
     '',
     'Format your response as JSON with "subject" and "body" fields.',
   );
@@ -68,7 +84,6 @@ export class OpenAIClient {
     }
 
     const prompt = buildOutreachPrompt(params);
-
     const start = Date.now();
 
     try {
@@ -84,12 +99,12 @@ export class OpenAIClient {
             {
               role: 'system',
               content:
-                'You write factual commercial real estate outreach. Never invent statistics or demographics.',
+                'You write terse, factual commercial real estate outreach. Never use placeholders or filler greetings. Never invent statistics.',
             },
             { role: 'user', content: prompt },
           ],
-          temperature: 0.7,
-          max_tokens: 800,
+          temperature: 0.4,
+          max_tokens: 320,
           response_format: { type: 'json_object' },
         }),
       });
@@ -115,8 +130,9 @@ export class OpenAIClient {
 
       const content = data.choices[0]?.message.content || '{}';
       const parsed = JSON.parse(content) as { subject: string; body: string };
+      const polished = polishOutreachDraft(parsed.subject, parsed.body, params);
 
-      return { ...parsed, model: this.model };
+      return { ...polished, model: this.model };
     } catch (err) {
       console.error('OpenAI error:', err);
       return this.getDemoOutreach(params);
@@ -128,32 +144,8 @@ export class OpenAIClient {
   }
 
   private getDemoOutreach(params: OutreachFacts): OutreachDraft {
-    const neighborhood = params.neighborhood ? ` in ${params.neighborhood}` : '';
-    const rankLine =
-      params.affinityRank !== undefined
-        ? `Qloo ranks ${params.brandName} #${params.affinityRank} for local taste${neighborhood}.`
-        : `Qloo shows strong local taste fit for ${params.brandName}${neighborhood}.`;
-    const nearestLine =
-      params.nearestStoreKm !== undefined
-        ? `The nearest existing ${params.brandName} location is about ${params.nearestStoreKm.toFixed(1)} km away.`
-        : '';
-
-    const reasonBullets = params.reasons.slice(0, 3).map((r) => `• ${r}`).join('\n');
-
-    return {
-      subject: `Retail space opportunity for ${params.brandName} — ${params.address}`,
-      body: `Hello ${params.brandName} team,
-
-${rankLine}
-${nearestLine}
-
-${reasonBullets}
-
-We have a storefront at ${params.address} and would like to share the analysis. Reply if you would like to review the location pack.
-
-Best regards,
-LeaseUp`,
-      model: this.model,
-    };
+    const subject = buildGroundedSubject(params);
+    const body = buildGroundedOutreachBody(params);
+    return { subject, body, model: this.model };
   }
 }

@@ -1,5 +1,6 @@
 import type { AnalysisResponse, PitchPackSnapshot, PipelineAddCard, ProspectPack } from '@leaseup/contracts';
 import { verificationShortLabel } from './copy';
+import { coTenantBrandNames } from './co-tenancy-mix';
 import { displayBrandName } from './brand-display';
 
 export function pipelineCardFromProspect(
@@ -24,6 +25,8 @@ export function pipelineCardFromProspect(
       neighborhood: results.location.neighborhood ?? results.location.city,
       nearestStoreKm: prospect.nearestExistingStoreKm,
       runId: results.runId,
+      coTenantBrands: coTenantBrandNames(results),
+      verificationLabel: verificationShortLabel(prospect.brand.verified),
     },
   };
 }

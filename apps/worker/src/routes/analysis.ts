@@ -180,6 +180,8 @@ analysisRouter.post('/outreach', async (c) => {
       affinityRank: request.affinityRank,
       neighborhood: request.neighborhood,
       nearestStoreKm: request.nearestStoreKm,
+      coTenantBrands: request.coTenantBrands,
+      verificationLabel: request.verificationLabel,
     }
   );
 
