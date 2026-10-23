@@ -62,15 +62,9 @@ export class NominatimClient {
   }
 
   async geocodeCandidates(address: string, limit = 5): Promise<GeocodeCandidate[]> {
-<<<<<<< HEAD
-    const cacheKey = `nominatim:candidates:v3:${address.toLowerCase().trim()}:${limit}`;
+    const cacheKey = nominatimCandidatesCacheKey(address, limit);
     const cached = await this.cache.get(cacheKey, 'text');
     if (typeof cached === 'string') {
-      return JSON.parse(cached) as GeocodeCandidate[];
-=======
-    const cacheKey = nominatimCandidatesCacheKey(address, limit);
-    const cached = await this.cache.get(cacheKey);
-    if (cached) {
       try {
         const parsed = JSON.parse(cached) as GeocodeCandidate[];
         if (parsed.length > 0) return parsed;
@@ -78,7 +72,6 @@ export class NominatimClient {
         /* treat corrupt cache as miss */
       }
       // Never serve a cached empty list for the full 24h window — refetch.
->>>>>>> da7256f (fix(P0): geocode cache, labels, portfolio SSE progress)
     }
 
     let candidates = await this.collectCandidates(address, limit);
@@ -171,18 +164,10 @@ export class NominatimClient {
     return candidates;
   }
 
-<<<<<<< HEAD
-    const deduped = dedupeGeocodeCandidatesWithinMeters(candidates, 50);
-
-    await this.cache.putJsonIfChanged(cacheKey, deduped, 86400);
-
-    return deduped;
-=======
   private async writeCandidatesCache(cacheKey: string, deduped: GeocodeCandidate[]): Promise<void> {
     const ttl =
       deduped.length > 0 ? NOMINATIM_CANDIDATES_CACHE_TTL_OK : NOMINATIM_CANDIDATES_CACHE_TTL_EMPTY;
-    await this.cache.put(cacheKey, JSON.stringify(deduped), { expirationTtl: ttl });
->>>>>>> da7256f (fix(P0): geocode cache, labels, portfolio SSE progress)
+    await this.cache.putJsonIfChanged(cacheKey, deduped, ttl);
   }
 
   private buildStructuredParams(parsed: ReturnType<typeof parseUsAddress>, limit: number): Record<string, string> {
