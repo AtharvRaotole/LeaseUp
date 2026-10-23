@@ -23,6 +23,7 @@ export function LandingHeroProductPreview() {
       <Link
         to={landingWickerReportPath}
         className="group relative block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+        aria-label="Open the Wicker Park demo report"
       >
         <div
           className="pointer-events-none absolute -inset-1 rounded-[14px] bg-accent/10 opacity-0 transition-opacity group-hover:opacity-100"
@@ -71,7 +72,7 @@ export function LandingHeroProductPreview() {
           )}
         </div>
         <p className="mt-3 text-center text-meta text-ink-2 lg:text-left">
-          <span className="text-ink-3">Recorded demo</span>
+          <span className="text-ink-3">Sample report: Wicker Park, Chicago</span>
           <span className="mx-1.5 text-ink-3" aria-hidden>·</span>
           <span className="font-medium text-accent group-hover:underline">Open Wicker Park report</span>
         </p>

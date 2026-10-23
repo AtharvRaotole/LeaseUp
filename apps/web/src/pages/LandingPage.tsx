@@ -14,7 +14,11 @@ import {
   type CategoryKey,
 } from '../lib/report-params';
 import { startProspectingJob } from '../lib/start-prospecting';
-import { LANDING_HEADLINE, LANDING_PLAIN_SUMMARY } from '../lib/broker-copy';
+import {
+  LANDING_ADDRESS_PLACEHOLDER,
+  LANDING_HEADLINE,
+  LANDING_PLAIN_SUMMARY,
+} from '../lib/broker-copy';
 import { LANDING_DEMO_CHIPS } from '../data/landing-demo-chips';
 
 const LandingHeroProductPreview = lazy(() =>
@@ -91,22 +95,42 @@ export function LandingPage() {
               }}
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
-                <div className="relative flex-1">
+                <div className="relative min-w-0 flex-1">
                   <MapPin
                     className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-3"
                     aria-hidden
                   />
                   <Input
                     className="pl-12"
-                    placeholder="Storefront address"
+                    placeholder={LANDING_ADDRESS_PLACEHOLDER}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    aria-label="Storefront address"
+                    aria-label={LANDING_ADDRESS_PLACEHOLDER}
                   />
                 </div>
-                <Button type="submit" size="lg" className="sm:min-w-[128px]">
-                  Analyze
-                </Button>
+                <div className="flex flex-col gap-2 sm:shrink-0 sm:flex-row sm:items-stretch">
+                  <Button type="submit" size="lg" className="w-full sm:min-w-[128px] sm:w-auto">
+                    Analyze
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="lg"
+                    className="w-full sm:min-w-0 sm:px-4"
+                    data-testid="landing-run-prospecting"
+                    onClick={() => {
+                      const trimmed = address.trim();
+                      if (!trimmed) return;
+                      void startProspectingJob({
+                        address: trimmed,
+                        radius: Number(radiusKm),
+                        categoryTags: categoryToTags(category),
+                      }).then((id) => navigate(`/prospect/${id}`));
+                    }}
+                  >
+                    Run full prospecting
+                  </Button>
+                </div>
               </div>
               <div className="mt-4 flex flex-wrap items-end gap-4">
                 <SegmentedControl
@@ -127,28 +151,9 @@ export function LandingPage() {
                   className="min-w-[160px]"
                 />
               </div>
-              <div className="mt-3 flex justify-end">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  data-testid="landing-run-prospecting"
-                  onClick={() => {
-                    const trimmed = address.trim();
-                    if (!trimmed) return;
-                    void startProspectingJob({
-                      address: trimmed,
-                      radius: Number(radiusKm),
-                      categoryTags: categoryToTags(category),
-                    }).then((id) => navigate(`/prospect/${id}`));
-                  }}
-                >
-                  Run full prospecting
-                </Button>
-              </div>
             </form>
 
-            <div className="mx-auto mt-8 flex max-w-[640px] flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-center lg:mx-0 lg:justify-start">
+            <div className="mx-auto mt-8 flex max-w-[640px] flex-col gap-2 min-[520px]:flex-row min-[520px]:flex-wrap lg:mx-0">
               {LANDING_DEMO_CHIPS.map((chip) => (
                 <button
                   key={chip.id}
@@ -166,7 +171,7 @@ export function LandingPage() {
                       )
                     )
                   }
-                  className="inline-flex min-h-11 items-center justify-center rounded-pill border border-border bg-surface px-4 text-small font-medium text-ink transition-colors hover:border-border-strong hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-pill border border-border bg-surface px-4 text-small font-medium text-ink transition-colors hover:border-border-strong hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg min-[520px]:w-auto min-[520px]:flex-1 min-[520px]:basis-[calc(50%-0.25rem)] min-[640px]:basis-0"
                 >
                   {chip.label}
                 </button>

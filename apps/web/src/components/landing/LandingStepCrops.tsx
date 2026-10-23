@@ -10,7 +10,7 @@ export function AddressStepCrop() {
       className="overflow-hidden rounded-control border border-border bg-surface-2 p-3 text-left shadow-sm"
       aria-hidden
     >
-      <p className="text-meta uppercase text-ink-3">Storefront address</p>
+      <p className="text-meta uppercase text-ink-3">Street address</p>
       <div className="mt-2 flex gap-2">
         <div className="h-10 flex-1 rounded-control border border-border bg-surface px-3 text-small leading-10 text-ink-2">
           1560 N Milwaukee Ave, Chicago
