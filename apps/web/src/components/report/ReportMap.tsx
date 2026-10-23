@@ -6,6 +6,8 @@ export type MapBrandSelection = { entityId: string; name: string };
 
 export type ReportMapCaptureRef = {
   captureSnapshot: () => string | null;
+  /** Waits for shopper-demand heatmap (top pitch brand) before capture. */
+  capturePitchSnapshot: () => Promise<string | null>;
 };
 
 const MapInner = lazy(() => import('./ReportMapInner'));

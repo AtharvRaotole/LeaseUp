@@ -118,7 +118,6 @@ html.screenshot-capture [class*='backdrop-blur'] {
 .pitch-map-image {
   max-height: 45vh;
   object-position: center;
-  filter: saturate(0.92) hue-rotate(118deg) contrast(1.02);
 }
 
 @media print {
@@ -162,6 +161,12 @@ html.screenshot-capture [class*='backdrop-blur'] {
     page: pitch-letter;
     font-size: 10.5pt;
     line-height: 1.35;
+    background: white !important;
+    color: #111 !important;
+  }
+
+  .print-pitch-page .pitch-pack-brief {
+    color: #111;
   }
 
   .print-pitch-page main {
@@ -177,12 +182,21 @@ html.screenshot-capture [class*='backdrop-blur'] {
     break-inside: avoid;
   }
 
-  .pitch-print-page-1 {
-    page-break-after: always;
+  .pitch-map-frame,
+  .pitch-trade-area-facts {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
-  .pitch-print-page-2 {
-    page-break-before: avoid;
+  .pitch-brand-brief {
+    break-inside: auto;
+    page-break-inside: auto;
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+  }
+
+  .pitch-pack-brief {
+    gap: 0.5rem;
   }
 
   .pitch-map-frame {

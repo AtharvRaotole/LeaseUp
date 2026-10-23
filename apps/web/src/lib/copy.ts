@@ -1,6 +1,29 @@
 import type { AnalysisResponse, Location, ProspectPack } from '@leaseup/contracts';
 import { DEMO_OSM_UNRECORDED_NOTE } from '@leaseup/fixtures';
 
+/** Plain label for pitch packs: how many store datasets we checked for this brand. */
+export function pitchCheckedSourcesLabel(prospect: ProspectPack): string {
+  const sources = prospect.brand.verificationSources ?? [];
+  const atp = sources.some((s) => /all the places/i.test(s));
+  const osm = sources.some(
+    (s) => /openstreetmap/i.test(s) && !/store found/i.test(s)
+  );
+  const checked = (atp ? 1 : 0) + (osm ? 1 : 0);
+  if (prospect.brand.verified === 'verified (2 sources)' || checked >= 2) {
+    return 'Checked in 2 sources';
+  }
+  if (prospect.brand.verified === 'unverified (1 source)' || checked === 1) {
+    return 'Checked in 1 source';
+  }
+  if (prospect.brand.verified === 'verifying...') {
+    return 'Checking second source';
+  }
+  if (checked === 0) {
+    return 'Store check in progress';
+  }
+  return `Checked in ${checked} source${checked === 1 ? '' : 's'}`;
+}
+
 export function verificationShortLabel(verified: ProspectPack['brand']['verified']): string {
   switch (verified) {
     case 'verified (2 sources)':
