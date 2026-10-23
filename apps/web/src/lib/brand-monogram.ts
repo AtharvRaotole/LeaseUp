@@ -9,5 +9,7 @@ export function brandTint(name: string): string {
   for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
   const hues = [210, 160, 40, 280, 20, 120];
   const h = hues[Math.abs(hash) % hues.length];
-  return `hsl(${h} 35% 88%)`;
+  const dark =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  return dark ? `hsl(${h} 28% 28%)` : `hsl(${h} 35% 88%)`;
 }
