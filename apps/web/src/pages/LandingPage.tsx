@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 import { MapPin } from 'lucide-react';
 import { TopBar } from '../components/layout/TopBar';
 import { Button } from '../components/ui/Button';
+import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
 import { LandingBelowFold } from '../components/landing/LandingBelowFold';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
@@ -103,6 +104,18 @@ export function LandingPage() {
             />
           </div>
         </form>
+
+        <Card className="mt-8 flex flex-col gap-3 border-dashed p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="text-left">
+            <p className="font-medium text-ink">Find sites for a brand</p>
+            <p className="text-sm text-ink-2">Flip the question: where should this chain open next?</p>
+          </div>
+          <Link to="/brand">
+            <Button type="button" variant="secondary" className="w-full sm:w-auto">
+              Brand reverse mode
+            </Button>
+          </Link>
+        </Card>
 
         <div className="mt-10">
           <p className="text-label uppercase text-ink-3 mb-3">Try an example</p>

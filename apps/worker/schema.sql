@@ -38,4 +38,13 @@ CREATE TABLE IF NOT EXISTS api_metrics (
 
 CREATE INDEX IF NOT EXISTS idx_api_metrics_provider ON api_metrics(provider, created_at);
 
+-- Shareable portfolio batches
+CREATE TABLE IF NOT EXISTS portfolios (
+  portfolio_id TEXT PRIMARY KEY,
+  payload TEXT NOT NULL,
+  created_at INTEGER NOT NULL DEFAULT (unixepoch())
+);
+
+CREATE INDEX IF NOT EXISTS idx_portfolios_created ON portfolios(created_at);
+
 -- Store locations are served from static geotiles (apps/worker/public/tiles), not D1.

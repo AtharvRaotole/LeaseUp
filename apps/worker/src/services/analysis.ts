@@ -99,7 +99,8 @@ export class AnalysisService {
 
     try {
       const location = await runStep(emit, 'locate', 'Locate storefront', async () => {
-        const resolved = await this.resolveLocation(request.address);
+        const resolved =
+          request.confirmedLocation ?? (await this.resolveLocation(request.address));
         return {
           summary: resolved.resolvedAddress || resolved.address,
           detail: {

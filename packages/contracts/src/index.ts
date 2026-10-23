@@ -79,6 +79,8 @@ export const AnalysisRequestSchema = z.object({
   address: z.string().min(3).max(500),
   radius: z.number().min(0.5).max(50).default(10),
   categoryTags: z.array(z.string()).optional(),
+  /** When set, skip re-geocoding and use these coordinates for Qloo signal.location. */
+  confirmedLocation: LocationSchema.optional(),
 });
 
 export type AnalysisRequest = z.infer<typeof AnalysisRequestSchema>;
@@ -175,3 +177,126 @@ export const ErrorResponseSchema = z.object({
 });
 
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
+
+export const TrackedBrandSchema = z.object({
+  entityId: z.string(),
+  name: z.string(),
+  displayName: z.string(),
+});
+
+export type TrackedBrand = z.infer<typeof TrackedBrandSchema>;
+
+export const MetroOptionSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+});
+
+export type MetroOption = z.infer<typeof MetroOptionSchema>;
+
+export const BrandReverseSourceSchema = z.enum(['heatmap', 'grid_insights']);
+
+export type BrandReverseSource = z.infer<typeof BrandReverseSourceSchema>;
+
+export const BrandReverseOpportunitySchema = z.object({
+  rank: z.number().int(),
+  latitude: z.number(),
+  longitude: z.number(),
+  affinity: z.number().optional(),
+  affinityRank: z.number(),
+  affinityPercentile: z.number().optional(),
+  metroAreaRank: z.number().int().optional(),
+  metroAreaCount: z.number().int().optional(),
+  neighborhood: z.string().optional(),
+  nearestStoreKm: z.number().optional(),
+  reportPath: z.string(),
+});
+
+export type BrandReverseOpportunity = z.infer<typeof BrandReverseOpportunitySchema>;
+
+export const BrandReverseResponseSchema = z.object({
+  brand: TrackedBrandSchema,
+  metro: MetroOptionSchema,
+  source: BrandReverseSourceSchema,
+  sourceNote: z.string().optional(),
+  recordedAt: z.string().optional(),
+  cells: z.array(HeatmapCellSchema),
+  stores: z.array(
+    z.object({
+      latitude: z.number(),
+      longitude: z.number(),
+    })
+  ),
+  opportunities: z.array(BrandReverseOpportunitySchema),
+  mode: z.enum(['live', 'demo']),
+});
+
+export type BrandReverseResponse = z.infer<typeof BrandReverseResponseSchema>;
+
+export const GeocodeCandidateSchema = z.object({
+  address: z.string(),
+  latitude: z.number(),
+  longitude: z.number(),
+  resolvedAddress: z.string(),
+  neighborhood: z.string().optional(),
+  city: z.string().optional(),
+});
+
+export type GeocodeCandidate = z.infer<typeof GeocodeCandidateSchema>;
+
+export const PortfolioRowStatusSchema = z.enum([
+  'pending',
+  'geocoding',
+  'ambiguous',
+  'ready',
+  'analyzing',
+  'complete',
+  'error',
+]);
+
+export type PortfolioRowStatus = z.infer<typeof PortfolioRowStatusSchema>;
+
+export const PortfolioProspectSummarySchema = z.object({
+  name: z.string(),
+  entityId: z.string(),
+  affinityRank: z.number(),
+});
+
+export type PortfolioProspectSummary = z.infer<typeof PortfolioProspectSummarySchema>;
+
+export const PortfolioRowSchema = z.object({
+  id: z.string(),
+  inputAddress: z.string(),
+  status: PortfolioRowStatusSchema,
+  geocodeCandidates: z.array(GeocodeCandidateSchema).optional(),
+  location: LocationSchema.optional(),
+  error: z.string().optional(),
+  topProspects: z.array(PortfolioProspectSummarySchema).optional(),
+  backtestHitRate: z.number().optional(),
+  neighborhood: z.string().optional(),
+  runId: z.string().optional(),
+  analyzingStartedAt: z.string().optional(),
+});
+
+export type PortfolioRow = z.infer<typeof PortfolioRowSchema>;
+
+export const PortfolioCreateSchema = z.object({
+  addresses: z.array(z.string().min(3).max(500)).min(1).max(10),
+});
+
+export type PortfolioCreate = z.infer<typeof PortfolioCreateSchema>;
+
+export const PortfolioConfirmGeocodeSchema = z.object({
+  rowId: z.string(),
+  candidateIndex: z.number().int().min(0),
+});
+
+export type PortfolioConfirmGeocode = z.infer<typeof PortfolioConfirmGeocodeSchema>;
+
+export const PortfolioResponseSchema = z.object({
+  id: z.string(),
+  rows: z.array(PortfolioRowSchema),
+  createdAt: z.string(),
+  mode: z.enum(['live', 'demo']),
+});
+
+export type PortfolioResponse = z.infer<typeof PortfolioResponseSchema>;

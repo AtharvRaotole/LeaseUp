@@ -58,7 +58,7 @@ type RawHeatmapCell = {
   affinity_rank?: number;
   affinity?: number;
   popularity?: number;
-  query?: { affinity?: number; affinity_rank?: number };
+  query?: { affinity?: number; affinity_rank?: number; popularity?: number };
   location?: {
     latitude?: number;
     longitude?: number;
@@ -88,7 +88,7 @@ export function normalizeHeatmapCells(raw: RawHeatmapCell[]): QlooHeatmapCell[] 
       longitude,
       affinity_rank: affinityRank,
       affinity,
-      popularity: cell.popularity,
+      popularity: cell.query?.popularity ?? cell.popularity,
     });
   }
   return cells;
@@ -294,6 +294,63 @@ export class QlooClient {
     await this.cache.put(cacheKey, JSON.stringify(cells), {
       expirationTtl: 86400,
     });
+
+    return cells;
+  }
+
+  /** Fallback when heatmap is empty or errors: sample affinity on a lat/lng grid. */
+  async getAffinityGrid(params: {
+    location: QlooLocation;
+    entityId: string;
+    gridSize: number;
+    runId?: string;
+  }): Promise<QlooHeatmapCell[]> {
+    if (this.mode === 'demo') {
+      return [];
+    }
+
+    const size = Math.min(8, Math.max(3, params.gridSize));
+    if (params.location.kind !== 'point') {
+      // No coordinates to build a grid around; never default to another metro.
+      return [];
+    }
+    const center = params.location;
+
+    const latSpan = (center.radiusKm / 111) * 0.85;
+    const lonSpan =
+      (center.radiusKm / (111 * Math.cos((center.latitude * Math.PI) / 180))) * 0.85;
+
+    const cells: QlooHeatmapCell[] = [];
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        const tLat = size === 1 ? 0.5 : row / (size - 1);
+        const tLon = size === 1 ? 0.5 : col / (size - 1);
+        const latitude = center.latitude + (tLat - 0.5) * 2 * latSpan;
+        const longitude = center.longitude + (tLon - 0.5) * 2 * lonSpan;
+
+        const insights = await this.getBrandInsights({
+          location: {
+            kind: 'point',
+            latitude,
+            longitude,
+            radiusKm: 2,
+          },
+          brandIds: [params.entityId],
+          take: 1,
+          runId: params.runId,
+        });
+
+        const hit = insights.find((i) => i.entity_id === params.entityId) ?? insights[0];
+        if (!hit) continue;
+        const affinity = hit.query?.affinity ?? 0;
+        cells.push({
+          latitude,
+          longitude,
+          affinity_rank: hit.query?.affinity_rank ?? affinity,
+          affinity,
+        });
+      }
+    }
 
     return cells;
   }

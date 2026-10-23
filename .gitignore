@@ -53,3 +53,4 @@ pnpm-debug.log*
 tmp/
 temp/
 .cache/
+test-results/
