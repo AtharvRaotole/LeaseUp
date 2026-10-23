@@ -16,6 +16,7 @@ import { pitchRouter } from './routes/pitch';
 import { prospectingRouter } from './routes/prospecting';
 import { geocodeRouter } from './routes/geocode';
 import { pipelineRouter } from './routes/pipeline';
+import { ownerUpdateRouter } from './routes/owner-update';
 import { shareRouter } from './routes/share';
 
 export interface Env {
@@ -74,6 +75,7 @@ function skipRateLimit(c: Context<{ Bindings: Env }>): boolean {
   if (path.startsWith('/api/prospecting')) return true;
   if (path === '/api/geocode') return true;
   if (path.startsWith('/api/pipeline')) return true;
+  if (path.startsWith('/api/owner-update')) return true;
   if (path === '/api/analyze/stream' || path === '/api/analyze') return true;
   if (path.startsWith('/api/og') || path.startsWith('/api/share')) return true;
   return false;
@@ -128,6 +130,7 @@ app.route('/api', portfolioRouter);
 app.route('/api', pitchRouter);
 app.route('/api', prospectingRouter);
 app.route('/api', pipelineRouter);
+app.route('/api', ownerUpdateRouter);
 app.route('/api', analysisRouter);
 app.route('/api', geocodeRouter);
 app.route('/api', shareRouter);
