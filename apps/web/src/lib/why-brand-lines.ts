@@ -3,6 +3,7 @@ import { displayBrandName } from './brand-display';
 import { fitTopPercentPhrase } from './fit-display';
 import { absenceVerificationSummary } from './absence-verification-copy';
 import { formatTradeAreaTasteRow } from './trade-area-taste-copy';
+import { brandReachPlainLine } from './brand-reach-copy';
 
 export function whyBrandBulletLines(
   prospect: ProspectPack,
@@ -38,6 +39,10 @@ export function whyBrandBulletLines(
     lines.push(
       `Local audiences over-indexing for ${name}: ${taste.audiences.map(formatTradeAreaTasteRow).join('; ')}.`
     );
+  }
+
+  if (prospect.brandReach) {
+    lines.push(brandReachPlainLine(prospect.brandReach));
   }
 
   return lines;

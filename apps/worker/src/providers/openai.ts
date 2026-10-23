@@ -27,6 +27,12 @@ export interface OutreachFacts {
   runId?: string;
   coTenantBrands?: string[];
   verificationLabel?: string;
+  brandReach?: {
+    status: 'verified' | 'not_yet_found';
+    url?: string;
+    source?: string;
+    searchUrl?: string;
+  };
 }
 
 export function buildOutreachPrompt(facts: OutreachFacts): string {
@@ -49,6 +55,13 @@ export function buildOutreachPrompt(facts: OutreachFacts): string {
   }
   if (facts.coTenantBrands?.length) {
     lines.push(`Nearby co-tenants (already in radius): ${facts.coTenantBrands.join(', ')}`);
+  }
+  if (facts.brandReach?.status === 'verified' && facts.brandReach.url) {
+    lines.push(`Official brand real-estate page (cite this URL, do not invent contacts): ${facts.brandReach.url}`);
+  } else if (facts.brandReach?.status === 'not_yet_found' && facts.brandReach.searchUrl) {
+    lines.push(
+      `No verified brand real-estate page in LeaseUp data. Suggest the broker search the brand site: ${facts.brandReach.searchUrl}`
+    );
   }
 
   lines.push(

@@ -66,6 +66,8 @@ import { loadTradeAreaTasteForProspect } from '../lib/trade-area-taste';
 import { getResponseCache } from '../lib/worker-cache';
 import type { ResponseCache } from '../lib/response-cache';
 import { tryAcquireOverpassRefreshLock } from '../lib/overpass-refresh-lock';
+import { loadTradeAreaShoppersSnapshot } from '../lib/trade-area-shoppers';
+import { brandReachForEntity } from '../lib/brand-reach';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -325,6 +327,15 @@ export class AnalysisService {
         })
       );
 
+      const tradeAreaShoppers = await loadTradeAreaShoppersSnapshot({
+        qloo: this.qloo,
+        responseCache: this.responseCache,
+        location,
+        radiusKm: request.radius,
+        runId,
+        mode: this.mode,
+      });
+
       const dataQuality = this.assessDataQuality(insights.length, backtestBlended);
       const warnings = this.generateWarnings(insights.length, backtestBlended, location);
       if (formatFilteredCount > 0) {
@@ -352,6 +363,7 @@ export class AnalysisService {
         storefrontSqFt: request.storefrontSqFt ?? 2_500,
         formatFilteredCount: formatFilteredCount || undefined,
         strictEval,
+        tradeAreaShoppers,
       };
 
       await this.persistRun(runId, location, response, 'completed');
@@ -524,6 +536,7 @@ export class AnalysisService {
 
       prospectPacks.push({
         coverageNote,
+        brandReach: brandReachForEntity(candidate.entity_id),
         brand: {
           entityId: candidate.entity_id,
           name: displayName,
@@ -926,8 +939,14 @@ export class AnalysisService {
       nearestStoreKm?: number;
       coTenantBrands?: string[];
       verificationLabel?: string;
+      brandReach?: import('@leaseup/contracts').BrandReachContact;
+      brandEntityId?: string;
     }
   ): Promise<{ draft: string; model: string }> {
+    const reach =
+      context?.brandReach ??
+      (context?.brandEntityId ? brandReachForEntity(context.brandEntityId) : undefined);
+
     const result = await this.openai.generateOutreach({
       brandName,
       address,
@@ -938,6 +957,7 @@ export class AnalysisService {
       nearestStoreKm: context?.nearestStoreKm,
       coTenantBrands: context?.coTenantBrands,
       verificationLabel: context?.verificationLabel,
+      brandReach: reach,
     });
 
     return {
