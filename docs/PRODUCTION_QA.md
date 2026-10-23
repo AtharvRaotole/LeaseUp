@@ -1,7 +1,7 @@
 # Production readiness QA (2026-10-23)
 
 **Branch:** `cursor/leaseup-prod-ready` (off `cursor/leaseup-v1-c429` @ `36df8ab`)  
-**Commit SHA:** `eda79a0`  
+**Commit SHA:** `8379256`  
 **Merge SHA:** _(pending squash merge)_
 
 Environment: `pnpm --filter @leaseup/web build`, `APP_MODE=demo` worker on `:8787`, `vite preview` on `:4173` (same as `scripts/run-lighthouse-ci.mjs`).
