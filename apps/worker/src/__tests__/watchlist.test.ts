@@ -161,4 +161,16 @@ describe('WatchlistService', () => {
     expect(second?.diff?.kind).toBe('changes');
     expect(second?.diff?.newlyOpenedStore).toHaveLength(1);
   });
+
+  it('does not expose watches across workspaces', async () => {
+    const service = new WatchlistService({ DB: db } as import('../index').Env);
+    const detail = await service.saveFromReport(
+      'ws-a',
+      '1574 N Milwaukee Ave, Chicago, IL 60622',
+      10,
+      minimalAnalysis(undefined)
+    );
+    const other = await service.getDetail(detail.watchId, 'ws-b');
+    expect(other).toBeNull();
+  });
 });

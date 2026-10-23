@@ -33,6 +33,7 @@ database_id = "00000000-0000-0000-0000-000000000000"
 [[kv_namespaces]]
 binding = "CACHE"
 id = "local-cache-placeholder"
+preview_id = "local-cache-placeholder"
 
 [[env.production.d1_databases]]
 binding = "DB"
@@ -42,3 +43,4 @@ database_id = "00000000-0000-0000-0000-000000000000"
 [[env.production.kv_namespaces]]
 binding = "CACHE"
 id = "local-cache-placeholder"
+preview_id = "local-cache-placeholder"

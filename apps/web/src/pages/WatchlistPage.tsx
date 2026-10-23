@@ -49,8 +49,9 @@ export function WatchlistPage() {
       setDetail(next);
       await loadList();
       setError(null);
-    } catch {
-      setError('Recheck failed. Try again.');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : '';
+      setError(message.includes('10 minutes') ? message : 'Recheck failed. Try again.');
     } finally {
       setRechecking(false);
     }
