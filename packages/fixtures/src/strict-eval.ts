@@ -4,21 +4,29 @@ import { orderInsightsByNationalStoreCount } from './ranking.js';
 import { findStoresNearby } from './store-geo.js';
 import type { FindStoresNearbyFn } from './backtest.js';
 import type { EvalSiteDensity } from './eval/types.js';
+import {
+  adaptiveRadiusKmForStratum,
+  densityToDefaultStratum,
+  type EvalDensityStratum,
+} from './eval-density-stratum.js';
 
 /** Candidate metric id (headline chosen in eval/manifest.json). */
 export const METRIC_ID_SPEARMAN_PRESENCE = 'spearman_presence' as const;
 
 export function adaptiveEvalRadiusKm(
-  density: EvalSiteDensity,
+  densityOrStratum: EvalSiteDensity | EvalDensityStratum,
   searchRadiusKm: number
 ): number {
-  const capKm: Record<EvalSiteDensity, number> = {
-    urban: 3,
-    suburban: 5,
-    tourist: 4,
-    exurban: 7,
-  };
-  return Math.min(searchRadiusKm, capKm[density] ?? 5);
+  const stratum: EvalDensityStratum =
+    densityOrStratum === 'dense_urban'
+      ? 'dense_urban'
+      : densityOrStratum === 'urban' ||
+          densityOrStratum === 'suburban' ||
+          densityOrStratum === 'exurban' ||
+          densityOrStratum === 'tourist'
+        ? densityToDefaultStratum(densityOrStratum)
+        : densityOrStratum;
+  return adaptiveRadiusKmForStratum(stratum, searchRadiusKm);
 }
 
 export function spearmanRankCorrelation(ranks: number[], values: number[]): number {
@@ -160,7 +168,7 @@ export function computeStrictEval(
   lat: number,
   lon: number,
   searchRadiusKm: number,
-  density: EvalSiteDensity,
+  density: EvalSiteDensity | EvalDensityStratum,
   findNearby: FindStoresNearbyFn = findStoresNearby
 ): StrictEvalSiteMetrics {
   const pool = filterInsightsToStoreBrands(insights);
@@ -200,10 +208,13 @@ export function computeStrictEval(
   );
   const randomMonteCarloPresentAt10 = monteCarloRandomPresentAt10(pool, legacyPresentQloo);
 
+  const densityLabel: EvalSiteDensity =
+    density === 'dense_urban' ? 'urban' : (density as EvalSiteDensity);
+
   return {
     searchRadiusKm,
     adaptiveRadiusKm,
-    density,
+    density: densityLabel,
     poolSize: pool.length,
     legacyPresentAt10Qloo,
     legacyPresentAt10Chain,
@@ -225,3 +236,5 @@ export function demoFixtureDensity(fixtureId: 'wicker' | 'boulder' | 'seviervill
   if (fixtureId === 'sevierville') return 'tourist';
   return 'urban';
 }
+
+export { demoFixtureStratum, type EvalDensityStratum } from './eval-density-stratum.js';

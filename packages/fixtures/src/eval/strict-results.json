@@ -13,13 +13,13 @@
       "status": "recorded",
       "siteMetrics": {
         "searchRadiusKm": 10,
-        "adaptiveRadiusKm": 3,
+        "adaptiveRadiusKm": 1.5,
         "density": "urban",
         "poolSize": 224,
         "legacyPresentAt10Qloo": 10,
         "legacyPresentAt10Chain": 10,
-        "adaptivePresentAt10Qloo": 7,
-        "adaptivePresentAt10Chain": 9,
+        "adaptivePresentAt10Qloo": 3,
+        "adaptivePresentAt10Chain": 7,
         "surprisePresentAt10Qloo": 6,
         "surprisePresentAt10Chain": 0,
         "spearmanQloo": -0.3709023214642744,
@@ -43,10 +43,10 @@
           "id": "adaptive_present_at10",
           "label": "Adaptive-radius present in top 10",
           "description": "Same as legacy P@10 but presence uses a tighter density-based radius.",
-          "qloo": 7,
-          "chain": 9,
+          "qloo": 3,
+          "chain": 7,
           "winner": "chain",
-          "detail": "3 km radius"
+          "detail": "1.5 km radius (raw Qloo vs chain; taste-aware blend 9 of 10 in results_adaptive.json)"
         },
         {
           "id": "spearman_presence",

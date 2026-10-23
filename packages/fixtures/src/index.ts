@@ -24,7 +24,15 @@ export {
 export { EVAL_METRIC_CATALOG, evalMetricDefinition, compareEvalMetric } from './eval/metrics-catalog.js';
 export { buildEvalSiteSnapshot, type EvalSiteSnapshot } from './eval/build-snapshot.js';
 export { loadEvalRunBundle, getEvalManifestRef } from './eval/load-bundle.js';
-export { getPilotStrictEvalSnapshot } from './eval/pilot-strict-eval.js';
+export {
+  loadResultsAdaptive,
+  findAdaptiveEvalRowByAddress,
+  findAdaptiveEvalRowForDemo,
+  adaptiveEvalRowCount,
+  p10ToCountOf10,
+  formatAdaptiveP10Count,
+} from './eval/load-results-adaptive.js';
+export type { ResultsAdaptive, AdaptiveEvalAddressRow } from './eval/results-adaptive-types.js';
 
 export { wickerparkFixture } from './wicker-park.js';
 export { boulderFixture } from './boulder.js';
@@ -120,6 +128,12 @@ export {
   demoChipsRandomBaselineSummary,
   type DemoRandomBaselineSummary,
 } from './landing-random-baseline.js';
+export {
+  adaptiveRadiusKmForStratum,
+  densityToDefaultStratum,
+  demoFixtureStratum,
+  type EvalDensityStratum,
+} from './eval-density-stratum.js';
 export {
   METRIC_ID_SPEARMAN_PRESENCE,
   adaptiveEvalRadiusKm,

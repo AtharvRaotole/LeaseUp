@@ -1,21 +1,20 @@
-import type { EvalMetroRow, EvalMetrosResults, EvalRunRow } from '@leaseup/fixtures';
+import type { EvalRunRow } from '@leaseup/fixtures';
 import {
   loadEvalRunBundle,
   getEvalManifest,
   evalMetricDefinition,
   formatMetricValue,
   loadLiveQlooLiftAggregates,
+  loadResultsAdaptive,
+  p10ToCountOf10,
 } from '@leaseup/fixtures';
-import siteTable from '@leaseup/fixtures/eval/live-qloo-lift/site-table.json';
-import evalResults from '@leaseup/fixtures/eval/results.json';
 import { TopBar } from '../components/layout/TopBar';
 import { SiteFooter } from '../components/layout/SiteFooter';
-import { Badge } from '../components/ui/Badge';
 
-const data = evalResults as EvalMetrosResults;
 const evalBundle = loadEvalRunBundle();
 const evalManifest = getEvalManifest();
 const qlooLift = loadLiveQlooLiftAggregates();
+const adaptiveEval = loadResultsAdaptive();
 
 const PIPELINE = [
   {
@@ -45,22 +44,6 @@ const PIPELINE = [
   },
 ] as const;
 
-function formatRecordedAt(iso: string): string {
-  try {
-    return new Date(iso).toLocaleString(undefined, {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    });
-  } catch {
-    return iso;
-  }
-}
-
-function formatCount(value: number): string {
-  if (Number.isInteger(value)) return String(value);
-  return value.toFixed(1);
-}
-
 function metricCell(row: EvalRunRow, metricId: string): string {
   const panel = row.panels?.find((p) => p.id === metricId);
   if (!panel) return 'n/a';
@@ -70,13 +53,6 @@ function metricCell(row: EvalRunRow, metricId: string): string {
   const c = panel.chain !== undefined ? formatMetricValue(format, panel.chain) : '';
   if (q && c) return `${q} / ${c}`;
   return q || c || 'n/a';
-}
-
-function liftLabel(row: EvalMetroRow): string {
-  if (row.liftVsChainSize === undefined) return 'n/a';
-  if (row.liftVsChainSize > 0) return `+${row.liftVsChainSize} vs chain size`;
-  if (row.liftVsChainSize < 0) return `${row.liftVsChainSize} vs chain size`;
-  return 'Tied vs chain size';
 }
 
 export function MethodologyPage() {
@@ -192,157 +168,102 @@ export function MethodologyPage() {
               </table>
             </div>
             <p className="mt-3 text-xs text-ink-3">
-              Recompute pilot: <code className="rounded bg-surface-2 px-1">node scripts/strict-eval.mjs</code>.
-              See <code className="rounded bg-surface-2 px-1">scripts/eval/README.md</code> to swap in the
-              live 25+ address bundle.
+              Demo-chip sanity checks: <code className="rounded bg-surface-2 px-1">node scripts/strict-eval.mjs</code>.
+              Preregistered 40-site bundle:{' '}
+              <code className="rounded bg-surface-2 px-1">packages/fixtures/src/eval/results_adaptive.json</code>.
             </p>
           </section>
 
-          <section className="mt-14" aria-labelledby="eval-heading">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <h2 id="eval-heading" className="font-display font-semibold text-title text-ink">
-                  Metro evaluation
-                </h2>
-                <p className="mt-2 text-sm text-ink-2">
-                  {data.radiusKm} km radius. Present-in-top-10 counts use All The Places inside the
-                  radius (227 tracked chains).
-                </p>
-              </div>
-              {data.recordingStatus === 'complete' && (
-                <Badge tone="success">Full recording</Badge>
-              )}
-              {data.recordingStatus === 'partial' && (
-                <Badge tone="warn">Partial recording</Badge>
-              )}
-            </div>
-
-            {data.recordingStatus === 'empty' ? (
-              <p className="mt-6 text-sm text-ink-2">
-                No evaluation rows yet. Run the recording script on a machine with{' '}
-                <code className="rounded bg-surface-2 px-1 py-0.5 text-xs">QLOO_API_KEY</code>.
+          <section className="mt-14" aria-labelledby="adaptive-eval-heading">
+            <h2 id="adaptive-eval-heading" className="font-display font-semibold text-title text-ink">
+              Adaptive-radius evaluation ({adaptiveEval.agg.n_sites} US addresses)
+            </h2>
+            <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
+              Live Qloo study with density-tightened presence radii. Mean share of top-10 brands that already
+              have a store nearby: taste-aware blend{' '}
+              {(adaptiveEval.agg.p10_blend * 100).toFixed(0)}%, chain size alone{' '}
+              {(adaptiveEval.agg.p10_chain * 100).toFixed(0)}%, raw Qloo order{' '}
+              {(adaptiveEval.agg.p10_raw * 100).toFixed(0)}%. Same-size tier AUC{' '}
+              {adaptiveEval.agg.same_size_auc.toFixed(3)} (95% CI{' '}
+              {adaptiveEval.agg.same_size_auc_ci[0].toFixed(3)} to{' '}
+              {adaptiveEval.agg.same_size_auc_ci[1].toFixed(3)}). Qloo taste may partly reflect brands that
+              already operate nearby.
+            </p>
+            {adaptiveEval.per_address.length < adaptiveEval.agg.n_sites && (
+              <p className="mt-3 text-sm text-amber-800 dark:text-amber-200">
+                Showing {adaptiveEval.per_address.length} of {adaptiveEval.agg.n_sites} committed site rows.
+                Sync the full study with{' '}
+                <code className="rounded bg-surface-2 px-1 text-xs">node scripts/eval/sync-results-adaptive.mjs</code>.
               </p>
-            ) : (
-              <>
-                <div className="mt-6 overflow-x-auto rounded-card border border-border">
-                  <table className="w-full min-w-[640px] border-collapse text-left text-sm">
-                    <caption className="sr-only">
-                      Qloo ranking vs baselines by metro
-                    </caption>
-                    <thead>
-                      <tr className="border-b border-border bg-surface-2 text-label uppercase text-ink-3">
-                        <th scope="col" className="px-3 py-3 font-medium">Metro</th>
-                        <th scope="col" className="px-3 py-3 font-medium">Density</th>
-                        <th scope="col" className="px-3 py-3 font-medium text-right">
-                          Qloo top 10
-                        </th>
-                        <th scope="col" className="px-3 py-3 font-medium text-right">
-                          Chain size top 10
-                        </th>
-                        <th scope="col" className="px-3 py-3 font-medium text-right">
-                          Random expected
-                        </th>
-                        <th scope="col" className="px-3 py-3 font-medium">Lift</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.rows.map((row) => (
-                        <tr key={row.id} className="border-b border-border last:border-0">
-                          <th scope="row" className="px-3 py-3 font-medium text-ink">
-                            {row.label}
-                            {row.status === 'pending_qloo' && (
-                              <span className="mt-1 block text-xs font-normal text-ink-3">
-                                Pending Qloo recording
-                              </span>
-                            )}
-                          </th>
-                          <td className="px-3 py-3 capitalize text-ink-2">{row.density}</td>
-                          {row.status === 'recorded' ? (
-                            <>
-                              <td className="px-3 py-3 text-right tabular-nums text-ink">
-                                {row.qlooPresentInTop10} of 10
-                              </td>
-                              <td className="px-3 py-3 text-right tabular-nums text-ink-2">
-                                {row.chainSizePresentInTop10} of 10
-                              </td>
-                              <td className="px-3 py-3 text-right tabular-nums text-ink-2">
-                                {formatCount(row.expectedRandomPresentInTop10 ?? 0)} of 10
-                              </td>
-                              <td className="px-3 py-3 text-ink-2">{liftLabel(row)}</td>
-                            </>
-                          ) : (
-                            <td colSpan={4} className="px-3 py-3 text-ink-3">
-                              n/a
-                            </td>
-                          )}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                {data.summary && (
-                  <p className="mt-4 text-sm text-ink-2">
-                    Recorded {data.summary.recordedCount} metros (source: {data.qlooSource}). Mean
-                    present in top 10: Qloo {formatCount(data.summary.meanQlooPresentInTop10)}, chain
-                    size {formatCount(data.summary.meanChainSizePresentInTop10)}, random expected{' '}
-                    {formatCount(data.summary.meanExpectedRandomPresentInTop10)}. Recorded at{' '}
-                    {formatRecordedAt(data.recordedAt)}.
-                  </p>
-                )}
-              </>
             )}
+            <div className="mt-6 overflow-x-auto rounded-card border border-border">
+              <table className="w-full min-w-[960px] border-collapse text-left text-sm">
+                <caption className="sr-only">Adaptive-radius eval by address</caption>
+                <thead>
+                  <tr className="border-b border-border bg-surface-2 text-label uppercase text-ink-3">
+                    <th scope="col" className="px-3 py-3 font-medium">Site</th>
+                    <th scope="col" className="px-3 py-3 font-medium">Stratum</th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">Radius (km)</th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">Taste blend</th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">Chain size</th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">Raw Qloo</th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">Same-size AUC</th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">Taste pct</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {adaptiveEval.per_address.map((row) => (
+                    <tr key={row.address} className="border-b border-border last:border-0">
+                      <th scope="row" className="px-3 py-3 font-medium text-ink">
+                        {row.label}
+                      </th>
+                      <td className="px-3 py-3 text-ink-2">{row.stratum.replace('_', ' ')}</td>
+                      <td className="px-3 py-3 text-right tabular-nums text-ink-2">
+                        {row.adaptive_radius_km}
+                      </td>
+                      <td className="px-3 py-3 text-right tabular-nums text-ink">
+                        {p10ToCountOf10(row.p10_blend)} of 10
+                      </td>
+                      <td className="px-3 py-3 text-right tabular-nums text-ink-2">
+                        {p10ToCountOf10(row.p10_chain)} of 10
+                      </td>
+                      <td className="px-3 py-3 text-right tabular-nums text-ink-2">
+                        {p10ToCountOf10(row.p10_raw)} of 10
+                      </td>
+                      <td className="px-3 py-3 text-right tabular-nums text-ink-2">
+                        {row.same_size_auc !== undefined && row.same_size_auc_ci
+                          ? `${row.same_size_auc.toFixed(3)} [${row.same_size_auc_ci[0].toFixed(2)}, ${row.same_size_auc_ci[1].toFixed(2)}]`
+                          : 'n/a'}
+                      </td>
+                      <td className="px-3 py-3 text-right tabular-nums text-ink-2">
+                        {row.taste_percentile ?? 'n/a'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3 text-xs text-ink-3">
+              Source table:{' '}
+              <code className="rounded bg-surface-2 px-1">packages/fixtures/src/eval/tables.md</code>
+            </p>
           </section>
 
           <section className="mt-14" aria-labelledby="qloo-lift-heading">
             <h2 id="qloo-lift-heading" className="font-display font-semibold text-title text-ink">
-              Qloo lift study (committed aggregates)
+              Qloo lift study (cohort aggregates)
             </h2>
             <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
-              Raw Qloo P@10 {(qlooLift.rawQlooPrecisionAt10 * 100).toFixed(0)}% vs chain size{' '}
-              {(qlooLift.chainSizePrecisionAt10 * 100).toFixed(0)}% on the recorded cohort; legacy
-              0.75/0.25 blend {(qlooLift.legacyBlendPrecisionAt10 * 100).toFixed(0)}%. Same-size tier
-              AUC {(qlooLift.sameSizeAuc.value * 100).toFixed(1)}% (95% CI{' '}
-              {(qlooLift.sameSizeAuc.ciLow * 100).toFixed(1)}% to{' '}
-              {(qlooLift.sameSizeAuc.ciHigh * 100).toFixed(1)}%). Logistic companion blend{' '}
-              {(qlooLift.logisticBlendPrecisionAt10 * 100).toFixed(0)}% P@10 (+{qlooLift.logisticBlendLiftVsChainPp}{' '}
-              pp vs chain, 95% CI {qlooLift.logisticBlendLiftCiLowPp} to {qlooLift.logisticBlendLiftCiHighPp} pp).
-              Heatmap features did not add lift; fixed 10 km presence saturates in dense areas. Qloo partly
-              reflects brands that already operate nearby.
+              Committed headline metrics from the preregistered study ({qlooLift.siteCount} sites). Legacy
+              0.75/0.25 blend {(qlooLift.legacyBlendPrecisionAt10 * 100).toFixed(0)}% mean top-10 presence.
+              Heatmap features did not add ranking lift; fixed 10 km presence saturates in dense trade areas.
             </p>
             <p className="mt-3 text-xs text-ink-3">
-              Full write-up:{' '}
+              Write-up:{' '}
               <code className="rounded bg-surface-2 px-1">
                 packages/fixtures/src/eval/live-qloo-lift/QLOO_LIFT_EVAL.md
               </code>
             </p>
-            <div className="mt-6 overflow-x-auto rounded-card border border-border">
-              <table className="w-full min-w-[640px] border-collapse text-left text-sm">
-                <caption className="sr-only">Qloo lift evaluation addresses</caption>
-                <thead>
-                  <tr className="border-b border-border bg-surface-2 text-label uppercase text-ink-3">
-                    <th scope="col" className="px-3 py-3 font-medium">Site</th>
-                    <th scope="col" className="px-3 py-3 font-medium">Address</th>
-                    <th scope="col" className="px-3 py-3 font-medium">Density</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(siteTable as { sites: Array<{ label: string; address: string; density: string }> }).sites.map(
-                    (site) => (
-                      <tr key={site.address} className="border-b border-border last:border-0">
-                        <th scope="row" className="px-3 py-3 font-medium text-ink">
-                          {site.label}
-                        </th>
-                        <td className="px-3 py-3 text-ink-2">{site.address}</td>
-                        <td className="px-3 py-3 capitalize text-ink-2">{site.density}</td>
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </table>
-            </div>
-            {(siteTable as { note?: string }).note && (
-              <p className="mt-3 text-xs text-ink-3">{(siteTable as { note?: string }).note}</p>
-            )}
           </section>
 
           <section className="mt-14" aria-labelledby="limits-heading">

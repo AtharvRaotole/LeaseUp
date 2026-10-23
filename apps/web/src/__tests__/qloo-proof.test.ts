@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  qlooEvalHeadlineParts,
-  qlooProofEvalLead,
+  qlooProofBrokerBanner,
   qlooProofSentence,
   qlooProofTieDetail,
   qlooProofWinner,
@@ -20,35 +19,21 @@ function bt(present: number): BacktestResult {
   };
 }
 
-describe('qlooEvalHeadlineParts', () => {
-  it('states same-size AUC and does not claim raw Qloo beats chain size', () => {
-    const { headline, companion, caveat } = qlooEvalHeadlineParts();
-    expect(headline).toMatch(/two-thirds of the time/);
-    expect(headline).toMatch(/0\.67/);
-    expect(companion).toMatch(/82%/);
-    expect(companion).toMatch(/76%/);
-    expect(caveat).toMatch(/partly reflect/);
-    expect(headline.toLowerCase()).not.toMatch(/raw qloo beats/);
-  });
-});
-
-describe('qlooProofEvalLead', () => {
-  it('does not lead with 10 of 10 tie for Wicker demo; cites cohort and adaptive radius', () => {
-    const copy = qlooProofEvalLead(LANDING_WICKER_PREVIEW as AnalysisResponse);
-    expect(copy.lead).toMatch(/two-thirds of the time/);
-    expect(copy.lead).toMatch(/82%/);
-    expect(copy.lead).not.toMatch(/^Local taste ranking: 10 of 10/);
-    expect(copy.pinDetail).toMatch(/3 km/);
-    expect(copy.pinDetail).toMatch(/7 of 10/);
-    expect(copy.pinDetail).toMatch(/9/);
-    expect(copy.legacySaturated).toBe(true);
+describe('qlooProofBrokerBanner', () => {
+  it('uses plain broker copy with 9 vs 7 for Wicker from recorded eval', () => {
+    const copy = qlooProofBrokerBanner(LANDING_WICKER_PREVIEW as AnalysisResponse);
+    expect(copy.headline).toMatch(/9 of its top 10/);
+    expect(copy.headline).toMatch(/7 of 10 using store count alone/);
+    expect(copy.headline).not.toMatch(/AUC/);
+    expect(copy.cohortLine).toMatch(/Across 40 US neighborhoods/);
+    expect(copy.cohortLine).toMatch(/82% vs 76%/);
   });
 });
 
 describe('qlooProofSentence', () => {
   it('formats computed hit counts', () => {
     expect(qlooProofSentence(bt(8), bt(4))).toBe(
-      'Local taste ranking: 8 of 10 top picks already have a store nearby. Ranking by chain size only: 4 of 10.'
+      'Taste-aware ranking: 8 of 10 top picks already have a store nearby. Store count only: 4 of 10.'
     );
   });
 
