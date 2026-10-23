@@ -37,12 +37,12 @@ export function HeadlineCard({
 
   return (
     <Card>
-      <h2 className="font-display font-semibold text-[28px] leading-[1.2] text-ink md:text-[32px]">
+      <h2 className="font-display font-semibold text-h2 leading-snug text-ink md:text-title">
         {count > 0
           ? `${count} brand${count === 1 ? '' : 's'} fit ${area} but have no store within ${radiusKm} km.`
           : `Every top brand for ${area} already has a store within ${radiusKm} km.`}
       </h2>
-      <div className="mt-6 grid grid-cols-3 gap-1.5 md:gap-3">
+      <div className="mt-8 grid grid-cols-3 gap-3 md:gap-4">
         <StatTile
           label="Nearby match"
           mobileLabel="Nearby"
@@ -83,14 +83,14 @@ function StatTile({
   tooltip: string;
 }) {
   return (
-    <div className="min-w-0 rounded-control border border-border bg-surface-2 px-2 py-2 transition-colors duration-150 md:px-4 md:py-3">
-      <p className="flex items-center gap-0.5 truncate text-[9px] font-medium uppercase tracking-wide text-ink-3 md:text-label">
+    <div className="min-w-0 rounded-control border border-border bg-surface-2 px-3 py-3 transition-colors duration-150 md:px-4 md:py-4">
+      <p className="flex items-center gap-0.5 truncate text-meta font-medium uppercase tracking-wide text-ink-3 md:text-label">
         <span className="md:hidden">{mobileLabel}</span>
         <span className="hidden md:inline">{label}</span>
         <InfoTooltip label={tooltip} />
       </p>
-      <p className="mt-0.5 truncate text-base tabular-nums text-ink md:mt-1 md:text-h3">{value}</p>
-      <p className="mt-1 hidden text-[12px] leading-snug text-ink-3 md:block">{subtitle}</p>
+      <p className="mt-1 truncate text-body-lg font-semibold tabular-nums text-ink md:text-h3">{value}</p>
+      <p className="mt-1 hidden text-small leading-snug text-ink-3 md:block">{subtitle}</p>
     </div>
   );
 }
