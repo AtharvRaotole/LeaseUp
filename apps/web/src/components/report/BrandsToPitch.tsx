@@ -13,6 +13,8 @@ import { brandCategoryLabel } from '../../lib/brand-category';
 import { verificationShortLabel, verificationTooltip } from '../../lib/copy';
 import { pitchExpandedLines } from '../../lib/pitch-detail-copy';
 import { cn } from '../../lib/cn';
+import { AddToPipelineButton } from '../pipeline/AddToPipelineButton';
+import { pipelineCardFromProspect } from '../../lib/build-pipeline-card';
 
 const OSM_VERIFY_WAIT_MS = 30_000;
 
@@ -260,10 +262,18 @@ export function BrandsToPitch({
                     {prospect.coverageNote && (
                       <p className="mt-2 text-xs text-warn">{prospect.coverageNote}</p>
                     )}
-                    <div className="mt-4">
+                    <div className="mt-4 flex flex-wrap gap-2">
                       <Button size="sm" variant="primary" onClick={() => onDraft(prospect)}>
                         Draft outreach email
                       </Button>
+                      <AddToPipelineButton
+                        variant="secondary"
+                        buildPayload={() =>
+                          pipelineCardFromProspect(prospect, results, {
+                            reportPath: buildReportPath(request, slug),
+                          })
+                        }
+                      />
                     </div>
                   </div>
                 )}

@@ -8,6 +8,7 @@ import { useHealth } from '../../hooks/useHealth';
 const NAV_LINKS = [
   { to: '/brand', label: 'Brand sites' },
   { to: '/portfolio', label: 'Portfolio' },
+  { to: '/pipeline', label: 'Pipeline' },
   { href: '#how-it-works', label: 'How it works' },
 ] as const;
 

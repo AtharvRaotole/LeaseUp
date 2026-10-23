@@ -50,6 +50,21 @@ const pages = [
   { name: 'portfolio', path: '/portfolio', testId: 'portfolio-input' },
   { name: 'pitch-pack', path: pitchPath, testId: 'pitch-page' },
   { name: 'prospecting-agent', path: prospectPath, testId: 'prospecting-page', timeout: 240000, extraTestId: 'pitch-pack-ready' },
+  {
+    name: 'pipeline',
+    path: '/pipeline',
+    testId: 'pipeline-page',
+    timeout: 120000,
+    prepare: async (page) => {
+      await page.goto(`${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`);
+      await page.getByTestId('brands-to-pitch').waitFor({ timeout: 120000 });
+      const firstBrand = page.getByTestId('brands-to-pitch').locator('button').first();
+      await firstBrand.click();
+      await page.getByTestId('add-to-pipeline').first().click();
+      await page.getByText('Added to pipeline').waitFor({ timeout: 30000 });
+      await page.goto(`${BASE}/pipeline`);
+    },
+  },
 ];
 
 await mkdir(OUT, { recursive: true });
@@ -63,7 +78,11 @@ for (const theme of ['light', 'dark']) {
         colorScheme: theme,
       });
       const page = await context.newPage();
-      await page.goto(`${BASE}${pageDef.path}`, { waitUntil: 'networkidle' });
+      if (pageDef.prepare) {
+        await pageDef.prepare(page);
+      } else {
+        await page.goto(`${BASE}${pageDef.path}`, { waitUntil: 'networkidle' });
+      }
       const waitMs = pageDef.timeout ?? 90000;
       if (pageDef.testId) {
         await page.getByTestId(pageDef.testId).waitFor({ timeout: waitMs });

@@ -444,3 +444,99 @@ export const ProspectingJobSchema = z.object({
 });
 
 export type ProspectingJob = z.infer<typeof ProspectingJobSchema>;
+
+export const PipelineColumnSchema = z.enum([
+  'to_pitch',
+  'contacted',
+  'touring',
+  'loi',
+  'signed',
+  'passed',
+]);
+
+export type PipelineColumn = z.infer<typeof PipelineColumnSchema>;
+
+export const PipelineOutreachDraftSchema = z.object({
+  subject: z.string(),
+  body: z.string(),
+  model: z.string().optional(),
+});
+
+export type PipelineOutreachDraft = z.infer<typeof PipelineOutreachDraftSchema>;
+
+export const PipelineOutreachContextSchema = z.object({
+  reasons: z.array(z.string()).default([]),
+  neighborhood: z.string().optional(),
+  nearestStoreKm: z.number().optional(),
+  runId: z.string().optional(),
+});
+
+export type PipelineOutreachContext = z.infer<typeof PipelineOutreachContextSchema>;
+
+export const PipelineCardSchema = z.object({
+  id: z.string().uuid(),
+  column: PipelineColumnSchema,
+  sortOrder: z.number().int(),
+  brandEntityId: z.string(),
+  brandName: z.string(),
+  propertyAddress: z.string(),
+  propertyNeighborhood: z.string().optional(),
+  affinityRank: z.number().int(),
+  verification: z.string(),
+  pitchId: z.string().optional(),
+  pitchLink: z.string().optional(),
+  reportPath: z.string().optional(),
+  notes: z.string().max(5000),
+  recipientEmail: z.string().max(320).optional(),
+  lastTouchedAt: z.string(),
+  followUpAt: z.string().optional(),
+  outreachContext: PipelineOutreachContextSchema.optional(),
+  outreachDraft: PipelineOutreachDraftSchema.optional(),
+});
+
+export type PipelineCard = z.infer<typeof PipelineCardSchema>;
+
+export const PipelineBoardSchema = z.object({
+  workspaceId: z.string().uuid(),
+  shareId: z.string().uuid(),
+  cards: z.array(PipelineCardSchema),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export type PipelineBoard = z.infer<typeof PipelineBoardSchema>;
+
+export const PipelinePublicBoardSchema = z.object({
+  shareId: z.string().uuid(),
+  cards: z.array(PipelineCardSchema),
+  updatedAt: z.string(),
+  readOnly: z.literal(true),
+});
+
+export type PipelinePublicBoard = z.infer<typeof PipelinePublicBoardSchema>;
+
+export const PipelineAddCardSchema = z.object({
+  brandEntityId: z.string(),
+  brandName: z.string(),
+  propertyAddress: z.string(),
+  propertyNeighborhood: z.string().optional(),
+  affinityRank: z.number().int(),
+  verification: z.string(),
+  pitchId: z.string().optional(),
+  pitchLink: z.string().optional(),
+  reportPath: z.string().optional(),
+  outreachContext: PipelineOutreachContextSchema.optional(),
+});
+
+export type PipelineAddCard = z.infer<typeof PipelineAddCardSchema>;
+
+export const PipelineUpdateCardSchema = z.object({
+  column: PipelineColumnSchema.optional(),
+  sortOrder: z.number().int().optional(),
+  notes: z.string().max(5000).optional(),
+  recipientEmail: z.string().max(320).optional(),
+  followUpAt: z.string().nullable().optional(),
+  outreachDraft: PipelineOutreachDraftSchema.nullable().optional(),
+});
+
+export type PipelineUpdateCard = z.infer<typeof PipelineUpdateCardSchema>;
