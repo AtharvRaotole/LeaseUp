@@ -10,7 +10,7 @@ export function percentile(sortedAsc: number[], p: number): number {
   return sortedAsc[lo]! * (1 - w) + sortedAsc[hi]! * w;
 }
 
-/** Heatmap weights in [0,1] using 50th–99th percentile of affinity. */
+/** Heatmap weights in [0,1] using 50th to 99th percentile of affinity. */
 export function heatmapWeightsFromAffinity(affinities: number[]): number[] {
   const values = affinities.map((a) => (a > 0 ? a : 0));
   const positive = values.filter((v) => v > 0);

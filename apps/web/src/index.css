@@ -1,15 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import '@fontsource/geist/latin.css';
+@import '@fontsource/geist-mono/latin.css';
+@import '@fontsource/instrument-serif/latin.css';
+@import './styles/tokens.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  margin: 0;
-  font-family: Inter, system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  background: #0a0a0b;
-  color: #fafafa;
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  body {
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'kern' 1;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .maplibregl-map {
@@ -21,36 +44,18 @@ body {
   font-size: 10px;
 }
 
-.glass {
-  @apply bg-surface-raised/80 backdrop-blur border border-surface-border;
-}
-
 @media print {
   body {
     background: white;
     color: black;
   }
 
-  body * {
-    visibility: hidden;
-  }
-
-  .print-pack,
-  .print-pack * {
-    visibility: visible;
+  .no-print {
+    display: none !important;
   }
 
   .print-pack {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
     padding: 24px;
-    border: none;
     background: white;
-  }
-
-  .no-print {
-    display: none !important;
   }
 }
