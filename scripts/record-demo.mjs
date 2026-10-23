@@ -6,7 +6,8 @@
  * Do not ship judge-facing media until ranking-proof UI is final on prod.
  *
  *   pnpm record:demo
- *   RECORD_DEMO_TEST=1 pnpm record:demo     # test capture only (docs/media/test-capture.*)
+ *   RECORD_DEMO_TEST=1 pnpm record:demo:local  # test capture (local build; share UX must match script)
+ *   RECORD_DEMO_TEST=1 pnpm record:demo        # same outputs against RECORD_DEMO_BASE (prod after share fix ships)
  *   RECORD_DEMO_HERO=1 pnpm record:demo     # also build hero loop (when landing video is re-enabled)
  */
 import { chromium } from 'playwright';
@@ -300,9 +301,12 @@ await focusZoomSegment(page, 'text=Same brands, different places', 1.4, 3000);
 await page.getByTestId('share-pitch').click();
 await pause(800);
 await page.getByRole('button', { name: 'Create public link' }).click();
-await page.getByTestId('share-pitch-link').waitFor({ timeout: 90000 });
+const shareLinkField = page
+  .getByTestId('share-pitch-link')
+  .or(page.locator('input[readonly][value*="/pitch/"]'));
+await shareLinkField.waitFor({ timeout: 120000 });
 await pause(1500);
-const pitchUrl = await page.getByTestId('share-pitch-link').inputValue();
+const pitchUrl = await shareLinkField.inputValue();
 const [pitchPage] = await Promise.all([
   context.waitForEvent('page'),
   page.evaluate((url) => window.open(url, '_blank', 'noopener'), pitchUrl),
