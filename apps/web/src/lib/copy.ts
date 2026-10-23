@@ -44,7 +44,10 @@ export function pitchCheckedSourcesLabel(prospect: ProspectPack): string {
   if (prospect.brand.verified === 'verified (2 sources)' || checked >= 2) {
     return 'Checked in 2 sources';
   }
-  if (prospect.brand.verified === 'unverified (1 source)' || checked === 1) {
+  if (prospect.brand.verified === 'unverified (1 source)') {
+    return 'Checked against All The Places';
+  }
+  if (checked === 1) {
     if (atp && !osm) return 'Checked against All The Places';
     return 'Checked in 1 source';
   }
