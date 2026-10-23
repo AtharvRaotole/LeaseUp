@@ -25,6 +25,12 @@ export { EVAL_METRIC_CATALOG, evalMetricDefinition, compareEvalMetric } from './
 export { buildEvalSiteSnapshot, type EvalSiteSnapshot } from './eval/build-snapshot.js';
 export { loadEvalRunBundle, getEvalManifestRef } from './eval/load-bundle.js';
 export {
+  demoAdaptiveProofRow,
+  findDemoAdaptiveProofByAddress,
+  DEMO_ADAPTIVE_PROOF_AGG,
+  DEMO_ADAPTIVE_PROOF_ROWS,
+} from './demo-adaptive-proof.js';
+export {
   loadResultsAdaptive,
   findAdaptiveEvalRowByAddress,
   findAdaptiveEvalRowForDemo,

@@ -1,6 +1,6 @@
 import type { Env } from '../index';
 import { QlooClient, QLOO_MAX_TAKE } from '../providers/qloo';
-import { wickerparkFixture, seviervilleFixture } from '@leaseup/fixtures';
+import { wickerparkFixture, seviervilleFixture } from '@leaseup/fixtures/worker';
 import { createStoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
 

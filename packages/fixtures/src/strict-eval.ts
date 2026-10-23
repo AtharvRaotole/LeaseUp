@@ -163,14 +163,21 @@ export type StrictEvalSiteMetrics = {
   randomMonteCarloPresentAt10: number;
 };
 
+export type ComputeStrictEvalOptions = {
+  /** Set 0 in Workers to avoid CPU-heavy shuffles (use hypergeometric expectation only). */
+  monteCarloDraws?: number;
+};
+
 export function computeStrictEval(
   insights: Array<{ entity_id: string; name: string }>,
   lat: number,
   lon: number,
   searchRadiusKm: number,
   density: EvalSiteDensity | EvalDensityStratum,
-  findNearby: FindStoresNearbyFn = findStoresNearby
+  findNearby: FindStoresNearbyFn = findStoresNearby,
+  options: ComputeStrictEvalOptions = {}
 ): StrictEvalSiteMetrics {
+  const monteCarloDraws = options.monteCarloDraws ?? 0;
   const pool = filterInsightsToStoreBrands(insights);
   const chainOrdered = orderInsightsByNationalStoreCount(insights);
   const baselineRankById = new Map(
@@ -206,7 +213,10 @@ export function computeStrictEval(
     lon,
     searchRadiusKm
   );
-  const randomMonteCarloPresentAt10 = monteCarloRandomPresentAt10(pool, legacyPresentQloo);
+  const randomMonteCarloPresentAt10 =
+    monteCarloDraws > 0
+      ? monteCarloRandomPresentAt10(pool, legacyPresentQloo, monteCarloDraws)
+      : randomExpectedPresentAt10;
 
   const densityLabel: EvalSiteDensity =
     density === 'dense_urban' ? 'urban' : (density as EvalSiteDensity);

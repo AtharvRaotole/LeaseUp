@@ -2,7 +2,7 @@ import {
   findStoresNearby as demoFindStoresNearby,
   getNationalStoreCount as demoGetNationalStoreCount,
   getStoreBrandIds as demoGetStoreBrandIds,
-} from '@leaseup/fixtures';
+} from '@leaseup/fixtures/worker';
 import { TRACKED_BRAND_IDS } from '../data/tracked-brand-ids';
 import { coveringGeohash3 } from '../lib/geohash';
 

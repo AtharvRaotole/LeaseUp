@@ -5,7 +5,7 @@ import {
   boulderFixture,
   seviervilleFixture,
   parseQlooExplainabilityRows,
-} from '@leaseup/fixtures';
+} from '@leaseup/fixtures/worker';
 import { ConfigurationError, UpstreamError } from '../lib/errors';
 import { sha256Short } from '../lib/cache-key';
 import { DemoModeRequiredError } from '../lib/demo-mode';

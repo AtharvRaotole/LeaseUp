@@ -17,8 +17,12 @@ import {
   buildTierFitByEntityId,
   chainSizeTierFromStoreCount,
   matchDemoFixtureId,
-} from '@leaseup/fixtures';
-import type { EvalDensityStratum, EvalSiteDensity } from '@leaseup/fixtures';
+  type EvalDensityStratum,
+  type EvalSiteDensity,
+} from '@leaseup/fixtures/worker';
+import type { StoreCatalog } from '../services/store-catalog';
+import { displayBrandName } from './brand-display';
+import { NearbyPresenceCache } from './nearby-presence-cache';
 
 function stratumToBlendDensity(densityOrStratum: EvalSiteDensity | EvalDensityStratum): EvalSiteDensity {
   if (densityOrStratum === 'dense_urban') return 'urban';
@@ -35,8 +39,6 @@ function logisticSiteForBlend(
   const blendDensity = stratumToBlendDensity(densityOrStratum);
   return defaultLogisticSiteContext(blendDensity, searchRadiusKm);
 }
-import type { StoreCatalog } from '../services/store-catalog';
-import { displayBrandName } from './brand-display';
 
 function presenceRadiusKm(
   densityOrStratum: EvalSiteDensity | EvalDensityStratum,
@@ -50,8 +52,10 @@ export async function buildBrandRankings(
   insights: QlooInsight[],
   radiusKm: number,
   catalog: StoreCatalog,
-  densityOrStratum: EvalSiteDensity | EvalDensityStratum = 'urban'
+  densityOrStratum: EvalSiteDensity | EvalDensityStratum = 'urban',
+  presence?: NearbyPresenceCache
 ): Promise<BrandRankingRow[]> {
+  const cache = presence ?? new NearbyPresenceCache(catalog, location);
   const blended = orderInsightsByLogisticBlend(
     insights,
     logisticSiteForBlend(location, densityOrStratum, radiusKm)
@@ -69,12 +73,7 @@ export async function buildBrandRankings(
   for (let index = 0; index < insights.length; index++) {
     const insight = insights[index]!;
     if (!brandIds.has(insight.entity_id)) continue;
-    const nearby = await catalog.findStoresNearby(
-      insight.entity_id,
-      location.latitude,
-      location.longitude,
-      scoreRadiusKm
-    );
+    const nearby = await cache.storesNearby(insight.entity_id, scoreRadiusKm);
     const blendedRow = blended.find((row) => row.entity_id === insight.entity_id);
     const tier = tierFit.get(insight.entity_id);
 
@@ -100,18 +99,15 @@ export async function buildMapStores(
   insights: QlooInsight[],
   radiusKm: number,
   catalog: StoreCatalog,
-  topN = 10
+  topN = 10,
+  presence?: NearbyPresenceCache
 ): Promise<MapStorePoint[]> {
+  const cache = presence ?? new NearbyPresenceCache(catalog, location);
   const top = insights.slice(0, topN);
   const points: MapStorePoint[] = [];
 
   for (const row of top) {
-    const nearby = await catalog.findStoresNearby(
-      row.entity_id,
-      location.latitude,
-      location.longitude,
-      radiusKm
-    );
+    const nearby = await cache.storesNearby(row.entity_id, radiusKm);
     for (const store of nearby.slice(0, 3)) {
       points.push({
         entityId: row.entity_id,
@@ -130,23 +126,42 @@ export async function buildDualBacktest(
   insights: QlooInsight[],
   radiusKm: number,
   catalog: StoreCatalog,
-  densityOrStratum: EvalSiteDensity | EvalDensityStratum = 'urban'
+  densityOrStratum: EvalSiteDensity | EvalDensityStratum = 'urban',
+  presence?: NearbyPresenceCache
 ): Promise<{ raw: BacktestResult; blended: BacktestResult }> {
+  const all = await buildTripleBacktest(location, insights, radiusKm, catalog, densityOrStratum, presence);
+  return { raw: all.raw, blended: all.blended };
+}
+
+export async function buildBaselineBacktest(
+  location: Location,
+  insights: QlooInsight[],
+  radiusKm: number,
+  catalog: StoreCatalog,
+  densityOrStratum: EvalSiteDensity | EvalDensityStratum = 'urban',
+  presence?: NearbyPresenceCache
+): Promise<BacktestResult> {
+  const all = await buildTripleBacktest(location, insights, radiusKm, catalog, densityOrStratum, presence);
+  return all.baseline;
+}
+
+/** One presence warm-up for raw, blended, and chain-only backtests. */
+export async function buildTripleBacktest(
+  location: Location,
+  insights: QlooInsight[],
+  radiusKm: number,
+  catalog: StoreCatalog,
+  densityOrStratum: EvalSiteDensity | EvalDensityStratum = 'urban',
+  presence?: NearbyPresenceCache
+): Promise<{ raw: BacktestResult; blended: BacktestResult; baseline: BacktestResult }> {
+  const cache = presence ?? new NearbyPresenceCache(catalog, location);
   const brandIds = new Set(catalog.getBrandIds());
   const scoreRadiusKm = presenceRadiusKm(densityOrStratum, radiusKm);
-  const nearbyCache = new Map<string, Array<{ distance: number }>>();
-  for (const insight of insights.filter((i) => brandIds.has(i.entity_id))) {
-    const rows = await catalog.findStoresNearby(
-      insight.entity_id,
-      location.latitude,
-      location.longitude,
-      scoreRadiusKm
-    );
-    nearbyCache.set(insight.entity_id, rows.map((s) => ({ distance: s.distance })));
-  }
+  const poolIds = insights.filter((i) => brandIds.has(i.entity_id)).map((i) => i.entity_id);
+  await cache.warmBrandRadii(poolIds, [scoreRadiusKm]);
 
   const findFromCache = (brandId: string, _lat: number, _lon: number, _r: number) =>
-    nearbyCache.get(brandId) ?? [];
+    cache.findNearbyFn(scoreRadiusKm)(brandId, _lat, _lon, _r);
 
   const raw = computeBacktest(
     insights,
@@ -170,45 +185,21 @@ export async function buildDualBacktest(
     brandIds
   );
 
-  return {
-    raw: toBacktestResult(raw),
-    blended: toBacktestResult(blended),
-  };
-}
-
-export async function buildBaselineBacktest(
-  location: Location,
-  insights: QlooInsight[],
-  radiusKm: number,
-  catalog: StoreCatalog,
-  densityOrStratum: EvalSiteDensity | EvalDensityStratum = 'urban'
-): Promise<BacktestResult> {
-  const brandIds = new Set(catalog.getBrandIds());
   const ordered = orderInsightsByNationalStoreCount(insights);
-  const scoreRadiusKm = presenceRadiusKm(densityOrStratum, radiusKm);
-  const nearbyCache = new Map<string, Array<{ distance: number }>>();
-  for (const insight of ordered.filter((i) => brandIds.has(i.entity_id))) {
-    const rows = await catalog.findStoresNearby(
-      insight.entity_id,
-      location.latitude,
-      location.longitude,
-      scoreRadiusKm
-    );
-    nearbyCache.set(insight.entity_id, rows.map((s) => ({ distance: s.distance })));
-  }
-
-  const findFromCache = (brandId: string) => nearbyCache.get(brandId) ?? [];
-
-  const computed = computeBacktest(
+  const baseline = computeBacktest(
     ordered,
     location.latitude,
     location.longitude,
     scoreRadiusKm,
-    (brandId, _lat, _lon, _r) => findFromCache(brandId),
+    findFromCache,
     brandIds
   );
 
-  return toBacktestResult(computed);
+  return {
+    raw: toBacktestResult(raw),
+    blended: toBacktestResult(blended),
+    baseline: toBacktestResult(baseline),
+  };
 }
 
 function toBacktestResult(computed: ReturnType<typeof computeBacktest>): BacktestResult {
@@ -223,19 +214,16 @@ function toBacktestResult(computed: ReturnType<typeof computeBacktest>): Backtes
   };
 }
 
-export function enrichProspectsWithNearest(
+export async function enrichProspectsWithNearest(
   prospects: ProspectPack[],
   location: Location,
-  catalog: StoreCatalog
+  catalog: StoreCatalog,
+  presence?: NearbyPresenceCache
 ): Promise<ProspectPack[]> {
+  const cache = presence ?? new NearbyPresenceCache(catalog, location);
   return Promise.all(
     prospects.map(async (pack) => {
-      const nearby = await catalog.findStoresNearby(
-        pack.brand.entityId,
-        location.latitude,
-        location.longitude,
-        50
-      );
+      const nearby = await cache.storesNearby(pack.brand.entityId, 50);
       return {
         ...pack,
         nearestExistingStoreKm: nearby[0]?.distance,

@@ -1,8 +1,9 @@
 import type { AnalysisResponse, BacktestResult, BrandRankingRow } from '@leaseup/contracts';
 import {
+  findDemoAdaptiveProofByAddress,
   findAdaptiveEvalRowByAddress,
+  DEMO_ADAPTIVE_PROOF_AGG,
   loadLiveQlooLiftAggregates,
-  loadResultsAdaptive,
   p10ToCountOf10,
 } from '@leaseup/fixtures';
 import { displayBrandName } from './brand-display';
@@ -18,7 +19,9 @@ function blendAndChainHits(results: AnalysisResponse): {
   fromRecordedEval: boolean;
   adaptiveRadiusKm?: number;
 } {
-  const recorded = findAdaptiveEvalRowByAddress(results.location.address);
+  const recorded =
+    findDemoAdaptiveProofByAddress(results.location.address) ??
+    findAdaptiveEvalRowByAddress(results.location.address);
   if (recorded) {
     return {
       blendHits: p10ToCountOf10(recorded.p10_blend),
@@ -48,7 +51,7 @@ export function qlooProofBrokerBanner(results: AnalysisResponse): {
   const headline =
     `At this address, LeaseUp's taste-aware ranking put ${blendHits} of its top 10 brands where they already do well, vs ${chainHits} of 10 using store count alone.`;
 
-  const agg = loadResultsAdaptive().agg;
+  const agg = DEMO_ADAPTIVE_PROOF_AGG;
   const cohortLine =
     `Across ${agg.n_sites} US neighborhoods, adding Qloo taste beat store count alone, ${Math.round(agg.p10_blend * 100)}% vs ${Math.round(agg.p10_chain * 100)}%.`;
 
@@ -60,7 +63,9 @@ export function qlooProofBrokerBanner(results: AnalysisResponse): {
         : `At this pin, taste-aware ranking and store count tie at ${blendHits} of 10 in the trade area.`;
   }
 
-  const recorded = findAdaptiveEvalRowByAddress(results.location.address);
+  const recorded =
+    findDemoAdaptiveProofByAddress(results.location.address) ??
+    findAdaptiveEvalRowByAddress(results.location.address);
   const cohortLegacy = loadLiveQlooLiftAggregates();
   const auc = cohortLegacy.sameSizeAuc;
   const methodParts = [
@@ -91,7 +96,7 @@ export function qlooEvalHeadlineParts(): {
   companion: string;
   caveat: string;
 } {
-  const agg = loadResultsAdaptive().agg;
+  const agg = DEMO_ADAPTIVE_PROOF_AGG;
   const auc = agg.same_size_auc;
   const headline =
     `Among brands with a similar national footprint, Qloo ranks chains that already operate here ahead of absent ones about two-thirds of the time ` +

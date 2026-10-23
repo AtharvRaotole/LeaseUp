@@ -16,7 +16,7 @@ import { minGapKmForBrand } from '../lib/brand-gap-distance';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import { UpstreamError } from '../lib/errors';
 import { affinityPercentile } from '../lib/affinity-label';
-import { brandReverseFixtures } from '@leaseup/fixtures';
+import { brandReverseFixtures } from '@leaseup/fixtures/worker';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
