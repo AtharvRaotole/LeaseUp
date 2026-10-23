@@ -2,7 +2,7 @@ import type { GeocodeCandidate } from '@leaseup/contracts';
 
 export function postalCodeFromResolved(resolvedAddress: string): string | null {
   const match = resolvedAddress.match(/\b(\d{5})(?:-\d{4})?\b/);
-  return match ? match[1] : null;
+  return match?.[1] ?? null;
 }
 
 export function geocodeCandidateTitle(c: GeocodeCandidate): string {
