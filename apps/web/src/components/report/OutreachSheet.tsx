@@ -5,6 +5,9 @@ import { Sheet } from '../ui/Sheet';
 import { Button } from '../ui/Button';
 import { Skeleton } from '../ui/Skeleton';
 import { apiUrl } from '../../lib/api';
+import { coTenantBrandNames } from '../../lib/co-tenancy-mix';
+import { verificationShortLabel } from '../../lib/copy';
+import { isAcceptableOutreachDraft } from '@leaseup/contracts';
 
 export function OutreachSheet({
   open,
@@ -34,6 +37,8 @@ export function OutreachSheet({
           affinityRank: prospect.brand.affinityRank,
           neighborhood: results.location.neighborhood || results.location.city,
           nearestStoreKm: prospect.nearestExistingStoreKm,
+          coTenantBrands: coTenantBrandNames(results),
+          verificationLabel: verificationShortLabel(prospect.brand.verified),
         }),
       });
       if (!res.ok) throw new Error('Draft failed');
@@ -48,12 +53,26 @@ export function OutreachSheet({
   }, [open, prospect, mutation.data, mutation.isPending, mutation.mutate]);
 
   useEffect(() => {
-    if (mutation.data?.draft) {
-      setBody(mutation.data.draft);
-      const firstLine = mutation.data.draft.split('\n')[0] ?? '';
-      setSubject(firstLine.startsWith('Subject:') ? firstLine.replace(/^Subject:\s*/, '') : `Space near ${results.location.neighborhood || 'your site'}`);
+    if (!mutation.data?.draft) return;
+    const raw = mutation.data.draft;
+    const parts = raw.split('\n\n');
+    const maybeSubject = parts[0] ?? '';
+    const rest = parts.slice(1).join('\n\n') || raw;
+    let nextSubject: string;
+    let nextBody: string;
+    if (maybeSubject.startsWith('Subject:')) {
+      nextSubject = maybeSubject.replace(/^Subject:\s*/, '').trim();
+      nextBody = rest.trim();
+    } else {
+      nextSubject = `${prospect?.brand.name ?? 'Brand'} · ${results.location.neighborhood ?? 'site'}`;
+      nextBody = raw.trim();
     }
-  }, [mutation.data, results.location.neighborhood]);
+    setSubject(nextSubject);
+    setBody(nextBody);
+    if (!isAcceptableOutreachDraft(nextBody)) {
+      console.warn('Outreach draft failed quality check');
+    }
+  }, [mutation.data, results.location.neighborhood, prospect?.brand.name]);
 
   return (
     <Sheet

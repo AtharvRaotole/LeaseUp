@@ -1,5 +1,5 @@
 import { useEffect, useState, type KeyboardEvent } from 'react';
-import type { PipelineCard, PipelineColumn } from '@leaseup/contracts';
+import type { PipelineCard, PipelineColumn, PipelineOutreachStatus } from '@leaseup/contracts';
 import * as Dialog from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
 import { Button } from '../ui/Button';
@@ -29,6 +29,7 @@ export function PipelineCardDialog({
   const [busy, setBusy] = useState(false);
   const [draftBusy, setDraftBusy] = useState(false);
   const [localDraft, setLocalDraft] = useState(card?.outreachDraft);
+  const [outreachStatus, setOutreachStatus] = useState<PipelineOutreachStatus>('none');
 
   useEffect(() => {
     if (!card) return;
@@ -36,7 +37,8 @@ export function PipelineCardDialog({
     setRecipient(card.recipientEmail ?? '');
     setFollowUp(card.followUpAt?.slice(0, 10) ?? '');
     setLocalDraft(card.outreachDraft);
-  }, [card, card?.notes, card?.recipientEmail, card?.followUpAt, card?.outreachDraft]);
+    setOutreachStatus(card.outreachStatus ?? 'none');
+  }, [card, card?.notes, card?.recipientEmail, card?.followUpAt, card?.outreachDraft, card?.outreachStatus]);
 
   if (!card) return null;
 
@@ -178,6 +180,25 @@ export function PipelineCardDialog({
                     onChange={(e) => setNotes(e.target.value)}
                     onBlur={() => void savePatch({ notes })}
                   />
+                </label>
+
+                <label className="block text-sm">
+                  <span className="text-label uppercase text-ink-3">Outreach status (you set)</span>
+                  <select
+                    className="mt-1 w-full rounded-control border border-border bg-surface-2 px-3 py-2 text-sm text-ink"
+                    value={outreachStatus}
+                    onChange={(e) => {
+                      const v = e.target.value as PipelineOutreachStatus;
+                      setOutreachStatus(v);
+                      void savePatch({ outreachStatus: v });
+                    }}
+                    data-testid="pipeline-outreach-status"
+                  >
+                    <option value="none">Not drafted</option>
+                    <option value="drafted">Drafted</option>
+                    <option value="sent">Sent</option>
+                    <option value="replied">Replied</option>
+                  </select>
                 </label>
 
                 <div className="rounded-card border border-border bg-surface-2/50 p-3">

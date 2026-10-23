@@ -71,6 +71,11 @@ export function PipelineCardItem({
           <span className="rounded-pill border border-border px-2 py-0.5 text-ink-2">
             {card.verification}
           </span>
+          {card.outreachStatus && card.outreachStatus !== 'none' && (
+            <span className="rounded-pill border border-border px-2 py-0.5 text-ink-2 capitalize">
+              {card.outreachStatus}
+            </span>
+          )}
           {overdue && (
             <span
               className="rounded-pill bg-danger/10 px-2 py-0.5 font-medium text-danger"

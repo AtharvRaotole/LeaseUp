@@ -11,6 +11,7 @@ import type {
   ProspectPack,
 } from '@leaseup/contracts';
 import { affinityThresholdAtPercentile, isProspectCandidate } from '../lib/prospect-filter';
+import { formatFitsStorefront, getStorefrontFormatSpec } from '../lib/storefront-format';
 import {
   wickerparkFixture,
   boulderFixture,
@@ -170,15 +171,24 @@ export class AnalysisService {
         }
       );
 
+      let formatFilteredCount = 0;
       const prospects = await runStep(
         emit,
         'prospects',
         "Find who's missing",
         async () => {
-          const packs = await this.generateProspects(location, insights, request.radius, runId);
+          const generated = await this.generateProspects(
+            location,
+            insights,
+            request.radius,
+            runId,
+            request.storefrontSqFt
+          );
+          formatFilteredCount = generated.formatFilteredCount;
+          const packs = generated.packs;
           return {
             summary: `${packs.length} high-affinity brands absent in radius`,
-            detail: { count: packs.length },
+            detail: { count: packs.length, formatFilteredCount },
             result: packs,
           };
         }
@@ -231,6 +241,11 @@ export class AnalysisService {
 
       const dataQuality = this.assessDataQuality(insights.length, backtest);
       const warnings = this.generateWarnings(insights.length, backtest, location);
+      if (formatFilteredCount > 0) {
+        warnings.push(
+          `${formatFilteredCount} big-box or format brands hidden for ${request.storefrontSqFt ?? 2500} sq ft storefront`
+        );
+      }
 
       const response: AnalysisResponse = {
         location,
@@ -249,6 +264,8 @@ export class AnalysisService {
         chainPriorWeight: CHAIN_PRIOR_BLEND_WEIGHT,
         osmSnapshotRecordedAt: this.osmSnapshot ? osmSnapshotRecordedAt() : undefined,
         osmSnapshotLabel: this.osmSnapshot ? osmSnapshotDisplayLabel() : undefined,
+        storefrontSqFt: request.storefrontSqFt ?? 2_500,
+        formatFilteredCount: formatFilteredCount || undefined,
       };
 
       await this.persistRun(runId, location, response, 'completed');
@@ -334,8 +351,11 @@ export class AnalysisService {
     location: Location,
     insights: Array<{ entity_id: string; name: string; query?: { affinity?: number; affinity_rank?: number } }>,
     radius: number,
-    _runId: string
-  ): Promise<ProspectPack[]> {
+    _runId: string,
+    storefrontSqFt?: number
+  ): Promise<{ packs: ProspectPack[]; formatFilteredCount: number }> {
+    const sqFt = storefrontSqFt ?? 2_500;
+    let formatFilteredCount = 0;
     const prospectPacks: ProspectPack[] = [];
     const blended = blendWithNationalPrior(insights);
     const rankedCount = insights.length;
@@ -366,6 +386,11 @@ export class AnalysisService {
 
       const nationalCount = await this.catalog.getNationalStoreCount(candidate.entity_id);
       if (nationalCount < 5) {
+        continue;
+      }
+
+      if (!formatFitsStorefront(candidate.entity_id, sqFt)) {
+        formatFilteredCount += 1;
         continue;
       }
 
@@ -408,6 +433,8 @@ export class AnalysisService {
         );
       }
 
+      const formatSpec = getStorefrontFormatSpec(candidate.entity_id);
+
       prospectPacks.push({
         coverageNote,
         brand: {
@@ -420,6 +447,8 @@ export class AnalysisService {
           verificationSources: verification.sources,
           nationalStoreCount: nationalCount,
           nearbyStoreCount: 0,
+          storefrontFormat: formatSpec.format,
+          minStorefrontSqFt: formatSpec.minSqFt,
         },
         tenantMixScore: (() => {
           const categoryFit = brandCategoryLabel(candidate.entity_id);
@@ -437,7 +466,7 @@ export class AnalysisService {
       });
     }
 
-    return prospectPacks;
+    return { packs: prospectPacks, formatFilteredCount };
   }
 
   private async verifyFromOsmSnapshot(
@@ -810,6 +839,8 @@ export class AnalysisService {
       affinityRank?: number;
       neighborhood?: string;
       nearestStoreKm?: number;
+      coTenantBrands?: string[];
+      verificationLabel?: string;
     }
   ): Promise<{ draft: string; model: string }> {
     const result = await this.openai.generateOutreach({
@@ -820,6 +851,8 @@ export class AnalysisService {
       affinityRank: context?.affinityRank,
       neighborhood: context?.neighborhood,
       nearestStoreKm: context?.nearestStoreKm,
+      coTenantBrands: context?.coTenantBrands,
+      verificationLabel: context?.verificationLabel,
     });
 
     return {

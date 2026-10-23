@@ -36,6 +36,8 @@ import { DEFAULT_VACANCY_INPUT } from '../lib/vacancy-cost';
 import { startProspectingJob } from '../lib/start-prospecting';
 import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton';
 import { pipelineCardFromProspect } from '../lib/build-pipeline-card';
+import { StorefrontSizeControl } from '../components/report/StorefrontSizeControl';
+import { CoTenancyMixSection } from '../components/report/CoTenancyMixSection';
 
 type MobilePane = 'report' | 'map';
 
@@ -179,6 +181,19 @@ export function ReportPage() {
         />
       )}
       <ErrorBoundary fallback={<SectionUnavailable />}>
+        <div className="no-print mb-6 print-pitch-block">
+          <StorefrontSizeControl
+            sqFt={request.storefrontSqFt ?? 2500}
+            onChange={(sqFt) => {
+              ranKey.current = '';
+              navigate(buildReportPath({ ...request, storefrontSqFt: sqFt }, slug ?? 'run'), {
+                replace: true,
+              });
+            }}
+          />
+        </div>
+      </ErrorBoundary>
+      <ErrorBoundary fallback={<SectionUnavailable />}>
         <div className="print-pitch-block">
           <BrandsToPitch
             results={results}
@@ -213,6 +228,9 @@ export function ReportPage() {
         <div className="no-print print-pitch-block">
           <VacancyCostCalculator initial={vacancyInput} onChange={setVacancyInput} />
         </div>
+      </ErrorBoundary>
+      <ErrorBoundary fallback={<SectionUnavailable />}>
+        <CoTenancyMixSection results={results} />
       </ErrorBoundary>
       <ErrorBoundary fallback={<SectionUnavailable />}>
         <div className="no-print">

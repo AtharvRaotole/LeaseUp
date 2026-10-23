@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { isAcceptableOutreachDraft } from '@leaseup/contracts';
 import { OpenAIClient, buildOutreachPrompt } from '../providers/openai';
 import type { Env } from '../index';
 
@@ -19,6 +20,8 @@ describe('buildOutreachPrompt', () => {
     expect(prompt).toContain('4.2 km');
     expect(prompt).toContain('No store within 10km');
     expect(prompt).toMatch(/Do NOT invent foot traffic/i);
+    expect(prompt).toMatch(/under 120 words/i);
+    expect(prompt).toMatch(/No placeholders/i);
     expect(prompt).not.toContain('Local demographics:');
   });
 });
@@ -56,6 +59,8 @@ describe('OpenAIClient', () => {
       expect(result.body).toContain('Wicker Park');
       expect(result.body).not.toContain('foot traffic');
       expect(result.body).not.toContain('10 out of 10');
+      expect(isAcceptableOutreachDraft(result.body)).toBe(true);
+      expect(result.body).toMatch(/Qloo ranks/i);
     });
 
     it('includes brand name in subject', async () => {
