@@ -1,7 +1,11 @@
+import { isNetworkFetchError, isRetryableHttpStatus } from './fetch-with-retry';
+import { SERVER_BUSY_MESSAGE } from './calm-error-copy';
+
 export type ApiErrorInfo = {
   message: string;
   code?: string;
   retryAfterSec?: number;
+  autoRetried?: boolean;
 };
 
 export function humanizeApiError(status: number, body: { error?: string; code?: string; retryAfter?: number }): ApiErrorInfo {
@@ -13,11 +17,22 @@ export function humanizeApiError(status: number, body: { error?: string; code?: 
       retryAfterSec: typeof body.retryAfter === 'number' ? body.retryAfter : 60,
     };
   }
+  if (
+    status === 503 ||
+    code === 'SERVER_BUSY' ||
+    code === 'CONFIGURATION_ERROR' ||
+    code === '1102' ||
+    String(body.error ?? '').includes('1102')
+  ) {
+    return {
+      message: SERVER_BUSY_MESSAGE,
+      code: 'SERVER_BUSY',
+    };
+  }
   if (status >= 500) {
     return {
-      message:
-        'Our servers could not finish this report. Your address is saved; wait a moment and try again.',
-      code,
+      message: SERVER_BUSY_MESSAGE,
+      code: 'SERVER_BUSY',
     };
   }
   if (status === 404) {
@@ -32,6 +47,37 @@ export function humanizeApiError(status: number, body: { error?: string; code?: 
     };
   }
   return { message: raw, code };
+}
+
+export function apiErrorFromNetworkFailure(autoRetried = false): ApiErrorInfo {
+  return {
+    message: SERVER_BUSY_MESSAGE,
+    code: 'NETWORK_ERROR',
+    autoRetried,
+  };
+}
+
+export function apiErrorFromFailedResponse(response: Response, autoRetried = false): ApiErrorInfo {
+  if (isRetryableHttpStatus(response.status)) {
+    return { message: SERVER_BUSY_MESSAGE, code: 'SERVER_BUSY', autoRetried };
+  }
+  return {
+    message: SERVER_BUSY_MESSAGE,
+    code: 'SERVER_BUSY',
+    autoRetried,
+  };
+}
+
+export function apiErrorFromUnknown(err: unknown, autoRetried = false): ApiErrorInfo {
+  if (isNetworkFetchError(err)) return apiErrorFromNetworkFailure(autoRetried);
+  if (err && typeof err === 'object' && 'message' in err) {
+    const raw = String((err as ApiErrorInfo).message);
+    if (/failed to fetch|cors|network/i.test(raw)) {
+      return apiErrorFromNetworkFailure(autoRetried);
+    }
+    return { message: raw, code: (err as ApiErrorInfo).code, autoRetried };
+  }
+  return { message: SERVER_BUSY_MESSAGE, code: 'SERVER_BUSY', autoRetried };
 }
 
 export async function parseApiErrorResponse(response: Response): Promise<ApiErrorInfo> {

@@ -2,12 +2,18 @@ import { useCallback, useRef, useState } from 'react';
 import type { AnalysisRequest, AnalysisResponse, AnalysisStep } from '@leaseup/contracts';
 import { analyzeWithStream } from '../lib/analyzeStream';
 import { apiUrl } from '../lib/api';
-import { parseApiErrorResponse, type ApiErrorInfo } from '../lib/api-error';
+import {
+  apiErrorFromUnknown,
+  parseApiErrorResponse,
+  type ApiErrorInfo,
+} from '../lib/api-error';
+import { fetchWithOneRetry } from '../lib/fetch-with-retry';
 
 export function useAnalysisRun() {
   const [steps, setSteps] = useState<AnalysisStep[]>([]);
   const [results, setResults] = useState<AnalysisResponse | null>(null);
   const [error, setError] = useState<ApiErrorInfo | null>(null);
+  const [autoRetrying, setAutoRetrying] = useState(false);
   const [loading, setLoading] = useState(false);
   const [elapsedMs, setElapsedMs] = useState<number | null>(null);
   const [slowHint, setSlowHint] = useState(false);
@@ -18,6 +24,7 @@ export function useAnalysisRun() {
     lastRequestRef.current = request;
     setLoading(true);
     setError(null);
+    setAutoRetrying(false);
     setResults(null);
     setSteps([]);
     setElapsedMs(null);
@@ -27,12 +34,15 @@ export function useAnalysisRun() {
     const slowTimer = window.setTimeout(() => setSlowHint(true), 6000);
 
     let completed = false;
+    let errored = false;
+    let autoRetried = false;
 
     const finish = (payload: AnalysisResponse) => {
       completed = true;
       setResults(payload);
       setElapsedMs(Math.round(performance.now() - startedRef.current));
       setLoading(false);
+      setAutoRetrying(false);
       window.clearTimeout(slowTimer);
     };
 
@@ -42,6 +52,10 @@ export function useAnalysisRun() {
           setSteps((prev) => [...prev.filter((s) => s.id !== step.id), step]);
         },
         onComplete: finish,
+        onAutoRetry: () => {
+          autoRetried = true;
+          setAutoRetrying(true);
+        },
         onVerification: (payload) => {
           setResults((prev) => (prev ? { ...prev, prospects: payload.prospects } : prev));
           const summary = payload.osmSummary;
@@ -61,30 +75,45 @@ export function useAnalysisRun() {
             );
           }
         },
-        onError: (info) => setError(info),
+        onError: (info) => {
+          errored = true;
+          setError({ ...info, autoRetried });
+          setLoading(false);
+          setAutoRetrying(false);
+        },
       });
     } catch {
       /* stream race */
     }
 
-    if (!completed) {
+    if (!completed && !errored) {
       try {
-        const response = await fetch(apiUrl('/api/analyze'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(request),
-        });
+        const response = await fetchWithOneRetry(
+          apiUrl('/api/analyze'),
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(request),
+          },
+          {
+            onAutoRetry: () => {
+              autoRetried = true;
+              setAutoRetrying(true);
+            },
+          }
+        );
         if (!response.ok) {
           throw await parseApiErrorResponse(response);
         }
         finish((await response.json()) as AnalysisResponse);
       } catch (err) {
         if (err && typeof err === 'object' && 'message' in err) {
-          setError(err as ApiErrorInfo);
+          setError({ ...(err as ApiErrorInfo), autoRetried });
         } else {
-          setError({ message: 'Analysis failed. Try again.' });
+          setError(apiErrorFromUnknown(err, autoRetried));
         }
         setLoading(false);
+        setAutoRetrying(false);
       }
     }
     window.clearTimeout(slowTimer);
@@ -94,5 +123,5 @@ export function useAnalysisRun() {
     if (lastRequestRef.current) void run(lastRequestRef.current);
   }, [run]);
 
-  return { steps, results, error, loading, elapsedMs, slowHint, run, retry };
+  return { steps, results, error, autoRetrying, loading, elapsedMs, slowHint, run, retry };
 }

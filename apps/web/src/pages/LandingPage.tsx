@@ -29,6 +29,13 @@ export function LandingPage() {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
+    const prefill = searchParams.get('address');
+    if (prefill?.trim()) {
+      setAddress(prefill.trim());
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     const demo = searchParams.get('demo');
     if (demo === 'wicker' || demo === 'boulder' || demo === 'sevierville') {
       void import('@leaseup/fixtures').then(({ DEMO_CHIP_ADDRESSES }) => {
