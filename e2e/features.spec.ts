@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { openReportSection, waitForReportReady } from './report-helpers';
 
 const BASE = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:4173';
 const DEMO_BRAND = '54617D9D-5EC7-45E0-8B7F-360DADB0FE7E';
@@ -49,7 +50,7 @@ test.describe('LeaseUp feature pages (demo)', () => {
     await page.goto(
       `${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`
     );
-    await expect(page.getByTestId('brands-to-pitch')).toBeVisible({ timeout: 120000 });
+    await waitForReportReady(page);
     await page.getByTestId('share-pitch').click();
     await page.getByRole('button', { name: 'Create public link' }).click();
     await expect(page.getByText(/\/pitch\//)).toBeVisible({ timeout: 30000 });
@@ -58,6 +59,7 @@ test.describe('LeaseUp feature pages (demo)', () => {
     await page.goto(linkText!);
     await expect(page.getByTestId('pitch-page')).toBeVisible({ timeout: 30000 });
     await expect(page.getByText('Top brands to pitch')).toBeVisible();
+    await openReportSection(page, 'report-section-vacancy-costs');
     await expect(page.getByTestId('vacancy-calculator')).toBeVisible();
   });
 
@@ -75,9 +77,8 @@ test.describe('LeaseUp feature pages (demo)', () => {
   test('pipeline add from report and show board', async ({ page }) => {
     test.setTimeout(180_000);
     await page.goto(`${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`);
-    await expect(page.getByTestId('brands-to-pitch')).toBeVisible({ timeout: 120000 });
-    await page.getByTestId('brands-to-pitch').locator('button').first().click();
-    await page.getByTestId('add-to-pipeline').first().click();
+    await waitForReportReady(page);
+    await page.getByTestId('report-pipeline-cta').getByTestId('add-to-pipeline').click();
     await expect(page.getByText('Added to pipeline')).toBeVisible({ timeout: 30000 });
     await page.goto(`${BASE}/pipeline`);
     await expect(page.getByTestId('pipeline-board')).toBeVisible();
