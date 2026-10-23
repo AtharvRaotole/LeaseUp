@@ -15,6 +15,8 @@ import {
   shouldShowStoredWhyLine,
 } from '../lib/pitch-pack-copy';
 import { DEFAULT_VACANCY_INPUT } from '../lib/vacancy-cost';
+import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton';
+import { pipelineCardFromPitchProspect } from '../lib/build-pipeline-card';
 
 export function PitchPage() {
   const { id } = useParams();
@@ -139,6 +141,17 @@ export function PitchPage() {
                   {shouldShowStoredWhyLine(whyLine) && (
                     <p className="mt-1 text-sm text-ink-2">{whyLine}</p>
                   )}
+                  <div className="mt-3 no-print">
+                    <AddToPipelineButton
+                      buildPayload={() =>
+                        pipelineCardFromPitchProspect(
+                          snapshot,
+                          prospect,
+                          `${window.location.origin}/pitch/${snapshot.id}`
+                        )
+                      }
+                    />
+                  </div>
                 </li>
               );
             })}

@@ -14,6 +14,7 @@ import { portfolioRouter } from './routes/portfolio';
 import { pitchRouter } from './routes/pitch';
 import { prospectingRouter } from './routes/prospecting';
 import { geocodeRouter } from './routes/geocode';
+import { pipelineRouter } from './routes/pipeline';
 
 export interface Env {
   DB: D1Database;
@@ -65,6 +66,7 @@ function skipRateLimit(c: Context<{ Bindings: Env }>): boolean {
   if (path.startsWith('/api/pitch')) return true;
   if (path.startsWith('/api/prospecting')) return true;
   if (path === '/api/geocode') return true;
+  if (path.startsWith('/api/pipeline')) return true;
   if (path === '/api/analyze/stream' || path === '/api/analyze') return true;
   return false;
 }
@@ -90,6 +92,13 @@ app.use('/api/*', async (c, next) => {
       keyPrefix: 'portfolio-run',
     })(c, next);
   }
+  if (path.startsWith('/api/pipeline') && path.includes('/outreach')) {
+    return rateLimiter({
+      windowMs: 60_000,
+      maxRequests: 10,
+      keyPrefix: 'pipeline-outreach',
+    })(c, next);
+  }
   if (path.startsWith('/api/outreach')) {
     return rateLimiter({
       windowMs: 60_000,
@@ -110,6 +119,7 @@ app.route('/api', brandRouter);
 app.route('/api', portfolioRouter);
 app.route('/api', pitchRouter);
 app.route('/api', prospectingRouter);
+app.route('/api', pipelineRouter);
 app.route('/api', analysisRouter);
 app.route('/api', geocodeRouter);
 
