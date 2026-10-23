@@ -18,7 +18,7 @@ export function fitPercentileLabel(
   tasteFitBeyondChainPercentile?: number
 ): string {
   if (tasteFitBeyondChainPercentile !== undefined) {
-    return `Top ${tasteFitBeyondChainPercentile}% in chain tier`;
+    return `Taste fit beyond chain size: ${tasteFitBeyondChainPercentile}th percentile`;
   }
   return `Top ${fitTopPercent(rank, totalScored)}%`;
 }
@@ -29,7 +29,7 @@ export function fitTopPercentPhrase(
   tasteFitBeyondChainPercentile?: number
 ): string {
   if (tasteFitBeyondChainPercentile !== undefined) {
-    return `top ${tasteFitBeyondChainPercentile}% in its chain-size tier`;
+    return `${tasteFitBeyondChainPercentile}th percentile taste fit beyond chain size`;
   }
   return `top ${fitTopPercent(rank, totalScored)}%`;
 }

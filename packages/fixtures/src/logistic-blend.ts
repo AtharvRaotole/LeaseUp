@@ -57,13 +57,12 @@ export function orderInsightsByLogisticBlend<
 
   scored.sort((a, b) => b.blendedScore - a.blendedScore);
 
-  return scored.map((row, index) => {
-    const { blendedScore: _ignored, ...rest } = row;
-    return {
-      ...(rest as T),
-      qlooRank: rest.qlooRank,
-      blendedRank: index + 1,
-    };
-  });
+  return scored.map((row, index) => ({
+    entity_id: row.entity_id,
+    name: row.name,
+    query: row.query,
+    qlooRank: row.qlooRank,
+    blendedRank: index + 1,
+  } as T & { qlooRank: number; blendedRank: number }));
 }
 

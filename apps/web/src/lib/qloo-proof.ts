@@ -4,15 +4,28 @@ import { displayBrandName } from './brand-display';
 import { presentInTop10Count } from './hit-rate';
 
 /** Cohort-level eval copy (never claim raw Qloo beats chain size). */
-export function qlooEvalHeadlineCopy(): string {
+export function qlooEvalHeadlineParts(): {
+  headline: string;
+  companion: string;
+  caveat: string;
+} {
   const agg = loadLiveQlooLiftAggregates();
   const auc = agg.sameSizeAuc;
-  const aucPct = (auc.value * 100).toFixed(0);
-  const ciLow = (auc.ciLow * 100).toFixed(0);
-  const ciHigh = (auc.ciHigh * 100).toFixed(0);
+  const headline =
+    `Among brands with a similar national footprint, Qloo ranks chains that already operate here ahead of absent ones about two-thirds of the time ` +
+    `(same-size AUC ${auc.value.toFixed(2)}, 95% CI ${auc.ciLow.toFixed(2)} to ${auc.ciHigh.toFixed(2)}).`;
   const blendPct = (agg.logisticBlendPrecisionAt10 * 100).toFixed(0);
   const chainPct = (agg.chainSizePrecisionAt10 * 100).toFixed(0);
-  return `Across our recorded eval sites, same-size tier AUC is about ${aucPct}% (95% CI ${ciLow}% to ${ciHigh}%). The logistic companion blend reaches ${blendPct}% P@10 vs ${chainPct}% for chain size alone. Qloo partly reflects brands that already operate nearby, so read lift alongside absence checks.`;
+  const companion =
+    `The logistic companion blend reaches ${blendPct}% top-10 precision vs ${chainPct}% for chain size alone on our recorded sites.`;
+  const caveat =
+    'Qloo taste may partly reflect brands that already operate in the trade area; read lift alongside store absence checks.';
+  return { headline, companion, caveat };
+}
+
+export function qlooEvalHeadlineCopy(): string {
+  const { headline, companion, caveat } = qlooEvalHeadlineParts();
+  return `${headline} ${companion} ${caveat}`;
 }
 
 export function qlooProofSentence(
