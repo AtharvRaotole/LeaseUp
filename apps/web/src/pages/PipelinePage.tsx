@@ -35,7 +35,7 @@ export function PipelinePage() {
   return (
     <div className="min-h-screen bg-bg" data-testid="pipeline-page">
       <TopBar />
-      <div className="mx-auto max-w-[1600px] px-4 py-8 md:px-6">
+      <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-label uppercase tracking-wide text-ink-3">Leasing</p>

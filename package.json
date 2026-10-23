@@ -19,6 +19,7 @@
     "eval:metros": "node scripts/eval-metros.mjs",
     "lighthouse:ci": "node scripts/run-lighthouse-ci.mjs",
     "test:a11y": "playwright test e2e/a11y.spec.ts",
+    "test:csp": "node scripts/run-csp-e2e.mjs",
     "deploy": "pnpm --filter @leaseup/worker deploy"
   },
   "devDependencies": {

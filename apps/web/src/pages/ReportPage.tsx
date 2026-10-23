@@ -159,37 +159,24 @@ export function ReportPage() {
     <>
       <ErrorBoundary fallback={<SectionUnavailable />}>
         <div className="print-pitch-block space-y-4">
-          <QlooRankingToggle mode={rankingMode} onChange={setRankingMode} className="no-print" />
-          {results.backtestBaseline && (
-            <QlooProofBanner results={results} />
-          )}
+          <div className="no-print flex flex-col gap-3 border-b border-border pb-4 lg:flex-row lg:items-center lg:justify-between">
+            <QlooRankingToggle
+              mode={rankingMode}
+              onChange={setRankingMode}
+              compact
+              className="shrink-0"
+            />
+            {results.backtestBaseline && (
+              <div className="min-w-0 flex-1">
+                <QlooProofBanner results={results} compact />
+              </div>
+            )}
+          </div>
           <HeadlineCard
             results={results}
             radiusKm={request.radius}
             chipSlug={slug}
             backtestOverride={activeBacktest ?? undefined}
-          />
-        </div>
-      </ErrorBoundary>
-      {(loading || steps.length > 0) && (
-        <AgentRunStrip
-          steps={steps}
-          loading={loading}
-          elapsedMs={elapsedMs}
-          demoMode={results?.mode === 'demo'}
-          recordedAt={results?.timestamp}
-        />
-      )}
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <div className="no-print mb-6 print-pitch-block">
-          <StorefrontSizeControl
-            sqFt={request.storefrontSqFt ?? 2500}
-            onChange={(sqFt) => {
-              ranKey.current = '';
-              navigate(buildReportPath({ ...request, storefrontSqFt: sqFt }, slug ?? 'run'), {
-                replace: true,
-              });
-            }}
           />
         </div>
       </ErrorBoundary>
@@ -222,6 +209,26 @@ export function ReportPage() {
               ) : null
             }
           />
+          {(loading || steps.length > 0) && (
+            <AgentRunStrip
+              steps={steps}
+              loading={loading}
+              elapsedMs={elapsedMs}
+              demoMode={results?.mode === 'demo'}
+              recordedAt={results?.timestamp}
+            />
+          )}
+          <div className="no-print mt-4 print-pitch-block">
+            <StorefrontSizeControl
+              sqFt={request.storefrontSqFt ?? 2500}
+              onChange={(sqFt) => {
+                ranKey.current = '';
+                navigate(buildReportPath({ ...request, storefrontSqFt: sqFt }, slug ?? 'run'), {
+                  replace: true,
+                });
+              }}
+            />
+          </div>
         </div>
       </ErrorBoundary>
       <ErrorBoundary fallback={<SectionUnavailable />}>
@@ -292,10 +299,10 @@ export function ReportPage() {
         </div>
       )}
 
-      <div className="mx-auto max-w-[1280px] px-4 py-8">
-        <div className="grid grid-cols-12 gap-8">
+      <div className="mx-auto max-w-[1280px] px-4 py-6 md:px-6 md:py-8">
+        <div className="grid grid-cols-12 gap-6 xl:gap-8">
           <div
-            className={`col-span-12 min-w-0 space-y-10 xl:col-span-7 ${
+            className={`col-span-12 min-w-0 space-y-6 xl:col-span-7 ${
               mobilePane === 'map' ? 'hidden md:block' : ''
             }`}
           >
@@ -333,31 +340,33 @@ export function ReportPage() {
           >
             {results && (
               <ErrorBoundary fallback={<SectionUnavailable label="Map unavailable right now." />}>
-                <WhyThisBrandCard
-                  className="hidden md:block"
-                  prospect={selected}
-                  results={results}
-                  radiusKm={request.radius}
-                  actions={
-                    selected ? (
-                      <AddToPipelineButton
-                        buildPayload={() =>
-                          pipelineCardFromProspect(selected, results, {
-                            reportPath: buildReportPath(request, slug ?? 'run'),
-                          })
-                        }
-                      />
-                    ) : null
-                  }
-                />
-                <ReportMap
-                  results={results}
-                  selectedBrand={mapBrand}
-                  pitchBrandIds={results.prospects.map((p) => p.brand.entityId)}
-                  radiusKm={request.radius}
-                  captureRef={mapCaptureRef}
-                  className="h-[max(400px,calc(100vh-11rem))] w-full md:sticky md:top-[7.5rem] md:h-[max(520px,calc(100vh-8rem))]"
-                />
+                <div className="flex flex-col gap-4 md:sticky md:top-[7.5rem]">
+                  <ReportMap
+                    results={results}
+                    selectedBrand={mapBrand}
+                    pitchBrandIds={results.prospects.map((p) => p.brand.entityId)}
+                    radiusKm={request.radius}
+                    captureRef={mapCaptureRef}
+                    className="h-[min(72vh,640px)] min-h-[360px] w-full xl:h-[min(78vh,720px)]"
+                  />
+                  <WhyThisBrandCard
+                    className="hidden md:block"
+                    prospect={selected}
+                    results={results}
+                    radiusKm={request.radius}
+                    actions={
+                      selected ? (
+                        <AddToPipelineButton
+                          buildPayload={() =>
+                            pipelineCardFromProspect(selected, results, {
+                              reportPath: buildReportPath(request, slug ?? 'run'),
+                            })
+                          }
+                        />
+                      ) : null
+                    }
+                  />
+                </div>
               </ErrorBoundary>
             )}
           </div>
