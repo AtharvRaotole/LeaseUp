@@ -116,7 +116,17 @@ function applyToTree(tilesDir, supplements) {
 }
 
 const supplements = loadSupplements();
-const atp = applyToTree(join(root, 'apps/worker/public/tiles'), supplements);
-const osm = applyToTree(join(root, 'apps/worker/public/osm-tiles'), supplements);
-const osmData = applyToTree(join(root, 'data/osm-snapshot/tiles'), supplements);
-console.log(JSON.stringify({ atp, osm, osmData }));
+const trees = [
+  { key: 'atp', dir: join(root, 'apps/worker/public/tiles') },
+  { key: 'osm', dir: join(root, 'apps/worker/public/osm-tiles') },
+  { key: 'osmData', dir: join(root, 'data/osm-snapshot/tiles') },
+];
+const results = {};
+for (const { key, dir } of trees) {
+  const rows = supplements.filter((row) => {
+    const targets = row.targets ?? ['atp', 'osm', 'osmData'];
+    return targets.includes(key);
+  });
+  results[key] = applyToTree(dir, rows);
+}
+console.log(JSON.stringify(results));
