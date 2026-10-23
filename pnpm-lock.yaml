@@ -189,12 +189,6 @@ importers:
 
   apps/worker:
     dependencies:
-      '@fontsource/geist':
-        specifier: ^5.3.0
-        version: 5.3.0
-      '@fontsource/instrument-serif':
-        specifier: ^5.3.0
-        version: 5.3.0
       '@leaseup/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
@@ -207,9 +201,6 @@ importers:
       hono:
         specifier: ^4.7.9
         version: 4.13.13
-      satori:
-        specifier: ^0.63.2
-        version: 0.63.2
       zod:
         specifier: ^3.24.1
         version: 3.25.76
