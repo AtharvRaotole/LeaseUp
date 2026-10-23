@@ -143,7 +143,7 @@ export function PitchPage() {
                     <h3 className="font-serif text-xl text-ink print:text-lg">{name}</h3>
                   </div>
                   <p className="mt-1 text-sm text-ink-2">
-                    Qloo rank #{prospect.brand.affinityRank} ({rankLabel}) ·{' '}
+                    Local taste rank #{prospect.brand.affinityRank} ({rankLabel}) ·{' '}
                     {verificationShortLabel(prospect.brand.verified)}
                   </p>
                   <p className="mt-2 text-ink print:text-sm">{fact}</p>
@@ -179,7 +179,7 @@ export function PitchPage() {
           <footer className="mt-10 border-t border-border pt-6 text-sm text-ink-2 pitch-methodology print:mt-2 print:pt-2">
             <h2 className="font-serif text-lg text-ink">Methodology and data sources</h2>
             <ul className="mt-2 list-disc space-y-1 pl-5 print:text-xs">
-              <li>Qloo Taste AI rankings ({snapshot.mode ?? 'demo'}) for affinity at this pin</li>
+              <li>Local taste rankings ({snapshot.mode ?? 'demo'} mode) for this address</li>
               <li>All The Places store locations (CC0)</li>
               <li>
                 {snapshot.osmSnapshotLabel ?? 'OpenStreetMap'} for second source checks
