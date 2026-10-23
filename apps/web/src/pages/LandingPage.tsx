@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 import { MapPin } from 'lucide-react';
+import { Logo } from '../components/brand/Logo';
 import { TopBar } from '../components/layout/TopBar';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -141,7 +142,10 @@ export function LandingPage() {
           Data: Qloo Taste AI, All The Places (CC0), OpenStreetMap
         </p>
       </section>
-      <footer className="py-8 text-center text-meta text-ink-3">LeaseUp · Qloo Agentic Hackathon 2026</footer>
+      <footer className="flex flex-col items-center gap-3 py-8 text-center text-meta text-ink-3">
+        <Logo variant="lockup" size="xs" className="justify-center opacity-80" />
+        <p>Qloo Agentic Hackathon 2026</p>
+      </footer>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import type { ProspectPack } from '@leaseup/contracts';
+import { Logo } from '../components/brand/Logo';
 import { TopBar } from '../components/layout/TopBar';
 import { useAnalysisRun } from '../hooks/useAnalysisRun';
 import { parseReportSearch } from '../lib/report-params';
@@ -167,7 +168,10 @@ export function ReportPage() {
             )}
             {reportSections}
             {!results && loading && !simulateError && (
-              <p className="text-ink-2">Running analysis for {slug ?? 'report'}...</p>
+              <div className="flex flex-col items-start gap-4 rounded-card border border-border bg-surface p-6">
+                <Logo variant="lockup" size="sm" className="opacity-90" />
+                <p className="text-ink-2">Running analysis for {slug ?? 'report'}...</p>
+              </div>
             )}
           </div>
           <div

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#FAFAF7" />
+  <g stroke="#E7E5DF" stroke-width="1">
+    <path d="M0 105h1200M0 210h1200M0 315h1200M0 420h1200M0 525h1200" />
+    <path d="M150 0v630M300 0v630M450 0v630M600 0v630M750 0v630M900 0v630M1050 0v630" />
+  </g>
+  <g transform="translate(120 200)">
+    <rect x="5" y="5" width="44" height="44" rx="11" stroke="#0F6B4F" stroke-width="4.5" />
+    <path fill="#0F6B4F" d="M15 46V24h8.5v13.5H42v8.5H15z" />
+  </g>
+  <text
+    x="200"
+    y="262"
+    fill="#121212"
+    font-family="Geist, system-ui, sans-serif"
+    font-size="56"
+    font-weight="600"
+    letter-spacing="-0.04em"
+  >
+    LeaseUp
+  </text>
+  <text
+    x="120"
+    y="340"
+    fill="#45443F"
+    font-family="Geist, system-ui, sans-serif"
+    font-size="32"
+    font-weight="400"
+    letter-spacing="-0.02em"
+  >
+    Find the tenants your neighborhood already wants.
+  </text>
+</svg>
