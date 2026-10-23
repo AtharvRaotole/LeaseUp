@@ -20,7 +20,7 @@ export function StorefrontSizeControl({
           min={200}
           max={500000}
           step={100}
-          className="mt-2 max-w-[12rem] font-mono tabular-nums"
+          className="mt-2 max-w-[12rem] tabular-nums"
           value={sqFt}
           onChange={(e) => {
             const n = Number(e.target.value);

@@ -12,14 +12,13 @@ import satori from 'satori';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const brand = join(root, 'docs/brand');
 const publicDir = join(root, 'apps/web/public');
-const fontRoot = join(root, 'apps/web/node_modules/@fontsource');
+const fontDir = join(root, 'apps/web/public/fonts/schibsted-grotesk');
 
 mkdirSync(join(brand, 'generated'), { recursive: true });
 
 const FONT_FILES = [
-  join(fontRoot, 'geist/files/geist-latin-400-normal.woff2'),
-  join(fontRoot, 'geist/files/geist-latin-600-normal.woff2'),
-  join(fontRoot, 'instrument-serif/files/instrument-serif-latin-400-normal.woff2'),
+  join(fontDir, 'schibsted-grotesk-latin-400-normal.woff2'),
+  join(fontDir, 'schibsted-grotesk-latin-600-normal.woff2'),
 ];
 
 const COLORS = {
@@ -31,7 +30,7 @@ function resvgOpts(extra = {}) {
   return {
     font: {
       loadSystemFonts: false,
-      defaultFontFamily: 'Geist',
+      defaultFontFamily: 'Schibsted Grotesk',
       fontFiles: FONT_FILES,
     },
     ...extra,
@@ -84,21 +83,15 @@ function h(type, props, ...children) {
 function ogFonts() {
   return [
     {
-      name: 'Geist',
-      data: readFileSync(join(fontRoot, 'geist/files/geist-latin-400-normal.woff')),
+      name: 'Schibsted Grotesk',
+      data: readFileSync(join(fontDir, 'schibsted-grotesk-latin-400-normal.woff2')),
       weight: 400,
       style: 'normal',
     },
     {
-      name: 'Geist',
-      data: readFileSync(join(fontRoot, 'geist/files/geist-latin-600-normal.woff')),
+      name: 'Schibsted Grotesk',
+      data: readFileSync(join(fontDir, 'schibsted-grotesk-latin-600-normal.woff2')),
       weight: 600,
-      style: 'normal',
-    },
-    {
-      name: 'Instrument Serif',
-      data: readFileSync(join(fontRoot, 'instrument-serif/files/instrument-serif-latin-400-normal.woff')),
-      weight: 400,
       style: 'normal',
     },
   ];
@@ -176,10 +169,11 @@ function buildOgTextTree() {
     ),
     h('div', {
       style: {
-        fontFamily: 'Instrument Serif',
+        fontFamily: 'Schibsted Grotesk',
         fontSize: 56,
+        fontWeight: 600,
         lineHeight: 1.08,
-        letterSpacing: '-0.02em',
+        letterSpacing: '-0.03em',
         color: '#121212',
         width: 560,
       },
@@ -285,7 +279,7 @@ async function renderOgPng() {
   });
   writeFileSync(
     join(brand, 'assets', 'og-template.svg'),
-    `<!-- LeaseUp OG: text layer (Satori + Geist / Instrument Serif) composited with grid layer -->\n${textSvg}\n`
+    `<!-- LeaseUp OG: text layer (Satori + Schibsted Grotesk) composited with grid layer -->\n${textSvg}\n`
   );
   if (!textSvg.includes('fill=\"#121212\"')) {
     throw new Error('OG text SVG from satori missing headline paths; fonts may not have loaded.');

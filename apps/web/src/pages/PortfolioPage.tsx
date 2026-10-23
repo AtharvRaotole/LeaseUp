@@ -214,7 +214,7 @@ export function PortfolioPage() {
       <main className="mx-auto max-w-[1280px] min-w-0 overflow-x-hidden px-4 py-8 md:px-6">
         <div className="grid min-w-0 gap-8 lg:grid-cols-12">
           <div className="min-w-0 lg:col-span-5">
-            <h1 className="break-words font-serif text-display text-ink">Portfolio mode</h1>
+            <h1 className="break-words font-display font-semibold text-display text-ink">Portfolio mode</h1>
             <p className="mt-3 break-words text-ink-2">
               Paste up to 10 storefronts or upload a CSV. We geocode, confirm ambiguous matches, then run Qloo analyses in sequence.
             </p>
@@ -335,7 +335,7 @@ export function PortfolioPage() {
                           <td className="px-4 py-3 text-ink-2">
                             {(row.topProspects ?? []).map((p) => p.name).join(', ') || 'n/a'}
                           </td>
-                          <td className="px-4 py-3 font-mono tabular-nums">
+                          <td className="px-4 py-3 tabular-nums">
                             {row.backtestHitRate !== undefined ? row.backtestHitRate.toFixed(2) : 'n/a'}
                           </td>
                           <td className="px-4 py-3">{statusLabel(row.status)}</td>
@@ -350,7 +350,7 @@ export function PortfolioPage() {
               {portfolio && (
                 <p className="mt-3 text-meta text-ink-3">
                   Shareable link:{' '}
-                  <span className="break-all font-mono text-ink-2">{`/portfolio/${portfolio.id}`}</span>
+                  <span className="break-all text-ink-2">{`/portfolio/${portfolio.id}`}</span>
                 </p>
               )}
             </ErrorBoundary>

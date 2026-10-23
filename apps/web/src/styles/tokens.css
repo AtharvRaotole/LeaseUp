@@ -18,9 +18,8 @@
   --shadow-pop: 0 8px 24px rgba(0, 0, 0, 0.08);
   --radius-card: 10px;
   --radius-control: 8px;
-  --font-sans: 'Geist', system-ui, sans-serif;
-  --font-mono: 'Geist Mono', ui-monospace, monospace;
-  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-sans: 'Schibsted Grotesk', system-ui, sans-serif;
+  --font-display: 'Schibsted Grotesk', system-ui, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {

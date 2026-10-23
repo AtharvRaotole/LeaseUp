@@ -79,7 +79,7 @@ export function LandingPage() {
           <p className="inline-flex rounded-pill border border-border bg-surface px-3 py-1 text-label uppercase text-ink-3">
             Built on Qloo taste data
           </p>
-          <h1 className="mt-6 font-serif text-display text-ink">
+          <h1 className="mt-6 font-display font-semibold text-display text-ink">
             Find the tenants your space is missing.
           </h1>
           <p className="mt-4 text-lg text-ink-2" data-testid="landing-plain-summary">
@@ -185,7 +185,7 @@ export function LandingPage() {
               >
                 <p className="font-medium text-ink">{ex.neighborhood}</p>
                 <p className="text-sm text-ink-2">{ex.city}</p>
-                <p className="mt-3 font-mono text-sm tabular-nums text-accent">{ex.hitRateLabel}</p>
+                <p className="mt-3 text-sm tabular-nums text-accent">{ex.hitRateLabel}</p>
               </button>
             ))}
           </div>
