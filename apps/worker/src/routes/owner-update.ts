@@ -1,16 +1,11 @@
 import { Hono } from 'hono';
 import type { Env } from '../index';
-import {
-  OwnerUpdateShareRequestSchema,
-  OwnerUpdateSnapshotSchema,
-} from '@leaseup/contracts';
+import { OwnerUpdateShareRequestSchema } from '@leaseup/contracts';
 import { PipelineService } from '../services/pipeline';
 import { buildOwnerUpdateSnapshot, listOwnerUpdateProperties } from '../lib/owner-update';
-import { safeKvGet, safeKvPut } from '../lib/safe-kv';
+import { OwnerUpdateShareService } from '../services/owner-update-share';
 
 const WORKSPACE_COOKIE = 'leaseup_pipeline_ws';
-const KV_PREFIX = 'owner-update:v1:';
-const SHARE_TTL_SECONDS = 86400 * 90;
 
 export const ownerUpdateRouter = new Hono<{ Bindings: Env }>();
 
@@ -59,31 +54,22 @@ ownerUpdateRouter.post('/owner-update/share', async (c) => {
   }
 
   const snapshot = buildOwnerUpdateSnapshot(board, body.propertyAddress);
-  OwnerUpdateSnapshotSchema.parse(snapshot);
+  const share = new OwnerUpdateShareService(c.env);
 
-  const stored = await safeKvPut(
-    c.env.CACHE,
-    `${KV_PREFIX}${snapshot.id}`,
-    JSON.stringify(snapshot),
-    { expirationTtl: SHARE_TTL_SECONDS }
-  );
-  if (!stored) {
+  try {
+    const saved = await share.save(snapshot);
+    return c.json({ id: saved.id, snapshot: saved });
+  } catch {
     return c.json({ error: 'Could not save share link', code: 'UPSTREAM_ERROR' }, 503);
   }
-
-  return c.json({ id: snapshot.id, snapshot });
 });
 
 ownerUpdateRouter.get('/owner-update/:id', async (c) => {
   const id = c.req.param('id');
-  const raw = await safeKvGet(c.env.CACHE, `${KV_PREFIX}${id}`);
-  if (!raw) {
+  const share = new OwnerUpdateShareService(c.env);
+  const snapshot = await share.get(id);
+  if (!snapshot) {
     return c.json({ error: 'Owner update not found', code: 'NOT_FOUND' }, 404);
   }
-  try {
-    const snapshot = OwnerUpdateSnapshotSchema.parse(JSON.parse(raw));
-    return c.json(snapshot);
-  } catch {
-    return c.json({ error: 'Owner update not found', code: 'NOT_FOUND' }, 404);
-  }
+  return c.json(snapshot);
 });
