@@ -1,6 +1,6 @@
 import { SegmentedControl } from '../ui/SegmentedControl';
 
-export type QlooRankingMode = 'raw' | 'blended';
+export type QlooRankingMode = 'qloo' | 'baseline';
 
 export function QlooRankingToggle({
   mode,
@@ -14,18 +14,18 @@ export function QlooRankingToggle({
   return (
     <div className={className}>
       <SegmentedControl
-        label="Qloo ranking"
+        label="Ranking proof"
         value={mode}
         onChange={(v) => onChange(v as QlooRankingMode)}
         options={[
-          { value: 'raw', label: 'Qloo on' },
-          { value: 'blended', label: 'Qloo + chain size' },
+          { value: 'qloo', label: 'With Qloo' },
+          { value: 'baseline', label: 'Rank without Qloo' },
         ]}
       />
       <p className="mt-1 text-meta text-ink-3">
-        {mode === 'raw'
-          ? 'Pure local taste ranking from Qloo.'
-          : 'Blends Qloo with national store counts to dampen one-off spikes.'}
+        {mode === 'qloo'
+          ? 'Qloo taste order (same brands, ranked by local affinity).'
+          : 'Same candidate brands, ranked only by national ATP store count.'}
       </p>
     </div>
   );

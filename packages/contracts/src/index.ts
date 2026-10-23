@@ -113,6 +113,8 @@ export const BrandRankingRowSchema = z.object({
   affinity: z.number(),
   qlooRank: z.number(),
   blendedRank: z.number(),
+  baselineRank: z.number().optional(),
+  nationalStoreCount: z.number().optional(),
   presentInRadius: z.boolean(),
   nearestStoreKm: z.number().optional(),
 });
@@ -154,6 +156,8 @@ export const AnalysisResponseSchema = z.object({
   location: LocationSchema,
   backtest: BacktestResultSchema,
   backtestBlended: BacktestResultSchema.optional(),
+  /** Same brands ranked by national ATP store count only (no taste). */
+  backtestBaseline: BacktestResultSchema.optional(),
   rankings: z.array(BrandRankingRowSchema).optional(),
   mapStores: z.array(MapStorePointSchema).optional(),
   heatmapAvailable: z.boolean().optional(),
