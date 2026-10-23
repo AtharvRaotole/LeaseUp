@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { LandingReveal } from './LandingReveal';
 import { LandingReportPreview, landingWickerReportPath } from './LandingReportPreview';
+import { LANDING_PUBLIC_HOST } from '../../lib/landing-public-host';
 
 export function LandingProductVisual() {
   return (
@@ -25,7 +26,8 @@ export function LandingProductVisual() {
               <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" aria-hidden />
               <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" aria-hidden />
               <div className="ml-3 flex-1 truncate rounded-md border border-border bg-surface px-3 py-1 text-[11px] text-ink-3">
-                leaseup.app{landingWickerReportPath}
+                {LANDING_PUBLIC_HOST}
+                {landingWickerReportPath}
               </div>
             </div>
             <LandingReportPreview />
