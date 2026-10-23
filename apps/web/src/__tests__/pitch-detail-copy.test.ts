@@ -14,7 +14,8 @@ describe('pitchExpandedLines', () => {
       timestamp: '2026-10-23T04:57:36.264Z',
     } as AnalysisResponse;
 
-    const line = pitchExpandedLines(prospect, results, 10).at(-1);
+    const lines = pitchExpandedLines(prospect, results, 10);
+    const line = lines[lines.length - 1];
     expect(line).toMatch(/as of Oct 23, 2026/);
     expect(line).toMatch(/Store checks use/);
     expect(line).not.toMatch(/on Oct 23, 2026 on/);
