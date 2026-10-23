@@ -5,11 +5,12 @@ import type { GeocodeCandidate, Location } from '@leaseup/contracts';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { cn } from '../../lib/cn';
+import { MapPin } from 'lucide-react';
 import {
   distanceFromFirstLabel,
+  geocodeCandidateStreetLine,
   geocodeCandidateSubtitle,
   geocodeCandidateTitle,
-  mapThumbnailUrl,
 } from '../../lib/geocode-display';
 
 function mapStyle() {
@@ -144,6 +145,7 @@ export function GeocodeConfirmPanel({
       >
         {candidates.map((c, i) => {
           const distance = i > 0 ? distanceFromFirstLabel(first, c) : null;
+          const distanceLine = i === 0 ? 'Top match for your search' : distance ?? 'Same block as the first match';
           return (
             <button
               key={`${c.resolvedAddress}-${i}`}
@@ -160,19 +162,17 @@ export function GeocodeConfirmPanel({
               )}
               onClick={() => setSelected(i)}
             >
-              <img
-                src={mapThumbnailUrl(c.latitude, c.longitude)}
-                alt=""
-                className="h-14 w-20 shrink-0 rounded-control border border-border object-cover bg-surface-2"
-                width={80}
-                height={56}
-                loading="lazy"
-              />
+              <span
+                className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-surface-2 text-ink-3"
+                aria-hidden
+              >
+                <MapPin className="h-4 w-4" />
+              </span>
               <div className="min-w-0 flex-1">
                 <p className="font-medium text-ink">{geocodeCandidateTitle(c)}</p>
-                <p className="mt-0.5 text-xs text-ink-3">{geocodeCandidateSubtitle(c)}</p>
-                <p className="mt-1 truncate text-[11px] text-ink-3">{c.resolvedAddress}</p>
-                {distance && <p className="mt-1 text-[11px] text-ink-3">{distance}</p>}
+                <p className="mt-0.5 text-sm text-ink-2">{geocodeCandidateSubtitle(c)}</p>
+                <p className="mt-1 text-xs text-ink-3">{geocodeCandidateStreetLine(c)}</p>
+                <p className="mt-1 text-xs text-ink-3">{distanceLine}</p>
               </div>
             </button>
           );

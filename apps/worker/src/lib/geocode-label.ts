@@ -13,6 +13,13 @@ type NominatimAddress = {
   state?: string;
 };
 
+/** Nominatim sometimes returns several house numbers separated by ; or , */
+export function primaryHouseNumber(raw?: string): string | undefined {
+  if (!raw?.trim()) return undefined;
+  const first = raw.split(/[;,]/)[0]?.trim();
+  return first || undefined;
+}
+
 export function formatGeocodeCandidateLabel(
   displayName: string,
   address?: NominatimAddress
@@ -21,7 +28,7 @@ export function formatGeocodeCandidateLabel(
     return stripPoiLead(displayName);
   }
 
-  const street = [address.house_number, address.road].filter(Boolean).join(' ').trim();
+  const street = [primaryHouseNumber(address.house_number), address.road].filter(Boolean).join(' ').trim();
   const neighborhood =
     address.neighbourhood ||
     address.suburb ||

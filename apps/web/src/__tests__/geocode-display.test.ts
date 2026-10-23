@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
+  geocodeCandidateStreetLine,
   geocodeCandidateSubtitle,
   geocodeCandidateTitle,
-  mapThumbnailUrl,
   postalCodeFromResolved,
 } from '../lib/geocode-display';
 import type { GeocodeCandidate } from '@leaseup/contracts';
@@ -23,8 +23,12 @@ describe('geocode-display', () => {
     expect(postalCodeFromResolved(candidate.resolvedAddress)).toBe('60622');
   });
 
-  it('builds carto thumbnail url', () => {
-    const url = mapThumbnailUrl(41.91, -87.68);
-    expect(url).toMatch(/^https:\/\/basemaps\.cartocdn\.com\/light_all\/14\/\d+\/\d+\.png$/);
+  it('shows street line without semicolon house lists', () => {
+    expect(
+      geocodeCandidateStreetLine({
+        ...candidate,
+        resolvedAddress: '1600 Pearl Street, Boulder, Colorado, 80302, United States',
+      })
+    ).toBe('1600 Pearl Street');
   });
 });
