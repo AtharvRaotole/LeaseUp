@@ -4,8 +4,10 @@ import type { ProspectPack } from '@leaseup/contracts';
 import { TopBar } from '../components/layout/TopBar';
 import { useAnalysisRun } from '../hooks/useAnalysisRun';
 import { buildReportPath, parseReportSearch } from '../lib/report-params';
-import { matchDemoFixtureId } from '@leaseup/fixtures';
+import { DEMO_CHIP_ADDRESSES, matchDemoFixtureId } from '@leaseup/fixtures';
 import { fetchGeocodePreview } from '../lib/geocode-preview';
+import { demoGeocodePreviewForAddress } from '../lib/demo-geocode-preview';
+import { useHealth } from '../hooks/useHealth';
 const GeocodeConfirmPanel = lazy(() =>
   import('../components/report/GeocodeConfirmPanel').then((m) => ({ default: m.GeocodeConfirmPanel }))
 );
@@ -26,6 +28,7 @@ import { ReportErrorBanner } from '../components/report/ReportErrorBanner';
 import type { ApiErrorInfo } from '../lib/api-error';
 import { QlooRankingToggle, type QlooRankingMode } from '../components/report/QlooRankingToggle';
 import { QlooProofBanner } from '../components/report/QlooProofBanner';
+import { StrictEvalCard } from '../components/report/StrictEvalCard';
 import { WhyThisBrandCard } from '../components/report/WhyThisBrandCard';
 import { BrandLoading } from '../components/brand/BrandLoading';
 import { VacancyCostCalculator } from '../components/report/VacancyCostCalculator';
@@ -40,7 +43,9 @@ import { StorefrontSizeControl } from '../components/report/StorefrontSizeContro
 import { CoTenancyMixSection } from '../components/report/CoTenancyMixSection';
 import { ProductExplainer } from '../components/report/ProductExplainer';
 import { ReportFirstRunTour } from '../components/report/ReportFirstRunTour';
-import { ReportLoadingSkeleton } from '../components/report/ReportLoadingSkeleton';
+import { ReportLoadingPanel } from '../components/report/ReportLoadingPanel';
+import { ReportMapSkeleton } from '../components/report/ReportMapSkeleton';
+import { ReportSidebarFacts } from '../components/report/ReportSidebarFacts';
 import { ShareHead } from '../components/seo/ShareHead';
 import { reportShareHead } from '../lib/share-preview';
 
@@ -65,6 +70,7 @@ export function ReportPage() {
   const ranKey = useRef('');
   const [geocodeCandidates, setGeocodeCandidates] = useState<GeocodeCandidate[] | null>(null);
   const [geocodeChecking, setGeocodeChecking] = useState(false);
+  const { data: health } = useHealth();
 
   useEffect(() => {
     if (searchParams.get('screenshot') === '1') {
@@ -90,6 +96,13 @@ export function ReportPage() {
 
     if (request.confirmedLocation || matchDemoFixtureId(request.address)) {
       startAnalysis();
+      return;
+    }
+
+    const demoPreview =
+      health?.mode === 'demo' ? demoGeocodePreviewForAddress(request.address) : null;
+    if (demoPreview?.needsConfirmation && demoPreview.candidates.length > 1) {
+      setGeocodeCandidates(demoPreview.candidates);
       return;
     }
 
@@ -119,11 +132,19 @@ export function ReportPage() {
     return () => {
       cancelled = true;
     };
-  }, [request, run, simulateError, navigate]);
+  }, [request, run, simulateError, navigate, health?.mode]);
 
   const confirmGeocode = (location: Location) => {
     if (!request) return;
-    const next = { ...request, confirmedLocation: location };
+    let address = request.address;
+    if (
+      health?.mode === 'demo' &&
+      demoGeocodePreviewForAddress(request.address) &&
+      location.resolvedAddress === DEMO_CHIP_ADDRESSES.wicker
+    ) {
+      address = DEMO_CHIP_ADDRESSES.wicker;
+    }
+    const next = { ...request, address, confirmedLocation: location };
     setGeocodeCandidates(null);
     navigate(buildReportPath(next, slug ?? 'run'), { replace: true });
   };
@@ -167,7 +188,7 @@ export function ReportPage() {
       : results.backtest);
 
   const reportSections = results && (
-    <>
+    <div className="report-content-enter space-y-6">
       <ErrorBoundary fallback={<SectionUnavailable />}>
         <div className="print-pitch-block space-y-4">
           <ProductExplainer className="no-print rounded-card border border-border bg-surface-2/80 px-4 py-3" />
@@ -253,6 +274,11 @@ export function ReportPage() {
         <CoTenancyMixSection results={results} radiusKm={request.radius} />
       </ErrorBoundary>
       <ErrorBoundary fallback={<SectionUnavailable />}>
+        <div className="no-print mt-8">
+          <StrictEvalCard results={results} />
+        </div>
+      </ErrorBoundary>
+      <ErrorBoundary fallback={<SectionUnavailable />}>
         <div className="no-print">
           <ProofSection
             results={results}
@@ -272,7 +298,7 @@ export function ReportPage() {
           <HowWeKnowSection results={results} />
         </div>
       </ErrorBoundary>
-    </>
+    </div>
   );
 
   return (
@@ -338,19 +364,12 @@ export function ReportPage() {
             )}
             {reportSections}
             {!results && (loading || geocodeChecking) && !simulateError && !geocodeCandidates && (
-              <>
-                <ReportLoadingSkeleton />
-                {(loading || geocodeChecking) && (
-                  <BrandLoading
-                    className="py-6"
-                    label={
-                      geocodeChecking
-                        ? 'Checking address on the map…'
-                        : 'Reading local taste and store locations…'
-                    }
-                  />
-                )}
-              </>
+              <ReportLoadingPanel
+                steps={steps}
+                loading={loading}
+                geocodeChecking={geocodeChecking}
+                elapsedMs={elapsedMs}
+              />
             )}
           </div>
           <div
@@ -358,6 +377,9 @@ export function ReportPage() {
               mobilePane === 'report' ? 'hidden md:block' : ''
             }`}
           >
+            {!results && (loading || geocodeChecking) && !geocodeCandidates && (
+              <ReportMapSkeleton />
+            )}
             {results && (
               <ErrorBoundary fallback={<SectionUnavailable label="Map unavailable right now." />}>
                 <div className="flex flex-col gap-4 md:sticky md:top-[7.5rem]">
@@ -385,6 +407,11 @@ export function ReportPage() {
                         />
                       ) : null
                     }
+                  />
+                  <ReportSidebarFacts
+                    results={results}
+                    radiusKm={request.radius}
+                    chipSlug={slug}
                   />
                 </div>
               </ErrorBoundary>

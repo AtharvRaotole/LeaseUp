@@ -15,6 +15,10 @@ export const StorefrontFormatSchema = z.enum(['streetfront', 'mall_inline', 'big
 
 export type StorefrontFormat = z.infer<typeof StorefrontFormatSchema>;
 
+export const ChainSizeTierSchema = z.enum(['small', 'mid', 'big']);
+
+export type ChainSizeTier = z.infer<typeof ChainSizeTierSchema>;
+
 export const BrandAffinitySchema = z.object({
   entityId: z.string(),
   name: z.string(),
@@ -22,6 +26,9 @@ export const BrandAffinitySchema = z.object({
   affinityRank: z.number(),
   popularity: z.number().optional(),
   nationalStoreCount: z.number().optional(),
+  chainSizeTier: ChainSizeTierSchema.optional(),
+  tasteFitBeyondChainPercentile: z.number().min(1).max(99).optional(),
+  sizeDriven: z.boolean().optional(),
   nearbyStoreCount: z.number().optional(),
   storefrontFormat: StorefrontFormatSchema.optional(),
   minStorefrontSqFt: z.number().int().optional(),
@@ -140,6 +147,8 @@ export const BrandRankingRowSchema = z.object({
   blendedRank: z.number(),
   baselineRank: z.number().optional(),
   nationalStoreCount: z.number().optional(),
+  chainSizeTier: ChainSizeTierSchema.optional(),
+  tasteFitBeyondChainPercentile: z.number().min(1).max(99).optional(),
   presentInRadius: z.boolean(),
   nearestStoreKm: z.number().optional(),
 });
@@ -179,6 +188,34 @@ export const OutreachRequestSchema = z.object({
 
 export type OutreachRequest = z.infer<typeof OutreachRequestSchema>;
 
+export const EvalMetricPanelSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  description: z.string().optional(),
+  qloo: z.number().optional(),
+  chain: z.number().optional(),
+  randomExpected: z.number().optional(),
+  randomMonteCarlo: z.number().optional(),
+  winner: z.enum(['qloo', 'chain', 'tie', 'none']).optional(),
+  detail: z.string().optional(),
+});
+
+export type EvalMetricPanel = z.infer<typeof EvalMetricPanelSchema>;
+
+export const StrictEvalSnapshotSchema = z.object({
+  manifestId: z.string(),
+  headlineMetricId: z.string().nullable(),
+  dataSource: z.string(),
+  searchRadiusKm: z.number(),
+  adaptiveRadiusKm: z.number(),
+  density: z.enum(['urban', 'suburban', 'exurban', 'tourist']),
+  poolSize: z.number(),
+  panels: z.array(EvalMetricPanelSchema),
+  notes: z.array(z.string()),
+});
+
+export type StrictEvalSnapshot = z.infer<typeof StrictEvalSnapshotSchema>;
+
 export const AnalysisResponseSchema = z.object({
   location: LocationSchema,
   backtest: BacktestResultSchema,
@@ -199,6 +236,7 @@ export const AnalysisResponseSchema = z.object({
   osmSnapshotLabel: z.string().optional(),
   storefrontSqFt: z.number().optional(),
   formatFilteredCount: z.number().int().optional(),
+  strictEval: StrictEvalSnapshotSchema.optional(),
 });
 
 export type AnalysisResponse = z.infer<typeof AnalysisResponseSchema>;

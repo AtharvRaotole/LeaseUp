@@ -123,8 +123,9 @@ export function LandingBelowFold() {
         <LandingReveal className="mx-auto max-w-[1040px] px-4">
           <LandingSectionHeading kicker="Proof" title="Backtest on our three demo pins" />
           <p className="mx-auto mt-3 max-w-[640px] text-center text-sm text-ink-2">
-            For each recorded neighborhood we ask: of the top 10 Qloo-ranked brands we track in All
-            The Places, how many already have a store within 10 km?
+            Wicker Park and Boulder are typical urban examples; Sevierville is below typical lift. For
+            each recorded neighborhood we ask: of the top 10 Qloo-ranked brands we track in All The
+            Places, how many already have a store within 10 km?
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {LANDING_PROOF_CHIPS.map((chip) => (

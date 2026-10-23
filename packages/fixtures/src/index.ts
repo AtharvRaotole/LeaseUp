@@ -6,7 +6,25 @@
  * To regenerate: node scripts/build-fixtures.mjs
  */
 
-export type { EvalMetrosResults, EvalMetroRow, EvalSiteDensity } from './eval/types.js';
+export type {
+  EvalMetrosResults,
+  EvalMetroRow,
+  EvalSiteDensity,
+  EvalRunBundle,
+  EvalRunRow,
+} from './eval/types.js';
+export type { EvalMetricPanel, EvalManifest } from './eval/present-metrics.js';
+export {
+  getEvalManifest,
+  buildEvalMetricPanels,
+  buildEvalNotes,
+  formatMetricValue,
+  catalogForPanel,
+} from './eval/present-metrics.js';
+export { EVAL_METRIC_CATALOG, evalMetricDefinition, compareEvalMetric } from './eval/metrics-catalog.js';
+export { buildEvalSiteSnapshot, type EvalSiteSnapshot } from './eval/build-snapshot.js';
+export { loadEvalRunBundle, getEvalManifestRef } from './eval/load-bundle.js';
+export { getPilotStrictEvalSnapshot } from './eval/pilot-strict-eval.js';
 
 export { wickerparkFixture } from './wicker-park.js';
 export { boulderFixture } from './boulder.js';
@@ -37,6 +55,23 @@ export {
   CHAIN_PRIOR_BLEND_WEIGHT,
   type RankedInsight,
 } from './ranking.js';
+export {
+  orderInsightsByLogisticBlend,
+  getLogisticBlendCoefficients,
+  type LogisticBlendCoefficients,
+} from './logistic-blend.js';
+export {
+  chainSizeTierFromStoreCount,
+  isProspectChainTier,
+  chainSizeTierLabel,
+  type ChainSizeTier,
+} from './chain-size-tier.js';
+export {
+  buildTierFitByEntityId,
+  tasteFitPercentileWithinTier,
+  type TierFitContext,
+} from './taste-fit-beyond-chain.js';
+export { loadLiveQlooLiftAggregates, type LiveQlooLiftAggregates } from './eval/live-qloo-lift/load-aggregates.js';
 export {
   DEMO_CHIP_ADDRESSES,
   matchDemoFixtureId,
@@ -85,6 +120,16 @@ export {
   demoChipsRandomBaselineSummary,
   type DemoRandomBaselineSummary,
 } from './landing-random-baseline.js';
+export {
+  METRIC_ID_SPEARMAN_PRESENCE,
+  adaptiveEvalRadiusKm,
+  spearmanRankCorrelation,
+  monteCarloRandomPresentAt10,
+  computeStrictEval,
+  demoFixtureDensity,
+  type StrictEvalSiteMetrics,
+  type StrictEvalMetrics,
+} from './strict-eval.js';
 export {
   overpassDemoByFixture,
   DEMO_OSM_UNRECORDED_NOTE,

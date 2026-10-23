@@ -11,9 +11,10 @@ type Swing = {
   delta: number;
 };
 
-const LABEL_GUTTER = 190;
-const LABEL_MIN_GAP = 18;
-const PLOT_WIDTH = 420;
+const LABEL_GUTTER = 220;
+const LABEL_MIN_GAP = 22;
+const PLOT_WIDTH = 400;
+const LABEL_FONT_PX = 12;
 
 function useMobileChart() {
   const [mobile, setMobile] = useState(false);
@@ -28,7 +29,9 @@ function useMobileChart() {
 }
 
 function rankLabel(displayName: string, rank: number): string {
-  return `${displayName} #${rank}`;
+  const short =
+    displayName.length > 22 ? `${displayName.slice(0, 20).trimEnd()}...` : displayName;
+  return `${short} #${rank}`;
 }
 
 export function CompareSlopeChart({
@@ -63,8 +66,8 @@ export function CompareSlopeChart({
     const maxRank = Math.max(...rows.flatMap((s) => [s.leftRank, s.rightRank]), 10);
     const w = LABEL_GUTTER + PLOT_WIDTH + LABEL_GUTTER;
     const pad = { t: 72, r: LABEL_GUTTER, b: 20, l: LABEL_GUTTER };
-    const labelStackMin = rows.length * LABEL_MIN_GAP + 48;
-    const h = Math.max(360, pad.t + pad.b + Math.max(labelStackMin, rows.length * 28));
+    const labelStackMin = rows.length * LABEL_MIN_GAP + 56;
+    const h = Math.max(400, pad.t + pad.b + Math.max(labelStackMin, rows.length * 32));
     const innerH = h - pad.t - pad.b;
     const yFor = (rank: number) => pad.t + ((rank - 1) / Math.max(1, maxRank - 1)) * innerH;
     const xL = pad.l;
@@ -186,7 +189,9 @@ export function CompareSlopeChart({
                     x={layout.leftTextX}
                     y={ly + 4}
                     textAnchor="end"
-                    className="fill-ink-2 text-[11px]"
+                    fill="var(--ink-2)"
+                    fontSize={LABEL_FONT_PX}
+                    fontFamily="var(--font-sans)"
                   >
                     {leftCaption}
                   </text>
@@ -194,7 +199,9 @@ export function CompareSlopeChart({
                     x={layout.rightTextX}
                     y={ry + 4}
                     textAnchor="start"
-                    className="fill-ink-2 text-[11px]"
+                    fill="var(--ink-2)"
+                    fontSize={LABEL_FONT_PX}
+                    fontFamily="var(--font-sans)"
                   >
                     {rightCaption}
                   </text>

@@ -16,11 +16,15 @@ import {
   wickerparkFixture,
   boulderFixture,
   seviervilleFixture,
-  blendWithNationalPrior,
-  CHAIN_PRIOR_BLEND_WEIGHT,
+  orderInsightsByLogisticBlend,
+  buildTierFitByEntityId,
+  chainSizeTierFromStoreCount,
+  isProspectChainTier,
+  getNationalStoreCount,
   DEMO_OSM_UNRECORDED_NOTE,
   matchDemoFixtureId,
   matchDemoChipWithinMeters,
+  demoFixtureDensity,
 } from '@leaseup/fixtures';
 import { createStoreCatalog, type StoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
@@ -40,6 +44,7 @@ import {
   enrichProspectsWithNearest,
   extractQlooSignals,
 } from '../lib/analysis-enrichment';
+import { buildStrictEvalSnapshot } from '../lib/strict-eval-snapshot';
 import { runStep, type StepEmitter } from '../lib/analysis-steps';
 import { encodeGeohash } from '../lib/geohash';
 import { sha256Short } from '../lib/cache-key';
@@ -146,17 +151,29 @@ export class AnalysisService {
         return empty;
       }
 
+      const demoFixtureIdForDensity = matchDemoFixtureId(location.address);
+      const siteDensity = demoFixtureIdForDensity
+        ? demoFixtureDensity(demoFixtureIdForDensity)
+        : 'urban';
+
       const { raw: backtest, blended: backtestBlended, baseline: backtestBaseline } = await runStep(
         emit,
         'backtest',
         'Prove it (backtest)',
         async () => {
-          const dual = await buildDualBacktest(location, insights, request.radius, this.catalog);
+          const dual = await buildDualBacktest(
+            location,
+            insights,
+            request.radius,
+            this.catalog,
+            siteDensity
+          );
           const baseline = await buildBaselineBacktest(
             location,
             insights,
             request.radius,
-            this.catalog
+            this.catalog,
+            siteDensity
           );
           return {
             summary: `Raw P@10 ${(dual.raw.precisionAt10 * 100).toFixed(0)}% · Blended P@10 ${(dual.blended.precisionAt10 * 100).toFixed(0)}%`,
@@ -228,7 +245,21 @@ export class AnalysisService {
         result: true,
       }));
 
-      const rankings = await buildBrandRankings(location, insights, request.radius, this.catalog);
+      const rankings = await buildBrandRankings(
+        location,
+        insights,
+        request.radius,
+        this.catalog,
+        siteDensity
+      );
+      const demoFixtureId = matchDemoFixtureId(location.address);
+      const strictEval = await buildStrictEvalSnapshot(
+        location,
+        insights,
+        request.radius,
+        demoFixtureId ? demoFixtureDensity(demoFixtureId) : 'urban',
+        this.catalog
+      );
       const mapStores = await buildMapStores(location, insights, request.radius, this.catalog);
       const nearestEnriched = await enrichProspectsWithNearest(prospects, location, this.catalog);
       const enrichedProspects = await Promise.all(
@@ -272,11 +303,11 @@ export class AnalysisService {
         runId,
         timestamp: this.mode === 'demo' ? DEMO_DATA_RECORDED_AT : new Date().toISOString(),
         mode: this.mode,
-        chainPriorWeight: CHAIN_PRIOR_BLEND_WEIGHT,
         osmSnapshotRecordedAt: this.osmSnapshot ? osmSnapshotRecordedAt() : undefined,
         osmSnapshotLabel: this.osmSnapshot ? osmSnapshotDisplayLabel() : undefined,
         storefrontSqFt: request.storefrontSqFt ?? 2_500,
         formatFilteredCount: formatFilteredCount || undefined,
+        strictEval,
       };
 
       await this.persistRun(runId, location, response, 'completed');
@@ -368,14 +399,19 @@ export class AnalysisService {
     const sqFt = storefrontSqFt ?? 2_500;
     let formatFilteredCount = 0;
     const prospectPacks: ProspectPack[] = [];
-    const blended = blendWithNationalPrior(insights);
+    const fixtureId = matchDemoFixtureId(location.address);
+    const siteDensity = fixtureId ? demoFixtureDensity(fixtureId) : 'urban';
+    const blended = orderInsightsByLogisticBlend(insights, siteDensity);
+    const tierFit = buildTierFitByEntityId(insights.map((i) => i.entity_id));
     const rankedCount = insights.length;
     const affinities = insights.map((i) => i.query?.affinity ?? 0).filter((a) => a > 0);
     const affinityThreshold = affinityThresholdAtPercentile(affinities, 0.75);
 
-    const candidates = blended.filter((candidate) =>
-      isProspectCandidate(candidate, insights.length, affinityThreshold)
-    );
+    const candidates = blended.filter((candidate) => {
+      const tier = chainSizeTierFromStoreCount(getNationalStoreCount(candidate.entity_id));
+      if (!isProspectChainTier(tier)) return false;
+      return isProspectCandidate(candidate, insights.length, affinityThreshold);
+    });
 
     type Eligible = {
       candidate: (typeof candidates)[number];
@@ -444,6 +480,7 @@ export class AnalysisService {
       }
 
       const formatSpec = getStorefrontFormatSpec(candidate.entity_id);
+      const tierContext = tierFit.get(candidate.entity_id);
 
       prospectPacks.push({
         coverageNote,
@@ -451,11 +488,13 @@ export class AnalysisService {
           entityId: candidate.entity_id,
           name: displayName,
           affinity: candidate.query?.affinity || 0,
-          affinityRank: candidate.qlooRank,
+          affinityRank: candidate.blendedRank,
           popularity: undefined,
           verified: verification.status,
           verificationSources: verification.sources,
           nationalStoreCount: nationalCount,
+          chainSizeTier: tierContext?.tier,
+          tasteFitBeyondChainPercentile: tierContext?.tasteFitBeyondChainPercentile,
           nearbyStoreCount: 0,
           storefrontFormat: formatSpec.format,
           minStorefrontSqFt: formatSpec.minSqFt,
@@ -766,7 +805,7 @@ export class AnalysisService {
     }
 
     reasons.push(
-      `Prospect ordering blends Qloo rank with national footprint (weight ${CHAIN_PRIOR_BLEND_WEIGHT}); backtest uses raw Qloo order`
+      'Prospect ordering uses the logistic companion blend (Qloo rank, chain size, and trade-area density); backtest uses raw Qloo order with adaptive-radius presence'
     );
 
     if (nationalCount >= 100) {
