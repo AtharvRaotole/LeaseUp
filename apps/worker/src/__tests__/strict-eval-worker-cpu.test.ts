@@ -29,8 +29,9 @@ describe('strict eval on worker (CPU guard)', () => {
     );
 
     expect(spy).toHaveBeenCalled();
-    const lastCall = spy.mock.calls[spy.mock.calls.length - 1];
-    const options = lastCall[6] as { monteCarloDraws?: number };
+    const lastCall = spy.mock.calls.at(-1);
+    expect(lastCall).toBeDefined();
+    const options = lastCall![6] as { monteCarloDraws?: number };
     expect(options?.monteCarloDraws).toBe(0);
   });
 });
