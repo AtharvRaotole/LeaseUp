@@ -1,8 +1,12 @@
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Accordion } from '../ui/Accordion';
+import { affinitiesAllIdentical } from '../../lib/fit-display';
 
 export function HowWeKnowSection({ results }: { results: AnalysisResponse }) {
   const auc = results.backtest.auc?.toFixed(3) ?? 'n/a';
+  const top10 = (results.rankings ?? []).slice(0, 10);
+  const hideFit = affinitiesAllIdentical(top10);
+
   return (
     <section>
       <h3 className="mb-4 text-h3 font-semibold text-ink">How we know</h3>
@@ -17,6 +21,11 @@ export function HowWeKnowSection({ results }: { results: AnalysisResponse }) {
                 <li>All The Places store locations (CC0)</li>
                 <li>OpenStreetMap via Overpass for second-source checks</li>
                 <li>Run {results.runId.slice(0, 8)} at {new Date(results.timestamp).toLocaleString()}</li>
+                {hideFit && (
+                  <li>
+                    Fit scores were identical across the top brands in this recording, so we hid the Fit column.
+                  </li>
+                )}
               </ul>
             ),
           },

@@ -38,25 +38,53 @@ for (const demo of demos) {
     const page = await browser.newPage({ viewport: { width, height: 900 } });
     await page.goto(`${BASE}/r/${demo.slug}?${demo.query}`, { waitUntil: 'networkidle' });
     await page.waitForSelector('text=Data confidence', { timeout: 90000 });
-    await page.waitForTimeout(600);
+    await page.waitForTimeout(800);
     await shot(page, `report-${demo.slug}-${width}.png`, { fullPage: true });
     await page.close();
   }
 }
 
+const sevierville = demos.find((d) => d.slug === 'sevierville');
 const pageExpand = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-await pageExpand.goto(`${BASE}/r/wicker?${demos[0].query}`, { waitUntil: 'networkidle' });
+await pageExpand.goto(`${BASE}/r/sevierville?${sevierville.query}`, { waitUntil: 'networkidle' });
 await pageExpand.waitForSelector('[data-testid="brands-to-pitch"]', { timeout: 90000 });
-const expandBtn = pageExpand.locator('[data-testid="brands-to-pitch"]').locator('xpath=../following-sibling::*//button').first();
-if (await expandBtn.count()) await expandBtn.click();
-await pageExpand.waitForTimeout(400);
-await shot(pageExpand, 'report-wicker-expanded.png', { fullPage: true });
+const pitchCard = pageExpand.locator('[data-testid="brands-to-pitch"]').locator('xpath=../following-sibling::*//button').first();
+if (await pitchCard.count()) await pitchCard.click();
+await pageExpand.waitForTimeout(500);
+await shot(pageExpand, 'report-sevierville-expanded.png', { fullPage: true });
+await pageExpand.close();
+
+const pageOutreach = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+await pageOutreach.goto(`${BASE}/r/sevierville?${sevierville.query}`, { waitUntil: 'networkidle' });
+await pageOutreach.waitForSelector('text=Brands to pitch', { timeout: 90000 });
+const firstPitch = pageOutreach.locator('section:has([data-testid="brands-to-pitch"]) button').first();
+await firstPitch.click();
+await pageOutreach.waitForTimeout(400);
+await pageOutreach.getByRole('button', { name: 'Draft outreach email' }).click();
+await pageOutreach.waitForTimeout(1200);
+await shot(pageOutreach, 'report-outreach-sheet.png', { fullPage: false });
+
+const pageEmpty = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+await pageEmpty.goto(`${BASE}/r/wicker?${demos[0].query}`, { waitUntil: 'networkidle' });
+await pageEmpty.waitForSelector('text=No pitch list yet', { timeout: 90000 });
+await shot(pageEmpty, 'report-empty-state.png', { fullPage: true });
+
+const pageError = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+await pageError.goto(`${BASE}/r/wicker?${demos[0].query}&simulateError=1`, { waitUntil: 'networkidle' });
+await pageError.waitForSelector('[data-testid="report-error"]', { timeout: 15000 });
+await shot(pageError, 'report-error-state.png', { fullPage: true });
 
 const pageHow = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 await pageHow.goto(`${BASE}/r/wicker?${demos[0].query}`, { waitUntil: 'networkidle' });
 await pageHow.waitForSelector('text=How we know', { timeout: 45000 });
 await pageHow.getByRole('button', { name: 'Data sources' }).click();
 await shot(pageHow, 'report-how-we-know.png', { fullPage: true });
+
+const page390 = await browser.newPage({ viewport: { width: 390, height: 844 } });
+await page390.goto(`${BASE}/r/sevierville?${sevierville.query}`, { waitUntil: 'networkidle' });
+await page390.waitForSelector('text=Data confidence', { timeout: 90000 });
+await page390.waitForTimeout(600);
+await shot(page390, 'report-390.png', { fullPage: true });
 
 const pageDark = await browser.newPage({
   viewport: { width: 1440, height: 900 },
@@ -65,9 +93,9 @@ const pageDark = await browser.newPage({
 await pageDark.emulateMedia({ colorScheme: 'dark' });
 await pageDark.goto(BASE, { waitUntil: 'networkidle' });
 await shot(pageDark, 'landing-dark-1440.png', { fullPage: true });
-await pageDark.goto(`${BASE}/r/wicker?${demos[0].query}`, { waitUntil: 'networkidle' });
+await pageDark.goto(`${BASE}/r/sevierville?${sevierville.query}`, { waitUntil: 'networkidle' });
 await pageDark.waitForSelector('[data-testid="brands-to-pitch"]', { timeout: 90000 });
-await shot(pageDark, 'report-wicker-dark-1440.png', { fullPage: true });
+await shot(pageDark, 'report-sevierville-dark-1440.png', { fullPage: true });
 
 await browser.close();
 console.log('Done. Review docs/screenshots/ against DESIGN_SPEC checklist.');
