@@ -19,7 +19,7 @@ export function ProspectPacks({ results, selectedId, onSelect }: ProspectPacksPr
 
   useEffect(() => {
     if (results.mode !== 'live') return;
-    if (!prospects.some((p) => p.brand.verified === 'verifying...')) return;
+    if (!results.prospects.some((p) => p.brand.verified === 'verifying...')) return;
 
     void fetch(apiUrl('/api/verify'), {
       method: 'POST',
@@ -27,15 +27,15 @@ export function ProspectPacks({ results, selectedId, onSelect }: ProspectPacksPr
       body: JSON.stringify({
         location: results.location,
         radius: 10,
-        prospects,
+        prospects: results.prospects,
       }),
     })
       .then((res) => res.json())
-      .then((data: { prospects?: typeof prospects }) => {
+      .then((data: { prospects?: typeof results.prospects }) => {
         if (data.prospects) setProspects(data.prospects);
       })
       .catch(() => undefined);
-  }, [results.mode, results.location, prospects]);
+  }, [results]);
 
   const outreach = useMutation({
     mutationFn: async (prospect: ProspectPack) => {

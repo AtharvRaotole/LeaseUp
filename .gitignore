@@ -8,6 +8,7 @@ coverage/
 
 # Build outputs
 dist/
+dist-dry/
 build/
 *.tsbuildinfo
 .next/
