@@ -26,6 +26,11 @@ const NotFoundPage = lazy(() =>
 const MethodologyPage = lazy(() =>
   import('./pages/MethodologyPage').then((m) => ({ default: m.MethodologyPage }))
 );
+const LandingHeroPreviewCapturePage = lazy(() =>
+  import('./pages/LandingHeroPreviewCapturePage').then((m) => ({
+    default: m.LandingHeroPreviewCapturePage,
+  }))
+);
 
 export default function App() {
   return (
@@ -35,6 +40,7 @@ export default function App() {
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/__preview/landing-hero" element={<LandingHeroPreviewCapturePage />} />
           <Route path="/methodology" element={<MethodologyPage />} />
           <Route path="/brand" element={<BrandPage />} />
           <Route path="/brand/:id" element={<BrandPage />} />
