@@ -307,7 +307,7 @@
       "p10_chain": 0.7999999999999998,
       "p10_blend": 1,
       "same_size_auc": 0.6719445818901534,
-      "taste_percentile": 53
+      "taste_percentile": 51
     },
     {
       "id": "athens_ga",
@@ -322,7 +322,7 @@
       "p10_chain": 1,
       "p10_blend": 1,
       "same_size_auc": 0.7048951048951049,
-      "taste_percentile": 80
+      "taste_percentile": 79
     },
     {
       "id": "austin_soco",
@@ -337,7 +337,7 @@
       "p10_chain": 0.7000000000000002,
       "p10_blend": 0.7999999999999998,
       "same_size_auc": 0.6523076923076923,
-      "taste_percentile": 43
+      "taste_percentile": 41
     },
     {
       "id": "bemidji_mn",
@@ -352,7 +352,7 @@
       "p10_chain": 0.7999999999999998,
       "p10_blend": 0.6000000000000001,
       "same_size_auc": 0.6551724137931034,
-      "taste_percentile": 45
+      "taste_percentile": 44
     },
     {
       "id": "bethesda_md",
@@ -367,7 +367,7 @@
       "p10_chain": 0.6000000000000001,
       "p10_blend": 0.7999999999999998,
       "same_size_auc": 0.6034063260340633,
-      "taste_percentile": 23
+      "taste_percentile": 21
     },
     {
       "id": "boise_id",
@@ -382,7 +382,7 @@
       "p10_chain": 0.7999999999999998,
       "p10_blend": 0.7999999999999998,
       "same_size_auc": 0.5414673046251993,
-      "taste_percentile": 5
+      "taste_percentile": 4
     },
     {
       "id": "boulder",
@@ -397,7 +397,7 @@
       "p10_chain": 0.7999999999999998,
       "p10_blend": 0.9,
       "same_size_auc": 0.6839938239835306,
-      "taste_percentile": 60
+      "taste_percentile": 59
     },
     {
       "id": "branson_mo",
@@ -412,7 +412,7 @@
       "p10_chain": 0.9,
       "p10_blend": 0.9,
       "same_size_auc": 0.7211538461538461,
-      "taste_percentile": 88
+      "taste_percentile": 86
     },
     {
       "id": "cary_nc",
@@ -427,7 +427,7 @@
       "p10_chain": 0.9,
       "p10_blend": 1,
       "same_size_auc": 0.6984126984126984,
-      "taste_percentile": 73
+      "taste_percentile": 71
     },
     {
       "id": "chapelhill_nc",
@@ -442,7 +442,7 @@
       "p10_chain": 0.7000000000000002,
       "p10_blend": 0.7999999999999998,
       "same_size_auc": 0.6506386175807664,
-      "taste_percentile": 38
+      "taste_percentile": 36
     },
     {
       "id": "charlotte_se",
@@ -457,7 +457,7 @@
       "p10_chain": 0.7999999999999998,
       "p10_blend": 0.7999999999999998,
       "same_size_auc": 0.5756181713628522,
-      "taste_percentile": 13
+      "taste_percentile": 11
     },
     {
       "id": "chi_lakeview",
@@ -472,7 +472,7 @@
       "p10_chain": 0.6000000000000001,
       "p10_blend": 0.7000000000000002,
       "same_size_auc": 0.6761734997029115,
-      "taste_percentile": 55
+      "taste_percentile": 54
     },
     {
       "id": "wicker-park",
@@ -487,7 +487,7 @@
       "p10_chain": 0.7000000000000002,
       "p10_blend": 0.9,
       "same_size_auc": 0.6884709730171709,
-      "taste_percentile": 65
+      "taste_percentile": 64
     },
     {
       "id": "dc_14th",
@@ -502,7 +502,7 @@
       "p10_chain": 0.6000000000000001,
       "p10_blend": 0.7000000000000002,
       "same_size_auc": 0.589906908378246,
-      "taste_percentile": 15
+      "taste_percentile": 14
     },
     {
       "id": "edina_mn",
@@ -517,7 +517,7 @@
       "p10_chain": 1,
       "p10_blend": 1,
       "same_size_auc": 0.8335106382978723,
-      "taste_percentile": 100
+      "taste_percentile": 99
     },
     {
       "id": "elko_nv",
@@ -532,7 +532,7 @@
       "p10_chain": 0.7000000000000002,
       "p10_blend": 0.5,
       "same_size_auc": 0.5419222903885481,
-      "taste_percentile": 8
+      "taste_percentile": 6
     },
     {
       "id": "frisco_tx",
@@ -547,7 +547,7 @@
       "p10_chain": 0.7999999999999998,
       "p10_blend": 1,
       "same_size_auc": 0.6656738644825019,
-      "taste_percentile": 50
+      "taste_percentile": 49
     },
     {
       "id": "gilbert_az",
@@ -562,7 +562,7 @@
       "p10_chain": 0.7999999999999998,
       "p10_blend": 1,
       "same_size_auc": 0.6793361884368309,
-      "taste_percentile": 58
+      "taste_percentile": 56
     },
     {
       "id": "greenwich_ct",
@@ -577,7 +577,7 @@
       "p10_chain": 0.7000000000000002,
       "p10_blend": 0.7999999999999998,
       "same_size_auc": 0.7471698113207547,
-      "taste_percentile": 93
+      "taste_percentile": 91
     },
     {
       "id": "hutchinson_ks",
@@ -592,7 +592,7 @@
       "p10_chain": 0.9,
       "p10_blend": 0.9,
       "same_size_auc": 0.6511904761904762,
-      "taste_percentile": 40
+      "taste_percentile": 39
     },
     {
       "id": "ithaca_ny",
@@ -607,7 +607,7 @@
       "p10_chain": 0.7000000000000002,
       "p10_blend": 0.7999999999999998,
       "same_size_auc": 0.6950037285607755,
-      "taste_percentile": 70
+      "taste_percentile": 69
     },
     {
       "id": "keywest_fl",
@@ -622,7 +622,7 @@
       "p10_chain": 0.9,
       "p10_blend": 0.9,
       "same_size_auc": 0.5382857142857143,
-      "taste_percentile": 3
+      "taste_percentile": 1
     },
     {
       "id": "laramie_wy",
@@ -637,7 +637,7 @@
       "p10_chain": 0.7000000000000002,
       "p10_blend": 0.7999999999999998,
       "same_size_auc": 0.5648148148148148,
-      "taste_percentile": 10
+      "taste_percentile": 9
     },
     {
       "id": "lasvegas_strip",
@@ -652,7 +652,7 @@
       "p10_chain": 0.6000000000000001,
       "p10_blend": 0.7000000000000002,
       "same_size_auc": 0.6990108337258596,
-      "taste_percentile": 75
+      "taste_percentile": 74
     },
     {
       "id": "madison_wi",
@@ -667,7 +667,7 @@
       "p10_chain": 0.7999999999999998,
       "p10_blend": 0.9,
       "same_size_auc": 0.6208588957055214,
-      "taste_percentile": 33
+      "taste_percentile": 31
     },
     {
       "id": "myrtle_sc",
@@ -682,7 +682,7 @@
       "p10_chain": 1,
       "p10_blend": 1,
       "same_size_auc": 0.6322222222222222,
-      "taste_percentile": 35
+      "taste_percentile": 34
     },
     {
       "id": "naperville_il",
@@ -697,7 +697,7 @@
       "p10_chain": 0.7999999999999998,
       "p10_blend": 0.9,
       "same_size_auc": 0.6140350877192983,
-      "taste_percentile": 28
+      "taste_percentile": 26
     },
     {
       "id": "nashville_12s",
@@ -712,7 +712,7 @@
       "p10_chain": 0.9,
       "p10_blend": 0.9,
       "same_size_auc": 0.6086484137331595,
-      "taste_percentile": 25
+      "taste_percentile": 24
     },
     {
       "id": "nyc_uws",
@@ -727,7 +727,7 @@
       "p10_chain": 0.5,
       "p10_blend": 0.6000000000000001,
       "same_size_auc": 0.7010372178157414,
-      "taste_percentile": 78
+      "taste_percentile": 76
     },
     {
       "id": "nyc_williamsburg",
@@ -742,7 +742,7 @@
       "p10_chain": 0.7000000000000002,
       "p10_blend": 0.7000000000000002,
       "same_size_auc": 0.6883116883116883,
-      "taste_percentile": 63
+      "taste_percentile": 61
     },
     {
       "id": "ottumwa_ia",
@@ -757,7 +757,7 @@
       "p10_chain": 0.7000000000000002,
       "p10_blend": 0.6000000000000001,
       "same_size_auc": 0.5977011494252874,
-      "taste_percentile": 18
+      "taste_percentile": 16
     },
     {
       "id": "palo_alto_ca",
@@ -772,7 +772,7 @@
       "p10_chain": 0.5,
       "p10_blend": 0.7000000000000002,
       "same_size_auc": 0.7417322834645669,
-      "taste_percentile": 90
+      "taste_percentile": 89
     },
     {
       "id": "parkcity_ut",
@@ -787,7 +787,7 @@
       "p10_chain": 0.6000000000000001,
       "p10_blend": 0.7000000000000002,
       "same_size_auc": 0.7124542124542125,
-      "taste_percentile": 85
+      "taste_percentile": 84
     },
     {
       "id": "phl_walnut",
@@ -802,7 +802,7 @@
       "p10_chain": 0.7999999999999998,
       "p10_blend": 0.7999999999999998,
       "same_size_auc": 0.6909986565158979,
-      "taste_percentile": 68
+      "taste_percentile": 66
     },
     {
       "id": "sea_caphill",
@@ -817,7 +817,7 @@
       "p10_chain": 0.6000000000000001,
       "p10_blend": 0.7999999999999998,
       "same_size_auc": 0.7087517934002869,
-      "taste_percentile": 83
+      "taste_percentile": 81
     },
     {
       "id": "sedalia_mo",
@@ -832,7 +832,7 @@
       "p10_chain": 0.9,
       "p10_blend": 1,
       "same_size_auc": 0.5989208633093526,
-      "taste_percentile": 20
+      "taste_percentile": 19
     },
     {
       "id": "sevierville",
@@ -847,7 +847,7 @@
       "p10_chain": 1,
       "p10_blend": 0.9,
       "same_size_auc": 0.6180124223602484,
-      "taste_percentile": 30
+      "taste_percentile": 29
     },
     {
       "id": "sf_fillmore",
@@ -862,7 +862,7 @@
       "p10_chain": 0.5,
       "p10_blend": 0.6000000000000001,
       "same_size_auc": 0.7657103825136612,
-      "taste_percentile": 95
+      "taste_percentile": 94
     },
     {
       "id": "sf_mission",
@@ -877,7 +877,7 @@
       "p10_chain": 0.3999999999999999,
       "p10_blend": 0.6000000000000001,
       "same_size_auc": 0.6627592425608656,
-      "taste_percentile": 48
+      "taste_percentile": 46
     },
     {
       "id": "wellesley_ma",
@@ -892,7 +892,7 @@
       "p10_chain": 1,
       "p10_blend": 1,
       "same_size_auc": 0.8165591397849462,
-      "taste_percentile": 98
+      "taste_percentile": 96
     }
   ]
 }

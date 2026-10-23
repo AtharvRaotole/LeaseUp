@@ -19,9 +19,14 @@ const DEMO_EVAL_ID = {
 
 function tastePercentileRank(stratAuc, allValues) {
   const sorted = [...allValues].sort((a, b) => a - b);
-  let index = sorted.findIndex((v) => v >= stratAuc);
-  if (index < 0) index = sorted.length - 1;
-  return Math.round((100 * (index + 0.5)) / sorted.length);
+  let lo = 0;
+  let hi = sorted.length;
+  while (lo < hi) {
+    const mid = Math.floor((lo + hi) / 2);
+    if (sorted[mid] < stratAuc) lo = mid + 1;
+    else hi = mid;
+  }
+  return Math.round((100 * (lo + 0.5)) / sorted.length);
 }
 
 function mapStratum(cat) {
