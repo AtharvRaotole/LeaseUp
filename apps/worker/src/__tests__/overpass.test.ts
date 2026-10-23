@@ -21,7 +21,9 @@ describe('OverpassClient', () => {
     it('returns cached response when available', async () => {
       vi.mocked(mockCache.get).mockResolvedValue(boulderResponse as never);
 
-      const result = await client.queryBrands(40.0150, -105.2705, 10);
+      const result = await client.queryProspectBrands(40.0150, -105.2705, 10, [
+        { entityId: 'x', name: 'Whole Foods Market', wikidata: 'Q1809448' },
+      ]);
 
       expect(result.cached).toBe(true);
       expect(result.brands).toHaveLength(3);
@@ -35,7 +37,9 @@ describe('OverpassClient', () => {
         json: async () => boulderResponse,
       });
 
-      const result = await client.queryBrands(40.0150, -105.2705, 10);
+      const result = await client.queryProspectBrands(40.0150, -105.2705, 10, [
+        { entityId: 'x', name: 'Whole Foods Market', wikidata: 'Q1809448' },
+      ]);
 
       expect(result.cached).toBe(false);
       expect(result.brands).toHaveLength(3);
@@ -52,7 +56,10 @@ describe('OverpassClient', () => {
         json: async () => wickerParkResponse,
       });
 
-      const result = await client.queryBrands(41.9105, -87.6769, 10);
+      const result = await client.queryProspectBrands(41.9105, -87.6769, 10, [
+        { entityId: 'a', name: 'Lululemon' },
+        { entityId: 'b', name: 'Apple', wikidata: 'Q312' },
+      ]);
 
       expect(result.brands).toHaveLength(2);
       expect(result.brands.map(b => b.brand)).toContain('Lululemon');
@@ -65,7 +72,9 @@ describe('OverpassClient', () => {
         json: async () => emptyResponse,
       });
 
-      const result = await client.queryBrands(35.8684, -83.5619, 10);
+      const result = await client.queryProspectBrands(35.8684, -83.5619, 10, [
+        { entityId: 'z', name: 'NoSuchBrand' },
+      ]);
 
       expect(result.brands).toHaveLength(0);
       expect(result.error).toBeUndefined();
@@ -76,47 +85,63 @@ describe('OverpassClient', () => {
         ok: false,
         status: 429,
         statusText: 'Too Many Requests',
-      });
+      }); // all 3 endpoints
 
-      const result = await client.queryBrands(40.0, -105.0, 10);
+      const result = await client.queryProspectBrands(40.0, -105.0, 10, [
+        { entityId: 'x', name: 'Test' },
+      ]);
 
       expect(result.brands).toHaveLength(0);
       expect(result.error).toBe('overpass_unavailable');
       expect(result.cached).toBe(false);
     });
 
-    it('handles timeout with AbortController', async () => {
+    it('tries next endpoint after AbortController timeout', async () => {
       const abortError = new Error('AbortError');
       abortError.name = 'AbortError';
-      global.fetch = vi.fn().mockRejectedValue(abortError);
+      global.fetch = vi
+        .fn()
+        .mockRejectedValueOnce(abortError)
+        .mockRejectedValueOnce(abortError)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => emptyResponse,
+        });
 
-      const result = await client.queryBrands(40.0, -105.0, 10);
+      const result = await client.queryProspectBrands(40.0, -105.0, 10, [
+        { entityId: 'x', name: 'Test' },
+      ]);
 
       expect(result.brands).toHaveLength(0);
-      expect(result.error).toBe('timeout');
+      expect(result.error).toBeUndefined();
+      expect(global.fetch).toHaveBeenCalledTimes(3);
     });
 
     it('handles network errors gracefully', async () => {
       global.fetch = vi.fn().mockRejectedValue(new Error('Network failure'));
 
-      const result = await client.queryBrands(40.0, -105.0, 10);
+      const result = await client.queryProspectBrands(40.0, -105.0, 10, [
+        { entityId: 'x', name: 'Test' },
+      ]);
 
       expect(result.brands).toHaveLength(0);
       expect(result.error).toBe('overpass_unavailable');
     });
 
-    it('caches successful responses with 24h TTL', async () => {
+    it('caches successful responses with 7d TTL', async () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         json: async () => boulderResponse,
       });
 
-      await client.queryBrands(40.0150, -105.2705, 10);
+      await client.queryProspectBrands(40.0150, -105.2705, 10, [
+        { entityId: 'x', name: 'Whole Foods Market' },
+      ]);
 
       expect(mockCache.put).toHaveBeenCalledWith(
-        expect.stringContaining('overpass:40.0150'),
+        expect.stringContaining('overpass:v2:'),
         expect.any(String),
-        { expirationTtl: 86400 }
+        { expirationTtl: 604800 }
       );
     });
 
@@ -143,7 +168,9 @@ describe('OverpassClient', () => {
         json: async () => responseWithWay,
       });
 
-      const result = await client.queryBrands(40.02, -105.28, 5);
+      const result = await client.queryProspectBrands(40.02, -105.28, 5, [
+        { entityId: 'rei', name: 'REI', wikidata: 'Q3414933' },
+      ]);
 
       expect(result.brands).toHaveLength(1);
       expect(result.brands[0]?.brand).toBe('REI');

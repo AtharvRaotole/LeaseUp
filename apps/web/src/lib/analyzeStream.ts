@@ -6,7 +6,16 @@ export async function analyzeWithStream(
   handlers: {
     onStep: (step: AnalysisStep) => void;
     onComplete: (result: AnalysisResponse) => void;
-    onVerification?: (payload: { runId: string; prospects: AnalysisResponse['prospects'] }) => void;
+    onVerification?: (payload: {
+      runId: string;
+      prospects: AnalysisResponse['prospects'];
+      osmSummary?: {
+        verifiedTwoSource: number;
+        singleSource: number;
+        conflicts: number;
+        unavailable: boolean;
+      };
+    }) => void;
     onError: (message: string) => void;
   }
 ): Promise<void> {
@@ -48,7 +57,18 @@ export async function analyzeWithStream(
       if (event === 'step') handlers.onStep(payload as AnalysisStep);
       if (event === 'complete') handlers.onComplete(payload as AnalysisResponse);
       if (event === 'verification' && handlers.onVerification) {
-        handlers.onVerification(payload as { runId: string; prospects: AnalysisResponse['prospects'] });
+        handlers.onVerification(
+          payload as {
+            runId: string;
+            prospects: AnalysisResponse['prospects'];
+            osmSummary?: {
+              verifiedTwoSource: number;
+              singleSource: number;
+              conflicts: number;
+              unavailable: boolean;
+            };
+          }
+        );
       }
       if (event === 'error') handlers.onError((payload as { message: string }).message);
     }

@@ -20,6 +20,8 @@ export interface Env {
   APP_MODE?: string;
   ALLOWED_ORIGINS?: string;
   NOMINATIM_CONTACT?: string;
+  GIT_SHA?: string;
+  BUILD_TIME?: string;
 }
 
 const app = new Hono<{ Bindings: Env }>();
