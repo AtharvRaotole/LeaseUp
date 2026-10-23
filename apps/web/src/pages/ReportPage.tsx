@@ -131,6 +131,12 @@ export function ReportPage() {
             radiusKm={request.radius}
             forceEmpty={emptyPitch}
           />
+          <WhyThisBrandCard
+            className="md:hidden"
+            prospect={selected}
+            results={results}
+            radiusKm={request.radius}
+          />
         </div>
       </ErrorBoundary>
       <ErrorBoundary fallback={<SectionUnavailable />}>
@@ -220,7 +226,12 @@ export function ReportPage() {
           >
             {results && (
               <ErrorBoundary fallback={<SectionUnavailable label="Map unavailable right now." />}>
-                <WhyThisBrandCard prospect={selected} results={results} radiusKm={request.radius} />
+                <WhyThisBrandCard
+                  className="hidden md:block"
+                  prospect={selected}
+                  results={results}
+                  radiusKm={request.radius}
+                />
                 <ReportMap
                   results={results}
                   selectedBrand={mapBrand}
