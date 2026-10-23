@@ -30,7 +30,10 @@ import {
   demoFixtureStratum,
   densityToDefaultStratum,
   demoAnalyzeBacktests,
+  adaptiveEvalRadiusKm,
+  expectedRandomPresentInTop10,
 } from '@leaseup/fixtures/worker';
+import { tasteLocationLabel, formatBacktestStepSummary } from '../lib/analyze-step-copy';
 import { NearbyPresenceCache } from '../lib/nearby-presence-cache';
 import { createStoreCatalog, type StoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
@@ -142,9 +145,10 @@ export class AnalysisService {
             take: 50,
             runId,
           });
+          const tasteLabel = tasteLocationLabel(location, qlooLocation);
           return {
-            summary: `${rows.length} brands ranked for ${this.qlooLocationLabel(qlooLocation)}`,
-            detail: { brandCount: rows.length, query: this.qlooLocationLabel(qlooLocation) },
+            summary: `${rows.length} brands ranked for ${tasteLabel}`,
+            detail: { brandCount: rows.length, query: tasteLabel },
             result: rows,
           };
         }
@@ -182,11 +186,23 @@ export class AnalysisService {
                   siteStratum,
                   presence
                 );
+          const adaptiveRadiusKm = adaptiveEvalRadiusKm(siteStratum, request.radius);
+          const randomExpected = expectedRandomPresentInTop10(
+            insights,
+            location.latitude,
+            location.longitude,
+            adaptiveRadiusKm
+          );
+          const backtestCopy = formatBacktestStepSummary({
+            adaptiveRadiusKm,
+            raw: triple.raw,
+            blended: triple.blended,
+            randomExpectedPresentAt10: randomExpected,
+          });
           return {
-            summary: `Raw P@10 ${(triple.raw.precisionAt10 * 100).toFixed(0)}% · Blended P@10 ${(triple.blended.precisionAt10 * 100).toFixed(0)}%`,
+            summary: backtestCopy.summary,
             detail: {
-              rawPrecisionAt10: triple.raw.precisionAt10,
-              blendedPrecisionAt10: triple.blended.precisionAt10,
+              ...backtestCopy.detail,
               baselinePrecisionAt10: triple.baseline.precisionAt10,
               rawAuc: triple.raw.auc,
               blendedAuc: triple.blended.auc,
@@ -370,13 +386,6 @@ export class AnalysisService {
       runId,
     });
     return { cells };
-  }
-
-  private qlooLocationLabel(location: QlooLocation): string {
-    if (location.kind === 'point') {
-      return `${location.latitude},${location.longitude} (${location.radiusKm}km)`;
-    }
-    return location.query;
   }
 
   private buildQlooLocation(location: Location, address: string, radiusKm: number): QlooLocation {
