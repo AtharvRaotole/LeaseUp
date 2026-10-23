@@ -4,6 +4,7 @@ import { tasteFitMatchHerePhrase } from './fit-display';
 import { absenceVerificationSummary } from './absence-verification-copy';
 import { formatTradeAreaTasteRow } from './trade-area-taste-copy';
 import { shopperInterestHighlight } from './broker-copy';
+import { brandReachPlainLine } from './brand-reach-copy';
 
 export function whyBrandBulletLines(
   prospect: ProspectPack,
@@ -54,6 +55,10 @@ export function whyBrandBulletLines(
     if (labels.length > 1) {
       lines.push(`Other shopper groups that stand out: ${labels.slice(1).join('; ')}.`);
     }
+  }
+
+  if (prospect.brandReach) {
+    lines.push(brandReachPlainLine(prospect.brandReach));
   }
 
   return lines;

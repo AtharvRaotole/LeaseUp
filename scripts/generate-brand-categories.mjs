@@ -8,6 +8,9 @@ const expanded = JSON.parse(readFileSync(join(root, 'data/brands/brands_expanded
 
 function guessCategory(name) {
   const n = name.toLowerCase();
+  if (/cost plus world market|world market/.test(n)) {
+    return 'Home';
+  }
   if (/grocery|foods|market|restaurant|pizza|burger|taco|coffee|starbucks|chipotle|panera|subway|wendy|mcdonald|dunkin|whole foods|trader joe|aldi|kroger|safeway|publix|heb|food/.test(n)) {
     return 'Food & drink';
   }

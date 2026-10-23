@@ -66,6 +66,12 @@ import { loadTradeAreaTasteForProspect } from '../lib/trade-area-taste';
 import { getResponseCache } from '../lib/worker-cache';
 import type { ResponseCache } from '../lib/response-cache';
 import { tryAcquireOverpassRefreshLock } from '../lib/overpass-refresh-lock';
+import { loadTradeAreaShoppersSnapshot } from '../lib/trade-area-shoppers';
+import { brandReachForEntity } from '../lib/brand-reach';
+import {
+  METRO_COVERAGE_SCAN_KM,
+  metroStoreCoverageIncomplete,
+} from '../lib/verification-coverage';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -325,6 +331,15 @@ export class AnalysisService {
         })
       );
 
+      const tradeAreaShoppers = await loadTradeAreaShoppersSnapshot({
+        qloo: this.qloo,
+        responseCache: this.responseCache,
+        location,
+        radiusKm: request.radius,
+        runId,
+        mode: this.mode,
+      });
+
       const dataQuality = this.assessDataQuality(insights.length, backtestBlended);
       const warnings = this.generateWarnings(insights.length, backtestBlended, location);
       if (formatFilteredCount > 0) {
@@ -352,6 +367,7 @@ export class AnalysisService {
         storefrontSqFt: request.storefrontSqFt ?? 2_500,
         formatFilteredCount: formatFilteredCount || undefined,
         strictEval,
+        tradeAreaShoppers,
       };
 
       await this.persistRun(runId, location, response, 'completed');
@@ -507,6 +523,9 @@ export class AnalysisService {
       );
 
       let coverageNote = this.catalog.getCoverageNote(candidate.entity_id, nationalCount);
+      if (verification.metroCoverageNote) {
+        coverageNote = this.appendCoverageNote(verification.metroCoverageNote, coverageNote);
+      }
       if (osmSnapshotBrandStatus(candidate.entity_id) === 'failed') {
         coverageNote = this.appendCoverageNote(
           'OpenStreetMap snapshot fetch failed for this brand; showing ATP only.',
@@ -524,6 +543,7 @@ export class AnalysisService {
 
       prospectPacks.push({
         coverageNote,
+        brandReach: brandReachForEntity(candidate.entity_id),
         brand: {
           entityId: candidate.entity_id,
           name: displayName,
@@ -568,6 +588,7 @@ export class AnalysisService {
       | 'unverified (1 source)'
       | 'conflict - likely present';
     sources: string[];
+    metroCoverageNote?: string;
   }> {
     const sources: string[] = ['All The Places (CC0)'];
     const snapshotLabel = osmSnapshotDisplayLabel();
@@ -587,6 +608,34 @@ export class AnalysisService {
         sources: [...sources, `${snapshotLabel} (store found)`],
       };
     }
+
+    const nationalCount = await this.catalog.getNationalStoreCount(entityId);
+    const atpNearby = await this.catalog.findStoresNearby(
+      entityId,
+      location.latitude,
+      location.longitude,
+      METRO_COVERAGE_SCAN_KM
+    );
+    const nearestAtpKm = atpNearby[0]?.distance;
+    const nearestOsmKm = await this.osmSnapshot.nearestStoreKm(
+      entityId,
+      location.latitude,
+      location.longitude,
+      METRO_COVERAGE_SCAN_KM
+    );
+    const metroGap = metroStoreCoverageIncomplete({
+      nationalStoreCount: nationalCount,
+      nearestAtpKm,
+      nearestOsmKm,
+    });
+    if (metroGap.incomplete) {
+      return {
+        status: 'unverified (1 source)',
+        sources,
+        metroCoverageNote: metroGap.reason,
+      };
+    }
+
     return {
       status: 'verified (2 sources)',
       sources: [...sources, snapshotLabel],
@@ -926,8 +975,14 @@ export class AnalysisService {
       nearestStoreKm?: number;
       coTenantBrands?: string[];
       verificationLabel?: string;
+      brandReach?: import('@leaseup/contracts').BrandReachContact;
+      brandEntityId?: string;
     }
   ): Promise<{ draft: string; model: string }> {
+    const reach =
+      context?.brandReach ??
+      (context?.brandEntityId ? brandReachForEntity(context.brandEntityId) : undefined);
+
     const result = await this.openai.generateOutreach({
       brandName,
       address,
@@ -938,6 +993,7 @@ export class AnalysisService {
       nearestStoreKm: context?.nearestStoreKm,
       coTenantBrands: context?.coTenantBrands,
       verificationLabel: context?.verificationLabel,
+      brandReach: reach,
     });
 
     return {

@@ -17,6 +17,9 @@ const ProspectingPage = lazy(() =>
 const PipelinePage = lazy(() =>
   import('./pages/PipelinePage').then((m) => ({ default: m.PipelinePage }))
 );
+const OwnerUpdatePage = lazy(() =>
+  import('./pages/OwnerUpdatePage').then((m) => ({ default: m.OwnerUpdatePage }))
+);
 const NotFoundPage = lazy(() =>
   import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage }))
 );
@@ -43,6 +46,7 @@ export default function App() {
           <Route path="/prospect/:id" element={<ProspectingPage />} />
           <Route path="/pipeline" element={<PipelinePage />} />
           <Route path="/pipeline/view/:shareId" element={<PipelinePage />} />
+          <Route path="/owner-update/:id" element={<OwnerUpdatePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>

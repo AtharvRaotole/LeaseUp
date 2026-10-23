@@ -17,6 +17,7 @@ import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton'
 import { pipelineCardFromPitchProspect } from '../lib/build-pipeline-card';
 import { ShareHead } from '../components/seo/ShareHead';
 import { pitchShareHead } from '../lib/share-preview';
+import { pitchPackVerificationSummary } from '../lib/copy';
 
 export function PitchPage() {
   const { id } = useParams();
@@ -124,9 +125,10 @@ export function PitchPage() {
           <h2 className="font-display font-semibold text-lg text-ink print:text-base">Data sources</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5 print:text-xs">
             <li>Local shopper taste from Qloo ({snapshot.mode ?? 'demo'} mode) for this address</li>
+            <li>{pitchPackVerificationSummary(snapshot)}</li>
             <li>All The Places store locations (CC0)</li>
             <li>
-              {snapshot.osmSnapshotLabel ?? 'OpenStreetMap'} for second-source store checks
+              {snapshot.osmSnapshotLabel ?? 'OpenStreetMap'} snapshot
               {snapshot.osmSnapshotRecordedAt
                 ? ` (${formatUserFacingDate(snapshot.osmSnapshotRecordedAt)})`
                 : ''}

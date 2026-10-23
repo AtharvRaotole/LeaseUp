@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { openReportSection, waitForReportReady } from './report-helpers';
 
 const WICKER =
   '/r/wicker?address=1574%20N%20Milwaukee%20Ave%2C%20Chicago%2C%20IL%2060622&radius=10&screenshot=1';
@@ -43,20 +44,16 @@ test.describe('Production CSP on report + map', () => {
     const apiProbe = await page.request.get(`${API_ORIGIN}/api/health`);
     expect(apiProbe.ok(), `Worker health at ${API_ORIGIN}`).toBeTruthy();
 
-    await page.goto(WICKER, { waitUntil: 'load' });
-    const summary = page.locator(
-      '[data-testid="report-summary"], [data-testid="brands-to-pitch"]'
-    );
-    const deadline = Date.now() + 180_000;
-    while (Date.now() < deadline) {
-      if (await summary.first().isVisible().catch(() => false)) break;
-      const tryAgain = page.getByRole('button', { name: 'Try again' });
-      if (await tryAgain.isVisible().catch(() => false)) {
-        await tryAgain.click();
-      }
-      await page.waitForTimeout(2000);
-    }
-    await expect(summary.first()).toBeVisible({ timeout: 10_000 });
+    const analyzeProbe = await page.request.post(`${BASE}/api/analyze`, {
+      data: { address: '1574 N Milwaukee Ave, Chicago, IL 60622', radius: 10 },
+      headers: { 'Content-Type': 'application/json' },
+    });
+    expect(analyzeProbe.ok(), 'Proxied /api/analyze under CSP').toBeTruthy();
+
+    await page.goto(WICKER, { waitUntil: 'domcontentloaded' });
+    await waitForReportReady(page);
+    await openReportSection(page, 'report-section-why-brands');
+    await expect(page.getByTestId('brands-to-pitch')).toBeVisible({ timeout: 30_000 });
 
     const pageViolations = await page.evaluate(() =>
       (window as unknown as { __cspViolations?: string[] }).__cspViolations ?? []

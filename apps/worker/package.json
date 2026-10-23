@@ -5,7 +5,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "dev": "wrangler dev",
-    "build": "node ../../scripts/sync-type-fonts.mjs && node ../../scripts/embed-og-fonts.mjs && node ../../scripts/generate-tracked-brands.mjs && node ../../scripts/generate-brand-display.mjs && node ../../scripts/generate-brand-categories.mjs && node ../../scripts/generate-osm-wikidata.mjs && node ../../scripts/generate-build-meta.mjs && node ../../scripts/embed-overpass-demo.mjs && node ../../scripts/build-geotiles.mjs && node ../../scripts/copy-osm-tiles.mjs && tsc",
+    "build": "node ../../scripts/sync-type-fonts.mjs && node ../../scripts/embed-og-fonts.mjs && node ../../scripts/generate-tracked-brands.mjs && node ../../scripts/generate-brand-display.mjs && node ../../scripts/generate-brand-categories.mjs && node ../../scripts/generate-osm-wikidata.mjs && node ../../scripts/generate-build-meta.mjs && node ../../scripts/embed-overpass-demo.mjs && node ../../scripts/build-geotiles.mjs && node ../../scripts/copy-osm-tiles.mjs && node ../../scripts/apply-store-supplements.mjs && tsc",
     "deploy": "wrangler deploy",
     "typecheck": "node ../../scripts/embed-og-fonts.mjs && tsc --noEmit",
     "lint": "eslint src --ext .ts",

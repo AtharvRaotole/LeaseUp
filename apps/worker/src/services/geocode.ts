@@ -62,7 +62,10 @@ export class GeocodeService {
       };
     }
 
-    const raw = await this.nominatim.geocodeCandidates(address, 5);
+    let raw = await this.nominatim.geocodeCandidates(address, 5);
+    if (raw.length === 0) {
+      raw = await this.nominatim.legacyGeocodeCandidates(address, 5);
+    }
     const resolved = resolveGeocodeFromCandidates(address, raw);
     return {
       needsConfirmation: resolved.needsConfirmation,

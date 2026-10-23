@@ -4,6 +4,7 @@ import type { PipelineBoard, PipelinePublicBoard } from '@leaseup/contracts';
 import { TopBar } from '../components/layout/TopBar';
 import { Button } from '../components/ui/Button';
 import { PipelineKanban } from '../components/pipeline/PipelineKanban';
+import { OwnerUpdatePanel } from '../components/pipeline/OwnerUpdatePanel';
 import { fetchPipelineBoard, fetchPublicPipeline, pipelineExportUrl } from '../lib/pipeline-api';
 
 export function PipelinePage() {
@@ -108,6 +109,8 @@ export function PipelinePage() {
         {!error && !board && (
           <p className="mt-12 text-center text-ink-2" data-testid="pipeline-loading">Loading pipeline…</p>
         )}
+
+        {board && !error && !readOnly && <OwnerUpdatePanel />}
 
         {board && !error && (
           <div className="mt-8">
