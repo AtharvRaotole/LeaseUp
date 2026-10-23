@@ -11,6 +11,7 @@ function run(cmd, opts = {}) {
 
 run('pnpm --filter @leaseup/contracts build');
 run('pnpm --filter @leaseup/fixtures build');
+run('pnpm --filter @leaseup/worker build');
 run('pnpm --filter @leaseup/web build');
 
 const worker = spawn(
