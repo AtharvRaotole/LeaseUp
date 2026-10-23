@@ -1,5 +1,77 @@
-import type { PitchPackSnapshot, ProspectPack } from '@leaseup/contracts';
+import type { AnalysisResponse, PitchPackSnapshot, ProspectPack } from '@leaseup/contracts';
 import { displayBrandName } from './brand-display';
+import { fitTopPercentPhrase } from './fit-display';
+import { formatTradeAreaTasteRow } from './trade-area-taste-copy';
+import { absenceVerificationSummary } from './absence-verification-copy';
+import { formatUserFacingDate } from './format-date';
+
+export function pitchPropertyHeadline(snapshot: PitchPackSnapshot): string {
+  return (
+    snapshot.neighborhood ??
+    snapshot.location.neighborhood ??
+    snapshot.location.city ??
+    'This storefront'
+  );
+}
+
+export function pitchTradeAreaFacts(snapshot: PitchPackSnapshot): string[] {
+  const lines = [
+    `${snapshot.radiusKm} km search radius around the pin`,
+    `Address on file: ${snapshot.address}`,
+  ];
+  if (snapshot.location.city) {
+    lines.push(`City: ${snapshot.location.city}`);
+  }
+  const when = formatUserFacingDate(snapshot.analysisTimestamp);
+  lines.push(`Taste and store data from ${when}`);
+  return lines;
+}
+
+export function pitchBrandFitLines(
+  prospect: ProspectPack,
+  snapshot: PitchPackSnapshot
+): string[] {
+  const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
+  const total = snapshot.rankingsTotal ?? prospect.brand.affinityRank;
+  const rank = prospect.brand.affinityRank;
+  const lines: string[] = [
+    `Local taste rank #${rank} of ${total} (${fitTopPercentPhrase(
+      rank,
+      total,
+      prospect.brand.tasteFitBeyondChainPercentile
+    )}).`,
+  ];
+
+  if (prospect.nearestExistingStoreKm !== undefined) {
+    lines.push(`Nearest ${name} is ${prospect.nearestExistingStoreKm.toFixed(1)} km from this pin.`);
+  } else {
+    const stubResults = {
+      osmSnapshotLabel: snapshot.osmSnapshotLabel,
+      osmSnapshotRecordedAt: snapshot.osmSnapshotRecordedAt,
+    } as AnalysisResponse;
+    lines.push(absenceVerificationSummary(prospect, snapshot.radiusKm, stubResults));
+  }
+
+  const taste = prospect.tradeAreaTaste;
+  if (taste?.tags?.length) {
+    lines.push(
+      `Qloo tags over-indexing here: ${taste.tags.map(formatTradeAreaTasteRow).join('; ')}.`
+    );
+  }
+  if (taste?.audiences?.length) {
+    lines.push(
+      `Qloo audiences over-indexing here: ${taste.audiences.map(formatTradeAreaTasteRow).join('; ')}.`
+    );
+  }
+  for (const reason of prospect.reasons.slice(0, 3)) {
+    if (reason.trim()) lines.push(reason.trim());
+  }
+  return lines;
+}
+
+export function pitchNextStepLine(brandName: string): string {
+  return `Next step: share this brief with ${brandName} real estate and schedule a site walk at the pin.`;
+}
 
 export function pitchExecutiveSummaryLines(snapshot: PitchPackSnapshot): string[] {
   const count = snapshot.prospects.length;
@@ -11,7 +83,6 @@ export function pitchExecutiveSummaryLines(snapshot: PitchPackSnapshot): string[
   return [
     `${count} brand${count === 1 ? '' : 's'} whose fans already shop here and have no store within ${snapshot.radiusKm} km.`,
     strongestLine,
-    `Verified against All The Places and ${snapshot.osmSnapshotLabel ?? 'OpenStreetMap'} at snapshot time.`,
   ];
 }
 

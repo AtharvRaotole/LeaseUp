@@ -55,6 +55,8 @@ jobs:
           ls -la packages/contracts/dist/ packages/fixtures/dist/ || echo "Dist folders missing!"
       
       - name: Build all packages
+        env:
+          VITE_API_URL: https://ci.leaseup.invalid
         run: pnpm build
         
       - name: Run typecheck
@@ -125,6 +127,8 @@ jobs:
         run: pnpm install --frozen-lockfile
         
       - name: Build
+        env:
+          VITE_API_URL: https://ci.leaseup.invalid
         run: pnpm build
         
       - name: Upload build artifacts

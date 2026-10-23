@@ -24,6 +24,29 @@ describe('rankGeocodeCandidates', () => {
     expect(ranked[0]?.neighborhood).toBe('Manhattan');
   });
 
+  it('prefers Manhattan for "New York, NY" without ZIP when Ridgewood scores on street match', () => {
+    const base = { address: '350 Bleecker St, New York, NY', city: 'New York' };
+    const ranked = rankGeocodeCandidates('350 Bleecker St, New York, NY', [
+      {
+        ...base,
+        latitude: 40.7,
+        longitude: -73.92,
+        neighborhood: 'Ridgewood',
+        resolvedAddress:
+          '350, Bleecker Street, Ridgewood, Bushwick, Brooklyn, Kings County, New York, 11237, United States',
+      },
+      {
+        ...base,
+        latitude: 40.734,
+        longitude: -74.003,
+        neighborhood: 'West Village',
+        resolvedAddress:
+          '350, Bleecker Street, West Village, Manhattan, New York County, New York, 10014, United States',
+      },
+    ]);
+    expect(ranked[0]?.neighborhood).toBe('West Village');
+  });
+
   it('prefers Manhattan for "New York, NY" with no borough (real Nominatim order puts Brooklyn first)', () => {
     const base = { address: '350 Bleecker St, New York, NY', city: 'New York' };
     const ranked = rankGeocodeCandidates('350 Bleecker St, New York, NY', [

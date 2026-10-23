@@ -12,7 +12,9 @@ function run(cmd, opts = {}) {
 run('pnpm --filter @leaseup/contracts build');
 run('pnpm --filter @leaseup/fixtures build');
 run('pnpm --filter @leaseup/worker build');
-run('pnpm --filter @leaseup/web build');
+run('pnpm --filter @leaseup/web build', {
+  env: { ...process.env, VITE_API_URL: process.env.VITE_API_URL || 'https://ci.leaseup.invalid' },
+});
 
 const worker = spawn(
   'pnpm',

@@ -12,7 +12,9 @@ run('pnpm --filter @leaseup/worker build');
 run(
   'pnpm --filter @leaseup/worker exec wrangler d1 execute leaseup_db --local --file=schema.sql'
 );
-run('pnpm --filter @leaseup/web build');
+run('pnpm --filter @leaseup/web build', {
+  env: { ...process.env, VITE_API_URL: process.env.VITE_API_URL || 'https://ci.leaseup.invalid' },
+});
 
 const WORKER_PORT = process.env.CSP_E2E_WORKER_PORT || '8790';
 const PREVIEW_PORT = process.env.CSP_E2E_PREVIEW_PORT || '4178';
