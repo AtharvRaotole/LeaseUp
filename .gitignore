@@ -54,3 +54,5 @@ tmp/
 temp/
 .cache/
 test-results/
+.lighthouse/
+.lighthouseci/

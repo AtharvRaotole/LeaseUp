@@ -88,26 +88,33 @@ export function LandingBelowFold() {
               </p>
             </div>
             <Card className="overflow-hidden bg-surface p-0">
-              <div className="grid grid-cols-2 border-b border-border bg-surface-2 text-center text-label uppercase text-ink-3">
-                <p className="px-3 py-2 font-medium">Wicker Park</p>
-                <p className="border-l border-border px-3 py-2 font-medium">Sevierville</p>
-              </div>
-              <ul className="divide-y divide-border">
+              <table className="w-full text-sm">
+                <caption className="sr-only">
+                  Qloo brand rank in Wicker Park vs Sevierville from recorded fixtures
+                </caption>
+                <thead>
+                  <tr className="border-b border-border bg-surface-2 text-center text-label uppercase text-ink-3">
+                    <th scope="col" className="px-3 py-2 text-left font-medium">Brand</th>
+                    <th scope="col" className="px-3 py-2 font-medium">Wicker Park</th>
+                    <th scope="col" className="px-3 py-2 font-medium">Sevierville</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
                 {rankContrast.map((row) => (
-                  <li
-                    key={row.brandName}
-                    className="grid grid-cols-[1fr_auto_auto] items-center gap-3 px-4 py-3 text-sm sm:grid-cols-[1fr_5rem_5rem]"
-                  >
-                    <span className="font-medium text-ink">{row.brandName}</span>
-                    <span className="font-mono tabular-nums text-right text-accent">
+                  <tr key={row.brandName}>
+                    <th scope="row" className="px-4 py-3 text-left font-medium text-ink">
+                      {row.brandName}
+                    </th>
+                    <td className="px-4 py-3 font-mono tabular-nums text-right text-accent">
                       #{row.rankA}
-                    </span>
-                    <span className="font-mono tabular-nums text-right text-ink-2">
+                    </td>
+                    <td className="px-4 py-3 font-mono tabular-nums text-right text-ink-2">
                       #{row.rankB}
-                    </span>
-                  </li>
+                    </td>
+                  </tr>
                 ))}
-              </ul>
+                </tbody>
+              </table>
             </Card>
           </div>
         </LandingReveal>

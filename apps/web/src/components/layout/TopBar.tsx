@@ -25,9 +25,9 @@ export function TopBar() {
           className="rounded-control focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           aria-label="LeaseUp home"
         >
-          <Logo size="sm" />
+          <Logo size="sm" hideWordmarkFromA11y />
         </Link>
-        <nav className="hidden items-center gap-4 text-sm text-ink-2 md:flex">
+        <nav className="hidden items-center gap-4 text-sm text-ink-2 md:flex" aria-label="Primary">
           {NAV_LINKS.map((item) =>
             'to' in item ? (
               <Link
