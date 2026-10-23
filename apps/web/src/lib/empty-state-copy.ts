@@ -3,7 +3,7 @@ export const pipelineEmptyLine =
 export const pipelineEmptyAction = 'Run a site analysis';
 
 export const portfolioEmptyLine =
-  'Add storefront addresses to compare taste fit and hit rates across your book.';
+  'Add storefront addresses to compare local shopper match and hit rates across your book.';
 export const portfolioEmptyAction = 'Add your first address';
 
 export function reportShortListLine(count: number, radiusKm: number): string {

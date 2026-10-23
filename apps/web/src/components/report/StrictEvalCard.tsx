@@ -1,7 +1,14 @@
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { Link } from 'react-router-dom';
-import { evalHeadlineLabel, formatPanelValues, isHeadlinePanel } from '../../lib/eval-display';
+import {
+  brokerPanelTitle,
+  evalHeadlineLabel,
+  formatPanelValues,
+  isHeadlinePanel,
+} from '../../lib/eval-display';
+import { methodologyRankMatchTooltip } from '../../lib/broker-copy';
+import { InfoTooltip } from '../ui/InfoTooltip';
 import { getEvalManifest, loadLiveQlooLiftAggregates } from '@leaseup/fixtures';
 
 export function StrictEvalCard({ results }: { results: AnalysisResponse }) {
@@ -50,8 +57,13 @@ export function StrictEvalCard({ results }: { results: AnalysisResponse }) {
               }`}
             >
               <p className="text-label uppercase text-ink-3">
-                {panel.label}
-                {headline ? ' (headline)' : ''}
+                <span className="inline-flex items-center gap-1">
+                  {brokerPanelTitle(panel.id, panel.label)}
+                  {panel.id === 'same_size_auc' && (
+                    <InfoTooltip label={methodologyRankMatchTooltip()} />
+                  )}
+                  {headline ? ' (headline)' : ''}
+                </span>
               </p>
               <p className="mt-1 font-mono text-sm tabular-nums text-ink">{formatPanelValues(panel)}</p>
               {panel.detail && <p className="mt-1 text-xs text-ink-3">{panel.detail}</p>}

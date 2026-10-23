@@ -37,7 +37,7 @@ export function pitchBrandFitLines(
   } as AnalysisResponse;
   const lines = whyBrandBulletLines(prospect, stubResults, snapshot.radiusKm);
   for (const reason of prospect.reasons.slice(0, 3)) {
-    if (reason.trim()) lines.push(reason.trim());
+    if (shouldShowStoredWhyLine(reason)) lines.push(reason.trim());
   }
   return lines;
 }
@@ -82,6 +82,8 @@ export function isNearestStoreDistanceLine(line: string): boolean {
 export function shouldShowStoredWhyLine(whyLine: string): boolean {
   const lower = whyLine.toLowerCase();
   if (lower.includes('qloo #') || lower.includes('qloo rank')) return false;
+  if (lower.includes('prospect ordering')) return false;
+  if (lower.includes('taste-aware blend')) return false;
   if (/\btop \d+%\b/.test(lower) && lower.includes('rank')) return false;
   if (isNearestStoreDistanceLine(whyLine)) return false;
   return whyLine.trim().length > 0;

@@ -76,7 +76,7 @@ describe('prospectOneLineReason', () => {
     );
     expect(a).not.toBe(b);
     expect(a).toContain('Streetwear');
-    expect(b).toContain('Top 18% for taste fit here');
+    expect(b).toContain('Top 18% local match here');
     expect(b).toContain('Coffee');
   });
 });

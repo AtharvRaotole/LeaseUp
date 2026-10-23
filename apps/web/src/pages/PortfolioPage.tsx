@@ -240,7 +240,7 @@ export function PortfolioPage() {
           <div className="min-w-0 lg:col-span-5">
             <h1 className="break-words font-display font-semibold text-display text-ink">Portfolio mode</h1>
             <p className="mt-3 break-words text-ink-2">
-              Paste up to 10 storefronts or upload a CSV. We geocode, confirm ambiguous matches, then run Qloo analyses in sequence.
+              Paste up to 10 storefronts or upload a CSV. We geocode, confirm ambiguous matches, then run shopper taste analyses in sequence.
             </p>
             {!portfolio && (
               <Card className="mt-8 p-5">
