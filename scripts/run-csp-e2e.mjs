@@ -75,6 +75,9 @@ try {
   run(
     `PLAYWRIGHT_BASE_URL=http://127.0.0.1:${PREVIEW_PORT} PLAYWRIGHT_API_URL=http://127.0.0.1:${WORKER_PORT} pnpm exec playwright test e2e/csp-report.spec.ts`
   );
+  if (process.env.CSP_E2E_SCREENSHOT === '1') {
+    run(`SCREENSHOT_BASE=http://127.0.0.1:${PREVIEW_PORT} node scripts/report-layout-screenshot.mjs`);
+  }
 } finally {
   worker.kill('SIGTERM');
   preview.kill('SIGTERM');
