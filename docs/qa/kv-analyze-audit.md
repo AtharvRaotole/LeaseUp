@@ -43,6 +43,24 @@ Ephemeral caches (Qloo, geocode, Overpass, tiles, verify, compare flip, OG PNG) 
 
 - Reserved for durable share/portfolio/prospecting payloads when stored in KV in the future; pitch/portfolio/prospecting jobs today use **D1**.
 
-## Regression test
+## Measured on demo fixture (CI)
 
-`apps/worker/src/__tests__/kv-analyze-ops.test.ts` asserts demo analyze performs **0 KV writes** on cold and warm runs.
+`apps/worker/src/__tests__/kv-analyze-ops.test.ts` runs in **CI / Test** (`pnpm --filter @leaseup/worker test`). It calls `AnalysisService.analyze` twice on `DEMO_CHIP_ADDRESSES.wicker` with a counting `CACHE` mock, asserting `tradeAreaShoppers` (Who shops here / fixture snapshot from `loadTradeAreaShoppersSnapshot`) on cold and warm:
+
+| Call | KV gets | KV puts |
+| --- | ---: | ---: |
+| Cold | **0** | **0** |
+| Warm (repeat) | **0** | **0** |
+
+Legacy expectation (pre-#45): cold ~25–55 gets and puts per call (see table above).
+
+## Where KV is still written
+
+| Surface | Storage today | KV gets/puts |
+| --- | --- | ---: |
+| `POST /api/analyze` | Cache API + D1 run row | **0 / 0** |
+| `POST /api/pitch` (share link) | D1 `pitch_packs` | **0 / 0** (`kv-persistent-routes.test.ts`) |
+| Portfolio / prospecting jobs | D1 | **0 / 0** |
+| `GET /api/share/report`, OG PNG | Cache API or static meta | **0 / 0** |
+
+`PersistentKv` is wired for future durable KV use (skip unchanged, log on error); no production route calls it yet.
