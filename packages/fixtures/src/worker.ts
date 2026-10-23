@@ -19,6 +19,7 @@ export {
   demoAnalyzeStrictEval,
   demoAnalyzeBacktests,
 } from './demo-analyze-precomputed.js';
+export { expectedRandomPresentInTop10 } from './landing-random-baseline.js';
 export {
   computeBacktest,
   calculateAUC,

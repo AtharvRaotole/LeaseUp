@@ -16,6 +16,8 @@ export type DemoStrictEvalSnapshot = {
     qloo?: number;
     chain?: number;
     winner?: string;
+    randomExpected?: number;
+    randomMonteCarlo?: number;
   }>;
   notes: string[];
 };
@@ -106,6 +108,11 @@ export function demoAnalyzeStrictEval(
         qloo: blendPresent,
         chain: chainPresent,
         winner: blendPresent >= chainPresent ? 'qloo' : 'chain',
+      },
+      {
+        id: 'random_monte_carlo',
+        label: 'Random ranking baseline',
+        randomExpected: (10 * row.n_present) / row.n_brands,
       },
     ],
     notes: [

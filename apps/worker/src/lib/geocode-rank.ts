@@ -31,6 +31,7 @@ export function geocodeCandidateScore(inputAddress: string, c: GeocodeCandidate)
   }
   // "New York, NY" with no borough named means Manhattan (New York County) by USPS convention.
   if (isNycWithoutBorough && /\b(manhattan|new york county)\b/.test(resolvedBlob)) s += 30;
+  if (isNycWithoutBorough && boroughs.test(resolvedBlob)) s -= 45;
 
   if (/\bboulder\b/.test(input) && /\bboulder\b/.test(resolvedBlob)) s += 35;
   if (/\bboulder\b/.test(input) && /\bdenver\b/.test(resolvedBlob)) s -= 25;
