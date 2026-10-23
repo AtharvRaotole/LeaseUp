@@ -2,7 +2,15 @@ import { describe, it, expect } from 'vitest';
 import {
   dedupeGeocodeCandidatesWithinMeters,
   formatGeocodeCandidateLabel,
+  primaryHouseNumber,
 } from '../lib/geocode-label';
+
+describe('primaryHouseNumber', () => {
+  it('uses the first number when Nominatim returns a list', () => {
+    expect(primaryHouseNumber('1600;1628;1630')).toBe('1600');
+    expect(primaryHouseNumber('1600, 1628')).toBe('1600');
+  });
+});
 
 describe('formatGeocodeCandidateLabel', () => {
   it('formats street, neighborhood, borough without POI prefix', () => {
@@ -18,6 +26,20 @@ describe('formatGeocodeCandidateLabel', () => {
     );
     expect(label).toBe('350 Bleecker Street, West Village, Manhattan');
     expect(label).not.toContain('Alabama');
+  });
+
+  it('formats Pearl St Boulder with a single leading house number', () => {
+    const label = formatGeocodeCandidateLabel(
+      '1600;1628;1630 Pearl Street, Boulder, Colorado, United States',
+      {
+        house_number: '1600;1628;1630',
+        road: 'Pearl Street',
+        city: 'Boulder',
+        state: 'Colorado',
+      }
+    );
+    expect(label).toBe('1600 Pearl Street, Boulder');
+    expect(label).not.toContain(';');
   });
 });
 

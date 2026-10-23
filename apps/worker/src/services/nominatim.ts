@@ -55,7 +55,7 @@ export class NominatimClient {
   }
 
   async geocodeCandidates(address: string, limit = 5): Promise<GeocodeCandidate[]> {
-    const cacheKey = `nominatim:candidates:v2:${address.toLowerCase().trim()}:${limit}`;
+    const cacheKey = `nominatim:candidates:v3:${address.toLowerCase().trim()}:${limit}`;
     const cached = await this.cache.get(cacheKey);
     if (cached) {
       return JSON.parse(cached) as GeocodeCandidate[];

@@ -17,15 +17,10 @@ export function geocodeCandidateSubtitle(c: GeocodeCandidate): string {
   return c.resolvedAddress;
 }
 
-/** Web mercator tile index for a static map thumbnail (Carto basemap). */
-export function mapThumbnailUrl(lat: number, lng: number, zoom = 14): string {
-  const n = 2 ** zoom;
-  const x = Math.floor(((lng + 180) / 360) * n);
-  const latRad = (lat * Math.PI) / 180;
-  const y = Math.floor(
-    ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * n
-  );
-  return `https://basemaps.cartocdn.com/light_all/${zoom}/${x}/${y}.png`;
+/** First segment of Nominatim label (street number and name). */
+export function geocodeCandidateStreetLine(c: GeocodeCandidate): string {
+  const head = c.resolvedAddress.split(',')[0]?.trim();
+  return head || c.resolvedAddress;
 }
 
 function haversineKm(a: GeocodeCandidate, b: GeocodeCandidate): number {
