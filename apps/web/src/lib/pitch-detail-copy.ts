@@ -24,7 +24,7 @@ export function pitchExpandedLines(
   }
 
   lines.push(
-    `Checked against All The Places and OpenStreetMap on ${formatUserFacingDate(results.timestamp)}.`
+    `Checked against All The Places and ${results.osmSnapshotLabel ?? 'OpenStreetMap'} on ${formatUserFacingDate(results.osmSnapshotRecordedAt ?? results.timestamp)}.`
   );
 
   return lines;

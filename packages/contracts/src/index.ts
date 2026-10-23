@@ -162,6 +162,8 @@ export const AnalysisResponseSchema = z.object({
   timestamp: z.string(),
   mode: z.enum(['live', 'demo']).optional(),
   chainPriorWeight: z.number().optional(),
+  osmSnapshotRecordedAt: z.string().optional(),
+  osmSnapshotLabel: z.string().optional(),
 });
 
 export type AnalysisResponse = z.infer<typeof AnalysisResponseSchema>;

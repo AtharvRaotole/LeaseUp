@@ -1,0 +1,106 @@
+import { coveringGeohash3 } from '../lib/geohash';
+import {
+  OSM_SNAPSHOT_BRAND_STATUS,
+  OSM_SNAPSHOT_DISPLAY_LABEL,
+  OSM_SNAPSHOT_RECORDED_AT,
+} from '../data/osm-snapshot-meta';
+
+type BrandsIndex = {
+  recordedAt?: string;
+  brands: Array<{ id: string; name: string; qid: string; count: number }>;
+};
+
+type TilePayload = { gh: string; stores: Array<[number, number, number]> };
+
+export type OsmSnapshotBrandStatus = 'ok' | 'failed' | 'missing';
+
+export function osmSnapshotDisplayLabel(): string {
+  return OSM_SNAPSHOT_DISPLAY_LABEL;
+}
+
+export function osmSnapshotRecordedAt(): string {
+  return OSM_SNAPSHOT_RECORDED_AT;
+}
+
+export function osmSnapshotBrandStatus(entityId: string): OsmSnapshotBrandStatus {
+  return OSM_SNAPSHOT_BRAND_STATUS[entityId] ?? 'missing';
+}
+
+function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+export class OsmSnapshotCatalog {
+  private assets: Fetcher;
+  private cache: KVNamespace;
+  private brandsIndex: BrandsIndex | null = null;
+  private tileMemory = new Map<string, TilePayload>();
+
+  constructor(assets: Fetcher, cache: KVNamespace) {
+    this.assets = assets;
+    this.cache = cache;
+  }
+
+  private async loadBrandsIndex(): Promise<BrandsIndex | null> {
+    if (this.brandsIndex) return this.brandsIndex;
+    const cached = await this.cache.get('osm-tiles:brands', 'json') as BrandsIndex | null;
+    if (cached) {
+      this.brandsIndex = cached;
+      return cached;
+    }
+    const res = await this.assets.fetch('https://osm.local/osm-tiles/brands.json');
+    if (!res.ok) return null;
+    const data = (await res.json()) as BrandsIndex;
+    this.brandsIndex = data;
+    await this.cache.put('osm-tiles:brands', JSON.stringify(data), { expirationTtl: 86400 });
+    return data;
+  }
+
+  private async loadTile(gh: string): Promise<TilePayload | null> {
+    if (this.tileMemory.has(gh)) return this.tileMemory.get(gh)!;
+    const kvKey = `osm-tiles:${gh}`;
+    const cached = await this.cache.get(kvKey, 'json') as TilePayload | null;
+    if (cached) {
+      this.tileMemory.set(gh, cached);
+      return cached;
+    }
+    const res = await this.assets.fetch(`https://osm.local/osm-tiles/${gh}.json`);
+    if (!res.ok) return null;
+    const data = (await res.json()) as TilePayload;
+    this.tileMemory.set(gh, data);
+    await this.cache.put(kvKey, JSON.stringify(data), { expirationTtl: 86400 });
+    return data;
+  }
+
+  async hasBrandNearby(
+    brandId: string,
+    lat: number,
+    lon: number,
+    radiusKm: number
+  ): Promise<boolean> {
+    if (osmSnapshotBrandStatus(brandId) !== 'ok') return false;
+    const index = await this.loadBrandsIndex();
+    if (!index) return false;
+    const brandIdx = index.brands.findIndex((b) => b.id === brandId);
+    if (brandIdx < 0) return false;
+
+    const tiles = coveringGeohash3(lat, lon, radiusKm);
+    for (const gh of tiles) {
+      const tile = await this.loadTile(gh);
+      if (!tile) continue;
+      for (const [bIdx, tLat, tLon] of tile.stores) {
+        if (bIdx !== brandIdx) continue;
+        if (haversineKm(lat, lon, tLat, tLon) <= radiusKm) return true;
+      }
+    }
+    return false;
+  }
+}

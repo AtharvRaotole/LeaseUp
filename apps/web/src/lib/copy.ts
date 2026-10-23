@@ -21,11 +21,13 @@ export function verificationShortLabel(verified: ProspectPack['brand']['verified
 
 export function verificationTooltip(
   verified: ProspectPack['brand']['verified'],
-  radiusKm: number
+  radiusKm: number,
+  osmSnapshotLabel?: string
 ): string {
+  const osmLabel = osmSnapshotLabel ?? 'OpenStreetMap';
   switch (verified) {
     case 'verified (2 sources)':
-      return `Found in All The Places and OpenStreetMap within ${radiusKm} km`;
+      return `Absent in All The Places and ${osmLabel} within ${radiusKm} km`;
     case 'verifying...':
       return 'Checking OpenStreetMap for a second source';
     case 'unverified (1 source)':
