@@ -27,11 +27,55 @@ export function AgentRunStrip({
 }) {
   const [expanded, setExpanded] = useState(false);
   const byId = new Map(steps.map((s) => [s.id, s]));
+  const activeId = STEP_ORDER.find((id) => byId.get(id)?.status === 'running') ?? STEP_ORDER[0];
 
-  if (!loading && !expanded) {
+  if (loading) {
+    return (
+      <div className="rounded-card border border-border bg-surface p-4 no-print" aria-live="polite">
+        <p className="text-label uppercase text-ink-3">Agent run</p>
+        <p className="mt-1 text-sm text-ink-2">{STEP_LABELS[activeId]}…</p>
+        <ol className="mt-4 space-y-3">
+          {STEP_ORDER.map((id) => {
+            const step = byId.get(id);
+            const status = step?.status ?? (id === activeId ? 'running' : 'pending');
+            return (
+              <li key={id} className="flex items-start gap-3 text-sm">
+                <span
+                  className={cn(
+                    'mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium',
+                    status === 'complete' && 'bg-accent-soft text-accent',
+                    status === 'running' && 'bg-surface-2 text-ink ring-1 ring-accent',
+                    status === 'pending' && 'bg-surface-2 text-ink-3'
+                  )}
+                >
+                  {status === 'complete' ? '✓' : STEP_ORDER.indexOf(id) + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-ink">{STEP_LABELS[id]}</p>
+                  {step?.summary && <p className="text-ink-2">{step.summary}</p>}
+                  {step?.durationMs !== undefined && status === 'complete' && (
+                    <p className="font-mono text-xs tabular-nums text-ink-3">
+                      {(step.durationMs / 1000).toFixed(1)} s
+                    </p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+        {elapsedMs !== null && (
+          <p className="mt-3 font-mono text-xs tabular-nums text-ink-3">
+            Elapsed {(elapsedMs / 1000).toFixed(1)} s
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  if (!expanded) {
     if (demoMode && recordedAt) {
       return (
-        <div className="rounded-card border border-border bg-surface px-4 py-3 text-sm text-ink-2">
+        <div className="rounded-card border border-border bg-surface px-4 py-3 text-sm text-ink-2 no-print">
           <button
             type="button"
             className="text-ink underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-accent rounded-control"
@@ -45,7 +89,7 @@ export function AgentRunStrip({
     if (elapsedMs !== null) {
       const seconds = (elapsedMs / 1000).toFixed(1);
       return (
-        <div className="rounded-card border border-border bg-surface px-4 py-3 text-sm text-ink-2">
+        <div className="rounded-card border border-border bg-surface px-4 py-3 text-sm text-ink-2 no-print">
           <button
             type="button"
             className="text-ink underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-accent rounded-control"
@@ -58,53 +102,29 @@ export function AgentRunStrip({
     }
   }
 
-  const activeId = STEP_ORDER.find((id) => byId.get(id)?.status === 'running') ?? STEP_ORDER[0];
-
   return (
-    <div className="rounded-card border border-border bg-surface p-4">
-      {loading ? (
-        <>
-          <p className="mb-2 text-sm text-ink-2">{STEP_LABELS[activeId]}…</p>
-          <div className="flex flex-wrap items-center gap-2">
-            {STEP_ORDER.map((id) => {
-              const step = byId.get(id);
-              const status = step?.status ?? (id === activeId ? 'running' : 'pending');
-              return (
-                <span
-                  key={id}
-                  className={cn(
-                    'rounded-pill px-2.5 py-1 text-xs font-medium',
-                    status === 'complete' && 'bg-accent-soft text-accent',
-                    status === 'running' && 'bg-surface-2 text-ink ring-1 ring-accent',
-                    status === 'pending' && 'text-ink-3'
-                  )}
-                >
-                  {STEP_LABELS[id]}
-                </span>
-              );
-            })}
-            {elapsedMs !== null && (
-              <span className="ml-auto font-mono text-xs tabular-nums text-ink-3">
-                {(elapsedMs / 1000).toFixed(1)} s
+    <div className="rounded-card border border-border bg-surface p-4 no-print">
+      <p className="text-label uppercase text-ink-3">Agent run</p>
+      <ul className="mt-3 space-y-2 text-sm">
+        {STEP_ORDER.map((id) => {
+          const step = byId.get(id);
+          if (!step) return null;
+          return (
+            <li key={id} className="flex justify-between gap-4 border-b border-border pb-2 last:border-0">
+              <span className="font-medium text-ink">{step.label}</span>
+              <span className="text-right text-ink-2">
+                {step.summary}
+                {step.durationMs !== undefined && (
+                  <span className="ml-2 font-mono text-xs tabular-nums text-ink-3">
+                    {(step.durationMs / 1000).toFixed(1)} s
+                  </span>
+                )}
               </span>
-            )}
-          </div>
-        </>
-      ) : (
-        <ul className="space-y-2 text-sm">
-          {STEP_ORDER.map((id) => {
-            const step = byId.get(id);
-            if (!step) return null;
-            return (
-              <li key={id} className="flex justify-between gap-4 border-b border-border pb-2 last:border-0">
-                <span className="font-medium text-ink">{step.label}</span>
-                <span className="text-ink-2 text-right">{step.summary}</span>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-      {!loading && expanded && (
+            </li>
+          );
+        })}
+      </ul>
+      {expanded && (
         <button
           type="button"
           className="mt-3 text-sm text-ink-2 hover:text-ink"
