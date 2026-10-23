@@ -8,6 +8,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .ui-transition {
+    transition-property: color, background-color, border-color, opacity, transform;
+    transition-duration: 175ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
 @layer base {
   html {
     font-family: var(--font-sans);

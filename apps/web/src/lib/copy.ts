@@ -121,11 +121,11 @@ export function dataConfidenceSubtitle(
     case 'medium':
       return 'Matched to street, not building';
     case 'low':
-      return 'Limited ranking depth or weaker backtest fit';
+      return 'Limited ranking depth or weaker store-check match';
     case 'insufficient':
       return 'Not enough brands scored for this pin';
     default:
-      return 'Based on ranking depth and backtest match';
+      return 'Based on ranking depth and how well picks match real stores';
   }
 }
 
