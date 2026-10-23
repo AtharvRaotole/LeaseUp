@@ -19,17 +19,17 @@ describe('Qloo heatmap', () => {
   it('parses live cell shape with location.lat/lon and query.affinity', () => {
     const cells = normalizeHeatmapCells([
       {
-        location: { lat: 41.8819, lon: -87.6278, geohash: 'dp3wjygk' },
-        query: { affinity: 0.8123, affinity_rank: 4 },
+        location: { latitude: 41.88263, longitude: -87.63245, geohash: 'dp3wmb' },
+        query: { affinity: 1, affinity_rank: 0.997882, popularity: 1 },
       },
     ]);
     expect(cells).toEqual([
       {
-        latitude: 41.8819,
-        longitude: -87.6278,
-        affinity_rank: 4,
-        affinity: 0.8123,
-        popularity: undefined,
+        latitude: 41.88263,
+        longitude: -87.63245,
+        affinity_rank: 0.997882,
+        affinity: 1,
+        popularity: 1,
       },
     ]);
   });

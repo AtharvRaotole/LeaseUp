@@ -33,6 +33,16 @@ Mobile landing:
 | Map + verification | ATP locations and OSM checks on demo recordings |
 | Compare mode | Side-by-side neighborhoods from saved Qloo JSON |
 | Outreach drafts | OpenAI `gpt-4o-mini` when you click, not by default |
+| **Brand sites** (`/brand`) | Qloo heatmap by chain and metro, ATP store overlay, ranked white-space cells |
+| **Portfolio** (`/portfolio`) | Batch up to 10 addresses, confirm geocodes, sequential analyses, shareable CSV |
+
+Brand reverse (recorded Chicago heatmap, light 1440px):
+
+![Brand reverse mode](docs/screenshots/features/brand-reverse-light-1440.png)
+
+Portfolio batch (light 390px):
+
+![Portfolio mode](docs/screenshots/features/portfolio-light-390.png)
 
 ## Architecture
 
