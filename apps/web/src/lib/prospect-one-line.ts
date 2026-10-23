@@ -1,6 +1,6 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 import { brandCategoryLabel } from './brand-category';
-import { fitTopPercent } from './fit-display';
+import { tasteFitMatchHerePhrase } from './fit-display';
 
 /** Broker-facing one-line summary built only from fields on the prospect payload. */
 export function prospectOneLineReason(
@@ -11,13 +11,13 @@ export function prospectOneLineReason(
   const parts: string[] = [];
   const totalScored = results.rankings?.length ?? 0;
   const rank = prospect.brand.affinityRank;
-  const beyondChain = prospect.brand.tasteFitBeyondChainPercentile;
 
-  if (beyondChain !== undefined) {
-    parts.push(`Top ${beyondChain}% taste match here`);
-  } else if (totalScored > 0 && rank > 0) {
-    parts.push(`Top ${fitTopPercent(rank, totalScored)}% taste match here`);
-  }
+  const tasteLine = tasteFitMatchHerePhrase(
+    rank,
+    totalScored,
+    prospect.brand.tasteFitBeyondChainPercentile
+  );
+  if (tasteLine) parts.push(tasteLine);
 
   if (prospect.nearestExistingStoreKm !== undefined) {
     const km = prospect.nearestExistingStoreKm;
