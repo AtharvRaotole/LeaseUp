@@ -1,35 +1,30 @@
 import type { Plugin } from 'vite';
 
-const PRELOAD_FONT_IDS = ['geist-latin-400-normal', 'geist-latin-600-normal'];
+/** Critical text weights (latin) — preloaded from /public/fonts. */
+const PRELOAD_FONT_HREFS = [
+  '/fonts/schibsted-grotesk/schibsted-grotesk-latin-500-normal.woff2',
+  '/fonts/schibsted-grotesk/schibsted-grotesk-latin-600-normal.woff2',
+];
 
-/** Inject hashed woff2 preloads after the production bundle is known. */
+/** Inject font preloads for LCP headline and UI semibold. */
 export function fontPreloadPlugin(): Plugin {
   return {
     name: 'leaseup-font-preload',
     transformIndexHtml: {
-      order: 'post',
-      handler(html, ctx) {
-        if (!ctx.bundle) return html;
-        const tags = PRELOAD_FONT_IDS.flatMap((id) => {
-          const file = Object.keys(ctx.bundle).find(
-            (name) => name.endsWith('.woff2') && name.includes(id)
-          );
-          if (!file) return [];
-          return [
-            {
-              tag: 'link',
-              injectTo: 'head-prepend',
-              attrs: {
-                rel: 'preload',
-                href: `/${file}`,
-                as: 'font',
-                type: 'font/woff2',
-                crossorigin: '',
-              },
-            },
-          ];
-        });
-        return tags.length ? { html, tags } : html;
+      order: 'pre',
+      handler(html) {
+        const tags = PRELOAD_FONT_HREFS.map((href) => ({
+          tag: 'link',
+          injectTo: 'head-prepend',
+          attrs: {
+            rel: 'preload',
+            href,
+            as: 'font',
+            type: 'font/woff2',
+            crossorigin: '',
+          },
+        }));
+        return { html, tags };
       },
     },
   };

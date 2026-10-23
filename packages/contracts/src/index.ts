@@ -15,6 +15,10 @@ export const StorefrontFormatSchema = z.enum(['streetfront', 'mall_inline', 'big
 
 export type StorefrontFormat = z.infer<typeof StorefrontFormatSchema>;
 
+export const ChainSizeTierSchema = z.enum(['small', 'mid', 'big']);
+
+export type ChainSizeTier = z.infer<typeof ChainSizeTierSchema>;
+
 export const BrandAffinitySchema = z.object({
   entityId: z.string(),
   name: z.string(),
@@ -22,6 +26,9 @@ export const BrandAffinitySchema = z.object({
   affinityRank: z.number(),
   popularity: z.number().optional(),
   nationalStoreCount: z.number().optional(),
+  chainSizeTier: ChainSizeTierSchema.optional(),
+  tasteFitBeyondChainPercentile: z.number().min(1).max(99).optional(),
+  sizeDriven: z.boolean().optional(),
   nearbyStoreCount: z.number().optional(),
   storefrontFormat: StorefrontFormatSchema.optional(),
   minStorefrontSqFt: z.number().int().optional(),
@@ -140,6 +147,8 @@ export const BrandRankingRowSchema = z.object({
   blendedRank: z.number(),
   baselineRank: z.number().optional(),
   nationalStoreCount: z.number().optional(),
+  chainSizeTier: ChainSizeTierSchema.optional(),
+  tasteFitBeyondChainPercentile: z.number().min(1).max(99).optional(),
   presentInRadius: z.boolean(),
   nearestStoreKm: z.number().optional(),
 });

@@ -1,12 +1,38 @@
-@import '@fontsource/geist/latin-400.css';
-@import '@fontsource/geist/latin-600.css';
-@import '@fontsource/geist-mono/latin-400.css';
-@import '@fontsource/instrument-serif/latin-400.css';
+@import './styles/fonts.css';
 @import './styles/tokens.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .ui-transition {
+    transition-property: color, background-color, border-color, opacity, transform;
+    transition-duration: 175ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  [data-tour-active='true'] {
+    box-shadow: 0 0 0 2px var(--accent);
+    border-radius: 12px;
+    transition: box-shadow 175ms ease;
+  }
+}
+
+.report-content-enter {
+  animation: report-fade-in 200ms ease-out forwards;
+}
+
+@keyframes report-fade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
 
 @layer base {
   html {

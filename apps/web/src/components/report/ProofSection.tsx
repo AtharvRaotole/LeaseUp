@@ -3,10 +3,19 @@ import { motion } from 'framer-motion';
 import { Check, X } from 'lucide-react';
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
+import { ShowMethod } from '../ui/ShowMethod';
 import { affinitiesAllIdentical, fitPercentileLabel } from '../../lib/fit-display';
 import { presentInTop10Count } from '../../lib/hit-rate';
+import {
+  proofSectionLead,
+  movementColumnTooltip,
+  storeNearbyColumnTooltip,
+  localFitTooltip,
+} from '../../lib/broker-copy';
+import { InfoTooltip } from '../ui/InfoTooltip';
 import { displayBrandName } from '../../lib/brand-display';
-import { rankMovementLabel } from '../../lib/qloo-proof';
+import { rankMovementLabel, rankMovementLabelTechnical } from '../../lib/qloo-proof';
+
 export function ProofSection({
   results,
   radiusKm,
@@ -35,11 +44,17 @@ export function ProofSection({
 
   return (
     <section>
-      <h3 className="text-h3 font-semibold text-ink">Does the taste signal match reality?</h3>
-      <p className="mt-2 text-sm text-ink-2">
-        Legacy hit rate {present} of 10: top ranked brands that already have a store within {radiusKm}{' '}
-        km. When this saturates, use the strict evaluation card above (Spearman and adaptive radius).
-      </p>
+      <h3 className="text-h3 font-semibold text-ink">Do the rankings match what is on the ground?</h3>
+      <p className="mt-2 text-sm text-ink-2">{proofSectionLead(present, radiusKm)}</p>
+      <ShowMethod>
+        <p>
+          We compare taste-ordered (or chain-size-ordered) rankings with All The Places store
+          locations inside your radius. Precision at 10: {(backtest.precisionAt10 * 100).toFixed(0)}%.
+          {backtest.auc !== undefined && ` Separation score (AUC): ${backtest.auc.toFixed(3)}.`}
+          {' '}
+          When legacy P@10 saturates, the evaluation card uses adaptive radius scoring.
+        </p>
+      </ShowMethod>
       <Card className="mt-4 overflow-hidden p-0">
         <table className="w-full text-sm">
           <thead className="bg-surface-2 text-left text-label uppercase text-ink-3">
@@ -47,10 +62,25 @@ export function ProofSection({
               <th className="px-4 py-2 font-medium">Rank</th>
               <th className="px-4 py-2 font-medium">Brand</th>
               {!hideFit && rankingMode === 'qloo' && (
-                <th className="px-4 py-2 font-medium">Fit</th>
+                <th className="px-4 py-2 font-medium">
+                  <span className="inline-flex items-center gap-1">
+                    Local fit
+                    <InfoTooltip label={localFitTooltip()} />
+                  </span>
+                </th>
               )}
-              <th className="px-4 py-2 font-medium">Movement</th>
-              <th className="px-4 py-2 font-medium">Store nearby</th>
+              <th className="px-4 py-2 font-medium">
+                <span className="inline-flex items-center gap-1">
+                  vs chain size
+                  <InfoTooltip label={movementColumnTooltip()} />
+                </span>
+              </th>
+              <th className="px-4 py-2 font-medium">
+                <span className="inline-flex items-center gap-1">
+                  Store nearby
+                  <InfoTooltip label={storeNearbyColumnTooltip(radiusKm)} />
+                </span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -63,19 +93,31 @@ export function ProofSection({
                 transition={{ delay: index * 0.04 }}
                 onClick={() => onBrandSelect?.(row.entityId, row.name)}
               >
-                <td className="px-4 py-3 font-mono tabular-nums text-ink-2">
+                <td className="px-4 py-3 tabular-nums text-ink-2">
                   #
                   {rankingMode === 'baseline'
                     ? row.baselineRank ?? row.qlooRank
                     : row.qlooRank}
                 </td>
-                <td className="px-4 py-3 text-ink">{displayBrandName(row.entityId, row.name)}</td>
+                <td className="px-4 py-3 text-ink">
+                  {displayBrandName(row.entityId, row.name)}
+                  {row.chainSizeTier === 'big' && (
+                    <span className="ml-2 text-xs text-ink-3">(size-driven)</span>
+                  )}
+                </td>
                 {!hideFit && rankingMode === 'qloo' && (
-                  <td className="px-4 py-3 font-mono tabular-nums text-ink-2">
-                    {fitPercentileLabel(row.qlooRank, totalScored)}
+                  <td className="px-4 py-3 tabular-nums text-ink-2">
+                    {fitPercentileLabel(row.qlooRank, totalScored, row.tasteFitBeyondChainPercentile)}
                   </td>
                 )}
-                <td className="px-4 py-3 text-xs text-ink-2">
+                <td
+                  className="px-4 py-3 text-xs text-ink-2"
+                  title={
+                    row.baselineRank !== undefined
+                      ? rankMovementLabelTechnical(row.qlooRank, row.baselineRank)
+                      : undefined
+                  }
+                >
                   {row.baselineRank !== undefined
                     ? rankMovementLabel(row.qlooRank, row.baselineRank)
                     : 'n/a'}
@@ -84,7 +126,7 @@ export function ProofSection({
                   {row.presentInRadius && row.nearestStoreKm !== undefined ? (
                     <span className="inline-flex items-center gap-1.5 text-success">
                       <Check className="h-4 w-4 shrink-0" aria-hidden />
-                      <span className="font-mono tabular-nums">{row.nearestStoreKm.toFixed(1)} km</span>
+                      <span className="tabular-nums">{row.nearestStoreKm.toFixed(1)} km</span>
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1.5 text-ink-3">

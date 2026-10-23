@@ -1,8 +1,15 @@
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { buildCoTenancyMix } from '../../lib/co-tenancy-mix';
+import { coTenancyIntroCopy } from '../../lib/co-tenancy-copy';
 
-export function CoTenancyMixSection({ results }: { results: AnalysisResponse }) {
+export function CoTenancyMixSection({
+  results,
+  radiusKm,
+}: {
+  results: AnalysisResponse;
+  radiusKm: number;
+}) {
   const rows = buildCoTenancyMix(results);
   if (rows.length === 0) return null;
 
@@ -12,10 +19,7 @@ export function CoTenancyMixSection({ results }: { results: AnalysisResponse }) 
     <section className="no-print" data-testid="co-tenancy-mix">
       <h3 className="mb-3 text-h3 font-semibold text-ink">Co-tenancy mix</h3>
       <Card className="space-y-4">
-        <p className="text-sm text-ink-2">
-          Categories already open within {results.storefrontSqFt ?? 2500} sq ft context vs brands you
-          are pitching.
-        </p>
+        <p className="text-sm text-ink-2">{coTenancyIntroCopy(radiusKm)}</p>
         <ul className="space-y-3">
           {rows.map((row) => (
             <li key={row.category}>

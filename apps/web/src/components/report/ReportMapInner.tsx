@@ -237,9 +237,9 @@ export default function ReportMapInner({
           <Switch
             checked={showHeatmap && heatmapAllowed}
             onCheckedChange={(v) => setShowHeatmap(v)}
-            label="Taste heat"
+            label="Shopper demand"
             disabled={!heatmapAllowed}
-            title={!selectedBrand ? 'Pick a brand to see its taste heat' : undefined}
+            title={!selectedBrand ? 'Pick a brand to see where demand is strongest' : undefined}
           />
           <Switch checked={showStores} onCheckedChange={setShowStores} label="Stores" />
           <Switch checked={showRadius} onCheckedChange={setShowRadius} label="Radius" />

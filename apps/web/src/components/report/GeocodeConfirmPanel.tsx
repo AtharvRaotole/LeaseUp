@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import type { GeocodeCandidate, Location } from '@leaseup/contracts';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
@@ -45,6 +46,8 @@ export function GeocodeConfirmPanel({
       style: mapStyle(),
       center: [pin.lng, pin.lat],
       zoom: 13,
+      touchZoomRotate: true,
+      touchPitch: false,
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
     const marker = new maplibregl.Marker({ color: '#0f6b4f', draggable: true })
@@ -56,6 +59,9 @@ export function GeocodeConfirmPanel({
     });
     markerRef.current = marker;
     mapRef.current = map;
+    map.on('load', () => {
+      map.resize();
+    });
     return () => {
       marker.remove();
       map.remove();
@@ -70,6 +76,7 @@ export function GeocodeConfirmPanel({
     if (!map || !marker) return;
     marker.setLngLat([pin.lng, pin.lat]);
     map.flyTo({ center: [pin.lng, pin.lat], duration: 600 });
+    map.resize();
   }, [pin.lat, pin.lng]);
 
   const confirm = () => {
@@ -88,7 +95,8 @@ export function GeocodeConfirmPanel({
     <Card className="p-5" data-testid="geocode-confirm">
       <h2 className="text-h3 font-semibold text-ink">Did you mean?</h2>
       <p className="mt-1 text-sm text-ink-2">
-        We found more than one match for this address. Pick the right place or drag the pin, then continue.
+        We found more than one match for this address. Pick the right place, drag the pin on the map,
+        then continue.
       </p>
       <ul className="mt-4 space-y-2">
         {candidates.map((c, i) => (
@@ -109,8 +117,9 @@ export function GeocodeConfirmPanel({
       </ul>
       <div
         ref={containerRef}
-        className="mt-4 h-[220px] w-full overflow-hidden rounded-lg border border-border"
+        className="mt-4 h-[min(52vh,360px)] min-h-[280px] w-full overflow-hidden rounded-lg border border-border sm:min-h-[220px] sm:h-[220px]"
         aria-label="Confirm map location"
+        data-testid="geocode-confirm-map"
       />
       <div className="mt-4 flex flex-wrap gap-3">
         <Button type="button" onClick={confirm}>Use this pin</Button>

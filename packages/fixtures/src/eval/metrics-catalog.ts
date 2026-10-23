@@ -20,6 +20,19 @@ export type EvalMetricDefinition = {
 
 export const EVAL_METRIC_CATALOG: EvalMetricDefinition[] = [
   {
+    id: 'same_size_auc',
+    label: 'Same-size tier AUC',
+    shortLabel: 'Same-size AUC',
+    description:
+      'Pairwise AUC within matched chain-size tiers (small, mid, big). Cohort headline in live-qloo-lift/aggregates.json.',
+    higherIsBetterForQloo: true,
+    tieBand: 0.01,
+    format: 'decimal',
+    qloo: (m) => m.sameSizeAucQloo ?? Number.NaN,
+    chain: (m) => m.sameSizeAucChain ?? Number.NaN,
+    detail: () => 'Cohort metric; see methodology for confidence interval',
+  },
+  {
     id: 'legacy_present_at10',
     label: 'Legacy present in top 10',
     shortLabel: 'Legacy P@10',

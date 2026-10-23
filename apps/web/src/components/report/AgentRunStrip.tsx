@@ -5,11 +5,11 @@ import { formatUserFacingDate } from '../../lib/format-date';
 
 const STEP_ORDER = ['locate', 'taste', 'backtest', 'prospects', 'verify'] as const;
 const STEP_LABELS: Record<string, string> = {
-  locate: 'Locate',
-  taste: 'Read taste',
-  backtest: 'Prove',
-  prospects: 'Find gaps',
-  verify: 'Double check',
+  locate: 'Find your pin on the map',
+  taste: 'Read what shoppers love nearby',
+  backtest: 'Compare picks to real stores',
+  prospects: 'Build your pitch list',
+  verify: 'Double-check with a second map',
 };
 
 export function AgentRunStrip({
@@ -32,7 +32,7 @@ export function AgentRunStrip({
   if (loading) {
     return (
       <div className="rounded-card border border-border bg-surface p-4 no-print" aria-live="polite">
-        <p className="text-label uppercase text-ink-3">Agent run</p>
+        <p className="text-label uppercase text-ink-3">Progress</p>
         <p className="mt-1 text-sm text-ink-2">{STEP_LABELS[activeId]}…</p>
         <ol className="mt-4 space-y-3">
           {STEP_ORDER.map((id) => {
@@ -54,7 +54,7 @@ export function AgentRunStrip({
                   <p className="font-medium text-ink">{STEP_LABELS[id]}</p>
                   {step?.summary && <p className="text-ink-2">{step.summary}</p>}
                   {step?.durationMs !== undefined && status === 'complete' && (
-                    <p className="font-mono text-xs tabular-nums text-ink-3">
+                    <p className="text-xs tabular-nums text-ink-3">
                       {(step.durationMs / 1000).toFixed(1)} s
                     </p>
                   )}
@@ -64,7 +64,7 @@ export function AgentRunStrip({
           })}
         </ol>
         {elapsedMs !== null && (
-          <p className="mt-3 font-mono text-xs tabular-nums text-ink-3">
+          <p className="mt-3 text-xs tabular-nums text-ink-3">
             Elapsed {(elapsedMs / 1000).toFixed(1)} s
           </p>
         )}
@@ -104,7 +104,7 @@ export function AgentRunStrip({
 
   return (
     <div className="rounded-card border border-border bg-surface p-4 no-print">
-      <p className="text-label uppercase text-ink-3">Agent run</p>
+      <p className="text-label uppercase text-ink-3">Progress</p>
       <ul className="mt-3 space-y-2 text-sm">
         {STEP_ORDER.map((id) => {
           const step = byId.get(id);
@@ -115,7 +115,7 @@ export function AgentRunStrip({
               <span className="text-right text-ink-2">
                 {step.summary}
                 {step.durationMs !== undefined && (
-                  <span className="ml-2 font-mono text-xs tabular-nums text-ink-3">
+                  <span className="ml-2 text-xs tabular-nums text-ink-3">
                     {(step.durationMs / 1000).toFixed(1)} s
                   </span>
                 )}

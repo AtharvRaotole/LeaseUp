@@ -62,7 +62,7 @@ export function LandingBelowFold() {
             {STEPS.map((step) => (
               <Card key={step.n} className="flex flex-col bg-surface">
                 <step.Illustration className="h-20 w-20 text-accent" />
-                <p className="mt-5 font-mono text-sm text-ink-3">{step.n}</p>
+                <p className="mt-5 text-sm text-ink-3">{step.n}</p>
                 <h3 className="mt-2 text-h3 font-semibold text-ink">{step.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-2">{step.body}</p>
               </Card>
@@ -104,10 +104,10 @@ export function LandingBelowFold() {
                     <th scope="row" className="px-4 py-3 text-left font-medium text-ink">
                       {row.brandName}
                     </th>
-                    <td className="px-4 py-3 font-mono tabular-nums text-right text-accent">
+                    <td className="px-4 py-3 tabular-nums text-right text-accent">
                       #{row.rankA}
                     </td>
-                    <td className="px-4 py-3 font-mono tabular-nums text-right text-ink-2">
+                    <td className="px-4 py-3 tabular-nums text-right text-ink-2">
                       #{row.rankB}
                     </td>
                   </tr>
@@ -123,15 +123,16 @@ export function LandingBelowFold() {
         <LandingReveal className="mx-auto max-w-[1040px] px-4">
           <LandingSectionHeading kicker="Proof" title="Backtest on our three demo pins" />
           <p className="mx-auto mt-3 max-w-[640px] text-center text-sm text-ink-2">
-            For each recorded neighborhood we ask: of the top 10 Qloo-ranked brands we track in All
-            The Places, how many already have a store within 10 km?
+            Wicker Park and Boulder are typical urban examples; Sevierville is below typical lift. For
+            each recorded neighborhood we ask: of the top 10 Qloo-ranked brands we track in All The
+            Places, how many already have a store within 10 km?
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {LANDING_PROOF_CHIPS.map((chip) => (
               <Card key={chip.id} className="bg-surface text-center">
                 <p className="font-semibold text-ink">{chip.neighborhood}</p>
                 <p className="text-sm text-ink-2">{chip.city}</p>
-                <p className="mt-3 font-mono text-2xl tabular-nums text-accent">
+                <p className="mt-3 text-2xl tabular-nums text-accent">
                   {chip.presentInTop10}
                   <span className="text-base text-ink-3"> / 10</span>
                 </p>

@@ -6,6 +6,7 @@ import {
 } from './metrics-catalog.js';
 import type { StrictEvalSiteMetrics } from '../strict-eval.js';
 import evalManifest from './manifest.json';
+import { loadLiveQlooLiftAggregates } from './live-qloo-lift/load-aggregates.js';
 
 export type EvalMetricPanel = {
   id: string;
@@ -44,7 +45,20 @@ export function buildEvalMetricPanels(
   for (const id of ids) {
     const def = evalMetricDefinition(id);
     if (!def) continue;
+    if (id === 'same_size_auc') {
+      const agg = loadLiveQlooLiftAggregates();
+      panels.push({
+        id: def.id,
+        label: def.label,
+        description: def.description,
+        qloo: agg.sameSizeAuc.value,
+        detail: `95% CI ${agg.sameSizeAuc.ciLow.toFixed(3)} to ${agg.sameSizeAuc.ciHigh.toFixed(3)} (cohort)`,
+        winner: 'none',
+      });
+      continue;
+    }
     const qloo = def.qloo(metrics);
+    if (Number.isNaN(qloo)) continue;
     const chain = def.chain?.(metrics);
     const panel: EvalMetricPanel = {
       id: def.id,
@@ -65,6 +79,10 @@ export function buildEvalMetricPanels(
 
 export function buildEvalNotes(metrics: StrictEvalSiteMetrics): string[] {
   const notes: string[] = [];
+  const cohort = loadLiveQlooLiftAggregates();
+  notes.push(
+    `Cohort logistic blend P@10 ${(cohort.logisticBlendPrecisionAt10 * 100).toFixed(0)}% vs chain ${(cohort.chainSizePrecisionAt10 * 100).toFixed(0)}% (raw Qloo ${(cohort.rawQlooPrecisionAt10 * 100).toFixed(0)}%).`
+  );
   const legacySaturated =
     metrics.legacyPresentAt10Qloo >= 10 && metrics.legacyPresentAt10Chain >= 10;
   if (legacySaturated) {

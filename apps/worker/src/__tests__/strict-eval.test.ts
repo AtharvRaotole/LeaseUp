@@ -4,11 +4,12 @@ import {
   computeStrictEval,
   buildEvalSiteSnapshot,
   getEvalManifest,
+  loadLiveQlooLiftAggregates,
 } from '@leaseup/fixtures';
 
 describe('strict-eval', () => {
-  it('leaves headline metric unset in manifest until live eval', () => {
-    expect(getEvalManifest().headlineMetricId).toBeNull();
+  it('uses same_size_auc as headline metric in manifest', () => {
+    expect(getEvalManifest().headlineMetricId).toBe('same_size_auc');
   });
 
   it('scores wicker with saturated legacy P@10', () => {
@@ -25,6 +26,8 @@ describe('strict-eval', () => {
     expect(metrics.adaptiveRadiusKm).toBe(3);
     const snapshot = buildEvalSiteSnapshot(metrics);
     expect(snapshot.panels.length).toBeGreaterThan(3);
-    expect(snapshot.headlineMetricId).toBeNull();
+    expect(snapshot.headlineMetricId).toBe('same_size_auc');
+    const headline = snapshot.panels.find((p) => p.id === 'same_size_auc');
+    expect(headline?.qloo).toBe(loadLiveQlooLiftAggregates().sameSizeAuc.value);
   });
 });

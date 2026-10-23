@@ -23,6 +23,8 @@ import {
   type CategoryKey,
 } from '../lib/report-params';
 import { startProspectingJob } from '../lib/start-prospecting';
+import { LANDING_PLAIN_SUMMARY } from '../lib/broker-copy';
+import { ProductExplainer } from '../components/report/ProductExplainer';
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -77,12 +79,13 @@ export function LandingPage() {
           <p className="inline-flex rounded-pill border border-border bg-surface px-3 py-1 text-label uppercase text-ink-3">
             Built on Qloo taste data
           </p>
-          <h1 className="mt-6 font-serif text-display text-ink">
+          <h1 className="mt-6 font-display font-semibold text-display text-ink">
             Find the tenants your space is missing.
           </h1>
-          <p className="mt-4 text-lg text-ink-2">
-            Enter a storefront address. LeaseUp reads what the neighborhood loves, checks it against real stores, and tells you which brands to pitch.
+          <p className="mt-4 text-lg text-ink-2" data-testid="landing-plain-summary">
+            {LANDING_PLAIN_SUMMARY}
           </p>
+          <ProductExplainer className="mt-3 text-base text-ink-2" testId="landing-product-explainer" />
         </div>
 
         <form
@@ -128,13 +131,13 @@ export function LandingPage() {
           </div>
           <div className="mt-4 flex flex-wrap items-end gap-4">
             <SegmentedControl
-              label="Radius"
+              label="Trade area"
               value={radiusKm}
               onChange={(v) => setRadiusKm(v as '2' | '5' | '10')}
               options={[
-                { value: '2', label: '2 km' },
-                { value: '5', label: '5 km' },
-                { value: '10', label: '10 km' },
+                { value: '2', label: '2 km area' },
+                { value: '5', label: '5 km area' },
+                { value: '10', label: '10 km area' },
               ]}
             />
             <Select
@@ -182,7 +185,7 @@ export function LandingPage() {
               >
                 <p className="font-medium text-ink">{ex.neighborhood}</p>
                 <p className="text-sm text-ink-2">{ex.city}</p>
-                <p className="mt-3 font-mono text-sm tabular-nums text-accent">{ex.hitRateLabel}</p>
+                <p className="mt-3 text-sm tabular-nums text-accent">{ex.hitRateLabel}</p>
               </button>
             ))}
           </div>

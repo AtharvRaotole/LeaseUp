@@ -5,6 +5,8 @@ import { Button } from '../ui/Button';
 import { SegmentedControl } from '../ui/SegmentedControl';
 import { placeNeighborhoodBold } from '../../lib/location-label';
 import { buildReportPath } from '../../lib/report-params';
+import { tradeAreaLabel, tradeAreaTooltip } from '../../lib/broker-copy';
+import { InfoTooltip } from '../ui/InfoTooltip';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export function ReportStickyHeader({
@@ -47,19 +49,21 @@ export function ReportStickyHeader({
           <span className="hidden text-ink-3 md:inline"> · </span>
           <span className="hidden truncate md:inline">{request.address}</span>
         </p>
-        <div className="relative shrink-0">
+        <div className="relative flex shrink-0 items-center gap-0.5">
           <button
             type="button"
-            className="rounded-pill border border-border bg-surface-2 px-3 py-1.5 text-sm font-mono tabular-nums text-ink hover:border-border-strong focus-visible:ring-2 focus-visible:ring-accent"
+            className="rounded-pill border border-border bg-surface-2 px-3 py-1.5 text-sm tabular-nums text-ink transition-colors duration-150 hover:border-border-strong focus-visible:ring-2 focus-visible:ring-accent"
             onClick={() => setRadiusOpen((o) => !o)}
             aria-expanded={radiusOpen}
+            aria-label={`Trade area: ${tradeAreaLabel(request.radius)}`}
           >
-            {request.radius} km
+            {tradeAreaLabel(request.radius)}
           </button>
+          <InfoTooltip label={tradeAreaTooltip(request.radius)} />
           {radiusOpen && (
             <div className="absolute right-0 top-full z-30 mt-2 rounded-card border border-border bg-surface p-3 shadow-pop">
               <SegmentedControl
-                label="Radius"
+                label="Trade area"
                 value={radiusKey}
                 onChange={(v) => {
                   const r = Number(v);
@@ -68,9 +72,9 @@ export function ReportStickyHeader({
                   setRadiusOpen(false);
                 }}
                 options={[
-                  { value: '2', label: '2 km' },
-                  { value: '5', label: '5 km' },
-                  { value: '10', label: '10 km' },
+                  { value: '2', label: '2 km area' },
+                  { value: '5', label: '5 km area' },
+                  { value: '10', label: '10 km area' },
                 ]}
               />
             </div>
