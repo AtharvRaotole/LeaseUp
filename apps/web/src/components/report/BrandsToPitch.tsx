@@ -36,7 +36,7 @@ function PitchPill({
     <span
       title={tooltip}
       className={cn(
-        'inline-flex min-h-[22px] max-w-full items-center gap-1 rounded-pill px-2 py-0.5 text-[11px] font-medium leading-snug sm:max-w-[10.5rem]',
+        'inline-flex min-h-[22px] max-w-full items-center gap-1 rounded-pill px-2 py-0.5 text-caption font-medium leading-snug sm:max-w-[10.5rem]',
         tone === 'accent' ? 'bg-accent-soft text-accent' : 'border border-border bg-surface text-ink-2'
       )}
     >
@@ -245,7 +245,7 @@ export function BrandsToPitch({
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="font-medium leading-snug text-ink">{name}</p>
-                      <p className="mt-0.5 text-xs leading-snug text-ink-3">{subline}</p>
+                      <p className="mt-0.5 text-meta leading-snug text-ink-3">{subline}</p>
                     </div>
                   </div>
                   <div className="flex w-full flex-wrap items-center gap-1.5 sm:w-auto sm:shrink-0 sm:justify-end">

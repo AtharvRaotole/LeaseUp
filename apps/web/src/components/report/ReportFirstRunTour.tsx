@@ -7,7 +7,7 @@ const STEPS = [
   {
     title: 'Your pitch list',
     body: 'Each row is a brand local shoppers love that does not have a store in your trade area yet.',
-    targetTestId: 'brands-to-pitch',
+    targetTestId: 'report-top-brands',
   },
   {
     title: 'Why this brand',

@@ -13,7 +13,6 @@ const GeocodeConfirmPanel = lazy(() =>
 );
 import type { GeocodeCandidate, Location } from '@leaseup/contracts';
 import { AgentRunStrip } from '../components/report/AgentRunStrip';
-import { HeadlineCard } from '../components/report/HeadlineCard';
 import { BrandsToPitch } from '../components/report/BrandsToPitch';
 import { ProofSection } from '../components/report/ProofSection';
 import { CompareSection, CompareUnavailable } from '../components/report/CompareSection';
@@ -43,8 +42,10 @@ import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton'
 import { pipelineCardFromProspect } from '../lib/build-pipeline-card';
 import { StorefrontSizeControl } from '../components/report/StorefrontSizeControl';
 import { CoTenancyMixSection } from '../components/report/CoTenancyMixSection';
-import { ProductExplainer } from '../components/report/ProductExplainer';
 import { ReportFirstRunTour } from '../components/report/ReportFirstRunTour';
+import { ReportSummaryAboveFold } from '../components/report/ReportSummaryAboveFold';
+import { ReportCollapsibleSection } from '../components/report/ReportCollapsibleSection';
+import { ProductExplainer } from '../components/report/ProductExplainer';
 import { ReportLoadingPanel } from '../components/report/ReportLoadingPanel';
 import { ReportMapSkeleton } from '../components/report/ReportMapSkeleton';
 import { ReportSidebarFacts } from '../components/report/ReportSidebarFacts';
@@ -216,45 +217,56 @@ export function ReportPage() {
       ? results.backtestBaseline
       : results.backtest);
 
+  const expandDeepSections = searchParams.get('screenshot') === '1';
+
   const reportSections = results && (
-    <div className="report-content-enter space-y-6">
+    <div className="report-content-enter space-y-8 text-body">
       <ErrorBoundary fallback={<SectionUnavailable />}>
-        <div className="print-pitch-block space-y-4">
-          <ProductExplainer className="no-print rounded-card border border-border bg-surface-2/80 px-4 py-3" />
+        <div className="print-pitch-block space-y-6">
           <ReportFirstRunTour ready={results.prospects.length > 0} />
-          <div className="no-print flex flex-col gap-3 border-b border-border pb-4 lg:flex-row lg:items-center lg:justify-between">
-            <QlooRankingToggle
-              mode={rankingMode}
-              onChange={setRankingMode}
-              compact
-              className="shrink-0"
-            />
-            {results.backtestBaseline && (
-              <div className="min-w-0 flex-1">
-                <QlooProofBanner results={results} compact />
-              </div>
-            )}
-          </div>
-          <HeadlineCard
-            results={results}
-            radiusKm={request.radius}
-            chipSlug={slug}
-            backtestOverride={activeBacktest ?? undefined}
-          />
-        </div>
-      </ErrorBoundary>
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <div className="print-pitch-block">
-          <BrandsToPitch
+          <ReportSummaryAboveFold
             results={results}
             request={request}
             slug={slug ?? 'run'}
-            selectedId={selected?.brand.entityId ?? null}
-            onSelect={selectProspect}
-            onDraft={(p) => setOutreach(p)}
             radiusKm={request.radius}
-            forceEmpty={emptyPitch}
+            chipSlug={slug}
+            backtestOverride={activeBacktest ?? undefined}
+            selected={selected}
+            onSelectBrand={selectProspect}
+            onSharePitch={() => setSharePitchOpen(true)}
           />
+          {(loading || steps.length > 0) && (
+            <AgentRunStrip
+              steps={steps}
+              loading={loading}
+              elapsedMs={elapsedMs}
+              demoMode={results?.mode === 'demo'}
+              recordedAt={results?.timestamp}
+            />
+          )}
+        </div>
+      </ErrorBoundary>
+
+      <ErrorBoundary fallback={<SectionUnavailable />}>
+        <ReportCollapsibleSection
+          testId="report-section-why-brands"
+          sectionId="report-why-brands"
+          title="Why these brands"
+          description="Full pitch list, detail for the selected brand, and who already leases nearby."
+          defaultOpen={expandDeepSections}
+        >
+          <div className="print-pitch-block">
+            <BrandsToPitch
+              results={results}
+              request={request}
+              slug={slug ?? 'run'}
+              selectedId={selected?.brand.entityId ?? null}
+              onSelect={selectProspect}
+              onDraft={(p) => setOutreach(p)}
+              radiusKm={request.radius}
+              forceEmpty={emptyPitch}
+            />
+          </div>
           <WhyThisBrandCard
             className="md:hidden"
             prospect={selected}
@@ -272,16 +284,28 @@ export function ReportPage() {
               ) : null
             }
           />
-          {(loading || steps.length > 0) && (
-            <AgentRunStrip
-              steps={steps}
-              loading={loading}
-              elapsedMs={elapsedMs}
-              demoMode={results?.mode === 'demo'}
-              recordedAt={results?.timestamp}
+          <CoTenancyMixSection results={results} radiusKm={request.radius} />
+        </ReportCollapsibleSection>
+      </ErrorBoundary>
+
+      <ErrorBoundary fallback={<SectionUnavailable />}>
+        <ReportCollapsibleSection
+          testId="report-section-vacancy-costs"
+          sectionId="report-vacancy-costs"
+          title="What it costs you"
+          description="Vacancy math and storefront size for format fit."
+          defaultOpen={expandDeepSections}
+        >
+          <div className="no-print print-pitch-block">
+            <VacancyCostCalculator
+              key={request.address}
+              compact
+              initial={vacancyInput}
+              onChange={handleVacancyChange}
+              showPitchOptIn
             />
-          )}
-          <div className="no-print mt-4 print-pitch-block">
+          </div>
+          <div className="no-print print-pitch-block">
             <StorefrontSizeControl
               sqFt={request.storefrontSqFt ?? 2500}
               onChange={(sqFt) => {
@@ -292,46 +316,51 @@ export function ReportPage() {
               }}
             />
           </div>
-        </div>
+        </ReportCollapsibleSection>
       </ErrorBoundary>
+
       <ErrorBoundary fallback={<SectionUnavailable />}>
-        <div className="no-print print-pitch-block">
-          <VacancyCostCalculator
-            key={request.address}
-            compact
-            initial={vacancyInput}
-            onChange={handleVacancyChange}
-            showPitchOptIn
-          />
-        </div>
-      </ErrorBoundary>
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <CoTenancyMixSection results={results} radiusKm={request.radius} />
-      </ErrorBoundary>
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <div className="no-print mt-8">
-          <StrictEvalCard results={results} />
-        </div>
-      </ErrorBoundary>
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <div className="no-print">
-          <ProofSection
-            results={results}
-            radiusKm={request.radius}
-            onBrandSelect={selectMapBrand}
-            rankingMode={rankingMode}
-          />
-        </div>
-      </ErrorBoundary>
-      <ErrorBoundary fallback={<CompareUnavailable />}>
-        <div className="no-print">
-          <CompareSection />
-        </div>
-      </ErrorBoundary>
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <div className="no-print">
-          <HowWeKnowSection results={results} />
-        </div>
+        <ReportCollapsibleSection
+          testId="report-section-how-we-know"
+          sectionId="report-how-we-know"
+          title="How we know"
+          description="Evaluation metrics, rankings, charts, and methodology."
+          defaultOpen={expandDeepSections}
+        >
+          <ProductExplainer className="no-print rounded-card border border-border bg-surface-2/80 px-4 py-4 text-body" />
+          <div className="no-print flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <QlooRankingToggle
+              mode={rankingMode}
+              onChange={setRankingMode}
+              compact
+              className="shrink-0"
+            />
+            {results.backtestBaseline && (
+              <div className="min-w-0 flex-1">
+                <QlooProofBanner results={results} compact />
+              </div>
+            )}
+          </div>
+          <div className="no-print">
+            <StrictEvalCard results={results} />
+          </div>
+          <div className="no-print">
+            <ProofSection
+              results={results}
+              radiusKm={request.radius}
+              onBrandSelect={selectMapBrand}
+              rankingMode={rankingMode}
+            />
+          </div>
+          <ErrorBoundary fallback={<CompareUnavailable />}>
+            <div className="no-print">
+              <CompareSection />
+            </div>
+          </ErrorBoundary>
+          <div className="no-print">
+            <HowWeKnowSection results={results} />
+          </div>
+        </ReportCollapsibleSection>
       </ErrorBoundary>
     </div>
   );
