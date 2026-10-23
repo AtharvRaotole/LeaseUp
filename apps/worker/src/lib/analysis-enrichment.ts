@@ -6,7 +6,13 @@ import type {
 } from '@leaseup/contracts';
 import type { QlooInsight } from '../providers/qloo';
 import type { Location } from '@leaseup/contracts';
-import { blendWithNationalPrior, computeBacktest, CHAIN_PRIOR_BLEND_WEIGHT } from '@leaseup/fixtures';
+import {
+  blendWithNationalPrior,
+  computeBacktest,
+  CHAIN_PRIOR_BLEND_WEIGHT,
+  orderInsightsByNationalStoreCount,
+  getNationalStoreCount,
+} from '@leaseup/fixtures';
 import type { StoreCatalog } from '../services/store-catalog';
 import { displayBrandName } from './brand-display';
 
@@ -18,6 +24,11 @@ export async function buildBrandRankings(
 ): Promise<BrandRankingRow[]> {
   const blended = blendWithNationalPrior(insights);
   const brandIds = new Set(catalog.getBrandIds());
+
+  const baselineOrdered = orderInsightsByNationalStoreCount(insights);
+  const baselineRankById = new Map(
+    baselineOrdered.map((row, index) => [row.entity_id, index + 1])
+  );
 
   const rows: BrandRankingRow[] = [];
   for (let index = 0; index < insights.length; index++) {
@@ -37,6 +48,8 @@ export async function buildBrandRankings(
       affinity: insight.query?.affinity ?? 0,
       qlooRank: index + 1,
       blendedRank: blendedRow?.blendedRank ?? index + 1,
+      baselineRank: baselineRankById.get(insight.entity_id) ?? index + 1,
+      nationalStoreCount: getNationalStoreCount(insight.entity_id),
       presentInRadius: nearby.length > 0,
       nearestStoreKm: nearby[0]?.distance,
     });
@@ -118,6 +131,39 @@ export async function buildDualBacktest(
     raw: toBacktestResult(raw),
     blended: toBacktestResult(blended),
   };
+}
+
+export async function buildBaselineBacktest(
+  location: Location,
+  insights: QlooInsight[],
+  radiusKm: number,
+  catalog: StoreCatalog
+): Promise<BacktestResult> {
+  const brandIds = new Set(catalog.getBrandIds());
+  const ordered = orderInsightsByNationalStoreCount(insights);
+  const nearbyCache = new Map<string, Array<{ distance: number }>>();
+  for (const insight of ordered.filter((i) => brandIds.has(i.entity_id))) {
+    const rows = await catalog.findStoresNearby(
+      insight.entity_id,
+      location.latitude,
+      location.longitude,
+      radiusKm
+    );
+    nearbyCache.set(insight.entity_id, rows.map((s) => ({ distance: s.distance })));
+  }
+
+  const findFromCache = (brandId: string) => nearbyCache.get(brandId) ?? [];
+
+  const computed = computeBacktest(
+    ordered,
+    location.latitude,
+    location.longitude,
+    radiusKm,
+    (brandId, _lat, _lon, _r) => findFromCache(brandId),
+    brandIds
+  );
+
+  return toBacktestResult(computed);
 }
 
 function toBacktestResult(computed: ReturnType<typeof computeBacktest>): BacktestResult {

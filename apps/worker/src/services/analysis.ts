@@ -32,6 +32,7 @@ import { OSM_WIKIDATA_BY_ENTITY } from '../data/osm-wikidata-map';
 import type { QlooLocation } from '../providers/qloo';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
+  buildBaselineBacktest,
   buildBrandRankings,
   buildDualBacktest,
   buildMapStores,
@@ -141,21 +142,28 @@ export class AnalysisService {
         return empty;
       }
 
-      const { raw: backtest, blended: backtestBlended } = await runStep(
+      const { raw: backtest, blended: backtestBlended, baseline: backtestBaseline } = await runStep(
         emit,
         'backtest',
         'Prove it (backtest)',
         async () => {
           const dual = await buildDualBacktest(location, insights, request.radius, this.catalog);
+          const baseline = await buildBaselineBacktest(
+            location,
+            insights,
+            request.radius,
+            this.catalog
+          );
           return {
             summary: `Raw P@10 ${(dual.raw.precisionAt10 * 100).toFixed(0)}% · Blended P@10 ${(dual.blended.precisionAt10 * 100).toFixed(0)}%`,
             detail: {
               rawPrecisionAt10: dual.raw.precisionAt10,
               blendedPrecisionAt10: dual.blended.precisionAt10,
+              baselinePrecisionAt10: baseline.precisionAt10,
               rawAuc: dual.raw.auc,
               blendedAuc: dual.blended.auc,
             },
-            result: dual,
+            result: { ...dual, baseline },
           };
         }
       );
@@ -226,6 +234,7 @@ export class AnalysisService {
         location,
         backtest,
         backtestBlended,
+        backtestBaseline,
         rankings,
         mapStores,
         heatmapAvailable: this.mode === 'live',

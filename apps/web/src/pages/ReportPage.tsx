@@ -19,6 +19,7 @@ import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { ReportErrorBanner } from '../components/report/ReportErrorBanner';
 import type { ApiErrorInfo } from '../lib/api-error';
 import { QlooRankingToggle, type QlooRankingMode } from '../components/report/QlooRankingToggle';
+import { QlooProofBanner } from '../components/report/QlooProofBanner';
 import { WhyThisBrandCard } from '../components/report/WhyThisBrandCard';
 import { BrandLoading } from '../components/brand/BrandLoading';
 import { VacancyCostCalculator } from '../components/report/VacancyCostCalculator';
@@ -41,7 +42,7 @@ export function ReportPage() {
   const [mapBrand, setMapBrand] = useState<MapBrandSelection | null>(null);
   const [outreach, setOutreach] = useState<ProspectPack | null>(null);
   const [mobilePane, setMobilePane] = useState<MobilePane>('report');
-  const [rankingMode, setRankingMode] = useState<QlooRankingMode>('raw');
+  const [rankingMode, setRankingMode] = useState<QlooRankingMode>('qloo');
   const [sharePitchOpen, setSharePitchOpen] = useState(false);
   const [vacancyInput, setVacancyInput] = useState<VacancyCalculatorInput>(DEFAULT_VACANCY_INPUT);
   const mapCaptureRef = useRef<ReportMapCaptureRef | null>(null);
@@ -95,13 +96,18 @@ export function ReportPage() {
 
   const activeBacktest =
     results &&
-    (rankingMode === 'blended' && results.backtestBlended ? results.backtestBlended : results.backtest);
+    (rankingMode === 'baseline' && results.backtestBaseline
+      ? results.backtestBaseline
+      : results.backtest);
 
   const reportSections = results && (
     <>
       <ErrorBoundary fallback={<SectionUnavailable />}>
         <div className="print-pitch-block space-y-4">
           <QlooRankingToggle mode={rankingMode} onChange={setRankingMode} className="no-print" />
+          {results.backtestBaseline && (
+            <QlooProofBanner results={results} />
+          )}
           <HeadlineCard
             results={results}
             radiusKm={request.radius}

@@ -29,7 +29,12 @@ export {
   type ComputedBacktest,
   type BacktestExample,
 } from './backtest.js';
-export { blendWithNationalPrior, CHAIN_PRIOR_BLEND_WEIGHT, type RankedInsight } from './ranking.js';
+export {
+  blendWithNationalPrior,
+  orderInsightsByNationalStoreCount,
+  CHAIN_PRIOR_BLEND_WEIGHT,
+  type RankedInsight,
+} from './ranking.js';
 export {
   DEMO_CHIP_ADDRESSES,
   matchDemoFixtureId,
