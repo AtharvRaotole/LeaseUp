@@ -9,7 +9,7 @@ import {
   brandsScoredStatTooltip,
   dataConfidenceStatTooltip,
 } from '../../lib/broker-copy';
-import { qlooProofHitRateTieSubtitle, qlooProofWinner } from '../../lib/qloo-proof';
+import { qlooProofEvalLead, qlooProofHitRateTieSubtitle, qlooProofWinner } from '../../lib/qloo-proof';
 
 export function HeadlineCard({
   results,
@@ -28,9 +28,12 @@ export function HeadlineCard({
   const hitLabel = alreadyNearbyStatLabel(activeBacktest);
   const analyzed = results.rankings?.length ?? 0;
   const baseline = results.backtestBaseline;
+  const evalLead = qlooProofEvalLead(results);
   const hitTieSubtitle =
     baseline && qlooProofWinner(results.backtest, baseline) === 'tie'
-      ? qlooProofHitRateTieSubtitle(results.rankings)
+      ? evalLead.legacySaturated && evalLead.pinDetail
+        ? evalLead.pinDetail
+        : qlooProofHitRateTieSubtitle(results.rankings)
       : null;
 
   return (
