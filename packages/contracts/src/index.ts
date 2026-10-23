@@ -79,6 +79,8 @@ export const AnalysisRequestSchema = z.object({
   address: z.string().min(3).max(500),
   radius: z.number().min(0.5).max(50).default(10),
   categoryTags: z.array(z.string()).optional(),
+  /** When set, skip re-geocoding and use these coordinates for Qloo signal.location. */
+  confirmedLocation: LocationSchema.optional(),
 });
 
 export type AnalysisRequest = z.infer<typeof AnalysisRequestSchema>;
@@ -202,6 +204,8 @@ export const BrandReverseOpportunitySchema = z.object({
   affinity: z.number().optional(),
   affinityRank: z.number(),
   affinityPercentile: z.number().optional(),
+  metroAreaRank: z.number().int().optional(),
+  metroAreaCount: z.number().int().optional(),
   neighborhood: z.string().optional(),
   nearestStoreKm: z.number().optional(),
   reportPath: z.string(),

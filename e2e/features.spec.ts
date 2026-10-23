@@ -10,7 +10,7 @@ test.describe('LeaseUp feature pages (demo)', () => {
     await page.goto(`${BASE}/brand/${DEMO_BRAND}?metro=chicago`);
     await expect(page.getByTestId('brand-reverse-page')).toBeVisible({ timeout: 60000 });
     await expect(page.getByTestId('brand-opportunities')).toBeVisible({ timeout: 90000 });
-    await expect(page.getByText('Top 1% match').or(page.getByText('Top 5% match')).first()).toBeVisible();
+    await expect(page.getByText(/\d+ of [\d,]+ areas/).first()).toBeVisible();
     await expect(page.getByRole('link', { name: 'Site report' }).first()).toBeVisible();
     await page.locator('select').selectOption('denver');
     await expect(page).toHaveURL(/metro=denver/);

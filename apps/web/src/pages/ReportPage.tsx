@@ -20,6 +20,7 @@ import { ReportErrorBanner } from '../components/report/ReportErrorBanner';
 import type { ApiErrorInfo } from '../lib/api-error';
 import { QlooRankingToggle, type QlooRankingMode } from '../components/report/QlooRankingToggle';
 import { WhyThisBrandCard } from '../components/report/WhyThisBrandCard';
+import { BrandLoading } from '../components/brand/BrandLoading';
 
 type MobilePane = 'report' | 'map';
 
@@ -195,7 +196,7 @@ export function ReportPage() {
             )}
             {reportSections}
             {!results && loading && !simulateError && (
-              <p className="text-ink-2">Running analysis for {slug ?? 'report'}...</p>
+              <BrandLoading label={`Running analysis for ${slug ?? 'report'}…`} />
             )}
           </div>
           <div

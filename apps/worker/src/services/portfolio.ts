@@ -188,7 +188,11 @@ export class PortfolioService {
       try {
         const runId = randomUUID();
         const result = await analysis.analyze(
-          { address: row.location.address, radius: 10 },
+          {
+            address: row.location.address,
+            radius: 10,
+            confirmedLocation: row.location,
+          },
           runId,
           ipHash
         );

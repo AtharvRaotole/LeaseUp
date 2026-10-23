@@ -199,6 +199,11 @@ export class BrandReverseService {
     const ranked = [...cells].sort(
       (a, b) => (b.affinity ?? b.affinity_rank) - (a.affinity ?? a.affinity_rank)
     );
+    const metroAreaCount = cells.length;
+    const metroRankByKey = new Map<string, number>();
+    ranked.forEach((cell, idx) => {
+      metroRankByKey.set(`${cell.latitude},${cell.longitude}`, idx + 1);
+    });
 
     const opportunities: OpportunityDraft[] = [];
     for (const cell of ranked) {
@@ -222,6 +227,8 @@ export class BrandReverseService {
         affinity: cell.affinity,
         affinityRank: cell.affinity_rank,
         affinityPercentile: affinityPercentile(cell.affinity_rank),
+        metroAreaRank: metroRankByKey.get(`${cell.latitude},${cell.longitude}`),
+        metroAreaCount,
         neighborhood: hood,
         nearestStoreKm: nearest === Infinity ? undefined : Math.round(nearest * 10) / 10,
         reportPath: buildReportPath(cell.latitude, cell.longitude),
@@ -238,6 +245,8 @@ export class BrandReverseService {
         affinity: cell.affinity,
         affinityRank: cell.affinity_rank,
         affinityPercentile: affinityPercentile(cell.affinity_rank),
+        metroAreaRank: 1,
+        metroAreaCount,
         neighborhood: hood,
         reportPath: buildReportPath(cell.latitude, cell.longitude),
       });

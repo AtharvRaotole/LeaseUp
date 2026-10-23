@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 28" fill="none" role="img" aria-label="LeaseUp">
+  <g transform="translate(0 2)">
+    <rect x="0" y="0" width="24" height="24" rx="3" stroke="#3FBF8F" stroke-width="2.2" />
+    <path fill="#3FBF8F" d="M2.5 20.15V8.55H8.1V14.45H18.5V20.15H2.5Z" />
+  </g>
+  <text
+    x="32"
+    y="19"
+    fill="#EDEDEF"
+    font-family="Geist, system-ui, sans-serif"
+    font-size="16"
+    font-weight="600"
+    letter-spacing="-0.02em"
+  >
+    LeaseUp
+  </text>
+</svg>

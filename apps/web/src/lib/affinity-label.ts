@@ -15,3 +15,23 @@ export function formatAffinityMatchLabel(affinityRank: number): string {
   if (topBucket <= 10) return 'Top 10% match';
   return `Top ${topBucket}% match`;
 }
+
+/** Rank within metro heatmap cells so rows are distinguishable. */
+export function formatMetroMatchLabel(
+  metroAreaRank?: number,
+  metroAreaCount?: number,
+  affinityRank?: number
+): string {
+  if (metroAreaRank && metroAreaCount) {
+    const base = `#${metroAreaRank} of ${metroAreaCount.toLocaleString('en-US')} areas`;
+    if (affinityRank !== undefined && affinityRank <= 1 && affinityRank > 0) {
+      const top = 100 - affinityRank * 100;
+      if (top > 0 && top < 1) {
+        return `${base} · Top ${top.toFixed(1)}% match`;
+      }
+    }
+    return base;
+  }
+  if (affinityRank !== undefined) return formatAffinityMatchLabel(affinityRank);
+  return 'Match rank unavailable';
+}

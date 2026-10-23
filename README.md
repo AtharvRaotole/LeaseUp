@@ -1,500 +1,142 @@
 # LeaseUp
 
-**Tenant Prospecting Agent for Retail Landlords**
+**Find the tenants your retail space is missing.**
 
-LeaseUp uses Qloo's Taste AI to find the perfect retail tenants for vacant storefronts. Drop a pin, and LeaseUp shows you which brands have high local affinity but aren't there yet—backed by validated backtests and verified absence.
+LeaseUp ranks brands for a storefront using Qloo taste affinity, then checks the list against real chain locations (All The Places) and OpenStreetMap before you pitch. Built for the [Qloo Agentic Hackathon 2026](https://qloo.devpost.com/).
 
-> Built for the [Qloo Agentic Hackathon 2026](https://qloo.devpost.com/)
+**Live demo:** [https://leaseup-59m.pages.dev](https://leaseup-59m.pages.dev)
 
-### 30-second pitch
+![LeaseUp landing (light, 1440px)](docs/screenshots/landing-light-1440.png)
 
-Enter a vacant storefront address. LeaseUp’s agent **locates** the site, **reads neighborhood taste** from Qloo (restricted to brands we can verify in All The Places), **proves** the signal with a backtest, **finds who’s missing**, **double-checks absence** with ATP + OSM, and **drafts outreach** only when you click. Demo chips load recorded Qloo responses in under a second.
+## One-minute demo
 
-![Hero landing](docs/hero-landing.png)
+1. Open the live site and enter `1574 N Milwaukee Ave, Chicago, IL 60622` (or click **Wicker Park**).
+2. Leave radius at **10 km** and run **Analyze**.
+3. Scan **Brands to pitch** for high-fit chains with no nearby store.
+4. Open **Compare** to flip Wicker vs Sevierville on recorded fixtures.
+5. Click **Draft outreach** on a prospect to see gpt-4o-mini copy (on demand only).
+
+Report UI (demo chip):
+
+![Report (light, 1440px)](docs/screenshots/report-light-1440.png)
+
+Mobile landing:
+
+![LeaseUp landing (light, 390px)](docs/screenshots/landing-light-390.png)
+
+## Features
+
+| Feature | What you get |
+| --- | --- |
+| Taste-ranked prospects | Qloo `/v2/insights` at your pin (or recorded fixtures in demo) |
+| Backtest strip | How many top-10 brands already have a store in radius |
+| Map + verification | ATP locations and OSM checks on demo recordings |
+| Compare mode | Side-by-side neighborhoods from saved Qloo JSON |
+| Outreach drafts | OpenAI `gpt-4o-mini` when you click, not by default |
+| **Brand sites** (`/brand`) | Qloo heatmap by chain and metro, ATP store overlay, ranked white-space cells |
+| **Portfolio** (`/portfolio`) | Batch up to 10 addresses, confirm geocodes, sequential analyses, shareable CSV |
+
+Brand reverse (recorded Chicago heatmap, light 1440px):
+
+![Brand reverse mode](docs/screenshots/features/brand-reverse-light-1440.png)
+
+Portfolio batch (light 390px):
+
+![Portfolio mode](docs/screenshots/features/portfolio-light-390.png)
+
+## Architecture
 
 ```mermaid
-flowchart LR
-  A[Storefront address] --> B[Nominatim + KV]
-  B --> C[Qloo insights]
-  C --> D[Backtest vs ATP]
-  C --> E[Prospects + verify]
-  E --> F[Outreach on demand]
-  D --> G[Map + Compare flip UI]
+flowchart TB
+  subgraph client [Browser]
+    Web[React + Vite]
+    Map[MapLibre GL]
+  end
+  subgraph cf [Cloudflare]
+    Pages[Pages]
+    Worker[Worker API]
+    KV[(KV)]
+    D1[(D1)]
+  end
+  subgraph data [Providers]
+    Qloo[Qloo /v2/insights]
+    ATP[All The Places CC0]
+    OSM[OSM snapshot tiles]
+    OAI[OpenAI gpt-4o-mini]
+  end
+  Web --> Pages
+  Web --> Worker
+  Map --> Worker
+  Worker --> KV
+  Worker --> D1
+  Worker --> Qloo
+  Worker --> ATP
+  Worker --> OSM
+  Worker --> OAI
 ```
 
-### Honest limitations
+More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
-- Backtests and absence checks cover **~47 major chains** in the ATP snapshot (not every retailer).
-- **Demo mode** uses recorded Qloo responses; **live mode** needs `QLOO_API_KEY` and uses `signal.location=POINT(lon lat)` + `signal.location.radius` (meters). Brand insights are requested in batches of ≤45 IDs (cross-batch affinity comparability is an assumption).
-- **Live store catalog** uses static geohash-3 tiles under `apps/worker/public/tiles/` (built by `scripts/build-geotiles.mjs` during worker build). D1 is only for rate limits and run logs.
-- **Heatmap overlay** appears only when Qloo returns heatmap cells (live mode); no fabricated heatmaps in demo.
-- SSE streaming may fall back to `POST /api/analyze` behind some proxies; timings still real.
+## How we use Qloo
 
----
+Live requests go to `https://hackathon.api.qloo.com` (override with `QLOO_BASE_URL`):
 
-## 🎯 The Problem
+- **`GET /v2/insights`** with `filter.type=urn:entity:brand`, geocoded `signal.location` (WKT point) and `signal.location.radius` in meters, `take` up to 50, optional `filter.results.entities` (batched at 45 IDs) and `filter.tags`, plus `feature.explainability=true`.
+- **Heatmap** uses the heatmap variant on the same API when cells are returned (live only; demo does not fabricate heatmaps).
 
-Vacant retail space costs landlords, REITs, and leasing brokers thousands per month. Finding the right tenant is a guessing game: lease to the wrong brand, and they close in 18 months. Lease to a brand with no local demand, and you're dark for another 6 months.
+Demo mode serves recorded responses for the three chip addresses only; other addresses require `APP_MODE=live` and `QLOO_API_KEY`.
 
-Traditional tools rely on:
-- Generic demographics ("millennials with disposable income")
-- National brand size alone ("Starbucks goes everywhere")
-- Gut feel from brokers
+## Accuracy and honesty
 
-**LeaseUp is different:** It ranks brands by hyperlocal taste affinity (Qloo's signals), blends national footprint as a prior (25% weight on ATP store counts when ordering prospects; backtests use raw Qloo order), backtests predictions against real stores, and verifies absence with multiple data sources.
+- **Backtest:** Among brands Qloo returns that we also track in All The Places, we count how many of the top 10 already have a store within your radius. Demo hit rates on the homepage are computed from fixtures (`packages/fixtures`), not hand-edited.
+- **Verification labels** on the report reflect ATP matches and OSM snapshot checks where recorded; single-source rows are marked accordingly.
+- **Limits:** We track on the order of 200 major chains in the embedded ATP snapshot, not every retailer. Cross-batch Qloo affinity ordering is an assumption when more than 45 brand IDs are requested. Heatmaps appear only when Qloo returns cells in live mode.
 
----
-
-## 🎨 The Demo Moment
-
-**Try these exact demo chip addresses** (demo mode only serves recorded fixtures for these three; any other address returns a “live mode required” message):
-
-1. **Wicker Park, Chicago** — `1574 N Milwaukee Ave, Chicago, IL 60622`
-2. **Sevierville, Tennessee** — `125 Collier Dr, Sevierville, TN 37862`
-3. **Boulder, Colorado** — `1125 Pearl St, Boulder, CO 80302`
-
-Regenerate the metrics table from code (no hand-edited numbers):
+Regenerate the metrics table from code:
 
 ```bash
 node scripts/generate-readme-metrics.mjs
 ```
 
-**The flip:** Compare Wicker Park vs Sevierville in the UI — ranks and raw Qloo affinity scores come straight from recorded fixtures.
+## Local setup
 
----
-
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        User / Broker                        │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         ▼
-         ┌───────────────────────────────┐
-         │  React + Vite Frontend (SPA) │
-         │  - MapLibre GL map interface  │
-         │  - Backtest visualization     │
-         │  - Prospect cards with packs  │
-         └───────────────┬───────────────┘
-                         │ /api/analyze
-                         ▼
-┌────────────────────────────────────────────────────────────┐
-│          Cloudflare Worker (Hono + TypeScript)             │
-├────────────────────────────────────────────────────────────┤
-│  Security Layer:                                           │
-│  ✓ Rate limiting (60 req/min global, 10 req/min /analyze) │
-│  ✓ Input validation (Zod schemas)                         │
-│  ✓ CORS with origin allowlist                             │
-│  ✓ Secure headers                                          │
-├────────────────────────────────────────────────────────────┤
-│  Analysis Service:                                         │
-│  1. Resolve location (Nominatim OSM / demo fixtures)      │
-│  2. Call Qloo /v2/insights (brand affinity + heatmaps)    │
-│  3. Run backtest (compare affinity ranks to real stores)  │
-│  4. Verify absence (store dataset + second check)         │
-│  5. Score tenant mix fit (co-affinity with existing)      │
-│  6. Generate outreach drafts (OpenAI gpt-4o-mini)         │
-├────────────────────────────────────────────────────────────┤
-│  Providers:                                                │
-│  - QlooClient: /v2/insights, heatmaps, caching, retries   │
-│  - OpenAIClient: Draft outreach emails                    │
-├────────────────────────────────────────────────────────────┤
-│  Data:                                                     │
-│  - D1 (SQLite): Rate limits, run logs, API metrics        │
-│  - KV: Qloo response cache (24h TTL)                      │
-└────────────────────────────────────────────────────────────┘
-                         │
-                         ▼
-         ┌───────────────────────────────┐
-         │  External APIs (server-only)  │
-         │  - Qloo hackathon.api.qloo.com│
-         │  - OpenAI (optional)           │
-         └───────────────────────────────┘
-```
-
----
-
-## 🚀 How Qloo Powers LeaseUp
-
-LeaseUp uses **six Qloo features** in depth:
-
-| Qloo Feature | How LeaseUp Uses It | Endpoint |
-|---|---|---|
-| **Brand Insights** | Rank brands by local affinity for a given address/neighborhood | `/v2/insights?filter.type=urn:entity:brand&signal.location.query=...` |
-| **Location Filtering** | Target insights to a specific metro, neighborhood, or coordinates | `signal.location.query=<address>` |
-| **Category Tags** | Filter to retail categories (fashion, food, wellness, etc.) | `filter.tags=urn:tag:genre:brand:fashion:casual` |
-| **Affinity Rank** | Comparable metric across locations for backtest validation | `query.affinity_rank` in results |
-| **Explainability** | Show *why* a brand ranks high (used in reasons list) | `feature.explainability=true` |
-| **Heatmaps** | Visualize brand affinity at cell level (future: map overlay) | `/v2/insights?filter.type=urn:heatmap` |
-
-### Backtest Validation (The Credibility Centerpiece)
-
-LeaseUp doesn't just rank brands—it **proves the rankings work**:
-
-1. For a given location, fetch Qloo brand insights (50 brands)
-2. Check which brands actually have stores within 10km (using All The Places data)
-3. Compute **Precision@10**: What % of the top-10 Qloo-ranked brands are actually present?
-4. Display the P@10 score prominently with a list of correctly predicted stores
-
-**Recorded validation** (`data/research/round2/neigh_test_10km.json`, 10km radius): run `node scripts/generate-readme-metrics.mjs` for current P@10/AUC on the three demo chips and aggregate AUC stats from that file.
-
-**Why this matters for judges:**
-- It's not a black box: users see proof the model works *before* trusting the "not here yet" list
-- Stage 2 criterion "Technological Implementation" rewards depth of Qloo use—backtest is a novel validation layer
-- It addresses the circularity caveat: "Does Qloo predict where brands *are*, or where they *should be*?" Answer: It predicts where they are with 75-80% AUC, so absent brands with high affinity are credible white space
-
----
-
-## 📊 Key Metrics (From Validation Data)
-
-Run `node scripts/generate-readme-metrics.mjs` to print demo-chip P@10/AUC and aggregates from `data/research/round2/neigh_test_10km.json`. Do not hand-edit those tables.
-
-**Caveats (honest):**
-- "Present" means within 10km radius; shop-in-shop and franchise formats may be missed
-- Qloo affinity may partly *reflect* existing stores (circularity), not purely predict demand
-- 3 of 24 neighborhoods returned 0 results (likely geocoding failures)
-- "Verified absent" in the product relies on store dataset coverage (All The Places is CC0 open data, ~95% coverage for major chains)
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology | Why |
-|---|---|---|
-| **Frontend** | React 18 + Vite + TypeScript | Fast dev, modern tooling |
-| **UI** | Tailwind CSS + MapLibre GL | Utility-first styling + free OSM maps |
-| **Backend** | Cloudflare Workers + Hono | Edge compute, free tier, TypeScript-native |
-| **Database** | D1 (SQLite) + KV | Transactional + cache |
-| **API Client** | Custom Qloo client | Rate limiting, caching, retries, typed responses |
-| **Validation** | Zod schemas | Runtime type safety on every endpoint |
-| **Testing** | Vitest | Unit + integration tests with fixtures |
-| **CI/CD** | GitHub Actions | Lint, typecheck, test, build on every push |
-| **Deployment** | Cloudflare Workers | Free tier: 100k req/day |
-
-### Security Features
-
-✅ **Rate limiting** applied *before* any paid API call (60 req/min global, 10/min on `/analyze`)  
-✅ **No unauthenticated endpoint** triggers Qloo or OpenAI calls (health checks are read-only)  
-✅ **Server-side-only API keys** (never sent to client)  
-✅ **Input validation** on every route (Zod schemas)  
-✅ **Prompt injection scrubbing** on untrusted text  
-✅ **Timeouts and retries** on all external calls  
-✅ **Structured logging** with run IDs  
-✅ **Secrets never committed** (`.env`, `.dev.vars` in `.gitignore`)
-
-### Testing Coverage
-
-- **Unit tests**: Qloo client (demo mode), OpenAI client (demo mode), Zod schemas
-- **Integration tests**: Full analysis flow with demo fixtures
-- **Fixtures**: Real validation data from `round2/neigh_test_10km.json`, baked into `@leaseup/fixtures`
-- **CI**: All tests run on every push
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js >= 22.13.0 (check with `node --version`)
-- pnpm >= 9.0.0 (install with `npm install -g pnpm`)
-- Cloudflare account (free tier works)
-- Qloo API key (from https://hackathon.api.qloo.com signup)
-- OpenAI API key (optional; demo mode works without it)
-
-### Installation
+Requirements: Node 22+, pnpm 9+.
 
 ```bash
-# Clone the repository
-git clone https://github.com/AtharvRaotole/LeaseUp.git
-cd LeaseUp
-
-# Install dependencies
 pnpm install
-
-# Copy environment template
-cp .env.example .env
-
-# Edit .env with your keys (or leave empty for demo mode)
-# QLOO_API_KEY=your_key_here
-# QLOO_BASE_URL=https://hackathon.api.qloo.com
-# OPENAI_API_KEY=your_key_here (optional)
-# APP_MODE=demo (or "live" if you have keys)
+pnpm dev          # web + worker via turbo
+# or
+pnpm --filter @leaseup/web dev
+pnpm --filter @leaseup/worker dev
 ```
 
-### Development
+Copy `apps/worker/.dev.vars.example` to `.dev.vars` for live Qloo and OpenAI keys. Default `APP_MODE=demo` works without keys for the three demo chips.
+
+Production build:
 
 ```bash
-# Run the full stack (worker + web) in demo mode
-pnpm dev
-
-# Or run them separately:
-pnpm --filter @leaseup/worker dev  # http://localhost:8787
-pnpm --filter @leaseup/web dev     # http://localhost:5173
-```
-
-The frontend at `http://localhost:5173` will proxy API calls to the worker at `http://localhost:8787`.
-
-### Demo Mode vs Live Mode
-
-**Demo mode** (default, works without keys):
-- Uses baked-in fixtures from validation data (Wicker Park, Sevierville, Boulder)
-- No API calls to Qloo or OpenAI
-- Perfect for local testing and CI
-
-**Live mode** (requires keys):
-- Set `APP_MODE=live` in `.env`
-- Real Qloo API calls (cached for 24h)
-- Real OpenAI calls for outreach drafts
-- Rate limits enforced
-
-### Testing
-
-```bash
-# Run all tests
-pnpm test
-
-# Run tests in watch mode
-pnpm --filter @leaseup/worker test:watch
-
-# Lint and typecheck
-pnpm lint
-pnpm typecheck
-
-# Full CI verification
 pnpm verify:ci
 ```
 
-### Build
+## Tests
 
 ```bash
-# Build all packages
-pnpm build
-
-# Build artifacts:
-# - apps/web/dist (static site)
-# - apps/worker/dist (worker bundle)
+pnpm test
 ```
 
----
+Web UI copy is checked for em/en dashes. Fixture backtests and demo chip routing have focused tests under `apps/web/src/__tests__/`.
 
-## 🌐 Deployment
+## Screenshots (for reviewers)
 
-### Cloudflare Workers (Recommended)
+Captured with `node scripts/story-screenshots.mjs` after `pnpm --filter @leaseup/web build && pnpm --filter @leaseup/web preview`. Metadata: `docs/screenshots/capture-meta.json` (commit SHA and base branch SHA at capture time).
 
-1. **Install Wrangler CLI:**
-   ```bash
-   pnpm add -g wrangler
-   wrangler login
-   ```
+## License
 
-2. **Create D1 database:**
-   ```bash
-   wrangler d1 create leaseup_db
-   # Copy the database_id from output
-   ```
+MIT. See [LICENSE](LICENSE).
 
-3. **Update `apps/worker/wrangler.toml`:**
-   ```toml
-   [[d1_databases]]
-   binding = "DB"
-   database_name = "leaseup_db"
-   database_id = "YOUR_DATABASE_ID_HERE"
-   ```
+## Attribution
 
-4. **Run migrations:**
-   ```bash
-   wrangler d1 execute leaseup_db --file=apps/worker/schema.sql
-   ```
-
-5. **Create KV namespace:**
-   ```bash
-   wrangler kv:namespace create CACHE
-   # Copy the id from output and update wrangler.toml
-   ```
-
-6. **Set secrets:**
-   ```bash
-   echo "your_qloo_key" | wrangler secret put QLOO_API_KEY
-   echo "your_openai_key" | wrangler secret put OPENAI_API_KEY
-   wrangler secret put APP_MODE  # type "live" and press Enter
-   ```
-
-7. **Deploy:**
-   ```bash
-   pnpm --filter @leaseup/worker deploy
-   ```
-
-8. **Deploy the frontend:**
-   - Build: `pnpm --filter @leaseup/web build`
-   - Upload `apps/web/dist` to Cloudflare Pages:
-     ```bash
-     wrangler pages deploy apps/web/dist --project-name=leaseup
-     ```
-   - Or use Vercel, Netlify, or any static host
-
-9. **Update `ALLOWED_ORIGINS`:**
-   ```bash
-   wrangler secret put ALLOWED_ORIGINS
-   # type "https://leaseup.pages.dev,https://yourdomain.com" and press Enter
-   ```
-
-### Alternative: Railway / Render / Fly.io
-
-LeaseUp is built for Cloudflare Workers, but you can adapt it:
-- Replace D1 with PostgreSQL or SQLite
-- Replace KV with Redis
-- Deploy the worker as a Node.js Express app (wrap Hono)
-
----
-
-## 📈 Backtest Results (Validation Evidence)
-
-From `round2/neigh_test_10km.json` (21 neighborhoods, 49 brands, 10km radius):
-
-| Neighborhood | Present Brands | AUC (Qloo) | AUC (Footprint) | AUC (Combined) | P@10 |
-|---|---|---|---|---|---|
-| **Wicker Park, Chicago** | 36 | 0.797 | 0.487 | 0.697 | **1.0** |
-| **Boulder, Colorado** | 28 | 0.870 | 0.724 | 0.870 | **1.0** |
-| **The Woodlands, Texas** | 35 | 0.776 | 0.628 | 0.832 | **1.0** |
-| Pearl District, Portland | 24 | 0.673 | 0.647 | 0.756 | 0.8 |
-| Scottsdale, Arizona | 36 | 0.787 | 0.727 | 0.836 | 0.9 |
-| Bethesda, Maryland | 34 | 0.794 | 0.704 | 0.833 | 0.9 |
-| **Mean (21 neighborhoods)** | 30 | **0.75** | 0.68 | **0.80** | 0.85 |
-
-**Key takeaways:**
-- Qloo's affinity rank beats national footprint as a predictor in most neighborhoods
-- Combined score (Qloo + footprint) beats footprint alone in **20 out of 21** neighborhoods
-- "Taste" brands (Whole Foods, Sweetgreen, Lululemon) have the strongest neighborhood signal
-- Mass/value brands (Waffle House, Culver's) show weaker local differentiation
-
-**Caveats:**
-- Store presence is labeled at 10km radius (drive time would be better)
-- Ground truth is All The Places data (Oct 2026 snapshot, ~95% coverage)
-- Some "absent" brands may be present as shop-in-shop or franchise (e.g., Kendra Scott in Lubbock)
-- Circularity risk: Qloo affinity may partly reflect existing stores, not purely predict demand
-
-**How LeaseUp addresses this:**
-- Shows backtest score prominently: "Our model correctly ranked X out of 10 existing stores"
-- Flags low-confidence neighborhoods with warnings
-- Requires "verified absent" double-check (store dataset + second source in full version)
-- Shows "not enough data" state for unresolved locations
-
----
-
-## 🎯 Use Cases
-
-### Primary Buyer: Retail Landlords & REITs
-- **Pain:** Vacant space costs ~$5k–$50k/month depending on market
-- **Job to be done:** Find tenants that will succeed long-term (data > gut feel)
-- **Value:** LeaseUp's backtest proves the picks aren't guesses
-
-### Secondary: Leasing Brokers
-- **Pain:** Pitching tenants cold with generic demographics
-- **Job to be done:** Show prospects a data-driven case for why *this* location fits *their* brand
-- **Value:** LeaseUp generates a ready-to-send outreach pack with Qloo insights cited
-
-### Tertiary: Downtown BIDs & Economic Development
-- **Pain:** Attracting the right tenant mix to revitalize districts
-- **Job to be done:** Identify brands whose customers already live/work there
-- **Value:** Aggregate taste data (no PII) aligns with privacy-first economic development
-
----
-
-## 🏆 Why LeaseUp Wins (Stage 2 Criteria)
-
-### 1. Technological Implementation (Qloo Depth)
-✅ Uses 6 Qloo features: brand insights, location filtering, tags, affinity rank, explainability, heatmaps  
-✅ Novel validation layer: backtest with real store data (metrics from `generate-readme-metrics.mjs`)  
-✅ Blends Qloo affinity with national footprint prior for prospect ordering (backtest uses raw Qloo order)  
-✅ Production-grade client: caching, rate limiting, retries, structured logging
-
-### 2. Design (Complete Product, Not a PoC)
-✅ Full user flow: address → backtest → prospects → outreach pack  
-✅ Polished, map-centric UI with Tailwind + MapLibre GL  
-✅ "Not enough data" and warning states for low-quality results  
-✅ Demo mode works fully without keys (for judging and CI)  
-✅ Security: rate limiting, input validation, no unauthenticated paid calls
-
-### 3. Potential Impact (Real Business, Clear Buyer)
-✅ Quantified pain: vacant space costs $5k–$50k/month  
-✅ Named buyers: landlords, REITs (Clarion Partners is already a Qloo customer), brokers, BIDs  
-✅ Qloo's own marketed case: CRE tenant placement (Clarion on Magnificent Mile)  
-✅ Privacy-first: aggregate data only, matches Qloo COO's "taste without identity" thesis
-
-### 4. Quality of the Idea (Non-Obvious, Data-Proven)
-✅ Not "group restaurant picking" (Duddle 2025 didn't place)  
-✅ Novel twist: backtest centerpiece proves the model works *before* asking user to trust it  
-✅ Verified absence: double-checks store dataset + second source (future: Qloo place search)  
-✅ Honest caveats: shows data quality, warns on low confidence, flags circularity risk
-
----
-
-## 📚 Data Sources & Attribution
-
-- **Qloo API**: https://hackathon.api.qloo.com (brand insights, heatmaps, affinity ranks)
-- **All The Places**: https://alltheplaces-data.openaddresses.io/ (CC0 store location data, run 2026-10-10)
-- **OpenStreetMap Nominatim**: Geocoding (ODBL license, attributed in UI)
-- **MapLibre GL JS**: Map rendering (BSD 3-Clause license)
-
-All validation scripts and raw outputs are preserved in `/uploads/round2/` with attribution intact.
-
----
-
-## 🔒 Privacy & Data Handling
-
-LeaseUp is **privacy-first by design**, aligned with Qloo's "taste without identity" principle:
-
-- ✅ **No personal data** sent to Qloo (only public entities: addresses, brand names)
-- ✅ **Aggregate signals only** (Qloo affinity, demographics, heatmaps)
-- ✅ **Server-side-only API calls** (keys never exposed to client)
-- ✅ **No user tracking** (no cookies, no analytics, no PII storage)
-- ✅ **Logged data**: run IDs, IP addresses (for rate limiting), timestamps—no names or emails
-- ✅ **Outreach drafts**: reviewed by user before sending, never auto-sent
-
----
-
-## 🤝 Contributing
-
-This is a hackathon entry, but contributions are welcome post-submission:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit with clear messages (`git commit -m 'Add backtest confidence intervals'`)
-4. Push to your branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-**Wishlist for v2:**
-- [ ] Live map overlay with heatmap cells from Qloo
-- [ ] Historical snapshot backtest (Q1 2025 → Q4 2025 openings)
-- [ ] Multi-source absence verification (ATP + Qloo place search + SafeGraph)
-- [ ] Tenant mix co-affinity matrix (compare vs existing tenants)
-- [ ] PDF export of full prospect pack for broker memos
-- [ ] Experiential/entertainment tenant lens (venues, food halls, fitness)
-
----
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file.
-
-Copyright (c) 2026 Atharv Raotole
-
----
-
-## 🙏 Acknowledgments
-
-- **Qloo** for the Taste AI API and the hackathon
-- **All The Places** contributors for CC0 store data
-- **OpenStreetMap** for geocoding
-- CommonGround reference architecture (Cloudflare Workers + D1 patterns)
-
----
-
-## 📞 Contact
-
-- **GitHub**: [@AtharvRaotole](https://github.com/AtharvRaotole)
-- **Project**: https://github.com/AtharvRaotole/LeaseUp
-- **Devpost**: https://devpost.com/software/leaseup (once submitted)
-
-Built with ☕ for the Qloo Agentic Hackathon 2026
+- [Qloo](https://qloo.com/) Taste AI (hackathon API)
+- [All The Places](https://www.alltheplaces.xyz/) store locations (CC0)
+- [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL)
+- Map tiles via [MapLibre GL](https://maplibre.org/)

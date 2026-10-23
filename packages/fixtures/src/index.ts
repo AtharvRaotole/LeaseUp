@@ -46,6 +46,10 @@ export {
   demoChipHitRateLabel,
 } from './demo-chip-hit-rates.js';
 export {
+  wickerLandingTasteSnippet,
+  type LandingTasteRow,
+} from './landing-taste-snippet.js';
+export {
   overpassDemoByFixture,
   DEMO_OSM_UNRECORDED_NOTE,
   type OverpassDemoRecording,

@@ -9,7 +9,7 @@ import { Skeleton } from '../components/ui/Skeleton';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useBrandReverse, useBrandSearch, useMetros } from '../hooks/useBrandReverse';
 import { displayBrandName } from '../lib/brand-display';
-import { formatAffinityMatchLabel } from '../lib/affinity-label';
+import { formatMetroMatchLabel } from '../lib/affinity-label';
 import { cn } from '../lib/cn';
 
 const BrandReverseMap = lazy(() =>
@@ -189,7 +189,11 @@ export function BrandPage() {
                                 {row.neighborhood ?? 'Loading area name'}
                               </p>
                               <p className="mt-1 text-sm text-ink-2">
-                                {formatAffinityMatchLabel(row.affinityRank)}
+                                {formatMetroMatchLabel(
+                                  row.metroAreaRank,
+                                  row.metroAreaCount,
+                                  row.affinityRank
+                                )}
                                 {row.nearestStoreKm !== undefined
                                   ? ` · ${row.nearestStoreKm} km from nearest store`
                                   : ''}
