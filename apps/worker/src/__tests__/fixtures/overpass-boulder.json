@@ -1,0 +1,42 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API",
+  "elements": [
+    {
+      "type": "node",
+      "id": 1234567890,
+      "lat": 40.0180,
+      "lon": -105.2790,
+      "tags": {
+        "brand": "Whole Foods Market",
+        "brand:wikidata": "Q1809448",
+        "name": "Whole Foods Market",
+        "shop": "supermarket"
+      }
+    },
+    {
+      "type": "node",
+      "id": 1234567891,
+      "lat": 40.0165,
+      "lon": -105.2815,
+      "tags": {
+        "brand": "Target",
+        "brand:wikidata": "Q1046951",
+        "name": "Target",
+        "shop": "department_store"
+      }
+    },
+    {
+      "type": "node",
+      "id": 1234567892,
+      "lat": 40.0195,
+      "lon": -105.2765,
+      "tags": {
+        "brand": "Starbucks",
+        "brand:wikidata": "Q37158",
+        "name": "Starbucks",
+        "shop": "coffee"
+      }
+    }
+  ]
+}

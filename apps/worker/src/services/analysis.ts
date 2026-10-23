@@ -1,18 +1,33 @@
-import type { Env } from '../index';
-import type { AnalysisRequest, AnalysisResponse, Location, BacktestResult, ProspectPack } from '@leaseup/contracts';
-import { QlooClient } from '../providers/qloo';
+import { QlooClient, type QlooInsight } from '../providers/qloo';
 import { OpenAIClient } from '../providers/openai';
-import { wickerparkFixture, boulderFixture, seviervilleFixture, findStoresNearby, getNationalStoreCount } from '@leaseup/fixtures';
+import { OverpassClient } from './overpass';
+import type { Env } from '../index';
+import type {
+  AnalysisRequest,
+  AnalysisResponse,
+  Location,
+  BacktestResult,
+  ProspectPack,
+} from '@leaseup/contracts';
+import {
+  wickerparkFixture,
+  boulderFixture,
+  seviervilleFixture,
+  findStoresNearby,
+  getNationalStoreCount,
+} from '@leaseup/fixtures';
 
 export class AnalysisService {
   private qloo: QlooClient;
   private openai: OpenAIClient;
+  private overpass: OverpassClient;
   private db: D1Database;
   private mode: 'live' | 'demo';
 
   constructor(env: Env) {
     this.qloo = new QlooClient(env);
     this.openai = new OpenAIClient(env);
+    this.overpass = new OverpassClient(env.CACHE, 5000);
     this.db = env.DB;
     this.mode = (env.APP_MODE === 'live') ? 'live' : 'demo';
   }
@@ -295,6 +310,14 @@ export class AnalysisService {
         continue;
       }
 
+      // Two-source absence verification
+      const verification = await this.verifyAbsence(
+        location.latitude,
+        location.longitude,
+        radius,
+        candidate.name
+      );
+
       const reasons = this.generateReasons(candidate, location, nationalCount, radius);
 
       prospectPacks.push({
@@ -304,8 +327,8 @@ export class AnalysisService {
           affinity: candidate.query?.affinity || 0,
           affinityRank: candidate.query?.affinity_rank || 0,
           popularity: undefined,
-          verified: 'unverified (1 source)',
-          verificationSources: ['All The Places (CC0)'],
+          verified: verification.status,
+          verificationSources: verification.sources,
           nationalStoreCount: nationalCount,
           nearbyStoreCount: 0,
         },
@@ -322,6 +345,61 @@ export class AnalysisService {
     }
 
     return prospectPacks;
+  }
+
+  /**
+   * Two-source absence verification using ATP dataset + OSM Overpass
+   * 
+   * Returns verification status based on both sources:
+   * - 'verified (2 sources)': Both ATP and OSM show absence
+   * - 'conflict': ATP shows absence but OSM shows presence
+   * - 'unverified (1 source)': Only ATP available (OSM down/timeout)
+   * - 'unverified': Neither source can verify
+   */
+  private async verifyAbsence(
+    lat: number,
+    lng: number,
+    radiusKm: number,
+    brandName: string
+  ): Promise<{
+    status: 'verified (2 sources)' | 'conflict' | 'unverified (1 source)' | 'unverified';
+    sources: string[];
+  }> {
+    const sources: string[] = ['All The Places (CC0)'];
+    
+    // Query OSM Overpass for branded retail within radius
+    const osmResult = await this.overpass.queryBrands(lat, lng, radiusKm);
+    
+    // Graceful fallback when Overpass is down/timeout
+    if (osmResult.error) {
+      console.warn(`Overpass fallback (${osmResult.error}): single-source verification`);
+      return {
+        status: 'unverified (1 source)',
+        sources,
+      };
+    }
+
+    // Check if OSM found any matching brands
+    const osmHasBrand = osmResult.brands.some(b => 
+      b.brand?.toLowerCase().includes(brandName.toLowerCase()) ||
+      b.name.toLowerCase().includes(brandName.toLowerCase())
+    );
+
+    if (osmHasBrand) {
+      // Conflict: ATP says absent, OSM says present
+      sources.push('OpenStreetMap (conflict)');
+      return {
+        status: 'conflict',
+        sources,
+      };
+    }
+
+    // Both sources confirm absence
+    sources.push('OpenStreetMap');
+    return {
+      status: 'verified (2 sources)',
+      sources,
+    };
   }
 
   private generateReasons(

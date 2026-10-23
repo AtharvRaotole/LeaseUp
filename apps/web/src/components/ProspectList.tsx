@@ -29,84 +29,83 @@ export function ProspectList({ prospects, location }: ProspectListProps) {
 
       <div className="space-y-4">
         {prospects.map((prospect, idx) => (
-          <div key={prospect.brand.entityId} className="prospect-card">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <div className="w-10 h-10 bg-brand-100 rounded-full flex items-center justify-center">
-                    <span className="text-lg font-bold text-brand-700">#{idx + 1}</span>
-                  </div>
-                  <div>
-                    <h4 className="text-lg font-bold text-gray-900">{prospect.brand.name}</h4>
-                    <p className="text-sm text-gray-600">
-                      Affinity Rank: {(prospect.brand.affinityRank * 100).toFixed(1)}%
-                      {prospect.brand.nationalStoreCount && (
-                        <span className="ml-2">• {prospect.brand.nationalStoreCount} US locations</span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-4 text-sm mb-3">
-                  {prospect.tenantMixScore && prospect.tenantMixScore.score > 0 && (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      Tenant Fit: {(prospect.tenantMixScore.score * 100).toFixed(0)}%
-                    </span>
-                  )}
-                  {prospect.brand.verified === 'verified' && (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      ✓ Verified (2 sources)
+          <div
+            key={prospect.brand.entityId}
+            className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
+            onClick={() => toggleExpand(prospect.brand.entityId)}
+          >
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-bold text-sm">
+                    #{idx + 1}
+                  </span>
+                  <h3 className="text-lg font-semibold text-gray-900">{prospect.brand.name}</h3>
+                  {prospect.brand.verified === 'verified (2 sources)' && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                      ✓ Verified (2)
                     </span>
                   )}
                   {prospect.brand.verified === 'unverified (1 source)' && (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                      ⚠ Unverified (1 source)
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+                      ⚠ 1 source
+                    </span>
+                  )}
+                  {prospect.brand.verified === 'conflict' && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+                      ⚠ Conflict
                     </span>
                   )}
                 </div>
-
-                <div className="text-sm text-gray-700">
-                  <p className="font-semibold mb-2">Why this location works:</p>
-                  <ul className="list-disc list-inside space-y-1">
-                    {prospect.reasons.slice(0, 3).map((reason, i) => (
-                      <li key={i}>{reason}</li>
-                    ))}
-                  </ul>
+                <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <span>Affinity: {Math.round(prospect.brand.affinity * 100)}%</span>
+                  {prospect.tenantMixScore && prospect.tenantMixScore.score > 0 && (
+                    <span>Tenant Mix: {Math.round(prospect.tenantMixScore.score * 100)}%</span>
+                  )}
                 </div>
               </div>
-            </div>
 
-            <div className="flex space-x-3">
-              <button
-                onClick={() => toggleExpand(prospect.brand.entityId)}
-                className="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-              >
-                {expandedId === prospect.brand.entityId ? 'Hide' : 'View'} Outreach Pack
-              </button>
-            </div>
-
-            {expandedId === prospect.brand.entityId && (
-              <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <h5 className="font-semibold text-gray-900">Draft Outreach Email</h5>
-                  <button
-                    onClick={() => copyToClipboard(prospect.outreachDraft)}
-                    className="text-sm text-brand-600 hover:text-brand-700 font-medium"
-                  >
-                    Copy to Clipboard
-                  </button>
-                </div>
-                <pre className="whitespace-pre-wrap text-sm text-gray-700 font-sans">
-                  {prospect.outreachDraft}
-                </pre>
-                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
-                  <p className="text-xs text-yellow-900">
-                    <strong>Review before sending:</strong> This draft is generated based on data insights.
-                    Customize it with your property details and contact information.
-                  </p>
-                </div>
+              <div className="text-sm text-gray-700">
+                <p className="font-semibold mb-2">Why this location works:</p>
+                <ul className="list-disc list-inside space-y-1">
+                  {prospect.reasons.slice(0, 3).map((reason, i) => (
+                    <li key={i}>{reason}</li>
+                  ))}
+                </ul>
               </div>
-            )}
+
+              {expandedId === prospect.brand.entityId && (
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <div className="space-y-3">
+                    <div>
+                      <span className="font-semibold text-sm">National Presence:</span>
+                      <span className="ml-2 text-sm text-gray-700">
+                        {prospect.brand.nationalStoreCount || 'Unknown'} US locations
+                      </span>
+                    </div>
+                    {prospect.brand.verificationSources && prospect.brand.verificationSources.length > 0 && (
+                      <div>
+                        <span className="font-semibold text-sm">Data Sources:</span>
+                        <span className="ml-2 text-sm text-gray-700">
+                          {prospect.brand.verificationSources.join(', ')}
+                        </span>
+                      </div>
+                    )}
+                    <div className="mt-4">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          copyToClipboard(prospect.outreachDraft || 'Outreach draft not available');
+                        }}
+                        className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors text-sm"
+                      >
+                        Copy Outreach Draft
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>

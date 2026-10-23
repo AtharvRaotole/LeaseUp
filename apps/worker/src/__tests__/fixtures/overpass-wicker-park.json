@@ -1,0 +1,30 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API",
+  "elements": [
+    {
+      "type": "node",
+      "id": 9876543210,
+      "lat": 41.9095,
+      "lon": -87.6785,
+      "tags": {
+        "brand": "Lululemon",
+        "brand:wikidata": "Q6702226",
+        "name": "Lululemon Athletica",
+        "shop": "sports"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9876543211,
+      "lat": 41.9110,
+      "lon": -87.6755,
+      "tags": {
+        "brand": "Apple",
+        "brand:wikidata": "Q312",
+        "name": "Apple Store",
+        "shop": "electronics"
+      }
+    }
+  ]
+}
