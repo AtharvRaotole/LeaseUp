@@ -1,0 +1,24 @@
+{
+  "capturedAt": "2026-10-23T14:01:54.573Z",
+  "base": "http://localhost:4173",
+  "pages": {
+    "home": {
+      "url": "http://localhost:4173/",
+      "scores": {
+        "performance": 0.98,
+        "accessibility": 1,
+        "bestPractices": 1,
+        "seo": 1
+      }
+    },
+    "report": {
+      "url": "http://localhost:4173/r/wicker?address=1574%20N%20Milwaukee%20Ave%2C%20Chicago%2C%20IL%2060622&radius=10&screenshot=1",
+      "scores": {
+        "performance": 0.75,
+        "accessibility": 0.95,
+        "bestPractices": 0.96,
+        "seo": 1
+      }
+    }
+  }
+}

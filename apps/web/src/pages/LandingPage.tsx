@@ -1,16 +1,21 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 import { MapPin } from 'lucide-react';
 import { TopBar } from '../components/layout/TopBar';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
-import { LandingBelowFold } from '../components/landing/LandingBelowFold';
-import { LandingProductVisual } from '../components/landing/LandingProductVisual';
+const LandingProductVisual = lazy(() =>
+  import('../components/landing/LandingProductVisual').then((m) => ({
+    default: m.LandingProductVisual,
+  }))
+);
+const LandingBelowFold = lazy(() =>
+  import('../components/landing/LandingBelowFold').then((m) => ({ default: m.LandingBelowFold }))
+);
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { Select } from '../components/ui/Select';
-import { DEMO_EXAMPLES } from '../data/demo-examples';
+import type { DemoFixtureId } from '@leaseup/fixtures';
 import {
   buildReportPath,
   categoryToTags,
@@ -26,15 +31,30 @@ export function LandingPage() {
   useEffect(() => {
     const demo = searchParams.get('demo');
     if (demo === 'wicker' || demo === 'boulder' || demo === 'sevierville') {
-      navigate(
-        buildReportPath({ address: DEMO_CHIP_ADDRESSES[demo], radius: 10 }, demo),
-        { replace: true }
-      );
+      void import('@leaseup/fixtures').then(({ DEMO_CHIP_ADDRESSES }) => {
+        navigate(
+          buildReportPath({ address: DEMO_CHIP_ADDRESSES[demo], radius: 10 }, demo),
+          { replace: true }
+        );
+      });
     }
   }, [searchParams, navigate]);
   const [address, setAddress] = useState('');
   const [radiusKm, setRadiusKm] = useState<'2' | '5' | '10'>('10');
   const [category, setCategory] = useState<CategoryKey>('all');
+  const [demoExamples, setDemoExamples] = useState<
+    Array<{
+      id: DemoFixtureId;
+      neighborhood: string;
+      city: string;
+      hitRateLabel: string;
+      address: string;
+    }>
+  >([]);
+
+  useEffect(() => {
+    void import('../data/demo-examples').then((m) => setDemoExamples(m.DEMO_EXAMPLES));
+  }, []);
 
   const submit = (addr: string) => {
     const trimmed = addr.trim();
@@ -51,7 +71,8 @@ export function LandingPage() {
   return (
     <div className="min-h-screen bg-bg bg-[radial-gradient(ellipse_at_top,_var(--surface-2)_0%,_var(--bg)_55%)]">
       <TopBar />
-      <main className="mx-auto max-w-[720px] px-4 pb-24 pt-[18vh]">
+      <main id="main-content" className="outline-none">
+      <div className="mx-auto max-w-[720px] px-4 pb-24 pt-[18vh]">
         <div className="text-center">
           <p className="inline-flex rounded-pill border border-border bg-surface px-3 py-1 text-label uppercase text-ink-3">
             Built on Qloo taste data
@@ -141,7 +162,7 @@ export function LandingPage() {
         <div className="mt-10">
           <p className="text-label uppercase text-ink-3 mb-3">Try an example</p>
           <div className="grid gap-3 sm:grid-cols-3">
-            {DEMO_EXAMPLES.map((ex) => (
+            {demoExamples.map((ex) => (
               <button
                 key={ex.id}
                 type="button"
@@ -166,10 +187,13 @@ export function LandingPage() {
             ))}
           </div>
         </div>
-      </main>
+      </div>
 
-      <LandingProductVisual />
-      <LandingBelowFold />
+      <Suspense fallback={null}>
+        <LandingProductVisual />
+        <LandingBelowFold />
+      </Suspense>
+      </main>
     </div>
   );
 }
