@@ -1,8 +1,8 @@
 /**
- * Real Qloo validation data for Boulder, Colorado
- * Source: round2/neigh_test_10km.json
- * AUC: 0.870, P@10: 1, Radius: 10km
- * Generated: 2026-10-22T20:27:49.294Z
+ * Recorded Qloo validation data for Boulder, Colorado
+ * Source: data/research/round2/neigh_test_10km.json
+ * Backtest computed by packages/fixtures computeBacktest()
+ * Generated: 2026-10-23T00:52:54.371Z
  */
 
 export const boulderFixture = {
@@ -194,9 +194,10 @@ export const boulderFixture = {
     }
   ],
   "backtest": {
-    "totalStores": 19,
-    "auc": 0.8701754385964913,
+    "totalStores": 17,
+    "auc": 0.8627450980392157,
     "precisionAt10": 1,
+    "presentInTop10": 10,
     "radius_km": 10
   }
 };

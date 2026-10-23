@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import type { Env } from '../index';
-import { AnalysisRequestSchema } from '@leaseup/contracts';
+import { AnalysisRequestSchema, OutreachRequestSchema } from '@leaseup/contracts';
 import { AnalysisService } from '../services/analysis';
 import { randomUUID } from 'node:crypto';
 
@@ -31,6 +31,21 @@ analysisRouter.post('/analyze', async (c) => {
   return c.json(result);
 });
 
+analysisRouter.post('/outreach', async (c) => {
+  const body = await c.req.json();
+  const request = OutreachRequestSchema.parse(body);
+
+  const service = new AnalysisService(c.env);
+  const draft = await service.generateOutreachForBrand(
+    request.brandName,
+    request.address,
+    request.reasons,
+    request.runId || 'outreach'
+  );
+
+  return c.json({ draft });
+});
+
 analysisRouter.get('/analyze/:runId', async (c) => {
   const runId = c.req.param('runId');
   
@@ -52,7 +67,7 @@ analysisRouter.get('/analyze/:runId', async (c) => {
     return c.json({ error: 'Run not found', code: 'NOT_FOUND' }, 404);
   }
 
-  const response: any = {
+  const response: Record<string, unknown> = {
     runId: run.run_id,
     address: run.address,
     status: run.status,

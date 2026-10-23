@@ -17,7 +17,7 @@ Traditional tools rely on:
 - National brand size alone ("Starbucks goes everywhere")
 - Gut feel from brokers
 
-**LeaseUp is different:** It ranks brands by hyperlocal taste affinity (Qloo's signals), blends national footprint as a prior, backtests predictions against real stores, and verifies absence with multiple data sources.
+**LeaseUp is different:** It ranks brands by hyperlocal taste affinity (Qloo's signals), blends national footprint as a prior (25% weight on ATP store counts when ordering prospects; backtests use raw Qloo order), backtests predictions against real stores, and verifies absence with multiple data sources.
 
 ---
 

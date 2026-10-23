@@ -17,6 +17,7 @@ export interface Env {
   OPENAI_MODEL?: string;
   APP_MODE?: string;
   ALLOWED_ORIGINS?: string;
+  NOMINATIM_CONTACT?: string;
 }
 
 const app = new Hono<{ Bindings: Env }>();

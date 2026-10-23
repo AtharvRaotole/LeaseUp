@@ -1,4 +1,24 @@
+import { useQuery } from '@tanstack/react-query';
+
+type HealthResponse = {
+  mode: 'live' | 'demo';
+};
+
 export function Header() {
+  const { data } = useQuery({
+    queryKey: ['health'],
+    queryFn: async () => {
+      const response = await fetch('/api/health');
+      if (!response.ok) {
+        throw new Error('Health check failed');
+      }
+      return response.json() as Promise<HealthResponse>;
+    },
+    staleTime: 60_000,
+  });
+
+  const modeLabel = data?.mode === 'live' ? 'Live Mode' : 'Demo Mode';
+
   return (
     <header className="bg-white shadow-sm">
       <div className="container mx-auto px-4 py-4">
@@ -14,9 +34,9 @@ export function Header() {
               <p className="text-sm text-gray-600">Tenant Prospecting with Taste AI</p>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600">Demo Mode</span>
+            <span className="text-sm text-gray-600">{modeLabel}</span>
             <a
               href="https://github.com/AtharvRaotole/LeaseUp"
               target="_blank"

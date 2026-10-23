@@ -1,0 +1,3313 @@
+{
+ "radius_km": 10.0,
+ "rows": [
+  {
+   "n": "Wicker Park, Chicago",
+   "returned": 26,
+   "present": 36,
+   "auc_qloo": 0.7970085470085471,
+   "auc_natl": 0.48717948717948717,
+   "auc_comb": 0.6965811965811965,
+   "p10": 1.0,
+   "absent_in_top10": []
+  },
+  {
+   "n": "Williamsburg, Brooklyn",
+   "returned": 0,
+   "present": 33,
+   "auc_qloo": 0.5,
+   "auc_natl": 0.5643939393939394,
+   "auc_comb": 0.45359848484848486,
+   "p10": 0.7,
+   "absent_in_top10": [
+    "Sprouts Farmers Market",
+    "Cost Plus World Market",
+    "Academy Sports + Outdoors"
+   ]
+  },
+  {
+   "n": "Buckhead, Atlanta",
+   "returned": 0,
+   "present": 37,
+   "auc_qloo": 0.5,
+   "auc_natl": 0.6621621621621622,
+   "auc_comb": 0.5112612612612613,
+   "p10": 0.8,
+   "absent_in_top10": [
+    "Kohl's",
+    "Academy Sports + Outdoors"
+   ]
+  },
+  {
+   "n": "Pearl District, Portland",
+   "returned": 26,
+   "present": 24,
+   "auc_qloo": 0.6733333333333333,
+   "auc_natl": 0.6466666666666666,
+   "auc_comb": 0.7558333333333334,
+   "p10": 0.8,
+   "absent_in_top10": [
+    "Recreational Equipment Inc",
+    "Blue Bottle Coffee"
+   ]
+  },
+  {
+   "n": "Scottsdale, Arizona",
+   "returned": 35,
+   "present": 35,
+   "auc_qloo": 0.6816326530612244,
+   "auc_natl": 0.6673469387755102,
+   "auc_comb": 0.7540816326530613,
+   "p10": 0.8,
+   "absent_in_top10": [
+    "Recreational Equipment Inc",
+    "Kendra Scott"
+   ]
+  },
+  {
+   "n": "The Woodlands, Texas",
+   "returned": 41,
+   "present": 37,
+   "auc_qloo": 0.7972972972972973,
+   "auc_natl": 0.6644144144144144,
+   "auc_comb": 0.7894144144144144,
+   "p10": 1.0,
+   "absent_in_top10": []
+  },
+  {
+   "n": "Plano, Texas",
+   "returned": 41,
+   "present": 30,
+   "auc_qloo": 0.7289473684210527,
+   "auc_natl": 0.787719298245614,
+   "auc_comb": 0.8921052631578947,
+   "p10": 0.9,
+   "absent_in_top10": [
+    "Nordstrom"
+   ]
+  },
+  {
+   "n": "Boulder, Colorado",
+   "returned": 30,
+   "present": 19,
+   "auc_qloo": 0.8701754385964913,
+   "auc_natl": 0.42105263157894735,
+   "auc_comb": 0.7956140350877193,
+   "p10": 1.0,
+   "absent_in_top10": []
+  },
+  {
+   "n": "Coral Gables, Florida",
+   "returned": 27,
+   "present": 30,
+   "auc_qloo": 0.706140350877193,
+   "auc_natl": 0.6578947368421053,
+   "auc_comb": 0.7342105263157894,
+   "p10": 0.8,
+   "absent_in_top10": [
+    "Equinox",
+    "Barry's"
+   ]
+  },
+  {
+   "n": "Lubbock, Texas",
+   "returned": 41,
+   "present": 22,
+   "auc_qloo": 0.7264309764309764,
+   "auc_natl": 0.7811447811447811,
+   "auc_comb": 0.8451178451178452,
+   "p10": 0.7,
+   "absent_in_top10": [
+    "Kendra Scott",
+    "Nordstrom",
+    "Madewell"
+   ]
+  },
+  {
+   "n": "Fishers, Indiana",
+   "returned": 40,
+   "present": 35,
+   "auc_qloo": 0.8183673469387756,
+   "auc_natl": 0.6979591836734694,
+   "auc_comb": 0.8153061224489796,
+   "p10": 1.0,
+   "absent_in_top10": []
+  },
+  {
+   "n": "Bethesda, Maryland",
+   "returned": 33,
+   "present": 34,
+   "auc_qloo": 0.788235294117647,
+   "auc_natl": 0.46862745098039216,
+   "auc_comb": 0.692156862745098,
+   "p10": 0.9,
+   "absent_in_top10": [
+    "Cost Plus World Market"
+   ]
+  },
+  {
+   "n": "Santa Monica, California",
+   "returned": 23,
+   "present": 33,
+   "auc_qloo": 0.78125,
+   "auc_natl": 0.4053030303030303,
+   "auc_comb": 0.5965909090909091,
+   "p10": 0.9,
+   "absent_in_top10": [
+    "Equinox"
+   ]
+  },
+  {
+   "n": "Sevierville, Tennessee",
+   "returned": 41,
+   "present": 18,
+   "auc_qloo": 0.753584229390681,
+   "auc_natl": 0.8853046594982079,
+   "auc_comb": 0.8906810035842294,
+   "p10": 0.7,
+   "absent_in_top10": [
+    "Kendra Scott",
+    "Cost Plus World Market",
+    "Kohl's"
+   ]
+  },
+  {
+   "n": "Baton Rouge, Louisiana",
+   "returned": 41,
+   "present": 20,
+   "auc_qloo": 0.7241379310344828,
+   "auc_natl": 0.6862068965517242,
+   "auc_comb": 0.7646551724137931,
+   "p10": 0.7,
+   "absent_in_top10": [
+    "Kendra Scott",
+    "Nordstrom",
+    "Crumbl Cookies"
+   ]
+  },
+  {
+   "n": "Fargo, North Dakota",
+   "returned": 40,
+   "present": 18,
+   "auc_qloo": 0.7616487455197133,
+   "auc_natl": 0.7903225806451613,
+   "auc_comb": 0.9310035842293907,
+   "p10": 0.6,
+   "absent_in_top10": [
+    "Recreational Equipment Inc",
+    "Madewell",
+    "Nordstrom",
+    "Cost Plus World Market"
+   ]
+  },
+  {
+   "n": "Spokane, Washington",
+   "returned": 33,
+   "present": 22,
+   "auc_qloo": 0.8005050505050505,
+   "auc_natl": 0.7255892255892256,
+   "auc_comb": 0.8653198653198653,
+   "p10": 0.9,
+   "absent_in_top10": [
+    "Madewell"
+   ]
+  },
+  {
+   "n": "Franklin, Tennessee",
+   "returned": 42,
+   "present": 32,
+   "auc_qloo": 0.6599264705882353,
+   "auc_natl": 0.8915441176470589,
+   "auc_comb": 0.8667279411764706,
+   "p10": 0.7,
+   "absent_in_top10": [
+    "Recreational Equipment Inc",
+    "Madewell",
+    "Cost Plus World Market"
+   ]
+  },
+  {
+   "n": "Mission District, San Francisco",
+   "returned": 0,
+   "present": 26,
+   "auc_qloo": 0.5,
+   "auc_natl": 0.34615384615384615,
+   "auc_comb": 0.3779264214046823,
+   "p10": 0.5,
+   "absent_in_top10": [
+    "Sprouts Farmers Market",
+    "Ulta",
+    "Hobby Lobby",
+    "Kohl's",
+    "Academy Sports + Outdoors"
+   ]
+  },
+  {
+   "n": "Ann Arbor, Michigan",
+   "returned": 31,
+   "present": 28,
+   "auc_qloo": 0.6564625850340136,
+   "auc_natl": 0.7040816326530612,
+   "auc_comb": 0.7925170068027211,
+   "p10": 0.9,
+   "absent_in_top10": [
+    "Nordstrom"
+   ]
+  },
+  {
+   "n": "Greenville, South Carolina",
+   "returned": 43,
+   "present": 34,
+   "auc_qloo": 0.8274509803921568,
+   "auc_natl": 0.8,
+   "auc_comb": 0.8931372549019608,
+   "p10": 1.0,
+   "absent_in_top10": []
+  },
+  {
+   "n": "Tulsa, Oklahoma",
+   "returned": 41,
+   "present": 28,
+   "auc_qloo": 0.8129251700680272,
+   "auc_natl": 0.7244897959183674,
+   "auc_comb": 0.8775510204081632,
+   "p10": 0.9,
+   "absent_in_top10": [
+    "Recreational Equipment Inc"
+   ]
+  },
+  {
+   "n": "Boise, Idaho",
+   "returned": 30,
+   "present": 20,
+   "auc_qloo": 0.6586206896551724,
+   "auc_natl": 0.8172413793103448,
+   "auc_comb": 0.8517241379310345,
+   "p10": 0.7,
+   "absent_in_top10": [
+    "Athleta",
+    "Cost Plus World Market",
+    "Madewell"
+   ]
+  },
+  {
+   "n": "Madison, Wisconsin",
+   "returned": 35,
+   "present": 26,
+   "auc_qloo": 0.7449832775919732,
+   "auc_natl": 0.617056856187291,
+   "auc_comb": 0.7575250836120402,
+   "p10": 0.9,
+   "absent_in_top10": [
+    "Cost Plus World Market"
+   ]
+  }
+ ],
+ "raw": {
+  "Wicker Park, Chicago": [
+   [
+    "Madewell",
+    0.9993488175531519
+   ],
+   [
+    "Whole Foods Market",
+    0.9987142173884659
+   ],
+   [
+    "J.Crew",
+    0.9987056962995434
+   ],
+   [
+    "Trader Joe's",
+    0.9985616780159667
+   ],
+   [
+    "Warby Parker",
+    0.9985109680147338
+   ],
+   [
+    "Nordstrom",
+    0.9981891717193005
+   ],
+   [
+    "Sweetgreen",
+    0.9980621272838636
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.9970707534150036
+   ],
+   [
+    "Lululemon",
+    0.9969858145905685
+   ],
+   [
+    "Philz Coffee",
+    0.9966382955550579
+   ],
+   [
+    "Barry's",
+    0.9964175065661159
+   ],
+   [
+    "Williams-Sonoma",
+    0.9960864385076956
+   ],
+   [
+    "Cost Plus World Market",
+    0.9960612297966307
+   ],
+   [
+    "Recreational Equipment Inc",
+    0.9959082538435305
+   ],
+   [
+    "Athleta",
+    0.9951947469858228
+   ],
+   [
+    "Paper Source",
+    0.994267956954327
+   ],
+   [
+    "Banana Republic",
+    0.9940808617479779
+   ],
+   [
+    "solidcore",
+    0.9936727191374519
+   ],
+   [
+    "Target",
+    0.9928550439848499
+   ],
+   [
+    "Equinox",
+    0.9924630965469887
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9911243591734374
+   ],
+   [
+    "Lush",
+    0.9848745068369396
+   ],
+   [
+    "Vuori",
+    0.9719479728078593
+   ],
+   [
+    "Culver's",
+    0.967770328142414
+   ],
+   [
+    "CAVA",
+    0.9667475501189716
+   ],
+   [
+    "Waffle House",
+    0.9440642536634319
+   ]
+  ],
+  "Williamsburg, Brooklyn": [],
+  "Buckhead, Atlanta": [],
+  "Pearl District, Portland": [
+   [
+    "Recreational Equipment Inc",
+    0.9996084944647685
+   ],
+   [
+    "Madewell",
+    0.9994126793111553
+   ],
+   [
+    "Nordstrom",
+    0.9988901603146063
+   ],
+   [
+    "Whole Foods Market",
+    0.998432553800121
+   ],
+   [
+    "J.Crew",
+    0.99820366561421
+   ],
+   [
+    "Trader Joe's",
+    0.9981819246867559
+   ],
+   [
+    "Lululemon",
+    0.9978983933191115
+   ],
+   [
+    "Warby Parker",
+    0.9976480461538965
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.9974842390299979
+   ],
+   [
+    "Dutch Bros. Coffee",
+    0.9972662112578208
+   ],
+   [
+    "Williams-Sonoma",
+    0.9972226849056451
+   ],
+   [
+    "Athleta",
+    0.9965349540389423
+   ],
+   [
+    "Cost Plus World Market",
+    0.995847141907298
+   ],
+   [
+    "Crumbl Cookies",
+    0.9915220150244366
+   ],
+   [
+    "Paper Source",
+    0.9901269084223362
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9901269084223362
+   ],
+   [
+    "Sweetgreen",
+    0.9887852951814922
+   ],
+   [
+    "Barry's",
+    0.9887189830234544
+   ],
+   [
+    "Banana Republic",
+    0.9861067610310821
+   ],
+   [
+    "Equinox",
+    0.9858640643226074
+   ],
+   [
+    "Vuori",
+    0.9854108953902918
+   ],
+   [
+    "Philz Coffee",
+    0.9803498683283478
+   ],
+   [
+    "Target",
+    0.9776483344174466
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9602407186178334
+   ],
+   [
+    "solidcore",
+    0.9207597415367562
+   ],
+   [
+    "CAVA",
+    0.9181510478531044
+   ]
+  ],
+  "Scottsdale, Arizona": [
+   [
+    "Lululemon",
+    0.999838736894625
+   ],
+   [
+    "Nordstrom",
+    0.9997608609588777
+   ],
+   [
+    "Crumbl Cookies",
+    0.9997217077285967
+   ],
+   [
+    "Trader Joe's",
+    0.999621689207686
+   ],
+   [
+    "Whole Foods Market",
+    0.9995769965729543
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9994658940653859
+   ],
+   [
+    "Recreational Equipment Inc",
+    0.9994492913916159
+   ],
+   [
+    "Cost Plus World Market",
+    0.9993879866223249
+   ],
+   [
+    "Kendra Scott",
+    0.9993100725986173
+   ],
+   [
+    "Madewell",
+    0.9992598294654611
+   ],
+   [
+    "Athleta",
+    0.9991708327953891
+   ],
+   [
+    "Dutch Bros. Coffee",
+    0.9991486887499961
+   ],
+   [
+    "Williams-Sonoma",
+    0.9986362464959949
+   ],
+   [
+    "J.Crew",
+    0.998625168130741
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9985024450525303
+   ],
+   [
+    "Target",
+    0.9982740004110257
+   ],
+   [
+    "Warby Parker",
+    0.9973822715548222
+   ],
+   [
+    "Vuori",
+    0.9967347942089606
+   ],
+   [
+    "Banana Republic",
+    0.9965563065326078
+   ],
+   [
+    "Barry's",
+    0.994627913795951
+   ],
+   [
+    "Equinox",
+    0.994488398788048
+   ],
+   [
+    "CAVA",
+    0.99432018281518
+   ],
+   [
+    "Hobby Lobby",
+    0.9934302335213278
+   ],
+   [
+    "Paper Source",
+    0.993177827783455
+   ],
+   [
+    "Sweetgreen",
+    0.9923876043521761
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.9890001321045184
+   ],
+   [
+    "solidcore",
+    0.9857867512623472
+   ],
+   [
+    "Petsmart",
+    0.9857867512623472
+   ],
+   [
+    "Old Navy",
+    0.985238903209903
+   ],
+   [
+    "Philz Coffee",
+    0.98495621622051
+   ],
+   [
+    "Buckle",
+    0.9820016499032554
+   ],
+   [
+    "Raising Cane's",
+    0.9803563837260166
+   ],
+   [
+    "Kohl's",
+    0.9571832775903975
+   ],
+   [
+    "Culver's",
+    0.9551829216461657
+   ],
+   [
+    "Waffle House",
+    0.9266161226864891
+   ]
+  ],
+  "The Woodlands, Texas": [
+   [
+    "Kendra Scott",
+    0.9998889484877905
+   ],
+   [
+    "Whataburger",
+    0.9997595842493491
+   ],
+   [
+    "Nordstrom",
+    0.9997225589034676
+   ],
+   [
+    "Whole Foods Market",
+    0.999602109843937
+   ],
+   [
+    "Lululemon",
+    0.9995744426426654
+   ],
+   [
+    "Cost Plus World Market",
+    0.9993432826592682
+   ],
+   [
+    "Target",
+    0.9991951054656051
+   ],
+   [
+    "Hobby Lobby",
+    0.9991674260537522
+   ],
+   [
+    "J.Crew",
+    0.9990656438486489
+   ],
+   [
+    "Chick-fil-A",
+    0.9989915359379269
+   ],
+   [
+    "Trader Joe's",
+    0.9989451089871769
+   ],
+   [
+    "Madewell",
+    0.9988803629211255
+   ],
+   [
+    "Ulta",
+    0.9986396551970598
+   ],
+   [
+    "Athleta",
+    0.9982228483615134
+   ],
+   [
+    "Banana Republic",
+    0.9981299149065873
+   ],
+   [
+    "Crumbl Cookies",
+    0.9981022035849465
+   ],
+   [
+    "Williams-Sonoma",
+    0.9978983933191115
+   ],
+   [
+    "Academy Sports + Outdoors",
+    0.9978983933191115
+   ],
+   [
+    "Old Navy",
+    0.997629278055003
+   ],
+   [
+    "Lush",
+    0.9975738246349297
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9972956543979001
+   ],
+   [
+    "Warby Parker",
+    0.9959031257231092
+   ],
+   [
+    "Sweetgreen",
+    0.9956710487626915
+   ],
+   [
+    "Bath & Body Works",
+    0.9955128785312279
+   ],
+   [
+    "Buckle",
+    0.9953645161467327
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9947040819271801
+   ],
+   [
+    "Recreational Equipment Inc",
+    0.9938483321574959
+   ],
+   [
+    "Kohl's",
+    0.9927208396502842
+   ],
+   [
+    "Raising Cane's",
+    0.992394896475732
+   ],
+   [
+    "Paper Source",
+    0.9914245489860518
+   ],
+   [
+    "Barry's",
+    0.9895466928730445
+   ],
+   [
+    "CAVA",
+    0.9867274746786855
+   ],
+   [
+    "Equinox",
+    0.9832600869823664
+   ],
+   [
+    "Vuori",
+    0.9832600869823664
+   ],
+   [
+    "Dick's Sporting Goods",
+    0.9809890391830869
+   ],
+   [
+    "Waffle House",
+    0.9698395795837199
+   ],
+   [
+    "solidcore",
+    0.9647024472033527
+   ],
+   [
+    "Culver's",
+    0.943047094116633
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.943047094116633
+   ],
+   [
+    "Petsmart",
+    0.9381620444378936
+   ],
+   [
+    "Planet Fitness",
+    0.8662793497606678
+   ]
+  ],
+  "Plano, Texas": [
+   [
+    "Kendra Scott",
+    0.9998651195984117
+   ],
+   [
+    "Nordstrom",
+    0.9997532006751704
+   ],
+   [
+    "Whole Foods Market",
+    0.999722984490608
+   ],
+   [
+    "Whataburger",
+    0.9996259455360778
+   ],
+   [
+    "Cost Plus World Market",
+    0.9994837735336342
+   ],
+   [
+    "Lululemon",
+    0.9994535485159488
+   ],
+   [
+    "Trader Joe's",
+    0.9994463113928904
+   ],
+   [
+    "Target",
+    0.9994237482329439
+   ],
+   [
+    "Crumbl Cookies",
+    0.9993637190254743
+   ],
+   [
+    "Hobby Lobby",
+    0.9989817396196494
+   ],
+   [
+    "J.Crew",
+    0.9989595910387706
+   ],
+   [
+    "Madewell",
+    0.9988918641985185
+   ],
+   [
+    "Williams-Sonoma",
+    0.9988096482175866
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9987947378000981
+   ],
+   [
+    "Athleta",
+    0.9985476158572685
+   ],
+   [
+    "Chick-fil-A",
+    0.9985322750766401
+   ],
+   [
+    "Warby Parker",
+    0.9983149200154047
+   ],
+   [
+    "Ulta",
+    0.998240325629663
+   ],
+   [
+    "Banana Republic",
+    0.9982326527233029
+   ],
+   [
+    "CAVA",
+    0.9981427044676556
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9980003040570294
+   ],
+   [
+    "Old Navy",
+    0.9979401823415293
+   ],
+   [
+    "Equinox",
+    0.9960561025177084
+   ],
+   [
+    "Recreational Equipment Inc",
+    0.9951618158938474
+   ],
+   [
+    "Barry's",
+    0.995041201208179
+   ],
+   [
+    "Kohl's",
+    0.9950035593966984
+   ],
+   [
+    "Raising Cane's",
+    0.9948833521030611
+   ],
+   [
+    "Bath & Body Works",
+    0.9942889332646027
+   ],
+   [
+    "Paper Source",
+    0.9939652465049844
+   ],
+   [
+    "Lush",
+    0.9930080907479432
+   ],
+   [
+    "Academy Sports + Outdoors",
+    0.990442028897369
+   ],
+   [
+    "Sweetgreen",
+    0.9886487904544522
+   ],
+   [
+    "solidcore",
+    0.9876258910900959
+   ],
+   [
+    "Vuori",
+    0.985371573252705
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.9787918796422561
+   ],
+   [
+    "Petsmart",
+    0.9701318955500853
+   ],
+   [
+    "Buckle",
+    0.966978689113816
+   ],
+   [
+    "Waffle House",
+    0.9640558933684635
+   ],
+   [
+    "Planet Fitness",
+    0.9629843243496348
+   ],
+   [
+    "Culver's",
+    0.939742957743601
+   ],
+   [
+    "Philz Coffee",
+    0.9111561012534781
+   ]
+  ],
+  "Boulder, Colorado": [
+   [
+    "Recreational Equipment Inc",
+    0.9999825560131196
+   ],
+   [
+    "Lululemon",
+    0.99963573501679
+   ],
+   [
+    "Whole Foods Market",
+    0.9995374098583981
+   ],
+   [
+    "Madewell",
+    0.9993811747297661
+   ],
+   [
+    "Athleta",
+    0.9991210079462229
+   ],
+   [
+    "Trader Joe's",
+    0.9986809846974626
+   ],
+   [
+    "Cost Plus World Market",
+    0.9978067067183525
+   ],
+   [
+    "Warby Parker",
+    0.9974936245942729
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9974530953411023
+   ],
+   [
+    "J.Crew",
+    0.9972849867013887
+   ],
+   [
+    "Crumbl Cookies",
+    0.9969252002301975
+   ],
+   [
+    "Sweetgreen",
+    0.9966874001034293
+   ],
+   [
+    "Vuori",
+    0.9963799202448589
+   ],
+   [
+    "Nordstrom",
+    0.9961013925055662
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9956368520651259
+   ],
+   [
+    "Williams-Sonoma",
+    0.9954508855893411
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.994864100389392
+   ],
+   [
+    "CAVA",
+    0.991253207673298
+   ],
+   [
+    "Equinox",
+    0.9907282549603192
+   ],
+   [
+    "Barry's",
+    0.9876754670635678
+   ],
+   [
+    "Kendra Scott",
+    0.9864447932593641
+   ],
+   [
+    "solidcore",
+    0.9863096809826776
+   ],
+   [
+    "Lush",
+    0.9861866388926223
+   ],
+   [
+    "Paper Source",
+    0.9849129846046498
+   ],
+   [
+    "Banana Republic",
+    0.981806498325417
+   ],
+   [
+    "Target",
+    0.9796946322903868
+   ],
+   [
+    "Philz Coffee",
+    0.9748756155098088
+   ],
+   [
+    "Dutch Bros. Coffee",
+    0.9703969257842867
+   ],
+   [
+    "Waffle House",
+    0.9610973252589178
+   ],
+   [
+    "Culver's",
+    0.9483094310433756
+   ]
+  ],
+  "Coral Gables, Florida": [
+   [
+    "Whole Foods Market",
+    0.9991742395244528
+   ],
+   [
+    "Nordstrom",
+    0.9989463868243924
+   ],
+   [
+    "Equinox",
+    0.99841294920787
+   ],
+   [
+    "Publix",
+    0.9978267506104106
+   ],
+   [
+    "J.Crew",
+    0.9976181876362216
+   ],
+   [
+    "Williams-Sonoma",
+    0.9976117892573682
+   ],
+   [
+    "Sweetgreen",
+    0.9972534096013351
+   ],
+   [
+    "Barry's",
+    0.996816767500466
+   ],
+   [
+    "Trader Joe's",
+    0.9966015721987567
+   ],
+   [
+    "Banana Republic",
+    0.9962359676869106
+   ],
+   [
+    "Target",
+    0.9962359676869106
+   ],
+   [
+    "Warby Parker",
+    0.9961120737856902
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9957009698449965
+   ],
+   [
+    "Cost Plus World Market",
+    0.9948516935195149
+   ],
+   [
+    "Madewell",
+    0.994112974563703
+   ],
+   [
+    "solidcore",
+    0.9933603894809644
+   ],
+   [
+    "Lululemon",
+    0.9912175613442397
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.9900163980186641
+   ],
+   [
+    "Athleta",
+    0.9886096009442531
+   ],
+   [
+    "Hobby Lobby",
+    0.9764288928152057
+   ],
+   [
+    "Wawa",
+    0.9753227754225569
+   ],
+   [
+    "Paper Source",
+    0.9753227754225569
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9715746774195366
+   ],
+   [
+    "Old Navy",
+    0.9693293604009358
+   ],
+   [
+    "Vuori",
+    0.9552866578566228
+   ],
+   [
+    "CAVA",
+    0.9346492050367002
+   ],
+   [
+    "Waffle House",
+    0.8868896042100779
+   ]
+  ],
+  "Lubbock, Texas": [
+   [
+    "Kendra Scott",
+    0.9999493689792804
+   ],
+   [
+    "Whataburger",
+    0.9998374602930168
+   ],
+   [
+    "Crumbl Cookies",
+    0.9997561796819576
+   ],
+   [
+    "Lululemon",
+    0.999695320917626
+   ],
+   [
+    "Chick-fil-A",
+    0.9991674260537522
+   ],
+   [
+    "Nordstrom",
+    0.9991265441733792
+   ],
+   [
+    "Cost Plus World Market",
+    0.9990656438486489
+   ],
+   [
+    "Ulta",
+    0.9990452008810983
+   ],
+   [
+    "Madewell",
+    0.9988522480847193
+   ],
+   [
+    "Hobby Lobby",
+    0.9988117782575883
+   ],
+   [
+    "Target",
+    0.9987201821039735
+   ],
+   [
+    "Buckle",
+    0.998252261135365
+   ],
+   [
+    "Lush",
+    0.9980693752540036
+   ],
+   [
+    "Recreational Equipment Inc",
+    0.9980084052664966
+   ],
+   [
+    "Bath & Body Works",
+    0.9979470048600989
+   ],
+   [
+    "J.Crew",
+    0.9977435869503177
+   ],
+   [
+    "Old Navy",
+    0.9967458951818721
+   ],
+   [
+    "Trader Joe's",
+    0.9967356481346583
+   ],
+   [
+    "Raising Cane's",
+    0.996654094692586
+   ],
+   [
+    "Athleta",
+    0.9966135287994928
+   ],
+   [
+    "Whole Foods Market",
+    0.9963688149049917
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9962774043834179
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9962363948787534
+   ],
+   [
+    "Warby Parker",
+    0.9960834476793242
+   ],
+   [
+    "American Eagle Outfitters",
+    0.9952062939770318
+   ],
+   [
+    "Academy Sports + Outdoors",
+    0.9941142590534546
+   ],
+   [
+    "Banana Republic",
+    0.9935621945895257
+   ],
+   [
+    "Williams-Sonoma",
+    0.9932862548513167
+   ],
+   [
+    "Kohl's",
+    0.9897316777400059
+   ],
+   [
+    "Petsmart",
+    0.9846068493486793
+   ],
+   [
+    "Paper Source",
+    0.9821893921594452
+   ],
+   [
+    "Waffle House",
+    0.9793616323391621
+   ],
+   [
+    "Bass Pro Shops",
+    0.9772013514598834
+   ],
+   [
+    "Vuori",
+    0.9772013514598834
+   ],
+   [
+    "Planet Fitness",
+    0.9755052496992979
+   ],
+   [
+    "Barry's",
+    0.9751721434192502
+   ],
+   [
+    "Sweetgreen",
+    0.9738582775904765
+   ],
+   [
+    "CAVA",
+    0.967915475851819
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.9409382220834175
+   ],
+   [
+    "solidcore",
+    0.9273153984754532
+   ],
+   [
+    "Dutch Bros. Coffee",
+    0.8752707714297406
+   ]
+  ],
+  "Fishers, Indiana": [
+   [
+    "Crumbl Cookies",
+    0.9995774222273147
+   ],
+   [
+    "Target",
+    0.999125266585444
+   ],
+   [
+    "Cost Plus World Market",
+    0.9989940914821273
+   ],
+   [
+    "Nordstrom",
+    0.9987022878419802
+   ],
+   [
+    "Lululemon",
+    0.9985271614265493
+   ],
+   [
+    "Hobby Lobby",
+    0.9985126725977499
+   ],
+   [
+    "Trader Joe's",
+    0.9984542888406931
+   ],
+   [
+    "Athleta",
+    0.998118404150593
+   ],
+   [
+    "Madewell",
+    0.9980889871241149
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9976365294109631
+   ],
+   [
+    "Old Navy",
+    0.9976070970848221
+   ],
+   [
+    "solidcore",
+    0.997490211672794
+   ],
+   [
+    "Kendra Scott",
+    0.9973588046504589
+   ],
+   [
+    "Whole Foods Market",
+    0.9971689142419531
+   ],
+   [
+    "J.Crew",
+    0.9970809967686289
+   ],
+   [
+    "Kohl's",
+    0.9969350183174361
+   ],
+   [
+    "Recreational Equipment Inc",
+    0.9968765351364012
+   ],
+   [
+    "Ulta",
+    0.9963940152931604
+   ],
+   [
+    "Chick-fil-A",
+    0.9948563995929779
+   ],
+   [
+    "Williams-Sonoma",
+    0.99453419281568
+   ],
+   [
+    "Banana Republic",
+    0.9941968908624367
+   ],
+   [
+    "Lush",
+    0.9925827564417062
+   ],
+   [
+    "Warby Parker",
+    0.992039232520831
+   ],
+   [
+    "Paper Source",
+    0.9918478306846684
+   ],
+   [
+    "Buckle",
+    0.990936208853285
+   ],
+   [
+    "Bath & Body Works",
+    0.9887413746575933
+   ],
+   [
+    "Culver's",
+    0.980967335074956
+   ],
+   [
+    "Dick's Sporting Goods",
+    0.9794351107159577
+   ],
+   [
+    "Planet Fitness",
+    0.9774523141744232
+   ],
+   [
+    "Petsmart",
+    0.965202640368148
+   ],
+   [
+    "Sweetgreen",
+    0.9618899650239442
+   ],
+   [
+    "Vuori",
+    0.9603129417390822
+   ],
+   [
+    "American Eagle Outfitters",
+    0.9577603924119157
+   ],
+   [
+    "Waffle House",
+    0.9389771864447548
+   ],
+   [
+    "Raising Cane's",
+    0.922733002987319
+   ],
+   [
+    "Barry's",
+    0.9130223393368575
+   ],
+   [
+    "Academy Sports + Outdoors",
+    0.8988053839583517
+   ],
+   [
+    "CAVA",
+    0.8733901203226881
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.8666002369632921
+   ],
+   [
+    "Philz Coffee",
+    0.8497232055949109
+   ]
+  ],
+  "Bethesda, Maryland": [
+   [
+    "CAVA",
+    0.9997455403277754
+   ],
+   [
+    "Whole Foods Market",
+    0.9993833034515944
+   ],
+   [
+    "Sweetgreen",
+    0.9993432826592682
+   ],
+   [
+    "Trader Joe's",
+    0.9989540538105613
+   ],
+   [
+    "Nordstrom",
+    0.9986856714313791
+   ],
+   [
+    "solidcore",
+    0.9985919322385338
+   ],
+   [
+    "J.Crew",
+    0.9981354570714053
+   ],
+   [
+    "Cost Plus World Market",
+    0.9976924056050589
+   ],
+   [
+    "Williams-Sonoma",
+    0.9974505355393627
+   ],
+   [
+    "Lululemon",
+    0.9967915785602091
+   ],
+   [
+    "Warby Parker",
+    0.9964286113251675
+   ],
+   [
+    "Madewell",
+    0.9963073060088619
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9955804247743065
+   ],
+   [
+    "Target",
+    0.9947455866702384
+   ],
+   [
+    "Recreational Equipment Inc",
+    0.9946377560942088
+   ],
+   [
+    "Banana Republic",
+    0.9945299130948829
+   ],
+   [
+    "Athleta",
+    0.9945162178568839
+   ],
+   [
+    "Equinox",
+    0.9939365545893294
+   ],
+   [
+    "Philz Coffee",
+    0.9921949860798377
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.9917216387435991
+   ],
+   [
+    "Crumbl Cookies",
+    0.9912617969493398
+   ],
+   [
+    "Wawa",
+    0.9901926925535959
+   ],
+   [
+    "Paper Source",
+    0.9888916433601193
+   ],
+   [
+    "Barry's",
+    0.9861080564007176
+   ],
+   [
+    "Old Navy",
+    0.976898019775042
+   ],
+   [
+    "Kendra Scott",
+    0.975743987176862
+   ],
+   [
+    "Petsmart",
+    0.9558247652516499
+   ],
+   [
+    "Vuori",
+    0.9535097197776142
+   ],
+   [
+    "Kohl's",
+    0.9418734919430809
+   ],
+   [
+    "Planet Fitness",
+    0.9404242537952292
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9375915884829229
+   ],
+   [
+    "Chick-fil-A",
+    0.8885696162316493
+   ],
+   [
+    "Waffle House",
+    0.8885696162316493
+   ]
+  ],
+  "Santa Monica, California": [
+   [
+    "Equinox",
+    0.9997080888237347
+   ],
+   [
+    "Madewell",
+    0.9994807936463329
+   ],
+   [
+    "Whole Foods Market",
+    0.9993858579113041
+   ],
+   [
+    "Lululemon",
+    0.999158483297132
+   ],
+   [
+    "Sweetgreen",
+    0.9989992025493135
+   ],
+   [
+    "J.Crew",
+    0.998961294794618
+   ],
+   [
+    "Nordstrom",
+    0.998961294794618
+   ],
+   [
+    "Trader Joe's",
+    0.9989382938255053
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.998623463755074
+   ],
+   [
+    "Barry's",
+    0.9985020189023588
+   ],
+   [
+    "Warby Parker",
+    0.9981111565641537
+   ],
+   [
+    "Williams-Sonoma",
+    0.9962829576150233
+   ],
+   [
+    "Philz Coffee",
+    0.9962180254525914
+   ],
+   [
+    "Recreational Equipment Inc",
+    0.9958757752711862
+   ],
+   [
+    "Athleta",
+    0.9956056464850626
+   ],
+   [
+    "Vuori",
+    0.9943557118599834
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.993970813491435
+   ],
+   [
+    "Cost Plus World Market",
+    0.9936504439187617
+   ],
+   [
+    "Banana Republic",
+    0.9927993064882811
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9901681852729154
+   ],
+   [
+    "CAVA",
+    0.9899884458784043
+   ],
+   [
+    "Paper Source",
+    0.9851965486656935
+   ],
+   [
+    "solidcore",
+    0.9849077966805402
+   ]
+  ],
+  "Sevierville, Tennessee": [
+   [
+    "Hobby Lobby",
+    0.9996348837617248
+   ],
+   [
+    "Chick-fil-A",
+    0.9995786991892162
+   ],
+   [
+    "Ulta",
+    0.9995369841855638
+   ],
+   [
+    "Target",
+    0.9994386484948091
+   ],
+   [
+    "Bath & Body Works",
+    0.9993262520082674
+   ],
+   [
+    "Recreational Equipment Inc",
+    0.9992419456561972
+   ],
+   [
+    "Kendra Scott",
+    0.9990733098447935
+   ],
+   [
+    "Old Navy",
+    0.9987781230514997
+   ],
+   [
+    "Cost Plus World Market",
+    0.9987640641847568
+   ],
+   [
+    "Kohl's",
+    0.9981878928353263
+   ],
+   [
+    "American Eagle Outfitters",
+    0.9977235412600036
+   ],
+   [
+    "Buckle",
+    0.997273465451481
+   ],
+   [
+    "Crumbl Cookies",
+    0.9969777044475029
+   ],
+   [
+    "Whole Foods Market",
+    0.9969495318216365
+   ],
+   [
+    "Lush",
+    0.996893184007842
+   ],
+   [
+    "Trader Joe's",
+    0.9967945671142221
+   ],
+   [
+    "Lululemon",
+    0.9966963667410595
+   ],
+   [
+    "Bass Pro Shops",
+    0.9964708936182608
+   ],
+   [
+    "J.Crew",
+    0.9940868562237374
+   ],
+   [
+    "Madewell",
+    0.9936632950709653
+   ],
+   [
+    "Academy Sports + Outdoors",
+    0.9929707959315555
+   ],
+   [
+    "Nordstrom",
+    0.9928293193965436
+   ],
+   [
+    "Publix",
+    0.9923906069981198
+   ],
+   [
+    "Williams-Sonoma",
+    0.9917821614727652
+   ],
+   [
+    "Athleta",
+    0.9913429617566293
+   ],
+   [
+    "Planet Fitness",
+    0.9908189181596003
+   ],
+   [
+    "Warby Parker",
+    0.9906345748638716
+   ],
+   [
+    "Waffle House",
+    0.9905211150090785
+   ],
+   [
+    "Dick's Sporting Goods",
+    0.9836207633176194
+   ],
+   [
+    "Orangetheory Fitness",
+    0.98126160169633
+   ],
+   [
+    "Culver's",
+    0.9799010702439425
+   ],
+   [
+    "Petsmart",
+    0.9786674469406933
+   ],
+   [
+    "Banana Republic",
+    0.9773028770442106
+   ],
+   [
+    "Raising Cane's",
+    0.9688307482280533
+   ],
+   [
+    "Paper Source",
+    0.9675547675819097
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9481902268359221
+   ],
+   [
+    "Vuori",
+    0.9481902268359221
+   ],
+   [
+    "Whataburger",
+    0.9470957134877639
+   ],
+   [
+    "Wawa",
+    0.9429147041106971
+   ],
+   [
+    "CAVA",
+    0.9338014032087193
+   ],
+   [
+    "solidcore",
+    0.825868452946039
+   ]
+  ],
+  "Baton Rouge, Louisiana": [
+   [
+    "Kendra Scott",
+    0.9998293751084121
+   ],
+   [
+    "Raising Cane's",
+    0.99974043339413
+   ],
+   [
+    "Whole Foods Market",
+    0.9995105920860178
+   ],
+   [
+    "Lululemon",
+    0.9994071448004466
+   ],
+   [
+    "Trader Joe's",
+    0.9992142676490949
+   ],
+   [
+    "Nordstrom",
+    0.9989617207330891
+   ],
+   [
+    "Cost Plus World Market",
+    0.9989323305177942
+   ],
+   [
+    "Crumbl Cookies",
+    0.9987244425914846
+   ],
+   [
+    "Chick-fil-A",
+    0.9986946187665099
+   ],
+   [
+    "J.Crew",
+    0.9983460347536495
+   ],
+   [
+    "Hobby Lobby",
+    0.9982420307113282
+   ],
+   [
+    "Ulta",
+    0.9980787548958705
+   ],
+   [
+    "Target",
+    0.9980638326937051
+   ],
+   [
+    "Madewell",
+    0.9980190646446994
+   ],
+   [
+    "Old Navy",
+    0.9975661462077682
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9974321900869187
+   ],
+   [
+    "Banana Republic",
+    0.99711257973131
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9970903864102351
+   ],
+   [
+    "Warby Parker",
+    0.9970233764353716
+   ],
+   [
+    "Bath & Body Works",
+    0.9969491049571009
+   ],
+   [
+    "Whataburger",
+    0.996919223952405
+   ],
+   [
+    "Williams-Sonoma",
+    0.9966886810569545
+   ],
+   [
+    "Athleta",
+    0.9964209234291639
+   ],
+   [
+    "Lush",
+    0.9963393423992717
+   ],
+   [
+    "Waffle House",
+    0.9960343112675871
+   ],
+   [
+    "Academy Sports + Outdoors",
+    0.9960193561932782
+   ],
+   [
+    "Paper Source",
+    0.9889368485050395
+   ],
+   [
+    "Planet Fitness",
+    0.9867973769327645
+   ],
+   [
+    "Buckle",
+    0.985797117619974
+   ],
+   [
+    "Kohl's",
+    0.983718594728216
+   ],
+   [
+    "Vuori",
+    0.9794264153371044
+   ],
+   [
+    "Sweetgreen",
+    0.9741647244185687
+   ],
+   [
+    "CAVA",
+    0.9717407496509041
+   ],
+   [
+    "Dick's Sporting Goods",
+    0.9709083601503096
+   ],
+   [
+    "Recreational Equipment Inc",
+    0.9686145335203009
+   ],
+   [
+    "Barry's",
+    0.9637644803450939
+   ],
+   [
+    "Petsmart",
+    0.9230831733061194
+   ],
+   [
+    "Publix",
+    0.9159737590337815
+   ],
+   [
+    "solidcore",
+    0.9068977229502714
+   ],
+   [
+    "Equinox",
+    0.894384145496349
+   ],
+   [
+    "Culver's",
+    0.8394307192777112
+   ]
+  ],
+  "Fargo, North Dakota": [
+   [
+    "Lululemon",
+    0.999571037391274
+   ],
+   [
+    "solidcore",
+    0.9995097407153902
+   ],
+   [
+    "Target",
+    0.999448439964391
+   ],
+   [
+    "Recreational Equipment Inc",
+    0.9993500948316397
+   ],
+   [
+    "Madewell",
+    0.9990558483165076
+   ],
+   [
+    "Ulta",
+    0.9989455349331119
+   ],
+   [
+    "Athleta",
+    0.9986997314905597
+   ],
+   [
+    "Nordstrom",
+    0.9981721197877292
+   ],
+   [
+    "Cost Plus World Market",
+    0.9980493366099582
+   ],
+   [
+    "Buckle",
+    0.9977542493749657
+   ],
+   [
+    "Trader Joe's",
+    0.9977542493749657
+   ],
+   [
+    "Old Navy",
+    0.9977299388678303
+   ],
+   [
+    "J.Crew",
+    0.9976070970848221
+   ],
+   [
+    "Whole Foods Market",
+    0.9973980580475693
+   ],
+   [
+    "Lush",
+    0.9972994947386374
+   ],
+   [
+    "Hobby Lobby",
+    0.9967463221397226
+   ],
+   [
+    "American Eagle Outfitters",
+    0.9964632060714674
+   ],
+   [
+    "Warby Parker",
+    0.9964264758048685
+   ],
+   [
+    "Crumbl Cookies",
+    0.9956385619297685
+   ],
+   [
+    "Kohl's",
+    0.9930861050077109
+   ],
+   [
+    "Banana Republic",
+    0.9928516140803637
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9927156940553865
+   ],
+   [
+    "Williams-Sonoma",
+    0.9913558444187841
+   ],
+   [
+    "Paper Source",
+    0.9869539912627308
+   ],
+   [
+    "Kendra Scott",
+    0.9851005957732644
+   ],
+   [
+    "Vuori",
+    0.9806699402222081
+   ],
+   [
+    "Bath & Body Works",
+    0.9773368618184491
+   ],
+   [
+    "Petsmart",
+    0.9764454642837582
+   ],
+   [
+    "Planet Fitness",
+    0.9727453608686543
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.9711297842253499
+   ],
+   [
+    "Culver's",
+    0.9636125596567504
+   ],
+   [
+    "Sweetgreen",
+    0.9617660858456876
+   ],
+   [
+    "Barry's",
+    0.9336511108113571
+   ],
+   [
+    "Raising Cane's",
+    0.9293259103186791
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9005913400004194
+   ],
+   [
+    "Dick's Sporting Goods",
+    0.8840514151628378
+   ],
+   [
+    "Philz Coffee",
+    0.8695905504965125
+   ],
+   [
+    "Waffle House",
+    0.8367199095725186
+   ],
+   [
+    "CAVA",
+    0.8367199095725186
+   ],
+   [
+    "Bass Pro Shops",
+    0.8198393200487399
+   ]
+  ],
+  "Spokane, Washington": [
+   [
+    "Recreational Equipment Inc",
+    0.9999004371963179
+   ],
+   [
+    "Dutch Bros. Coffee",
+    0.9998255452593563
+   ],
+   [
+    "Lululemon",
+    0.9997093656046158
+   ],
+   [
+    "Trader Joe's",
+    0.999642970653099
+   ],
+   [
+    "Nordstrom",
+    0.9996344581338976
+   ],
+   [
+    "Crumbl Cookies",
+    0.9994599341656022
+   ],
+   [
+    "Cost Plus World Market",
+    0.9994599341656022
+   ],
+   [
+    "Athleta",
+    0.9992521650182155
+   ],
+   [
+    "Madewell",
+    0.9990030358311404
+   ],
+   [
+    "Target",
+    0.9985373886984568
+   ],
+   [
+    "Whole Foods Market",
+    0.9982296687980984
+   ],
+   [
+    "Buckle",
+    0.9968560438083645
+   ],
+   [
+    "Ulta",
+    0.9965973019469693
+   ],
+   [
+    "Williams-Sonoma",
+    0.9965973019469693
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9965392245768722
+   ],
+   [
+    "Lush",
+    0.996514028119797
+   ],
+   [
+    "Hobby Lobby",
+    0.9963555737497195
+   ],
+   [
+    "Warby Parker",
+    0.9954051364340658
+   ],
+   [
+    "Old Navy",
+    0.9934919319126344
+   ],
+   [
+    "J.Crew",
+    0.9928811965955558
+   ],
+   [
+    "Vuori",
+    0.9922284504301229
+   ],
+   [
+    "American Eagle Outfitters",
+    0.9906612187695264
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.9903676647430719
+   ],
+   [
+    "Banana Republic",
+    0.9898224362177565
+   ],
+   [
+    "Bath & Body Works",
+    0.9854471913232268
+   ],
+   [
+    "Planet Fitness",
+    0.985261376293789
+   ],
+   [
+    "Paper Source",
+    0.9789828488509033
+   ],
+   [
+    "Kohl's",
+    0.9673440020131457
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9673440020131457
+   ],
+   [
+    "Philz Coffee",
+    0.9604498417623575
+   ],
+   [
+    "Barry's",
+    0.9573930126313898
+   ],
+   [
+    "Raising Cane's",
+    0.9194990915811021
+   ],
+   [
+    "Equinox",
+    0.8210272690126842
+   ]
+  ],
+  "Franklin, Tennessee": [
+   [
+    "Recreational Equipment Inc",
+    0.9993198654330893
+   ],
+   [
+    "Madewell",
+    0.99797983752807
+   ],
+   [
+    "Kendra Scott",
+    0.99783058875306
+   ],
+   [
+    "Lululemon",
+    0.9976817424691906
+   ],
+   [
+    "Cost Plus World Market",
+    0.9970852647993058
+   ],
+   [
+    "J.Crew",
+    0.9963602722457254
+   ],
+   [
+    "Crumbl Cookies",
+    0.996125745645585
+   ],
+   [
+    "Warby Parker",
+    0.9956137685858049
+   ],
+   [
+    "Trader Joe's",
+    0.9953149142422196
+   ],
+   [
+    "Whole Foods Market",
+    0.994609940636448
+   ],
+   [
+    "Chick-fil-A",
+    0.9943321686676334
+   ],
+   [
+    "Hobby Lobby",
+    0.9932845406866685
+   ],
+   [
+    "Bass Pro Shops",
+    0.9925780389558577
+   ],
+   [
+    "Athleta",
+    0.992428353731146
+   ],
+   [
+    "Waffle House",
+    0.9917212094905341
+   ],
+   [
+    "Target",
+    0.9910350139129016
+   ],
+   [
+    "Williams-Sonoma",
+    0.9906921591392236
+   ],
+   [
+    "Nordstrom",
+    0.987747886475419
+   ],
+   [
+    "Buckle",
+    0.9854208336983968
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9849678884245846
+   ],
+   [
+    "Ulta",
+    0.983196424283364
+   ],
+   [
+    "American Eagle Outfitters",
+    0.981789583346931
+   ],
+   [
+    "Academy Sports + Outdoors",
+    0.9810315778356121
+   ],
+   [
+    "Paper Source",
+    0.9780145700826934
+   ],
+   [
+    "Vuori",
+    0.9758382443002381
+   ],
+   [
+    "Old Navy",
+    0.9723684211357971
+   ],
+   [
+    "CAVA",
+    0.9718437094163397
+   ],
+   [
+    "Publix",
+    0.9698509929042999
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9677448151929912
+   ],
+   [
+    "Barry's",
+    0.9626148035693737
+   ],
+   [
+    "Banana Republic",
+    0.9533027815376559
+   ],
+   [
+    "Lush",
+    0.9522335552518025
+   ],
+   [
+    "Bath & Body Works",
+    0.9522335552518025
+   ],
+   [
+    "Sweetgreen",
+    0.9509174206043327
+   ],
+   [
+    "solidcore",
+    0.9338218341699557
+   ],
+   [
+    "Whataburger",
+    0.9309847719697648
+   ],
+   [
+    "Kohl's",
+    0.9299164888930204
+   ],
+   [
+    "Planet Fitness",
+    0.8849121568201767
+   ],
+   [
+    "Dick's Sporting Goods",
+    0.8616899309659481
+   ],
+   [
+    "Petsmart",
+    0.8381103180078355
+   ],
+   [
+    "Culver's",
+    0.8058890770031055
+   ],
+   [
+    "Raising Cane's",
+    0.7251432899968088
+   ]
+  ],
+  "Mission District, San Francisco": [],
+  "Ann Arbor, Michigan": [
+   [
+    "Madewell",
+    0.9995399638912772
+   ],
+   [
+    "Recreational Equipment Inc",
+    0.9994888818894614
+   ],
+   [
+    "Lululemon",
+    0.9994011845210056
+   ],
+   [
+    "Whole Foods Market",
+    0.9993645705309081
+   ],
+   [
+    "Trader Joe's",
+    0.9993500948316397
+   ],
+   [
+    "J.Crew",
+    0.9991308027870616
+   ],
+   [
+    "Athleta",
+    0.9985676437156634
+   ],
+   [
+    "Warby Parker",
+    0.9985459113386538
+   ],
+   [
+    "Nordstrom",
+    0.9979312277096681
+   ],
+   [
+    "Cost Plus World Market",
+    0.9976825955245725
+   ],
+   [
+    "Williams-Sonoma",
+    0.9975870484438263
+   ],
+   [
+    "solidcore",
+    0.9967522995290448
+   ],
+   [
+    "Sweetgreen",
+    0.9966788603681791
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9966570836884201
+   ],
+   [
+    "Target",
+    0.9966348794900418
+   ],
+   [
+    "Banana Republic",
+    0.9963196935438473
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.9959753441538728
+   ],
+   [
+    "Paper Source",
+    0.9957039619004517
+   ],
+   [
+    "Crumbl Cookies",
+    0.9943899554472793
+   ],
+   [
+    "Equinox",
+    0.9936255978590603
+   ],
+   [
+    "Lush",
+    0.9929635082660356
+   ],
+   [
+    "Barry's",
+    0.9918886033872062
+   ],
+   [
+    "Vuori",
+    0.9869410488994486
+   ],
+   [
+    "CAVA",
+    0.9788814962378434
+   ],
+   [
+    "Philz Coffee",
+    0.9785155829091242
+   ],
+   [
+    "Culver's",
+    0.9763695821294175
+   ],
+   [
+    "Waffle House",
+    0.9673171581731933
+   ],
+   [
+    "Planet Fitness",
+    0.9625020645950951
+   ],
+   [
+    "Old Navy",
+    0.955719301765587
+   ],
+   [
+    "Kohl's",
+    0.9302881786942017
+   ],
+   [
+    "Kendra Scott",
+    0.8892691837945258
+   ]
+  ],
+  "Greenville, South Carolina": [
+   [
+    "Chick-fil-A",
+    0.9997140471193784
+   ],
+   [
+    "Recreational Equipment Inc",
+    0.9996782967676351
+   ],
+   [
+    "Cost Plus World Market",
+    0.9994995242065449
+   ],
+   [
+    "Lululemon",
+    0.9994424799518085
+   ],
+   [
+    "Whole Foods Market",
+    0.9994352427418915
+   ],
+   [
+    "Trader Joe's",
+    0.9993709567966079
+   ],
+   [
+    "Crumbl Cookies",
+    0.999270900221319
+   ],
+   [
+    "Madewell",
+    0.9992491843826504
+   ],
+   [
+    "J.Crew",
+    0.9992206549551802
+   ],
+   [
+    "Target",
+    0.9991635934543809
+   ],
+   [
+    "Hobby Lobby",
+    0.9990204983581193
+   ],
+   [
+    "Athleta",
+    0.9987700285785859
+   ],
+   [
+    "Old Navy",
+    0.9984764495327518
+   ],
+   [
+    "Williams-Sonoma",
+    0.9984265872290652
+   ],
+   [
+    "Kendra Scott",
+    0.9984193420553371
+   ],
+   [
+    "Nordstrom",
+    0.9983260020969167
+   ],
+   [
+    "Waffle House",
+    0.9982330789975469
+   ],
+   [
+    "Publix",
+    0.9978608668766941
+   ],
+   [
+    "Warby Parker",
+    0.9974091510980502
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9972013477132844
+   ],
+   [
+    "Ulta",
+    0.9971582450893341
+   ],
+   [
+    "Banana Republic",
+    0.9968359789453344
+   ],
+   [
+    "CAVA",
+    0.9963769303586946
+   ],
+   [
+    "Kohl's",
+    0.9957381561384525
+   ],
+   [
+    "Academy Sports + Outdoors",
+    0.9937900836757317
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9935094980746116
+   ],
+   [
+    "Planet Fitness",
+    0.9927752954727039
+   ],
+   [
+    "Paper Source",
+    0.9922348857459654
+   ],
+   [
+    "Buckle",
+    0.9917521152125794
+   ],
+   [
+    "Vuori",
+    0.9904751255185147
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.9895144243840271
+   ],
+   [
+    "Lush",
+    0.9886031409802641
+   ],
+   [
+    "Bath & Body Works",
+    0.9882124471834242
+   ],
+   [
+    "Petsmart",
+    0.9863796136717913
+   ],
+   [
+    "American Eagle Outfitters",
+    0.9820701605125055
+   ],
+   [
+    "Culver's",
+    0.9807003350897951
+   ],
+   [
+    "Sweetgreen",
+    0.9807003350897951
+   ],
+   [
+    "Bass Pro Shops",
+    0.9761235793255744
+   ],
+   [
+    "solidcore",
+    0.9656197225608852
+   ],
+   [
+    "Barry's",
+    0.9612049048473692
+   ],
+   [
+    "Raising Cane's",
+    0.9553285056375497
+   ],
+   [
+    "Dick's Sporting Goods",
+    0.9459174643332324
+   ],
+   [
+    "Wawa",
+    0.9373372550331166
+   ]
+  ],
+  "Tulsa, Oklahoma": [
+   [
+    "Kendra Scott",
+    0.9998991606802254
+   ],
+   [
+    "Whole Foods Market",
+    0.9998719279154286
+   ],
+   [
+    "Lululemon",
+    0.9998246941796259
+   ],
+   [
+    "Madewell",
+    0.9996834040456538
+   ],
+   [
+    "Cost Plus World Market",
+    0.9996697845747068
+   ],
+   [
+    "Target",
+    0.9996229661082673
+   ],
+   [
+    "Trader Joe's",
+    0.9996025354867014
+   ],
+   [
+    "Hobby Lobby",
+    0.9995284706876063
+   ],
+   [
+    "Crumbl Cookies",
+    0.9994207681516839
+   ],
+   [
+    "Recreational Equipment Inc",
+    0.9993666992910535
+   ],
+   [
+    "Nordstrom",
+    0.9992926155489413
+   ],
+   [
+    "Athleta",
+    0.9992657906581968
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9992321519947344
+   ],
+   [
+    "J.Crew",
+    0.9992253389515474
+   ],
+   [
+    "Chick-fil-A",
+    0.9992048995202065
+   ],
+   [
+    "Ulta",
+    0.9990434972800392
+   ],
+   [
+    "Lush",
+    0.9988611938072873
+   ],
+   [
+    "Old Navy",
+    0.9988207243719782
+   ],
+   [
+    "Williams-Sonoma",
+    0.9988007019959638
+   ],
+   [
+    "Warby Parker",
+    0.9987802531641672
+   ],
+   [
+    "Whataburger",
+    0.9987602299112549
+   ],
+   [
+    "Banana Republic",
+    0.9978156625534775
+   ],
+   [
+    "Bath & Body Works",
+    0.9975388446186668
+   ],
+   [
+    "Buckle",
+    0.9966404305893231
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9960996834893839
+   ],
+   [
+    "Kohl's",
+    0.9959236380355668
+   ],
+   [
+    "Raising Cane's",
+    0.9940752954147438
+   ],
+   [
+    "Academy Sports + Outdoors",
+    0.9937772342591996
+   ],
+   [
+    "Paper Source",
+    0.9933162522266299
+   ],
+   [
+    "American Eagle Outfitters",
+    0.9917615584259305
+   ],
+   [
+    "Vuori",
+    0.9912046767984155
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.9906809863444834
+   ],
+   [
+    "Bass Pro Shops",
+    0.9904837218544915
+   ],
+   [
+    "Waffle House",
+    0.9887611822032172
+   ],
+   [
+    "Planet Fitness",
+    0.988024581557646
+   ],
+   [
+    "CAVA",
+    0.977229239355064
+   ],
+   [
+    "Petsmart",
+    0.96944705856532
+   ],
+   [
+    "Dick's Sporting Goods",
+    0.9619266835068351
+   ],
+   [
+    "Sweetgreen",
+    0.9560641327317366
+   ],
+   [
+    "Culver's",
+    0.9171059653248005
+   ],
+   [
+    "Barry's",
+    0.9075403925654527
+   ]
+  ],
+  "Boise, Idaho": [
+   [
+    "Recreational Equipment Inc",
+    0.9998978841623638
+   ],
+   [
+    "Dutch Bros. Coffee",
+    0.9993879866223249
+   ],
+   [
+    "Crumbl Cookies",
+    0.9987346676813872
+   ],
+   [
+    "Lululemon",
+    0.9981832035789738
+   ],
+   [
+    "Athleta",
+    0.9961577882811345
+   ],
+   [
+    "Trader Joe's",
+    0.9960757569337211
+   ],
+   [
+    "Cost Plus World Market",
+    0.995830046942562
+   ],
+   [
+    "Madewell",
+    0.995809532571241
+   ],
+   [
+    "Whole Foods Market",
+    0.995665919337951
+   ],
+   [
+    "Buckle",
+    0.99342980504611
+   ],
+   [
+    "Vuori",
+    0.9890035759893082
+   ],
+   [
+    "Target",
+    0.9828758819195522
+   ],
+   [
+    "Nordstrom",
+    0.9818993086199339
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9809634282842604
+   ],
+   [
+    "J.Crew",
+    0.9809634282842604
+   ],
+   [
+    "Lush",
+    0.9790054668913905
+   ],
+   [
+    "Williams-Sonoma",
+    0.9785047034970368
+   ],
+   [
+    "Warby Parker",
+    0.975663687010434
+   ],
+   [
+    "Bass Pro Shops",
+    0.9735482377963961
+   ],
+   [
+    "Hobby Lobby",
+    0.969977847675157
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9566147387157379
+   ],
+   [
+    "Banana Republic",
+    0.9379313637683357
+   ],
+   [
+    "Paper Source",
+    0.9259196247454199
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.9217263693883333
+   ],
+   [
+    "Culver's",
+    0.890246538701082
+   ],
+   [
+    "American Eagle Outfitters",
+    0.8839147608172725
+   ],
+   [
+    "Philz Coffee",
+    0.8671048882008618
+   ],
+   [
+    "Waffle House",
+    0.7922221594967249
+   ],
+   [
+    "Dick's Sporting Goods",
+    0.7667383116128097
+   ],
+   [
+    "Academy Sports + Outdoors",
+    0.7518525762289636
+   ]
+  ],
+  "Madison, Wisconsin": [
+   [
+    "Recreational Equipment Inc",
+    0.9998085235153494
+   ],
+   [
+    "Madewell",
+    0.9996782967676351
+   ],
+   [
+    "Lululemon",
+    0.9996238173743387
+   ],
+   [
+    "Culver's",
+    0.9995961508245967
+   ],
+   [
+    "Trader Joe's",
+    0.9995139975606668
+   ],
+   [
+    "Whole Foods Market",
+    0.9994458856780005
+   ],
+   [
+    "Athleta",
+    0.9992883576818434
+   ],
+   [
+    "J.Crew",
+    0.9991857371422135
+   ],
+   [
+    "Target",
+    0.9987061223558551
+   ],
+   [
+    "Cost Plus World Market",
+    0.9985143771776245
+   ],
+   [
+    "Crumbl Cookies",
+    0.998438946512122
+   ],
+   [
+    "solidcore",
+    0.998240325629663
+   ],
+   [
+    "Warby Parker",
+    0.9980825919947102
+   ],
+   [
+    "Nordstrom",
+    0.9980280184275989
+   ],
+   [
+    "Williams-Sonoma",
+    0.9978566024120864
+   ],
+   [
+    "Paper Source",
+    0.9965528901665466
+   ],
+   [
+    "Kohl's",
+    0.99636069938055
+   ],
+   [
+    "Lush",
+    0.996092847393311
+   ],
+   [
+    "Banana Republic",
+    0.9958864591369515
+   ],
+   [
+    "Orangetheory Fitness",
+    0.9958385944641006
+   ],
+   [
+    "Blue Bottle Coffee",
+    0.994958643888728
+   ],
+   [
+    "Kendra Scott",
+    0.9946766963464858
+   ],
+   [
+    "Sweetgreen",
+    0.9945046623440205
+   ],
+   [
+    "Vuori",
+    0.9928516140803637
+   ],
+   [
+    "Old Navy",
+    0.9924450819134724
+   ],
+   [
+    "Barry's",
+    0.9902425650650176
+   ],
+   [
+    "Equinox",
+    0.9830825139247644
+   ],
+   [
+    "Philz Coffee",
+    0.9759390371495069
+   ],
+   [
+    "American Eagle Outfitters",
+    0.9739872502780585
+   ],
+   [
+    "Buckle",
+    0.9722563188047115
+   ],
+   [
+    "Waffle House",
+    0.968016187391558
+   ],
+   [
+    "CAVA",
+    0.9616541394278095
+   ],
+   [
+    "Planet Fitness",
+    0.9530819733291476
+   ],
+   [
+    "Sprouts Farmers Market",
+    0.9513880374447569
+   ],
+   [
+    "Dick's Sporting Goods",
+    0.9471840867775135
+   ]
+  ]
+ }
+}

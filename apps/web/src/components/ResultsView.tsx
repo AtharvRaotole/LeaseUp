@@ -11,7 +11,11 @@ export function ResultsView({ results }: ResultsViewProps) {
     <div className="max-w-6xl mx-auto space-y-8">
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Analysis for {results.location.neighborhood || results.location.city}
+          Analysis for{' '}
+          {results.location.neighborhood ||
+            results.location.city ||
+            results.location.resolvedAddress?.split(',')[0] ||
+            results.location.address}
         </h2>
         <p className="text-gray-600 mb-4">{results.location.resolvedAddress}</p>
         
