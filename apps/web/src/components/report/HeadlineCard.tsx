@@ -3,6 +3,7 @@ import { Card } from '../ui/Card';
 import { dataConfidenceLabel, dataConfidenceSubtitle } from '../../lib/copy';
 import { placeHeadlineLabel } from '../../lib/location-label';
 import { hitRateStatLabel } from '../../lib/hit-rate';
+import { qlooProofHitRateTieSubtitle, qlooProofWinner } from '../../lib/qloo-proof';
 
 export function HeadlineCard({
   results,
@@ -17,8 +18,14 @@ export function HeadlineCard({
 }) {
   const count = results.prospects.length;
   const area = placeHeadlineLabel(results.location, chipSlug);
-  const hitLabel = hitRateStatLabel(backtestOverride ?? results.backtest);
+  const activeBacktest = backtestOverride ?? results.backtest;
+  const hitLabel = hitRateStatLabel(activeBacktest);
   const analyzed = results.rankings?.length ?? 0;
+  const baseline = results.backtestBaseline;
+  const hitTieSubtitle =
+    baseline && qlooProofWinner(results.backtest, baseline) === 'tie'
+      ? qlooProofHitRateTieSubtitle(results.rankings)
+      : null;
 
   return (
     <Card>
@@ -32,7 +39,7 @@ export function HeadlineCard({
           label="Hit rate"
           mobileLabel="Hit rate"
           value={hitLabel}
-          subtitle="Top 10 brands with a store nearby"
+          subtitle={hitTieSubtitle ?? 'Top 10 brands with a store nearby'}
         />
         <StatTile
           label="Brands analyzed"

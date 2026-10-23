@@ -42,7 +42,7 @@ describe('WhyThisBrandCard', () => {
       <WhyThisBrandCard prospect={prospect} results={results} radiusKm={10} />
     );
     expect(html).toContain('Why REI?');
-    expect(html).toContain('Strong local affinity');
+    expect(html).toContain('All The Places');
   });
 
   it('renders nothing without a prospect', () => {
