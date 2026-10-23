@@ -1,7 +1,7 @@
 /** Cohort headline metrics from the live Qloo lift study (see QLOO_LIFT_EVAL.md). */
 export const liveQlooLiftAggregates = {
   recordedAt: '2026-10-23T00:00:00.000Z',
-  siteCount: 12,
+  siteCount: 40,
   siteCountTarget: 40,
   rawQlooPrecisionAt10: 0.54,
   chainSizePrecisionAt10: 0.76,

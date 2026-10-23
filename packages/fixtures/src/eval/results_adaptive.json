@@ -1,0 +1,38 @@
+{
+  "agg": {
+    "n_sites": 40,
+    "p10_raw": 0.54,
+    "p10_chain": 0.76,
+    "p10_blend": 0.82,
+    "p10_legacy_blend": 0.59,
+    "same_size_auc": 0.672,
+    "same_size_auc_ci": [0.65, 0.693],
+    "blend_lift_vs_chain_pp": 6.5,
+    "blend_lift_vs_chain_ci": [3.2, 9.5]
+  },
+  "by_stratum": {
+    "dense_urban": { "radius_km": 1.5 },
+    "urban": { "radius_km": 2.5 },
+    "suburban": { "radius_km": 5 },
+    "exurban": { "radius_km": 7 },
+    "tourist": { "radius_km": 4 }
+  },
+  "by_cat": {},
+  "per_address": [
+    {
+      "id": "wicker-park",
+      "label": "Wicker Park, Chicago",
+      "address": "1560 N Milwaukee Ave, Chicago, IL 60622",
+      "stratum": "dense_urban",
+      "adaptive_radius_km": 1.5,
+      "n_brands": 224,
+      "n_present": 42,
+      "p10_raw": 0.3,
+      "p10_chain": 0.7,
+      "p10_blend": 0.9,
+      "same_size_auc": 0.688,
+      "same_size_auc_ci": [0.6, 0.78],
+      "taste_percentile": 64
+    }
+  ]
+}

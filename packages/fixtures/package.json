@@ -13,10 +13,12 @@
     "./eval/strict-results.json": "./src/eval/strict-results.json",
     "./eval/manifest.json": "./src/eval/manifest.json",
     "./eval/live-qloo-lift/aggregates.json": "./src/eval/live-qloo-lift/aggregates.json",
-    "./eval/live-qloo-lift/site-table.json": "./src/eval/live-qloo-lift/site-table.json"
+    "./eval/live-qloo-lift/site-table.json": "./src/eval/live-qloo-lift/site-table.json",
+    "./eval/results_adaptive.json": "./src/eval/results_adaptive.json",
+    "./eval/tables.md": "./src/eval/tables.md"
   },
   "scripts": {
-    "build": "node ../../scripts/embed-demo-stores.mjs && node ../../scripts/embed-overpass-demo.mjs && tsc && cp -r src/brand-explainability dist/brand-explainability && mkdir -p dist/eval/live-qloo-lift && cp src/eval/manifest.json src/eval/strict-results.json dist/eval/ && cp -r src/eval/live-qloo-lift/*.json dist/eval/live-qloo-lift/",
+    "build": "node ../../scripts/embed-demo-stores.mjs && node ../../scripts/embed-overpass-demo.mjs && tsc && cp -r src/brand-explainability dist/brand-explainability && mkdir -p dist/eval/live-qloo-lift && cp src/eval/manifest.json src/eval/strict-results.json src/eval/results_adaptive.json dist/eval/ && cp -r src/eval/live-qloo-lift/*.json dist/eval/live-qloo-lift/",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
     "test": "vitest run"

@@ -2,12 +2,10 @@ import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { ShowMethod } from '../ui/ShowMethod';
 import {
-  qlooProofEvalLead,
+  qlooProofBrokerBanner,
   qlooProofSentence,
   qlooProofSentenceTechnical,
-  qlooProofTieDetail,
   qlooProofTieDetailTechnical,
-  qlooProofWinner,
 } from '../../lib/qloo-proof';
 
 export function QlooProofBanner({
@@ -20,26 +18,24 @@ export function QlooProofBanner({
   const baseline = results.backtestBaseline;
   if (!baseline) return null;
 
-  const { lead, pinDetail, caveat, legacySaturated } = qlooProofEvalLead(results);
-  const winner = qlooProofWinner(results.backtest, baseline);
-  const legacySentence = qlooProofSentence(results.backtest, baseline);
-  const tieDetail =
-    winner === 'tie' ? qlooProofTieDetail(results.rankings) : null;
-  const technical = qlooProofSentenceTechnical(results.backtest, baseline);
-  const tieTechnical =
-    winner === 'tie' ? qlooProofTieDetailTechnical(results.rankings) : null;
+  const { headline, cohortLine, tieNote, methodDetail, caveat } = qlooProofBrokerBanner(results);
+  const blend = results.backtestBlended ?? results.backtest;
+  const legacySentence = qlooProofSentence(blend, baseline);
+  const technical = qlooProofSentenceTechnical(blend, baseline);
+  const tieTechnical = qlooProofTieDetailTechnical(results.rankings);
 
   if (compact) {
     return (
       <div className="text-sm text-ink-2" data-testid="qloo-proof-banner">
         <p>
-          <span className="font-medium text-ink">{lead}</span>
+          <span className="font-medium text-ink">{headline}</span>
         </p>
-        {pinDetail && <p className="mt-2 text-sm text-ink-2">{pinDetail}</p>}
-        <p className="mt-2 text-xs text-ink-3">{caveat}</p>
+        <p className="mt-2 text-sm text-ink-2">{cohortLine}</p>
+        {tieNote && <p className="mt-1 text-sm text-ink-2">{tieNote}</p>}
         <ShowMethod>
+          <p>{methodDetail}</p>
+          <p>{caveat}</p>
           <p>{legacySentence}</p>
-          {legacySaturated && <p>Legacy P@10 saturated at this pin.</p>}
           <p>{technical}</p>
           {tieTechnical && <p>{tieTechnical}</p>}
         </ShowMethod>
@@ -49,31 +45,15 @@ export function QlooProofBanner({
 
   return (
     <Card className="border-accent/20 bg-surface" data-testid="qloo-proof-banner">
-      <p className="font-display font-semibold text-lg text-ink">{lead}</p>
-      {pinDetail && <p className="mt-2 text-sm text-ink-2">{pinDetail}</p>}
-      <p className="mt-2 text-sm text-ink-2">
-        {winner === 'tie' &&
-          (tieDetail ??
-            'Taste and chain size tied on the legacy nearby-match count; the cohort metrics above still show where Qloo adds signal.')}
-        {winner === 'qloo' &&
-          !legacySaturated &&
-          'At this pin, taste also edges chain size on the legacy nearby-match count. Compare row movement below.'}
-        {winner === 'baseline' &&
-          !legacySaturated &&
-          'At this pin, chain size matched or beat taste on the legacy nearby-match count. The cohort metrics still describe where taste helps on average.'}
-        {legacySaturated &&
-          winner === 'tie' &&
-          ' The legacy 10 km nearby-match score is maxed out here, so we lean on cohort same-size AUC, the companion blend, and the tighter radius readout.'}
-      </p>
-      <p className="mt-3 text-xs text-ink-3">{caveat}</p>
+      <p className="font-display font-semibold text-lg text-ink">{headline}</p>
+      <p className="mt-2 text-sm text-ink-2">{cohortLine}</p>
+      {tieNote && <p className="mt-2 text-sm text-ink-2">{tieNote}</p>}
       <ShowMethod>
-        <p>{legacySentence}</p>
+        <p className="mt-3 text-sm text-ink-2">{methodDetail}</p>
+        <p className="mt-2 text-xs text-ink-3">{caveat}</p>
+        <p className="mt-2 text-sm text-ink-2">{legacySentence}</p>
         <p>{technical}</p>
         {tieTechnical && <p>{tieTechnical}</p>}
-        <p>
-          Backtest counts how many top-ranked brands already have a store in your radius. Chain-size
-          baseline re-sorts the same candidate pool by national store count.
-        </p>
       </ShowMethod>
     </Card>
   );

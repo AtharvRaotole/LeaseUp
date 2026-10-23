@@ -23,7 +23,7 @@ describe('strict-eval', () => {
     );
     expect(metrics.legacyPresentAt10Qloo).toBe(10);
     expect(metrics.legacyPresentAt10Chain).toBe(10);
-    expect(metrics.adaptiveRadiusKm).toBe(3);
+    expect(metrics.adaptiveRadiusKm).toBe(1.5);
     const snapshot = buildEvalSiteSnapshot(metrics);
     expect(snapshot.panels.length).toBeGreaterThan(3);
     expect(snapshot.headlineMetricId).toBe('same_size_auc');
