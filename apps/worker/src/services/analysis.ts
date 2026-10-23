@@ -25,6 +25,8 @@ import {
   matchDemoFixtureId,
   matchDemoChipWithinMeters,
   demoFixtureDensity,
+  demoFixtureStratum,
+  densityToDefaultStratum,
 } from '@leaseup/fixtures';
 import { createStoreCatalog, type StoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
@@ -155,8 +157,11 @@ export class AnalysisService {
       const siteDensity = demoFixtureIdForDensity
         ? demoFixtureDensity(demoFixtureIdForDensity)
         : 'urban';
+      const siteStratum = demoFixtureIdForDensity
+        ? demoFixtureStratum(demoFixtureIdForDensity)
+        : densityToDefaultStratum(siteDensity);
 
-      const { raw: backtest, blended: backtestBlended, baseline: backtestBaseline } = await runStep(
+      const { blended: backtestBlended, baseline: backtestBaseline } = await runStep(
         emit,
         'backtest',
         'Prove it (backtest)',
@@ -166,14 +171,14 @@ export class AnalysisService {
             insights,
             request.radius,
             this.catalog,
-            siteDensity
+            siteStratum
           );
           const baseline = await buildBaselineBacktest(
             location,
             insights,
             request.radius,
             this.catalog,
-            siteDensity
+            siteStratum
           );
           return {
             summary: `Raw P@10 ${(dual.raw.precisionAt10 * 100).toFixed(0)}% · Blended P@10 ${(dual.blended.precisionAt10 * 100).toFixed(0)}%`,
@@ -250,14 +255,14 @@ export class AnalysisService {
         insights,
         request.radius,
         this.catalog,
-        siteDensity
+        siteStratum
       );
       const demoFixtureId = matchDemoFixtureId(location.address);
       const strictEval = await buildStrictEvalSnapshot(
         location,
         insights,
         request.radius,
-        demoFixtureId ? demoFixtureDensity(demoFixtureId) : 'urban',
+        demoFixtureId ? demoFixtureStratum(demoFixtureId) : densityToDefaultStratum(siteDensity),
         this.catalog
       );
       const mapStores = await buildMapStores(location, insights, request.radius, this.catalog);
@@ -281,8 +286,8 @@ export class AnalysisService {
         })
       );
 
-      const dataQuality = this.assessDataQuality(insights.length, backtest);
-      const warnings = this.generateWarnings(insights.length, backtest, location);
+      const dataQuality = this.assessDataQuality(insights.length, backtestBlended);
+      const warnings = this.generateWarnings(insights.length, backtestBlended, location);
       if (formatFilteredCount > 0) {
         warnings.push(
           `${formatFilteredCount} big-box or format brands hidden for ${request.storefrontSqFt ?? 2500} sq ft storefront`
@@ -291,7 +296,7 @@ export class AnalysisService {
 
       const response: AnalysisResponse = {
         location,
-        backtest,
+        backtest: backtestBlended,
         backtestBlended,
         backtestBaseline,
         rankings,
@@ -805,7 +810,7 @@ export class AnalysisService {
     }
 
     reasons.push(
-      'Prospect ordering uses the logistic companion blend (Qloo rank, chain size, and trade-area density); backtest uses raw Qloo order with adaptive-radius presence'
+      'Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, and trade-area density); backtest uses the same blend with adaptive-radius presence'
     );
 
     if (nationalCount >= 100) {

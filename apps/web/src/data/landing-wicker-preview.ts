@@ -2757,7 +2757,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "outreachDraft": "",
       "reasons": [
         "Qloo rank #13 (top 10% of 224 brands) in Wicker Park",
-        "Prospect ordering blends Qloo rank with national footprint (weight 0.25); backtest uses raw Qloo order",
+        "Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, trade-area density)",
         "Established chain with 397 US locations"
       ],
       "nearestExistingStoreKm": 12.191706680907302,
@@ -2791,7 +2791,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "outreachDraft": "",
       "reasons": [
         "Qloo rank #21 (top 10% of 224 brands) in Wicker Park",
-        "Prospect ordering blends Qloo rank with national footprint (weight 0.25); backtest uses raw Qloo order",
+        "Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, trade-area density)",
         "Established chain with 213 US locations"
       ],
       "nearestExistingStoreKm": 17.35370955548852,
@@ -2825,7 +2825,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "outreachDraft": "",
       "reasons": [
         "Qloo rank #29 (top 15% of 224 brands) in Wicker Park",
-        "Prospect ordering blends Qloo rank with national footprint (weight 0.25); backtest uses raw Qloo order",
+        "Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, trade-area density)",
         "Established chain with 172 US locations"
       ],
       "nearestExistingStoreKm": 17.278564483786198,
@@ -2858,7 +2858,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       },
       "outreachDraft": "",
       "reasons": [
-        "Prospect ordering blends Qloo rank with national footprint (weight 0.25); backtest uses raw Qloo order",
+        "Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, trade-area density)",
         "Established chain with 328 US locations"
       ],
       "nearestExistingStoreKm": 17.35370955548852,
@@ -2891,7 +2891,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       },
       "outreachDraft": "",
       "reasons": [
-        "Prospect ordering blends Qloo rank with national footprint (weight 0.25); backtest uses raw Qloo order",
+        "Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, trade-area density)",
         "Established chain with 712 US locations"
       ],
       "nearestExistingStoreKm": 17.23241769016111,
