@@ -1,3 +1,6 @@
+import type { EvalMetricPanel } from './present-metrics.js';
+import type { StrictEvalSiteMetrics } from '../strict-eval.js';
+
 export type EvalSiteDensity = 'urban' | 'suburban' | 'exurban' | 'tourist';
 
 export type EvalMetroRowStatus = 'recorded' | 'pending_qloo';
@@ -9,9 +12,7 @@ export interface EvalMetroRow {
   density: EvalSiteDensity;
   status: EvalMetroRowStatus;
   qlooPresentInTop10?: number;
-  /** Chain-size baseline (national ATP store count), same pool as Qloo. */
   chainSizePresentInTop10?: number;
-  /** Expected present count if 10 brands were drawn uniformly at random from the pool. */
   expectedRandomPresentInTop10?: number;
   liftVsChainSize?: number;
   liftVsRandomExpected?: number;
@@ -36,49 +37,22 @@ export interface EvalMetrosResults {
   };
 }
 
-export type StrictEvalPrimaryWinner = 'qloo' | 'chain' | 'tie';
-
-export interface StrictEvalMetroRow {
+export type EvalRunRow = {
   id: string;
   label: string;
   address: string;
   density: EvalSiteDensity;
   status: EvalMetroRowStatus;
-  metrics?: {
-    primaryMetricId: 'spearman_presence';
-    searchRadiusKm: number;
-    adaptiveRadiusKm: number;
-    poolSize: number;
-    legacyPresentAt10Qloo: number;
-    legacyPresentAt10Chain: number;
-    adaptivePresentAt10Qloo: number;
-    adaptivePresentAt10Chain: number;
-    surprisePresentAt10Qloo: number;
-    surprisePresentAt10Chain: number;
-    spearmanQloo: number;
-    spearmanChain: number;
-    randomExpectedPresentAt10: number;
-    randomMonteCarloPresentAt10: number;
-    primaryWinner: StrictEvalPrimaryWinner;
-    qlooBelowChainAdaptive: boolean;
-    qlooBelowRandomExpected: boolean;
-    honestSummary: string;
-  };
-}
+  panels?: EvalMetricPanel[];
+  siteMetrics?: StrictEvalSiteMetrics;
+};
 
-export interface StrictEvalResults {
-  protocolDoc: 'docs/STRICT_EVAL_PROTOCOL.md';
+export type EvalRunBundle = {
+  manifestId: string;
   recordedAt: string;
-  primaryMetricId: 'spearman_presence';
-  rows: StrictEvalMetroRow[];
-  summary?: {
-    recordedCount: number;
-    meanSpearmanQloo: number;
-    meanSpearmanChain: number;
-    qlooPrimaryWins: number;
-    chainPrimaryWins: number;
-    ties: number;
-    sitesWhereQlooBelowChainAdaptive: string[];
-    sitesWhereLegacySaturated: string[];
-  };
-}
+  dataSource: string;
+  siteSetId: string;
+  recordingNote?: string;
+  rows: EvalRunRow[];
+  summary?: Record<string, unknown>;
+};

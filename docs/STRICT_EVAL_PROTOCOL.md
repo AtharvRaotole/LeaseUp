@@ -1,43 +1,31 @@
-# Strict Qloo evaluation protocol
+# Strict evaluation protocol (draft)
 
-This document fixes the scoring rules **before** reading metro results. LeaseUp adopted it on 2026-10-23 because present-in-top-10 (P@10) saturates in dense trade areas (for example Chicago Wicker Park and Manhattan-style corridors).
+LeaseUp legacy present-in-top-10 saturates on dense trade areas. This document lists **candidate** metrics and how to record them. The **headline metric is not chosen yet**; it will be set in `packages/fixtures/src/eval/manifest.json` after the live API evaluation completes.
 
 ## Ground truth
 
-- **Presence**: All The Places lists at least one store for the brand inside the evaluation radius from the site pin.
-- **Candidate pool**: Qloo brand insights intersected with the 227-chain ATP panel (same pool as the legacy backtest).
+- **Presence**: All The Places lists at least one store for the brand inside the evaluation radius from the pin.
+- **Candidate pool**: Qloo brand insights intersected with the 227-chain ATP panel.
 
-## Metrics (all computed; none dropped after the fact)
+## Candidate metrics (catalog)
 
-| ID | Name | Definition |
-| --- | --- | --- |
-| `spearman_presence` | Spearman rank correlation | Correlation between Qloo rank (1 = best) and binary presence (1 = store in radius) across the full pool. Higher is better ordering. |
-| `surprise_present_at10` | Chain-residual hits | Among the top 10 by rank, count brands that are present in the **adaptive** radius and **not** in the chain-size top 10 (baseline rank worse than 10). Rewards taste-led hits that chain size alone would miss. |
-| `adaptive_present_at10` | Adaptive-radius P@10 | Present-in-top-10 using a **tighter** radius by site density (urban 3 km, suburban 5 km, tourist 4 km, exurban 7 km), capped by the user search radius. |
-| `random_expected` | Random baseline | Hypergeometric mean present count when drawing 10 brands uniformly from the pool (no taste). |
-| `random_monte_carlo` | Seeded random ranking | Mean present@10 over 400 permutations (seed 42) of the pool order. |
+Defined in `packages/fixtures/src/eval/metrics-catalog.ts`:
 
-## Primary metric (pre-selected)
+| ID | Summary |
+| --- | --- |
+| `legacy_present_at10` | Present in top 10 at the user search radius |
+| `adaptive_present_at10` | Present in top 10 at a density-tightened radius |
+| `spearman_presence` | Spearman correlation between rank and presence |
+| `surprise_present_at10` | Adaptive-radius hits not in chain-size top 10 |
+| `random_monte_carlo` | Legacy Qloo P@10 vs seeded random order mean |
 
-**`spearman_presence`** is the primary headline metric in the product and on `/methodology`.
+## Data plumbing
 
-Reason: it uses the full ranked list, stays informative when P@10 is already 10 of 10, and does not depend on picking a secondary metric after seeing which model wins.
+1. Record metrics: `node scripts/strict-eval.mjs` (fixtures) or import an external bundle.
+2. Point `eval/manifest.json` at the bundle file (`resultsBundle`).
+3. Set `headlineMetricId` to a catalog id when ready.
+4. Register new bundle filenames in `packages/fixtures/src/eval/load-bundle.ts` (one line per file).
 
-## Winner rules (applied mechanically)
+## Winner rules (per metric)
 
-For each site:
-
-1. **Primary**: Qloo wins if `spearman_qloo > spearman_chain + 0.01`. Tied if within 0.01. Otherwise chain size wins.
-2. **Surprise hits**: Report both counts; no winner flag (diagnostic).
-3. **Adaptive P@10**: Report Qloo vs chain counts; call out when Qloo is below chain.
-4. **Random**: Qloo should exceed `random_expected` and `random_monte_carlo`; if not, state that plainly.
-
-## Recording
-
-```bash
-node scripts/strict-eval.mjs
-# optional live metros:
-QLOO_API_KEY=... node scripts/strict-eval.mjs
-```
-
-Writes `packages/fixtures/src/eval/strict-results.json`.
+Each catalog entry defines `tieBand` and whether higher Qloo values win. UI uses these mechanically; no metric is promoted to headline until manifest says so.

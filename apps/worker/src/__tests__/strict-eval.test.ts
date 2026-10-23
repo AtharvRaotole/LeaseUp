@@ -1,9 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import { wickerparkFixture, computeStrictEval, STRICT_EVAL_PRIMARY_METRIC_ID } from '@leaseup/fixtures';
+import {
+  wickerparkFixture,
+  computeStrictEval,
+  buildEvalSiteSnapshot,
+  getEvalManifest,
+} from '@leaseup/fixtures';
 
 describe('strict-eval', () => {
-  it('uses spearman as the pre-declared primary metric id', () => {
-    expect(STRICT_EVAL_PRIMARY_METRIC_ID).toBe('spearman_presence');
+  it('leaves headline metric unset in manifest until live eval', () => {
+    expect(getEvalManifest().headlineMetricId).toBeNull();
   });
 
   it('scores wicker with saturated legacy P@10', () => {
@@ -18,5 +23,8 @@ describe('strict-eval', () => {
     expect(metrics.legacyPresentAt10Qloo).toBe(10);
     expect(metrics.legacyPresentAt10Chain).toBe(10);
     expect(metrics.adaptiveRadiusKm).toBe(3);
+    const snapshot = buildEvalSiteSnapshot(metrics);
+    expect(snapshot.panels.length).toBeGreaterThan(3);
+    expect(snapshot.headlineMetricId).toBeNull();
   });
 });

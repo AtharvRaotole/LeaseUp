@@ -10,9 +10,20 @@ export type {
   EvalMetrosResults,
   EvalMetroRow,
   EvalSiteDensity,
-  StrictEvalResults,
-  StrictEvalMetroRow,
+  EvalRunBundle,
+  EvalRunRow,
 } from './eval/types.js';
+export type { EvalMetricPanel, EvalManifest } from './eval/present-metrics.js';
+export {
+  getEvalManifest,
+  buildEvalMetricPanels,
+  buildEvalNotes,
+  formatMetricValue,
+  catalogForPanel,
+} from './eval/present-metrics.js';
+export { EVAL_METRIC_CATALOG, evalMetricDefinition, compareEvalMetric } from './eval/metrics-catalog.js';
+export { buildEvalSiteSnapshot, type EvalSiteSnapshot } from './eval/build-snapshot.js';
+export { loadEvalRunBundle, getEvalManifestRef } from './eval/load-bundle.js';
 
 export { wickerparkFixture } from './wicker-park.js';
 export { boulderFixture } from './boulder.js';
@@ -92,15 +103,14 @@ export {
   type DemoRandomBaselineSummary,
 } from './landing-random-baseline.js';
 export {
-  STRICT_EVAL_PRIMARY_METRIC_ID,
+  METRIC_ID_SPEARMAN_PRESENCE,
   adaptiveEvalRadiusKm,
   spearmanRankCorrelation,
   monteCarloRandomPresentAt10,
   computeStrictEval,
-  strictEvalHonestSummary,
   demoFixtureDensity,
+  type StrictEvalSiteMetrics,
   type StrictEvalMetrics,
-  type StrictEvalPrimaryMetricId,
 } from './strict-eval.js';
 export {
   overpassDemoByFixture,

@@ -1,0 +1,16 @@
+{
+  "id": "leaseup-eval-v1",
+  "headlineMetricId": null,
+  "resultsBundle": "strict-results.json",
+  "siteSetId": "pilot-chips",
+  "dataSource": "fixtures",
+  "displayMetricIds": [
+    "legacy_present_at10",
+    "adaptive_present_at10",
+    "spearman_presence",
+    "surprise_present_at10",
+    "random_monte_carlo"
+  ],
+  "protocolDoc": "docs/STRICT_EVAL_PROTOCOL.md",
+  "note": "Set headlineMetricId after the live API eval lands. Point resultsBundle at the new JSON file (e.g. live-eval-results.json) without code changes."
+}

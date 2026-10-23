@@ -4,7 +4,7 @@ import type { Location } from '@leaseup/contracts';
 import {
   adaptiveEvalRadiusKm,
   computeStrictEval,
-  strictEvalHonestSummary,
+  buildEvalSiteSnapshot,
   type EvalSiteDensity,
 } from '@leaseup/fixtures';
 import type { StoreCatalog } from '../services/store-catalog';
@@ -47,25 +47,5 @@ export async function buildStrictEvalSnapshot(
     findNearby
   );
 
-  return {
-    primaryMetricId: metrics.primaryMetricId,
-    searchRadiusKm: metrics.searchRadiusKm,
-    adaptiveRadiusKm: metrics.adaptiveRadiusKm,
-    density: metrics.density,
-    poolSize: metrics.poolSize,
-    legacyPresentAt10Qloo: metrics.legacyPresentAt10Qloo,
-    legacyPresentAt10Chain: metrics.legacyPresentAt10Chain,
-    adaptivePresentAt10Qloo: metrics.adaptivePresentAt10Qloo,
-    adaptivePresentAt10Chain: metrics.adaptivePresentAt10Chain,
-    surprisePresentAt10Qloo: metrics.surprisePresentAt10Qloo,
-    surprisePresentAt10Chain: metrics.surprisePresentAt10Chain,
-    spearmanQloo: metrics.spearmanQloo,
-    spearmanChain: metrics.spearmanChain,
-    randomExpectedPresentAt10: metrics.randomExpectedPresentAt10,
-    randomMonteCarloPresentAt10: metrics.randomMonteCarloPresentAt10,
-    primaryWinner: metrics.primaryWinner,
-    qlooBelowChainAdaptive: metrics.qlooBelowChainAdaptive,
-    qlooBelowRandomExpected: metrics.qlooBelowRandomExpected,
-    honestSummary: strictEvalHonestSummary(metrics),
-  };
+  return buildEvalSiteSnapshot(metrics);
 }
