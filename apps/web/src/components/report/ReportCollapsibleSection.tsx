@@ -38,15 +38,16 @@ export function ReportCollapsibleSection({
           aria-hidden
         />
       </button>
-      <div
-        id={`${sectionId}-panel`}
-        role="region"
-        aria-labelledby={`${sectionId}-trigger`}
-        hidden={!open}
-        className={cn(!open && 'hidden', 'border-t border-border px-5 py-6')}
-      >
-        <div className="space-y-8">{children}</div>
-      </div>
+      {open ? (
+        <div
+          id={`${sectionId}-panel`}
+          role="region"
+          aria-labelledby={`${sectionId}-trigger`}
+          className="border-t border-border px-5 py-6"
+        >
+          <div className="space-y-8">{children}</div>
+        </div>
+      ) : null}
     </section>
   );
 }

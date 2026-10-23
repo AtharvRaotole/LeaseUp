@@ -3,10 +3,11 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import type { ProspectPack } from '@leaseup/contracts';
 import { TopBar } from '../components/layout/TopBar';
 import { useAnalysisRun } from '../hooks/useAnalysisRun';
+import { useMediaQuery } from '../hooks/useMediaQuery';
+import { ensureMapLibreCss } from '../lib/maplibre-css';
 import { buildReportPath, parseReportSearch } from '../lib/report-params';
-import { DEMO_CHIP_ADDRESSES, matchDemoFixtureId } from '@leaseup/fixtures';
+import { DEMO_CHIP_ADDRESSES, matchDemoFixtureId } from '../lib/demo-chip-addresses';
 import { fetchGeocodePreview } from '../lib/geocode-preview';
-import { demoGeocodePreviewForAddress } from '../lib/demo-geocode-preview';
 import { useHealth } from '../hooks/useHealth';
 const GeocodeConfirmPanel = lazy(() =>
   import('../components/report/GeocodeConfirmPanel').then((m) => ({ default: m.GeocodeConfirmPanel }))
@@ -14,7 +15,9 @@ const GeocodeConfirmPanel = lazy(() =>
 import type { GeocodeCandidate, Location } from '@leaseup/contracts';
 import { AgentRunStrip } from '../components/report/AgentRunStrip';
 import { BrandsToPitch } from '../components/report/BrandsToPitch';
-import { ProofSection } from '../components/report/ProofSection';
+const ProofSection = lazy(() =>
+  import('../components/report/ProofSection').then((m) => ({ default: m.ProofSection }))
+);
 import { CompareSection, CompareUnavailable } from '../components/report/CompareSection';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { HowWeKnowSection } from '../components/report/HowWeKnowSection';
@@ -29,8 +32,12 @@ import { SERVER_BUSY_MESSAGE } from '../lib/calm-error-copy';
 import { SLOW_LOAD_STATUS } from '../lib/slow-load-copy';
 import { ReportShortListNotice } from '../components/report/ReportShortListNotice';
 import { QlooRankingToggle, type QlooRankingMode } from '../components/report/QlooRankingToggle';
-import { QlooProofBanner } from '../components/report/QlooProofBanner';
-import { StrictEvalCard } from '../components/report/StrictEvalCard';
+const QlooProofBanner = lazy(() =>
+  import('../components/report/QlooProofBanner').then((m) => ({ default: m.QlooProofBanner }))
+);
+const StrictEvalCard = lazy(() =>
+  import('../components/report/StrictEvalCard').then((m) => ({ default: m.StrictEvalCard }))
+);
 import { WhyThisBrandCard } from '../components/report/WhyThisBrandCard';
 import { BrandLoading } from '../components/brand/BrandLoading';
 import { VacancyCostCalculator } from '../components/report/VacancyCostCalculator';
@@ -44,7 +51,9 @@ import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton'
 import { pipelineCardFromProspect } from '../lib/build-pipeline-card';
 import { StorefrontSizeControl } from '../components/report/StorefrontSizeControl';
 import { CoTenancyMixSection } from '../components/report/CoTenancyMixSection';
-import { ReportFirstRunTour } from '../components/report/ReportFirstRunTour';
+const ReportFirstRunTour = lazy(() =>
+  import('../components/report/ReportFirstRunTour').then((m) => ({ default: m.ReportFirstRunTour }))
+);
 import { ReportSummaryAboveFold } from '../components/report/ReportSummaryAboveFold';
 import { WatchSpaceButton } from '../components/report/WatchSpaceButton';
 import { ReportCollapsibleSection } from '../components/report/ReportCollapsibleSection';
@@ -72,6 +81,12 @@ export function ReportPage() {
   const [mapBrand, setMapBrand] = useState<MapBrandSelection | null>(null);
   const [outreach, setOutreach] = useState<ProspectPack | null>(null);
   const [mobilePane, setMobilePane] = useState<MobilePane>('report');
+  const isMdUp = useMediaQuery('(min-width: 768px)');
+  const mountMapColumn = isMdUp || mobilePane === 'map';
+
+  useEffect(() => {
+    if (mountMapColumn) ensureMapLibreCss();
+  }, [mountMapColumn]);
   const [rankingMode, setRankingMode] = useState<QlooRankingMode>('qloo');
   const [sharePitchOpen, setSharePitchOpen] = useState(false);
   const [vacancyEdits, setVacancyEdits] = useState<VacancyCalculatorDraft | null>(null);
@@ -123,19 +138,14 @@ export function ReportPage() {
       return;
     }
 
-    const demoPreview =
-      health?.mode === 'demo' ? demoGeocodePreviewForAddress(request.address) : null;
-    if (demoPreview?.needsConfirmation && demoPreview.candidates.length > 1) {
-      setGeocodeCandidates(demoPreview.candidates);
-      return;
-    }
-
     let cancelled = false;
-    setGeocodeChecking(true);
-    setGeocodeCandidates(null);
-    setGeocodeError(null);
-    setGeocodeAutoRetrying(false);
-    void fetchGeocodePreview(request.address, {
+
+    const runLiveGeocode = () => {
+      setGeocodeChecking(true);
+      setGeocodeCandidates(null);
+      setGeocodeError(null);
+      setGeocodeAutoRetrying(false);
+      void fetchGeocodePreview(request.address, {
       onAutoRetry: () => setGeocodeAutoRetrying(true),
     })
       .then((preview) => {
@@ -159,6 +169,21 @@ export function ReportPage() {
           setGeocodeAutoRetrying(false);
         }
       });
+    };
+
+    if (health?.mode === 'demo') {
+      void import('../lib/demo-geocode-preview').then(({ demoGeocodePreviewForAddress }) => {
+        if (cancelled) return;
+        const demoPreview = demoGeocodePreviewForAddress(request.address);
+        if (demoPreview?.needsConfirmation && demoPreview.candidates.length > 1) {
+          setGeocodeCandidates(demoPreview.candidates);
+          return;
+        }
+        runLiveGeocode();
+      });
+    } else {
+      runLiveGeocode();
+    }
 
     return () => {
       cancelled = true;
@@ -168,11 +193,7 @@ export function ReportPage() {
   const confirmGeocode = (location: Location) => {
     if (!request) return;
     let address = request.address;
-    if (
-      health?.mode === 'demo' &&
-      demoGeocodePreviewForAddress(request.address) &&
-      location.resolvedAddress === DEMO_CHIP_ADDRESSES.wicker
-    ) {
+    if (health?.mode === 'demo' && location.resolvedAddress === DEMO_CHIP_ADDRESSES.wicker) {
       address = DEMO_CHIP_ADDRESSES.wicker;
     }
     const next = { ...request, address, confirmedLocation: location };
@@ -353,20 +374,26 @@ export function ReportPage() {
             />
             {results.backtestBaseline && (
               <div className="min-w-0 flex-1">
-                <QlooProofBanner results={results} compact />
+                <Suspense fallback={null}>
+                  <QlooProofBanner results={results} compact />
+                </Suspense>
               </div>
             )}
           </div>
           <div className="no-print">
-            <StrictEvalCard results={results} />
+            <Suspense fallback={null}>
+              <StrictEvalCard results={results} />
+            </Suspense>
           </div>
           <div className="no-print">
-            <ProofSection
-              results={results}
-              radiusKm={request.radius}
-              onBrandSelect={selectMapBrand}
-              rankingMode={rankingMode}
-            />
+            <Suspense fallback={null}>
+              <ProofSection
+                results={results}
+                radiusKm={request.radius}
+                onBrandSelect={selectMapBrand}
+                rankingMode={rankingMode}
+              />
+            </Suspense>
           </div>
           <ErrorBoundary fallback={<CompareUnavailable />}>
             <div className="no-print">
@@ -419,7 +446,7 @@ export function ReportPage() {
         </div>
       )}
 
-      <div className="mx-auto max-w-[1280px] px-4 py-6 md:px-6 md:py-8">
+      <main id="main-content" className="mx-auto max-w-[1280px] px-4 py-6 outline-none md:px-6 md:py-8">
         <div className="grid grid-cols-12 gap-6 xl:gap-8">
           <div
             className={`col-span-12 min-w-0 space-y-6 xl:col-span-7 ${
@@ -496,7 +523,7 @@ export function ReportPage() {
             {!results && (loading || geocodeChecking) && !geocodeCandidates && (
               <ReportMapSkeleton />
             )}
-            {results && (
+            {results && mountMapColumn && (
               <ErrorBoundary fallback={<SectionUnavailable label="Map unavailable right now." />}>
                 <div className="flex flex-col gap-4 md:sticky md:top-[7.5rem]">
                   <ReportMap
@@ -537,7 +564,7 @@ export function ReportPage() {
             )}
           </div>
         </div>
-      </div>
+      </main>
       {results && (
         <SharePitchDialog
           open={sharePitchOpen}
@@ -557,7 +584,9 @@ export function ReportPage() {
         />
       )}
       {results && (
-        <ReportFirstRunTour ready={results.prospects.length > 0} />
+        <Suspense fallback={null}>
+          <ReportFirstRunTour ready={results.prospects.length > 0} />
+        </Suspense>
       )}
       <footer className="no-print py-8 text-center text-meta text-ink-3">
         <Link to="/" className="text-accent hover:underline">Back to search</Link>

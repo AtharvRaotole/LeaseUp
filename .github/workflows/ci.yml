@@ -159,6 +159,25 @@ jobs:
       - name: CSP + map smoke (production _headers)
         run: node scripts/run-csp-e2e.mjs
 
+  a11y-e2e:
+    name: Axe a11y e2e
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.0'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium
+      - name: Axe serious/critical (production preview + demo worker)
+        run: node scripts/run-a11y-e2e.mjs
+
   watchlist-e2e:
     name: Watchlist e2e
     runs-on: ubuntu-latest

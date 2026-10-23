@@ -9,8 +9,7 @@ import {
   brandsScoredStatTooltip,
   dataConfidenceStatTooltip,
 } from '../../lib/broker-copy';
-import { qlooProofEvalLead, qlooProofHitRateTieSubtitle, qlooProofWinner } from '../../lib/qloo-proof';
-
+import { presentInTop10Count } from '../../lib/hit-rate';
 export function HeadlineCard({
   results,
   radiusKm,
@@ -29,10 +28,11 @@ export function HeadlineCard({
   const analyzed = results.rankings?.length ?? 0;
   const baseline = results.backtestBaseline;
   const blendBacktest = results.backtestBlended ?? results.backtest;
-  const evalLead = qlooProofEvalLead(results);
+  const blendHits = presentInTop10Count(blendBacktest);
+  const chainHits = baseline ? presentInTop10Count(baseline) : 0;
   const hitTieSubtitle =
-    baseline && qlooProofWinner(blendBacktest, baseline) === 'tie'
-      ? evalLead.tieNote ?? qlooProofHitRateTieSubtitle(results.rankings)
+    baseline && blendHits === chainHits
+      ? `At this pin, taste-aware ranking and store count tie at ${blendHits} of 10 in the trade area.`
       : null;
 
   return (
