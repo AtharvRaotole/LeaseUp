@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import type { ProspectPack } from '@leaseup/contracts';
-import { Logo } from '../components/brand/Logo';
 import { TopBar } from '../components/layout/TopBar';
 import { useAnalysisRun } from '../hooks/useAnalysisRun';
 import { parseReportSearch } from '../lib/report-params';
