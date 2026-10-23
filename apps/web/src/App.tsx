@@ -34,6 +34,11 @@ const LandingHeroPreviewCapturePage = lazy(() =>
     default: m.LandingHeroPreviewCapturePage,
   }))
 );
+const WatchlistDiffPreviewPage = lazy(() =>
+  import('./pages/WatchlistDiffPreviewPage').then((m) => ({
+    default: m.WatchlistDiffPreviewPage,
+  }))
+);
 
 export default function App() {
   return (
@@ -44,6 +49,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/__preview/landing-hero" element={<LandingHeroPreviewCapturePage />} />
+          <Route path="/__preview/watchlist-diff" element={<WatchlistDiffPreviewPage />} />
           <Route path="/methodology" element={<MethodologyPage />} />
           <Route path="/brand" element={<BrandPage />} />
           <Route path="/brand/:id" element={<BrandPage />} />

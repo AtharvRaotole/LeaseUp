@@ -14,6 +14,7 @@ import {
 import { buildWatchRunSnapshot, diffWatchSnapshots } from '@leaseup/fixtures';
 import { normalizeAddress } from '@leaseup/fixtures/worker';
 import type { Env } from '../index';
+import { assertRecheckAllowed, markRecheckCompleted } from '../lib/watch-recheck-cooldown';
 
 function addressKey(address: string): string {
   return normalizeAddress(address);
@@ -169,29 +170,30 @@ export class WatchlistService {
     });
   }
 
+  async assertRecheckAllowedForWatchAsync(
+    watchId: string,
+    workspaceId: string
+  ): Promise<{ address: string; radiusKm: number } | null> {
+    const space = await this.getWatchRow(watchId, workspaceId);
+    if (!space) return null;
+    const now = Math.floor(Date.now() / 1000);
+    await assertRecheckAllowed(this.db, watchId, now);
+    return { address: space.address, radiusKm: space.radius_km };
+  }
+
   async recheck(
     watchId: string,
     workspaceId: string,
     analysis: AnalysisResponse
   ): Promise<WatchSpaceDetail | null> {
-    const space = await this.db
-      .prepare(
-        `SELECT watch_id, address, radius_km, created_at, updated_at
-         FROM watch_spaces WHERE watch_id = ? AND workspace_id = ?`
-      )
-      .bind(watchId, workspaceId)
-      .first<{
-        watch_id: string;
-        address: string;
-        radius_km: number;
-        created_at: number;
-        updated_at: number;
-      }>();
+    const space = await this.getWatchRow(watchId, workspaceId);
     if (!space) return null;
 
-    const prior = await this.loadLatestSnapshots(watchId, 1);
     const now = Math.floor(Date.now() / 1000);
+
+    const prior = await this.loadLatestSnapshots(watchId, 1);
     const snapshot = await this.insertSnapshot(watchId, analysis);
+    await markRecheckCompleted(this.db, watchId, now);
     await this.touchWatch(watchId, now);
 
     const countRow = await this.db
@@ -240,6 +242,25 @@ export class WatchlistService {
       .prepare('UPDATE watch_spaces SET updated_at = ? WHERE watch_id = ?')
       .bind(unix, watchId)
       .run();
+  }
+
+  private async getWatchRow(
+    watchId: string,
+    workspaceId: string
+  ): Promise<{
+    watch_id: string;
+    address: string;
+    radius_km: number;
+    created_at: number;
+    updated_at: number;
+  } | null> {
+    return this.db
+      .prepare(
+        `SELECT watch_id, address, radius_km, created_at, updated_at
+         FROM watch_spaces WHERE watch_id = ? AND workspace_id = ?`
+      )
+      .bind(watchId, workspaceId)
+      .first();
   }
 
   private async loadLatestSnapshots(watchId: string, limit: number): Promise<WatchRunSnapshot[]> {

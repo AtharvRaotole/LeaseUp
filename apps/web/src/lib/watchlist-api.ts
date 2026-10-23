@@ -33,6 +33,9 @@ export async function recheckWatchSpace(watchId: string): Promise<WatchSpaceDeta
     method: 'POST',
     credentials: 'include',
   });
-  if (!res.ok) throw new Error('Recheck failed');
+  if (!res.ok) {
+    const body = (await res.json().catch(() => ({}))) as { error?: string };
+    throw new Error(body.error ?? 'Recheck failed');
+  }
   return (await res.json()) as WatchSpaceDetail;
 }
