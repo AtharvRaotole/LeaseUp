@@ -2,7 +2,7 @@
 module.exports = {
   ci: {
     collect: {
-      numberOfRuns: 1,
+      numberOfRuns: 3,
       settings: {
         chromeFlags: '--headless --no-sandbox',
         onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],

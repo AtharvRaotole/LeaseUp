@@ -20,13 +20,13 @@ export function InfoTooltip({
           <button
             type="button"
             className={cn(
-              'inline-flex shrink-0 items-center justify-center rounded-full text-ink-3 transition-colors duration-150 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+              'inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-ink-3 transition-colors duration-150 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
               className
             )}
             aria-label={label}
             data-testid="info-tooltip-trigger"
           >
-            <Info className={cn('h-3.5 w-3.5', iconClassName)} aria-hidden />
+            <Info className={cn('h-4 w-4', iconClassName)} aria-hidden />
           </button>
         </Tooltip.Trigger>
         <Tooltip.Portal>
