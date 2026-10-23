@@ -23,7 +23,6 @@ export function LandingHeroProductPreview() {
       <Link
         to={landingWickerReportPath}
         className="group relative block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-        aria-label="Open the Wicker Park demo report"
       >
         <div
           className="pointer-events-none absolute -inset-1 rounded-[14px] bg-accent/10 opacity-0 transition-opacity group-hover:opacity-100"
