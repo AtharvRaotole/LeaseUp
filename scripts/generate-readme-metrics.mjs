@@ -14,7 +14,7 @@ const { wickerparkFixture } = await import('../packages/fixtures/dist/wicker-par
 const { boulderFixture } = await import('../packages/fixtures/dist/boulder.js');
 const { seviervilleFixture } = await import('../packages/fixtures/dist/sevierville.js');
 const { computeBacktest } = await import('../packages/fixtures/dist/backtest.js');
-const { getStoreBrandIds } = await import('../packages/fixtures/dist/store-geo.js');
+const storeMeta = JSON.parse(readFileSync(join(process.cwd(), 'packages/fixtures/src/store-locations.json'), 'utf8'));
 
 const fixtures = [
   { label: 'Wicker Park, Chicago', fixture: wickerparkFixture },
