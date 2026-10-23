@@ -45,7 +45,9 @@ app.use(
         'http://localhost:5173',
         'http://localhost:3000',
         'http://localhost:4173',
+        'http://localhost:4178',
         'http://127.0.0.1:4173',
+        'http://127.0.0.1:4178',
         'http://127.0.0.1:5173',
       ];
       return allowed.includes(origin) ? origin : allowed[0]!;
