@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import maplibregl from 'maplibre-gl';
 import type { FeatureCollection, Point } from 'geojson';
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { apiUrl } from '../../lib/api';
 import { heatmapWeightsFromAffinity } from '../../lib/heatmap-scale';
 import { Switch } from '../ui/Switch';
+import { cn } from '../../lib/cn';
 import type { MapBrandSelection } from './ReportMap';
 
 function mapStyle() {
@@ -31,6 +33,9 @@ export default function ReportMapInner({
   const [showStores, setShowStores] = useState(true);
   const [showRadius, setShowRadius] = useState(true);
   const [mapReady, setMapReady] = useState(false);
+  const [legendOpen, setLegendOpen] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches
+  );
 
   const pitchIdSet = useMemo(() => new Set(pitchBrandIds), [pitchBrandIds]);
 
@@ -206,7 +211,7 @@ export default function ReportMapInner({
 
   return (
     <div className="relative h-full min-h-[520px] w-full">
-      <div className="absolute left-3 top-3 z-10 w-[min(100%,252px)] rounded-card border border-border bg-surface/95 p-3 pr-4 shadow-pop">
+      <div className="absolute right-3 top-3 z-10 w-[min(100%,260px)] rounded-card border border-border bg-surface p-3.5 shadow-sm">
         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-3">Map</p>
         <div className="grid grid-cols-1 gap-y-2">
           <Switch
@@ -219,30 +224,41 @@ export default function ReportMapInner({
           <Switch checked={showStores} onCheckedChange={setShowStores} label="Stores" />
           <Switch checked={showRadius} onCheckedChange={setShowRadius} label="Radius" />
         </div>
-        <div className="mt-3 grid grid-cols-[auto_1fr_auto] items-center gap-x-1.5 px-0.5">
-          <span className="text-[10px] leading-none text-ink-3">Less</span>
-          <div
-            className="h-2 min-w-0 w-full rounded-pill"
-            style={{
-              background: 'linear-gradient(90deg, #fff4d6, #fdba74, #f97316, #c2410c)',
-            }}
-          />
-          <span className="text-[10px] leading-none text-ink-3 pr-0.5">More</span>
+        <button
+          type="button"
+          className="mt-3 flex w-full items-center justify-between border-t border-border pt-2 text-left text-[11px] font-medium text-ink-2 md:pointer-events-none"
+          onClick={() => setLegendOpen((o) => !o)}
+          aria-expanded={legendOpen}
+        >
+          <span>Legend</span>
+          <ChevronDown className={cn('h-4 w-4 transition-transform md:hidden', legendOpen && 'rotate-180')} />
+        </button>
+        <div className={cn(!legendOpen && 'hidden', 'md:block')}>
+            <div className="mt-2 grid grid-cols-[auto_1fr_auto] items-center gap-x-2 pr-1">
+              <span className="text-[10px] leading-none text-ink-3">Less</span>
+              <div
+                className="h-2 min-w-0 w-full rounded-pill"
+                style={{
+                  background: 'linear-gradient(90deg, #fff4d6, #fdba74, #f97316, #c2410c)',
+                }}
+              />
+              <span className="text-[10px] leading-none text-ink-3">More</span>
+            </div>
+            <ul className="mt-2 space-y-1.5 text-[10px] text-ink-3">
+              <li className="flex items-center gap-2">
+                <span className="h-2.5 w-2.5 rounded-full bg-accent" aria-hidden />
+                Your pin
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#8fa3c4]" aria-hidden />
+                Nearby stores of top brands
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="h-2.5 w-2.5 rounded-full bg-accent ring-2 ring-accent/30" aria-hidden />
+                Pitch brand stores
+              </li>
+            </ul>
         </div>
-        <ul className="mt-3 space-y-1.5 border-t border-border pt-2 text-[10px] text-ink-3">
-          <li className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-accent" aria-hidden />
-            Your pin
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#8fa3c4]" aria-hidden />
-            Nearby stores of top brands
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-accent ring-2 ring-accent/30" aria-hidden />
-            Pitch brand stores
-          </li>
-        </ul>
       </div>
       <div ref={containerRef} className="absolute inset-0 rounded-card border border-border overflow-hidden" />
     </div>

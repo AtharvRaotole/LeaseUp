@@ -9,6 +9,7 @@ import { apiUrl } from '../../lib/api';
 import { fitPercentileLabel } from '../../lib/fit-display';
 import { buildReportPath } from '../../lib/report-params';
 import { displayBrandName } from '../../lib/brand-display';
+import { brandCategoryLabel } from '../../lib/brand-category';
 import { verificationShortLabel, verificationTooltip } from '../../lib/copy';
 import { pitchExpandedLines } from '../../lib/pitch-detail-copy';
 import { cn } from '../../lib/cn';
@@ -114,7 +115,8 @@ export function BrandsToPitch({
             const selected = selectedId === prospect.brand.entityId;
             const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
             const fitLabel = fitPercentileLabel(prospect.brand.affinityRank, totalScored);
-            const category = prospect.tenantMixScore?.categoryFit;
+            const category =
+              prospect.tenantMixScore?.categoryFit ?? brandCategoryLabel(prospect.brand.entityId);
             const distanceLine = prospect.nearestExistingStoreKm !== undefined
               ? `Closest store ${prospect.nearestExistingStoreKm.toFixed(1)} km`
               : `No store within ${radiusKm} km`;
@@ -140,7 +142,7 @@ export function BrandsToPitch({
                     {brandMonogram(name)}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium text-ink">{name}</p>
+                    <p className="line-clamp-2 font-medium leading-snug text-ink md:line-clamp-1 md:truncate">{name}</p>
                     <p className="mt-0.5 truncate text-xs text-ink-3">{subline}</p>
                   </div>
                   <div className="flex shrink-0 items-center gap-1.5">

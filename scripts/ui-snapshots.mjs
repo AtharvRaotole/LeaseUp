@@ -46,7 +46,7 @@ for (const demo of demos) {
     const page = await browser.newPage({ viewport: { width, height } });
     await pause(2500);
     await page.goto(reportUrl(demo), { waitUntil: 'networkidle' });
-    await page.waitForSelector('text=Data confidence', { timeout: 90000 });
+    await page.locator('[data-testid="brands-to-pitch"]').or(page.getByText('No pitch list yet')).first().waitFor({ timeout: 90000 });
     await page.waitForTimeout(1200);
     await shot(page, `report-${demo.slug}-${width}.png`, { fullPage: false });
     await page.close();
@@ -93,7 +93,7 @@ await shot(pageHow, 'report-how-we-know.png', { fullPage: false });
 
 const page390 = await browser.newPage({ viewport: { width: 390, height: 844 } });
 await page390.goto(reportUrl(sevierville), { waitUntil: 'networkidle' });
-await page390.waitForSelector('text=Data confidence', { timeout: 90000 });
+await page390.waitForSelector('[data-testid="brands-to-pitch"]', { timeout: 90000 });
 await page390.waitForTimeout(600);
 await shot(page390, 'report-390.png', { fullPage: false });
 

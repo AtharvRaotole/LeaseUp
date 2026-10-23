@@ -1,10 +1,7 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 import { displayBrandName } from './brand-display';
-import { fitPercentileFromRank } from './fit-display';
-
-function formatRecordedDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
+import { fitTopPercentPhrase } from './fit-display';
+import { formatUserFacingDate } from './format-date';
 
 export function pitchExpandedLines(
   prospect: ProspectPack,
@@ -14,10 +11,10 @@ export function pitchExpandedLines(
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   const total = results.rankings?.length ?? 0;
   const rank = prospect.brand.affinityRank;
-  const topPct = fitPercentileFromRank(rank, total || rank);
+  const topPhrase = fitTopPercentPhrase(rank, total || rank);
 
   const lines: string[] = [
-    `Ranked #${rank} of ${total || 'many'} brands for local taste (top ${topPct}%).`,
+    `Ranked #${rank} of ${total || 'many'} brands for local taste (${topPhrase}).`,
   ];
 
   if (prospect.nearestExistingStoreKm !== undefined) {
@@ -27,7 +24,7 @@ export function pitchExpandedLines(
   }
 
   lines.push(
-    `Checked against All The Places and OpenStreetMap on ${formatRecordedDate(results.timestamp)}.`
+    `Checked against All The Places and OpenStreetMap on ${formatUserFacingDate(results.timestamp)}.`
   );
 
   return lines;

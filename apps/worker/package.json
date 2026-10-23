@@ -5,7 +5,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "dev": "wrangler dev",
-    "build": "node ../../scripts/generate-tracked-brands.mjs && node ../../scripts/generate-brand-display.mjs && node ../../scripts/generate-osm-wikidata.mjs && node ../../scripts/generate-build-meta.mjs && node ../../scripts/embed-overpass-demo.mjs && node ../../scripts/build-geotiles.mjs && tsc",
+    "build": "node ../../scripts/generate-tracked-brands.mjs && node ../../scripts/generate-brand-display.mjs && node ../../scripts/generate-brand-categories.mjs && node ../../scripts/generate-osm-wikidata.mjs && node ../../scripts/generate-build-meta.mjs && node ../../scripts/embed-overpass-demo.mjs && node ../../scripts/build-geotiles.mjs && tsc",
     "deploy": "wrangler deploy",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
