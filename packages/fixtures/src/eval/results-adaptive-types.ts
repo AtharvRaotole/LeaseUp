@@ -2,6 +2,7 @@ import type { EvalDensityStratum } from '../eval-density-stratum.js';
 
 export type AdaptiveEvalAddressRow = {
   id?: string;
+  eval_id?: string;
   label: string;
   address: string;
   stratum: EvalDensityStratum;

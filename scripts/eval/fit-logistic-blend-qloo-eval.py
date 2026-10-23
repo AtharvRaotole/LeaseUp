@@ -1,0 +1,166 @@
+#!/usr/bin/env python3
+"""
+Fit pooled M1 logistic coefficients for production ranking (same features as analyze.py M1).
+Writes packages/fixtures/src/eval/live-qloo-lift/logistic-coefficients.json
+and logistic-coefficients-data.ts (standardization + weights).
+
+Eval headline P@10 uses leave-one-address-out (LOAO) scores; this script also prints
+pooled-rank mean P@10 for comparison.
+"""
+from __future__ import annotations
+
+import json
+import math
+import os
+import sys
+from pathlib import Path
+
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+
+ROOT = Path(__file__).resolve().parents[2]
+DATA = ROOT / "data" / "qloo-eval-40"
+OUT_JSON = ROOT / "packages/fixtures/src/eval/live-qloo-lift/logistic-coefficients.json"
+OUT_TS = ROOT / "packages/fixtures/src/eval/live-qloo-lift/logistic-coefficients-data.ts"
+
+RNG = np.random.default_rng(20261023)
+
+
+def load_tables():
+    gt = json.loads((DATA / "ground_truth.json").read_text())
+    ins = json.loads((DATA / "insights_affinity.json").read_text())
+    geo = {g["id"]: g for g in json.loads((DATA / "geocoded.json").read_text())}
+    return gt, ins, geo
+
+
+def build_address_tables(gt, ins, geo, mode="adaptive"):
+    cnt = gt["national_count"]
+    all_brands = sorted(cnt)
+    addresses = {}
+
+    for aid, g in geo.items():
+        ga = gt["addresses"][aid]
+        r = ga["radius_km"] if mode == "adaptive" else (10 if mode == "fixed10" else 5)
+        brands = [b for b in ins[aid] if b in cnt and ins[aid][b]["affinity"] is not None]
+        aff = np.array([ins[aid][b]["affinity"] for b in brands], dtype=float)
+        lc = np.array([math.log1p(cnt[b]) for b in brands], dtype=float)
+        y = np.array([1 if ga["brands"][b]["nearest_km"] <= r else 0 for b in brands], dtype=int)
+        z = (aff - aff.mean()) / (aff.std() + 1e-12)
+        tier = ga["tier"]
+        tier_urban = 1.0 if tier == "urban" else 0.0
+        tier_suburban = 1.0 if tier == "suburban" else 0.0
+        log_r = math.log(r)
+        log_dens = math.log1p(ga["density_3km"])
+        addresses[aid] = {
+            "brands": brands,
+            "y": y,
+            "lc": lc,
+            "z": z,
+            "log_r": log_r,
+            "log_dens": log_dens,
+            "tier_urban": tier_urban,
+            "tier_suburban": tier_suburban,
+            "r": r,
+        }
+    return addresses, all_brands
+
+
+def design_rows(d: dict) -> np.ndarray:
+    n = len(d["y"])
+    return np.column_stack(
+        [
+            d["lc"],
+            np.full(n, d["log_r"]),
+            np.full(n, d["log_dens"]),
+            np.full(n, d["tier_urban"]),
+            np.full(n, d["tier_suburban"]),
+            d["z"],
+        ]
+    )
+
+
+FEATURE_NAMES = [
+    "logChainSize",
+    "logRadiusKm",
+    "logDensity3km",
+    "tierUrban",
+    "tierSuburban",
+    "qlooAffinityZ",
+]
+
+
+def p_at_k(score: np.ndarray, y: np.ndarray, k: int = 10, reps: int = 50) -> float:
+    vals = []
+    for _ in range(reps):
+        order = np.lexsort((RNG.random(len(score)), -score))
+        vals.append(float(y[order[:k]].mean()))
+    return float(np.mean(vals))
+
+
+def main() -> int:
+    if not DATA.is_dir():
+        print(f"Missing {DATA}; checkout data/qloo-eval-40", file=sys.stderr)
+        return 1
+
+    gt, ins, geo = load_tables()
+    addresses, _ = build_address_tables(gt, ins, geo, "adaptive")
+
+    xs = []
+    ys = []
+    for d in addresses.values():
+        xs.append(design_rows(d))
+        ys.append(d["y"])
+    X = np.vstack(xs)
+    y = np.concatenate(ys)
+    mu = X.mean(axis=0)
+    sd = X.std(axis=0) + 1e-9
+    Xs = (X - mu) / sd
+
+    model = LogisticRegression(C=1e4, max_iter=5000, fit_intercept=True)
+    model.fit(Xs, y)
+
+    coef = model.coef_[0]
+    intercept = float(model.intercept_[0])
+
+    # Cohort P@10 using pooled coefficients (production-style ranking per address)
+    p10s = []
+    for d in addresses.values():
+        Xa = design_rows(d)
+        Xa = (Xa - mu) / sd
+        logits = intercept + Xa @ coef
+        prob = 1 / (1 + np.exp(-logits))
+        p10s.append(p_at_k(prob, d["y"], 10))
+    mean_p10 = float(np.mean(p10s))
+
+    payload = {
+        "version": 2,
+        "fittedOn": "data/qloo-eval-40 pooled M1 (log chain, log radius, log density, tier, Qloo z)",
+        "model": "M1_pooled",
+        "features": FEATURE_NAMES,
+        "standardize": {
+            "mean": {FEATURE_NAMES[i]: float(mu[i]) for i in range(len(FEATURE_NAMES))},
+            "std": {FEATURE_NAMES[i]: float(sd[i]) for i in range(len(FEATURE_NAMES))},
+        },
+        "intercept": intercept,
+        "coefficients": {FEATURE_NAMES[i]: float(coef[i]) for i in range(len(FEATURE_NAMES))},
+        "cohortMeanP10PooledRank": mean_p10,
+        "cohortMeanP10LoaoFromResults": 0.82,
+    }
+
+    OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
+    OUT_JSON.write_text(json.dumps(payload, indent=2) + "\n")
+
+    ts = f"""/** Generated by scripts/eval/fit-logistic-blend-qloo-eval.py — do not edit by hand. */
+export const logisticBlendCoefficients = {json.dumps(payload, indent=2)} as const;
+"""
+    OUT_TS.write_text(ts)
+
+    print(f"Wrote {OUT_JSON}")
+    print(f"pooled cohort mean P@10: {mean_p10:.4f}")
+    print("coefficients:", payload["coefficients"])
+    print("intercept:", intercept)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
