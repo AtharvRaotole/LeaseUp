@@ -50,7 +50,7 @@ test.describe('Production CSP on report + map', () => {
 
     await page.goto(WICKER, { waitUntil: 'domcontentloaded' });
     await page
-      .locator('[data-testid="brands-to-pitch"]')
+      .locator('[data-testid="report-summary"], [data-testid="brands-to-pitch"]')
       .first()
       .waitFor({ timeout: 120_000 });
 
