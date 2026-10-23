@@ -196,7 +196,7 @@ export function ReportPage() {
             )}
             {reportSections}
             {!results && loading && !simulateError && (
-              <BrandLoading label="Running analysis for your storefront" />
+              <BrandLoading label={`Running analysis for ${slug ?? 'report'}…`} />
             )}
           </div>
           <div

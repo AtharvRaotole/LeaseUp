@@ -153,8 +153,8 @@ export function LandingPage() {
           Data: Qloo Taste AI, All The Places (CC0), OpenStreetMap
         </p>
       </section>
-      <footer className="flex flex-col items-center gap-2 py-8 text-center text-meta text-ink-3">
-        <Logo variant="lockup" href="/" glyphSize={20} className="opacity-90" />
+      <footer className="flex flex-col items-center gap-3 py-8 text-center text-meta text-ink-3">
+        <Logo variant="lockup" size="xs" className="justify-center opacity-80" />
         <p>Qloo Agentic Hackathon 2026</p>
       </footer>
     </div>
