@@ -88,7 +88,7 @@ describe('dedupeGeocodeCandidatesByPlaceAndDistance', () => {
       resolvedAddress:
         '350, Bleecker Street, West Village, Manhattan, New York County, New York, 10014, United States',
     };
-    expect(dedupeGeocodeCandidatesByPlaceAndDistance([a, b], 50)).toHaveLength(1);
+    expect(dedupeGeocodeCandidatesByPlaceAndDistance([a, b], 150)).toHaveLength(1);
   });
 });
 
@@ -125,5 +125,27 @@ describe('resolveGeocodeFromCandidates with ZIP filter and dedupe', () => {
     ]);
     expect(preview.needsConfirmation).toBe(false);
     expect(preview.location?.neighborhood).toBe('West Village');
+  });
+
+  it('keeps the picker for Main St with no city when multiple places remain', () => {
+    const input = 'Main St';
+    const preview = resolveGeocodeFromCandidates(input, [
+      {
+        address: input,
+        latitude: 42.35,
+        longitude: -71.05,
+        city: 'Cambridge',
+        resolvedAddress: 'Main Street, Cambridge, Massachusetts, United States',
+      },
+      {
+        address: input,
+        latitude: 40.71,
+        longitude: -74.0,
+        city: 'New York',
+        resolvedAddress: 'Main Street, Manhattan, New York, United States',
+      },
+    ]);
+    expect(preview.needsConfirmation).toBe(true);
+    expect(preview.candidates).toHaveLength(2);
   });
 });

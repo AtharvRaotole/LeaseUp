@@ -2,6 +2,8 @@ import type { GeocodeCandidate } from '@leaseup/contracts';
 import { haversineMeters } from './geocode-label';
 import { parseUsAddress } from './parse-us-address';
 
+export const GEOCODE_DEDUPE_RADIUS_METERS = 150;
+
 const ZIP_RE = /\b(\d{5})(?:-\d{4})?\b/;
 
 const STATE_ALIASES: Record<string, string> = {
@@ -161,6 +163,19 @@ export function normalizedCityStateKey(c: GeocodeCandidate): string {
   return `${city}|${state}`;
 }
 
+function normalizedLabelDedupeKey(c: GeocodeCandidate): string {
+  const blob = c.resolvedAddress.toLowerCase();
+  const streetMatch = blob.match(
+    /\b(\d+[a-z]?)\s*,?\s*([a-z0-9 .'-]+(?:street|st|avenue|ave|road|rd|boulevard|blvd|drive|dr|lane|ln|way|place|pl))\b/
+  );
+  const street = streetMatch ? `${streetMatch[1]} ${streetMatch[2]}`.replace(/\./g, '').trim() : '';
+  const hood = (c.neighborhood ?? '').trim().toLowerCase();
+  const borough =
+    /\bmanhattan\b/.test(blob) ? 'manhattan' : /\bbrooklyn\b/.test(blob) ? 'brooklyn' : '';
+  const city = cityTokenFromCandidate(c);
+  return [street, hood, borough, city].filter(Boolean).join('|');
+}
+
 /** House number + street token for merging Nominatim label variants at the same pin. */
 export function streetPlaceKey(c: GeocodeCandidate): string | null {
   const blob = c.resolvedAddress.toLowerCase();
@@ -183,6 +198,9 @@ function isNearDuplicatePlace(a: GeocodeCandidate, b: GeocodeCandidate, meters: 
   const sa = streetPlaceKey(a);
   const sb = streetPlaceKey(b);
   if (sa && sb && sa === sb) return true;
+  const la = normalizedLabelDedupeKey(a);
+  const lb = normalizedLabelDedupeKey(b);
+  if (la && lb && la === lb) return true;
   return false;
 }
 

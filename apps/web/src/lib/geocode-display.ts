@@ -44,6 +44,13 @@ export function geocodeCandidateStreetLine(c: GeocodeCandidate): string {
   return streetLineFromResolvedLabel(c.resolvedAddress);
 }
 
+/** Stable key for merging picker rows that differ only in Nominatim punctuation. */
+export function geocodeCandidateDedupeKey(c: GeocodeCandidate): string {
+  const street = geocodeCandidateStreetLine(c).toLowerCase().replace(/\s+/g, ' ').trim();
+  const place = geocodeCandidateTitle(c).toLowerCase().replace(/\s+/g, ' ').trim();
+  return `${street}|${place}`;
+}
+
 function haversineKm(a: GeocodeCandidate, b: GeocodeCandidate): number {
   const toRad = (d: number) => (d * Math.PI) / 180;
   const dLat = toRad(b.latitude - a.latitude);
