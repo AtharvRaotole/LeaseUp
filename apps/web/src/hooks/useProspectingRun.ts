@@ -22,7 +22,7 @@ export function useProspectingRun() {
       const res = await fetch(apiUrl(`/api/prospecting/${id}/run`), { method: 'POST' });
       if (!res.ok || !res.body) {
         setLoading(false);
-        setError('Could not start agent run');
+        setError('We could not start this agent run. Try again in a moment.');
         return;
       }
       const reader = res.body.getReader();
@@ -49,7 +49,10 @@ export function useProspectingRun() {
               setJob(parsed as ProspectingJob);
             }
             if (event === 'error') {
-              setError((parsed as { message?: string }).message ?? 'Run failed');
+              setError(
+                (parsed as { message?: string }).message ??
+                  'This prospecting run stopped early. Try again in a moment.'
+              );
             }
           }
         }

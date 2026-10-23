@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import type { Env } from '../index';
 import { BUILD_GIT_SHA, BUILD_TIME } from '../build-meta';
+import { corsHeadersForRequest } from '../middleware/cors-headers';
 
 export const healthRouter = new Hono<{ Bindings: Env }>();
 
@@ -35,15 +36,16 @@ healthRouter.get('/db', async (c) => {
       return c.json({ status: 'healthy', database: 'connected' });
     }
     
-    return c.json({ status: 'unhealthy', database: 'error' }, 503);
+    return c.json({ status: 'unhealthy', database: 'error' }, 503, corsHeadersForRequest(c));
   } catch (error) {
     return c.json(
-      { 
-        status: 'unhealthy', 
+      {
+        status: 'unhealthy',
         database: 'error',
         error: (error as Error).message,
       },
-      503
+      503,
+      corsHeadersForRequest(c)
     );
   }
 });

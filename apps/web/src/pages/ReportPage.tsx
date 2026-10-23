@@ -25,7 +25,8 @@ import { DemoBanner } from '../components/report/DemoBanner';
 import { ReportStickyHeader } from '../components/report/ReportStickyHeader';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { ReportErrorBanner } from '../components/report/ReportErrorBanner';
-import type { ApiErrorInfo } from '../lib/api-error';
+import { apiErrorFromUnknown, type ApiErrorInfo } from '../lib/api-error';
+import { SERVER_BUSY_MESSAGE } from '../lib/calm-error-copy';
 import { QlooRankingToggle, type QlooRankingMode } from '../components/report/QlooRankingToggle';
 import { QlooProofBanner } from '../components/report/QlooProofBanner';
 import { StrictEvalCard } from '../components/report/StrictEvalCard';
@@ -59,7 +60,9 @@ export function ReportPage() {
   const request = useMemo(() => parseReportSearch(searchParams), [searchParams]);
   const simulateError = searchParams.get('simulateError') === '1';
   const emptyPitch = searchParams.get('emptyPitch') === '1';
-  const { steps, results, error, loading, elapsedMs, slowHint, run, retry } = useAnalysisRun();
+  const { steps, results, error, autoRetrying, loading, elapsedMs, slowHint, run, retry } =
+    useAnalysisRun();
+  const [geocodeError, setGeocodeError] = useState<ApiErrorInfo | null>(null);
   const [selected, setSelected] = useState<ProspectPack | null>(null);
   const [mapBrand, setMapBrand] = useState<MapBrandSelection | null>(null);
   const [outreach, setOutreach] = useState<ProspectPack | null>(null);
@@ -76,6 +79,7 @@ export function ReportPage() {
   const ranKey = useRef('');
   const [geocodeCandidates, setGeocodeCandidates] = useState<GeocodeCandidate[] | null>(null);
   const [geocodeChecking, setGeocodeChecking] = useState(false);
+  const [geocodeAutoRetrying, setGeocodeAutoRetrying] = useState(false);
   const { data: health } = useHealth();
 
   useEffect(() => {
@@ -124,7 +128,11 @@ export function ReportPage() {
     let cancelled = false;
     setGeocodeChecking(true);
     setGeocodeCandidates(null);
-    void fetchGeocodePreview(request.address)
+    setGeocodeError(null);
+    setGeocodeAutoRetrying(false);
+    void fetchGeocodePreview(request.address, {
+      onAutoRetry: () => setGeocodeAutoRetrying(true),
+    })
       .then((preview) => {
         if (cancelled) return;
         if (preview.needsConfirmation && preview.candidates.length > 1) {
@@ -137,11 +145,14 @@ export function ReportPage() {
         ranKey.current = JSON.stringify(withLoc);
         void run(withLoc);
       })
-      .catch(() => {
-        if (!cancelled) startAnalysis();
+      .catch((err) => {
+        if (!cancelled) setGeocodeError(apiErrorFromUnknown(err));
       })
       .finally(() => {
-        if (!cancelled) setGeocodeChecking(false);
+        if (!cancelled) {
+          setGeocodeChecking(false);
+          setGeocodeAutoRetrying(false);
+        }
       });
 
     return () => {
@@ -193,8 +204,11 @@ export function ReportPage() {
 
   const displayError: ApiErrorInfo | null =
     simulateError
-      ? { message: 'We could not load this report. Check your connection and try again.' }
-      : error;
+      ? { message: SERVER_BUSY_MESSAGE, code: 'SERVER_BUSY' }
+      : geocodeError ?? error;
+
+  const showErrorBanner =
+    Boolean(displayError) || (!simulateError && (autoRetrying || geocodeAutoRetrying));
 
   const activeBacktest =
     results &&
@@ -370,8 +384,39 @@ export function ReportPage() {
             {slowHint && loading && (
               <p className="text-sm text-ink-2">Still working. Large cities take a few extra seconds.</p>
             )}
-            {displayError && (
-              <ReportErrorBanner error={displayError} onRetry={() => { ranKey.current = ''; retry(); }} />
+            {showErrorBanner && (
+              <ReportErrorBanner
+                error={displayError}
+                retrying={autoRetrying || geocodeAutoRetrying}
+                onRetry={() => {
+                  ranKey.current = '';
+                  setGeocodeError(null);
+                  if (geocodeError && request) {
+                    setGeocodeChecking(true);
+                    void fetchGeocodePreview(request.address, {
+                      onAutoRetry: () => setGeocodeAutoRetrying(true),
+                    })
+                      .then((preview) => {
+                        if (preview.needsConfirmation && preview.candidates.length > 1) {
+                          setGeocodeCandidates(preview.candidates);
+                          return;
+                        }
+                        const withLoc = preview.location
+                          ? { ...request, confirmedLocation: preview.location }
+                          : request;
+                        ranKey.current = JSON.stringify(withLoc);
+                        void run(withLoc);
+                      })
+                      .catch((err) => setGeocodeError(apiErrorFromUnknown(err)))
+                      .finally(() => {
+                        setGeocodeChecking(false);
+                        setGeocodeAutoRetrying(false);
+                      });
+                    return;
+                  }
+                  retry();
+                }}
+              />
             )}
             {geocodeCandidates && (
               <Suspense fallback={<BrandLoading label="Loading map to confirm address…" />}>
@@ -380,6 +425,9 @@ export function ReportPage() {
                   candidates={geocodeCandidates}
                   onConfirm={confirmGeocode}
                   onCancel={() => navigate('/')}
+                  onNoneOfThese={() =>
+                    navigate(`/?address=${encodeURIComponent(request.address)}`)
+                  }
                 />
               </Suspense>
             )}
@@ -467,6 +515,9 @@ export function ReportPage() {
 
 function SectionUnavailable({ label = 'This section is unavailable right now.' }: { label?: string }) {
   return (
-    <p className="rounded-card border border-border bg-surface p-4 text-sm text-ink-2">{label}</p>
+    <div className="rounded-card border border-border bg-surface p-4 text-sm text-ink-2">
+      <p>{label}</p>
+      <p className="mt-2 text-ink-3">Refresh the page to try again, or continue with the rest of the report.</p>
+    </div>
   );
 }

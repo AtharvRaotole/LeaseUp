@@ -42,7 +42,7 @@ test.describe('Usability: tour, tooltips, errors', () => {
     );
     const banner = page.getByTestId('report-error');
     await expect(banner).toBeVisible();
-    await expect(banner.getByText('We could not finish this report')).toBeVisible();
+    await expect(banner.getByText('Our servers are busy')).toBeVisible();
     await expect(banner.getByRole('button', { name: 'Try again' })).toBeVisible();
     await expect(banner.getByText(/demo example/i)).toBeVisible();
   });

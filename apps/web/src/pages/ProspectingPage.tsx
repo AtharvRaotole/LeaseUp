@@ -5,6 +5,8 @@ import { Button } from '../components/ui/Button';
 import { ProspectingTimeline } from '../components/prospecting/ProspectingTimeline';
 import { useProspectingRun } from '../hooks/useProspectingRun';
 import { apiUrl } from '../lib/api';
+import { CalmErrorPanel } from '../components/ui/CalmErrorPanel';
+import type { ApiErrorInfo } from '../lib/api-error';
 
 export function ProspectingPage() {
   const { id } = useParams();
@@ -43,7 +45,15 @@ export function ProspectingPage() {
           Autonomous agent: geocode, taste, store scan, verification, outreach drafts, pitch pack.
         </p>
 
-        {error && <p className="mt-4 text-sm text-danger">{error}</p>}
+        {error && (
+          <div className="mt-4" data-testid="prospecting-error">
+            <CalmErrorPanel
+              error={{ message: error, code: 'SERVER_BUSY' } satisfies ApiErrorInfo}
+              onRetry={() => id && void startRun(id)}
+              testId="prospecting-error"
+            />
+          </div>
+        )}
 
         {!job && <p className="mt-8 text-ink-2">Loading job…</p>}
 
