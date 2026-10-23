@@ -97,11 +97,11 @@ export function CompareSlopeChart({
             <div key={row.entityId} className="col-span-2 grid grid-cols-2 gap-2 border-t border-border pt-2 first:border-0 first:pt-0">
               <div>
                 <p className="break-words text-ink">{row.displayName}</p>
-                <p className="font-mono text-xs tabular-nums text-ink-3">#{row.leftRank}</p>
+                <p className="text-xs tabular-nums text-ink-3">#{row.leftRank}</p>
               </div>
               <div className="text-right">
                 <p className="break-words text-ink">{row.displayName}</p>
-                <p className="font-mono text-xs tabular-nums text-ink-3">#{row.rightRank}</p>
+                <p className="text-xs tabular-nums text-ink-3">#{row.rightRank}</p>
               </div>
             </div>
           ))}

@@ -48,7 +48,7 @@ function ColumnShell({
     >
       <div className="flex items-center justify-between border-b border-border px-3 py-2">
         <h3 className="text-sm font-semibold text-ink">{columnLabel(column)}</h3>
-        <span className="rounded-pill bg-surface px-2 py-0.5 font-mono text-xs text-ink-3">
+        <span className="rounded-pill bg-surface px-2 py-0.5 text-xs text-ink-3">
           {cards.length}
         </span>
       </div>

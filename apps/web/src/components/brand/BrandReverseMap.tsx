@@ -12,7 +12,7 @@ function mapStyle() {
 
 function pinHtml(rank: number, active: boolean): string {
   const bg = active ? '#3fbf8f' : '#0f6b4f';
-  return `<div style="width:28px;height:28px;border-radius:9999px;background:${bg};color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);font-family:Geist,sans-serif">${rank}</div>`;
+  return `<div style="width:28px;height:28px;border-radius:9999px;background:${bg};color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);font-family:'Schibsted Grotesk',system-ui,sans-serif">${rank}</div>`;
 }
 
 export function BrandReverseMap({

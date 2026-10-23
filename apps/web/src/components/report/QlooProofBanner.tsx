@@ -44,7 +44,7 @@ export function QlooProofBanner({
 
   return (
     <Card className="border-accent/20 bg-surface" data-testid="qloo-proof-banner">
-      <p className="font-serif text-lg text-ink">{sentence}</p>
+      <p className="font-display font-semibold text-lg text-ink">{sentence}</p>
       <p className="mt-2 text-sm text-ink-2">
         {winner === 'qloo' &&
           'National chain count alone misses which brands already fit this neighborhood. Local taste data reorders the list.'}

@@ -52,7 +52,7 @@ export function ReportStickyHeader({
         <div className="relative flex shrink-0 items-center gap-0.5">
           <button
             type="button"
-            className="rounded-pill border border-border bg-surface-2 px-3 py-1.5 text-sm text-ink transition-colors duration-150 hover:border-border-strong focus-visible:ring-2 focus-visible:ring-accent"
+            className="rounded-pill border border-border bg-surface-2 px-3 py-1.5 text-sm tabular-nums text-ink transition-colors duration-150 hover:border-border-strong focus-visible:ring-2 focus-visible:ring-accent"
             onClick={() => setRadiusOpen((o) => !o)}
             aria-expanded={radiusOpen}
             aria-label={`Trade area: ${tradeAreaLabel(request.radius)}`}

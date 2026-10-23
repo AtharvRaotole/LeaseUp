@@ -14,7 +14,7 @@ export function NotFoundPage() {
       <TopBar />
       <main id="main-content" className="mx-auto flex flex-1 flex-col items-center justify-center px-4 py-16 text-center">
         <Logo variant="mark" size="lg" className="mb-6 opacity-90" />
-        <h1 className="font-serif text-h2 text-ink">Page not found</h1>
+        <h1 className="font-display font-semibold text-h2 text-ink">Page not found</h1>
         <p className="mt-3 max-w-md text-ink-2">
           This URL does not match a report or landing page. Head back to search for tenants.
         </p>

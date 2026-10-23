@@ -6,6 +6,9 @@ node_modules/
 # Testing
 coverage/
 
+# Generated OG font bytes (scripts/embed-og-fonts.mjs)
+apps/worker/src/og/share-font-data.ts
+
 # Build outputs
 dist/
 dist-dry/

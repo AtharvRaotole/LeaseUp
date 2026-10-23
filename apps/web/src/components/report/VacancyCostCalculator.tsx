@@ -71,11 +71,11 @@ export function VacancyCostCalculator({
       <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
         <div className="rounded-control border border-border bg-surface-2 px-3 py-2">
           <dt className="text-ink-3">Monthly lost rent</dt>
-          <dd className="font-mono text-lg tabular-nums text-ink">{formatUsd(monthlyLostRent)}</dd>
+          <dd className="text-lg tabular-nums text-ink">{formatUsd(monthlyLostRent)}</dd>
         </div>
         <div className="rounded-control border border-border bg-surface-2 px-3 py-2">
           <dt className="text-ink-3">Total over {input.monthsVacant} months</dt>
-          <dd className="font-mono text-lg tabular-nums text-accent">{formatUsd(totalLostRent)}</dd>
+          <dd className="text-lg tabular-nums text-accent">{formatUsd(totalLostRent)}</dd>
         </div>
       </dl>
     </Card>

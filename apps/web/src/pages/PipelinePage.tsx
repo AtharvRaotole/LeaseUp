@@ -39,7 +39,7 @@ export function PipelinePage() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-label uppercase tracking-wide text-ink-3">Leasing</p>
-            <h1 className="mt-1 font-serif text-display text-ink">Pipeline</h1>
+            <h1 className="mt-1 font-display font-semibold text-display text-ink">Pipeline</h1>
             <p className="mt-2 max-w-xl text-sm text-ink-2">
               {readOnly
                 ? 'Read-only view of a shared board. Outreach and contacts are not shown here.'
@@ -130,7 +130,7 @@ export function PipelinePage() {
 
         {!readOnly && sharePath && board && board.cards.length > 0 && (
           <p className="mt-6 text-xs text-ink-3">
-            View link: <span className="font-mono text-ink-2">{sharePath}</span>
+            View link: <span className="text-ink-2">{sharePath}</span>
           </p>
         )}
       </div>

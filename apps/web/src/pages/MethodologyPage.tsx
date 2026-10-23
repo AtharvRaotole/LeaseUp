@@ -68,14 +68,14 @@ export function MethodologyPage() {
       <main id="main-content" className="outline-none">
         <div className="mx-auto max-w-[880px] px-4 pb-16 pt-10 md:pt-14">
           <p className="text-label uppercase text-ink-3">Methodology</p>
-          <h1 className="mt-3 font-serif text-display text-ink">How LeaseUp ranks tenants</h1>
+          <h1 className="mt-3 font-display font-semibold text-display text-ink">How LeaseUp ranks tenants</h1>
           <p className="mt-4 max-w-[640px] text-lg leading-relaxed text-ink-2">
             A transparent pipeline from address to ranked brands, with backtests against real store
             footprints so judges can see where taste data helps and where it does not.
           </p>
 
           <section className="mt-12" aria-labelledby="pipeline-heading">
-            <h2 id="pipeline-heading" className="font-serif text-title text-ink">
+            <h2 id="pipeline-heading" className="font-display font-semibold text-title text-ink">
               Pipeline
             </h2>
             <p className="mt-2 text-sm text-ink-2">
@@ -109,7 +109,7 @@ export function MethodologyPage() {
           <section className="mt-14" aria-labelledby="eval-heading">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <h2 id="eval-heading" className="font-serif text-title text-ink">
+                <h2 id="eval-heading" className="font-display font-semibold text-title text-ink">
                   Metro evaluation
                 </h2>
                 <p className="mt-2 text-sm text-ink-2">
@@ -215,7 +215,7 @@ export function MethodologyPage() {
           </section>
 
           <section className="mt-14" aria-labelledby="limits-heading">
-            <h2 id="limits-heading" className="font-serif text-title text-ink">
+            <h2 id="limits-heading" className="font-display font-semibold text-title text-ink">
               Limitations and data sources
             </h2>
             <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-ink-2">
