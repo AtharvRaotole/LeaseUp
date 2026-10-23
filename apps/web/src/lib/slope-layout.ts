@@ -2,7 +2,7 @@ export function resolveLabelYs(
   naturalYs: number[],
   minY: number,
   maxY: number,
-  minGap = 16
+  minGap = 18
 ): number[] {
   if (naturalYs.length === 0) return [];
   const order = naturalYs.map((y, i) => ({ y, i })).sort((a, b) => a.y - b.y);

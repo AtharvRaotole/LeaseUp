@@ -11,7 +11,8 @@ type Swing = {
   delta: number;
 };
 
-const LABEL_GUTTER = 140;
+const LABEL_GUTTER = 190;
+const LABEL_MIN_GAP = 18;
 const PLOT_WIDTH = 420;
 
 function useMobileChart() {
@@ -61,8 +62,9 @@ export function CompareSlopeChart({
   const layout = useMemo(() => {
     const maxRank = Math.max(...rows.flatMap((s) => [s.leftRank, s.rightRank]), 10);
     const w = LABEL_GUTTER + PLOT_WIDTH + LABEL_GUTTER;
-    const h = Math.max(360, 56 + rows.length * 28);
     const pad = { t: 72, r: LABEL_GUTTER, b: 20, l: LABEL_GUTTER };
+    const labelStackMin = rows.length * LABEL_MIN_GAP + 48;
+    const h = Math.max(360, pad.t + pad.b + Math.max(labelStackMin, rows.length * 28));
     const innerH = h - pad.t - pad.b;
     const yFor = (rank: number) => pad.t + ((rank - 1) / Math.max(1, maxRank - 1)) * innerH;
     const xL = pad.l;
@@ -73,8 +75,8 @@ export function CompareSlopeChart({
     const rightNatural = rows.map((r) => yFor(r.rightRank));
     const minY = pad.t + 8;
     const maxY = h - pad.b - 8;
-    const leftLabelY = resolveLabelYs(leftNatural, minY, maxY);
-    const rightLabelY = resolveLabelYs(rightNatural, minY, maxY);
+    const leftLabelY = resolveLabelYs(leftNatural, minY, maxY, LABEL_MIN_GAP);
+    const rightLabelY = resolveLabelYs(rightNatural, minY, maxY, LABEL_MIN_GAP);
     return { w, h, pad, xL, xR, leftTextX, rightTextX, yFor, leftLabelY, rightLabelY, maxRank };
   }, [rows]);
 
@@ -94,11 +96,11 @@ export function CompareSlopeChart({
           {rows.map((row) => (
             <div key={row.entityId} className="col-span-2 grid grid-cols-2 gap-2 border-t border-border pt-2 first:border-0 first:pt-0">
               <div>
-                <p className="truncate text-ink">{row.displayName}</p>
+                <p className="break-words text-ink">{row.displayName}</p>
                 <p className="font-mono text-xs tabular-nums text-ink-3">#{row.leftRank}</p>
               </div>
               <div className="text-right">
-                <p className="truncate text-ink">{row.displayName}</p>
+                <p className="break-words text-ink">{row.displayName}</p>
                 <p className="font-mono text-xs tabular-nums text-ink-3">#{row.rightRank}</p>
               </div>
             </div>

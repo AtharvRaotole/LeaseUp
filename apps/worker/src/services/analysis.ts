@@ -40,6 +40,8 @@ import {
   extractQlooSignals,
 } from '../lib/analysis-enrichment';
 import { runStep, type StepEmitter } from '../lib/analysis-steps';
+import { encodeGeohash } from '../lib/geohash';
+import { sha256Short } from '../lib/cache-key';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -50,6 +52,7 @@ export class AnalysisService {
   private overpass: OverpassClient;
   private nominatim: NominatimClient;
   private db: D1Database;
+  private cache: KVNamespace;
   private mode: 'live' | 'demo';
   private catalog: StoreCatalog;
 
@@ -57,7 +60,8 @@ export class AnalysisService {
     this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
     this.qloo = new QlooClient(env);
     this.openai = new OpenAIClient(env);
-    this.overpass = new OverpassClient(env.CACHE, 8000, this.mode === 'demo');
+    this.overpass = new OverpassClient(env.CACHE, 12000, this.mode === 'demo');
+    this.cache = env.CACHE;
     this.nominatim = new NominatimClient(
       env.CACHE,
       env.NOMINATIM_CONTACT || DEFAULT_NOMINATIM_CONTACT
@@ -479,6 +483,29 @@ export class AnalysisService {
     return prospectPacks;
   }
 
+  async warmOsmVerification(
+    location: Location,
+    radiusKm: number,
+    prospects: ProspectPack[]
+  ): Promise<void> {
+    await this.applyOsmVerification(location, radiusKm, prospects);
+  }
+
+  private async verifyResultCacheKey(
+    location: Location,
+    radiusKm: number,
+    prospects: ProspectPack[]
+  ): Promise<string | null> {
+    const pendingIds = prospects
+      .filter((p) => p.brand.verified === 'verifying...')
+      .map((p) => p.brand.entityId)
+      .sort();
+    if (pendingIds.length === 0) return null;
+    const gh5 = encodeGeohash(location.latitude, location.longitude, 5);
+    const idHash = await sha256Short(pendingIds.join(','));
+    return `verify:result:v1:${gh5}:${radiusKm}:${idHash}`;
+  }
+
   async applyOsmVerification(
     location: Location,
     radiusKm: number,
@@ -498,6 +525,22 @@ export class AnalysisService {
         prospects,
         summary: { verifiedTwoSource: 0, singleSource: 0, conflicts: 0, unavailable: false },
       };
+    }
+
+    const verifyCacheKey = await this.verifyResultCacheKey(location, radiusKm, prospects);
+    if (verifyCacheKey) {
+      const cached = await this.cache.get(verifyCacheKey);
+      if (cached) {
+        return JSON.parse(cached) as {
+          prospects: ProspectPack[];
+          summary: {
+            verifiedTwoSource: number;
+            singleSource: number;
+            conflicts: number;
+            unavailable: boolean;
+          };
+        };
+      }
     }
 
     const searchBrands = pending.map((pack) =>
@@ -540,7 +583,7 @@ export class AnalysisService {
       })
       .filter((pack) => pack.brand.verified !== 'conflict - likely present');
 
-    return {
+    const payload = {
       prospects: updated,
       summary: {
         verifiedTwoSource,
@@ -549,6 +592,12 @@ export class AnalysisService {
         unavailable: !!osmResult.error,
       },
     };
+
+    if (verifyCacheKey) {
+      await this.cache.put(verifyCacheKey, JSON.stringify(payload), { expirationTtl: 3600 });
+    }
+
+    return payload;
   }
 
   private verifyAbsence(

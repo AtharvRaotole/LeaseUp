@@ -48,7 +48,7 @@ export class OverpassClient {
   private timeout: number;
   private demoMode: boolean;
 
-  constructor(cache: KVNamespace, timeout: number = 8000, demoMode = false) {
+  constructor(cache: KVNamespace, timeout: number = 12000, demoMode = false) {
     this.cache = cache;
     this.timeout = timeout;
     this.demoMode = demoMode;
@@ -98,6 +98,8 @@ export class OverpassClient {
     const query = buildProspectOverpassQuery(lat, lng, radiusKm, brands);
 
     for (const baseUrl of OVERPASS_ENDPOINTS) {
+      const host = new URL(baseUrl).host;
+      const started = Date.now();
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), this.timeout);
@@ -113,6 +115,19 @@ export class OverpassClient {
         });
 
         clearTimeout(timeoutId);
+        const latencyMs = Date.now() - started;
+
+        console.log(
+          JSON.stringify({
+            event: 'overpass_attempt',
+            host,
+            latencyMs,
+            status: response.status,
+            ok: response.ok,
+            radiusKm,
+            brandCount: brands.length,
+          })
+        );
 
         if (!response.ok) {
           continue;
@@ -129,11 +144,33 @@ export class OverpassClient {
           cached: false,
         };
       } catch (err) {
-        if ((err as Error).name === 'AbortError') {
+        const latencyMs = Date.now() - started;
+        const aborted = (err as Error).name === 'AbortError';
+        console.log(
+          JSON.stringify({
+            event: 'overpass_attempt',
+            host,
+            latencyMs,
+            ok: false,
+            aborted,
+            radiusKm,
+            brandCount: brands.length,
+          })
+        );
+        if (aborted) {
           continue;
         }
       }
     }
+
+    console.warn(
+      JSON.stringify({
+        event: 'overpass_exhausted',
+        radiusKm,
+        brandCount: brands.length,
+        endpointsTried: OVERPASS_ENDPOINTS.length,
+      })
+    );
 
     return { brands: [], cached: false, error: 'overpass_unavailable' };
   }

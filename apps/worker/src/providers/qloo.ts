@@ -16,6 +16,13 @@ import {
 } from './qloo-location';
 import { assertQlooInsightsValid } from './qloo-validate';
 
+export const QLOO_MAX_TAKE = 50;
+
+export function clampQlooTake(take?: number): number {
+  const n = take ?? QLOO_MAX_TAKE;
+  return Math.min(QLOO_MAX_TAKE, Math.max(1, Math.floor(n)));
+}
+
 export interface QlooInsight {
   entity_id: string;
   name: string;
@@ -123,7 +130,7 @@ export class QlooClient {
       return this.getDemoInsights(params.location.query);
     }
 
-    const take = params.take ?? 50;
+    const take = clampQlooTake(params.take);
     const brandIds = params.brandIds ?? [];
     const locationKey = this.locationCacheKey(params.location);
     const brandKey = brandIds.length ? await sha256Short(brandIds.join(',')) : 'all';
