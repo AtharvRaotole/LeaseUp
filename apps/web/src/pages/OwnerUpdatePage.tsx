@@ -5,6 +5,7 @@ import { Logo } from '../components/brand/Logo';
 import { Button } from '../components/ui/Button';
 import { fetchSharedOwnerUpdate } from '../lib/owner-update-api';
 import { formatUserFacingDate } from '../lib/format-date';
+import { shareLinkExpiredLine } from '../lib/empty-state-copy';
 
 export function OwnerUpdatePage() {
   const { id } = useParams();
@@ -15,7 +16,7 @@ export function OwnerUpdatePage() {
     if (!id) return;
     void fetchSharedOwnerUpdate(id)
       .then(setSnapshot)
-      .catch(() => setError('This owner update link is missing or expired.'));
+      .catch(() => setError(shareLinkExpiredLine));
   }, [id]);
 
   if (error) {

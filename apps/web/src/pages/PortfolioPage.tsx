@@ -5,7 +5,8 @@ import { Upload } from 'lucide-react';
 import { TopBar } from '../components/layout/TopBar';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
-import { Skeleton } from '../components/ui/Skeleton';
+import { PortfolioLoadingSkeleton } from '../components/portfolio/PortfolioLoadingSkeleton';
+import { portfolioEmptyAction, portfolioEmptyLine } from '../lib/empty-state-copy';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { apiUrl } from '../lib/api';
 import { buildReportPath } from '../lib/report-params';
@@ -374,21 +375,18 @@ export function PortfolioPage() {
                   </table>
                 </Card>
               ) : loadingPortfolio ? (
-                <Skeleton className="min-h-[320px] w-full rounded-card" data-testid="portfolio-loading" />
+                <PortfolioLoadingSkeleton />
               ) : (
                 <Card
                   className="flex min-h-[320px] flex-col items-center justify-center p-8 text-center"
                   data-testid="portfolio-empty-state"
                 >
-                  <p className="max-w-sm text-ink-2">
-                    Add up to 10 storefront addresses on the left. We geocode each pin, run Qloo taste
-                    rankings, and show hit rates side by side.
-                  </p>
+                  <p className="max-w-sm text-ink-2">{portfolioEmptyLine}</p>
                   <a
                     href="#portfolio-addresses"
                     className="mt-6 text-sm font-medium text-accent hover:underline"
                   >
-                    Start with your first address
+                    {portfolioEmptyAction}
                   </a>
                 </Card>
               )}

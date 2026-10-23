@@ -6,6 +6,8 @@ import { Button } from '../components/ui/Button';
 import { PipelineKanban } from '../components/pipeline/PipelineKanban';
 import { OwnerUpdatePanel } from '../components/pipeline/OwnerUpdatePanel';
 import { fetchPipelineBoard, fetchPublicPipeline, pipelineExportUrl } from '../lib/pipeline-api';
+import { PipelineLoadingSkeleton } from '../components/pipeline/PipelineLoadingSkeleton';
+import { pipelineEmptyAction, pipelineEmptyLine, shareLinkExpiredLine } from '../lib/empty-state-copy';
 
 export function PipelinePage() {
   const { shareId } = useParams();
@@ -22,7 +24,9 @@ export function PipelinePage() {
       }
       setError(null);
     } catch {
-      setError(readOnly ? 'This pipeline link is missing or expired.' : 'Could not load your pipeline.');
+      setError(
+        readOnly ? shareLinkExpiredLine : 'Could not load your pipeline. Refresh the page or try again.'
+      );
     }
   }, [shareId, readOnly]);
 
@@ -106,9 +110,7 @@ export function PipelinePage() {
           </div>
         )}
 
-        {!error && !board && (
-          <p className="mt-12 text-center text-ink-2" data-testid="pipeline-loading">Loading pipeline…</p>
-        )}
+        {!error && !board && <PipelineLoadingSkeleton />}
 
         {board && !error && !readOnly && <OwnerUpdatePanel />}
 
@@ -119,12 +121,9 @@ export function PipelinePage() {
                 className="rounded-card border border-dashed border-border bg-surface px-6 py-16 text-center"
                 data-testid="pipeline-empty"
               >
-                <p className="text-ink-2">No prospects yet.</p>
-                <p className="mt-2 text-sm text-ink-3">
-                  Open a report or pitch pack and choose <strong className="font-medium text-ink">Add to pipeline</strong>.
-                </p>
-                <Link to="/" className="mt-4 inline-block text-accent hover:underline">
-                  Run a site analysis
+                <p className="text-ink">{pipelineEmptyLine}</p>
+                <Link to="/" className="mt-4 inline-block">
+                  <Button type="button" variant="primary" size="sm">{pipelineEmptyAction}</Button>
                 </Link>
               </div>
             ) : (
