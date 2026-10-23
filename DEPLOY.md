@@ -69,6 +69,16 @@ wrangler d1 execute leaseup_db --command="SELECT name FROM sqlite_master WHERE t
 
 You should see: `rate_limits`, `analysis_runs`, `api_metrics`.
 
+D1 is **not** used for store locations (avoids free-tier write limits). ATP store points ship as static geohash-3 tiles bundled with the worker.
+
+### Step 3b: Build store geotiles (included in `pnpm build`)
+
+```bash
+node scripts/build-geotiles.mjs
+```
+
+This writes `apps/worker/public/tiles/brands.json` and `apps/worker/public/tiles/<geohash3>.json` (compact `[brandIdx, lat, lon]` arrays). Wrangler serves them via `[assets]` in `apps/worker/wrangler.toml`. Re-run after updating `data/brands/store-locations.expanded.min.json`.
+
 ### Step 4: Create KV Namespace
 
 ```bash

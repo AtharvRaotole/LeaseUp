@@ -38,17 +38,4 @@ CREATE TABLE IF NOT EXISTS api_metrics (
 
 CREATE INDEX IF NOT EXISTS idx_api_metrics_provider ON api_metrics(provider, created_at);
 
--- ATP store catalog (seed via scripts/seed-d1.mjs)
-CREATE TABLE IF NOT EXISTS brands (
-  brand_id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  store_count INTEGER NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS stores (
-  brand_id TEXT NOT NULL,
-  lat REAL NOT NULL,
-  lon REAL NOT NULL
-);
-
-CREATE INDEX IF NOT EXISTS idx_stores_brand_lat_lon ON stores(brand_id, lat, lon);
+-- Store locations are served from static geotiles (apps/worker/public/tiles), not D1.

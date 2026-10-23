@@ -25,6 +25,7 @@ export const BrandAffinitySchema = z.object({
     z.literal('conflict'),
     z.literal('unverified'),
     z.literal('verifying...'),
+    z.literal('conflict - likely present'),
   ]),
   verificationSources: z.array(z.string()).optional(),
   explanation: z.string().optional(),
@@ -59,6 +60,7 @@ export const TenantMixScoreSchema = z.object({
 export type TenantMixScore = z.infer<typeof TenantMixScoreSchema>;
 
 export const ProspectPackSchema = z.object({
+  coverageNote: z.string().optional(),
   brand: BrandAffinitySchema,
   tenantMixScore: TenantMixScoreSchema.optional(),
   demographics: z.object({

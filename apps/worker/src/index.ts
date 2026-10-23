@@ -12,6 +12,7 @@ import { compareRouter } from './routes/compare';
 export interface Env {
   DB: D1Database;
   CACHE: KVNamespace;
+  ASSETS?: Fetcher;
   QLOO_API_KEY?: string;
   QLOO_BASE_URL?: string;
   OPENAI_API_KEY?: string;

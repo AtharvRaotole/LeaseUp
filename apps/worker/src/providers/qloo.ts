@@ -9,7 +9,8 @@ import { ConfigurationError, UpstreamError } from '../lib/errors';
 import { sha256Short } from '../lib/cache-key';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
-  applyQlooLocationParams,
+  applyQlooInsightsLocationParams,
+  applyQlooHeatmapLocationParams,
   chunkBrandIds,
   QLOO_MAX_BRANDS_PER_REQUEST,
 } from './qloo-location';
@@ -50,20 +51,36 @@ type RawHeatmapCell = {
   affinity_rank?: number;
   affinity?: number;
   popularity?: number;
-  location?: { latitude?: number; longitude?: number };
+  query?: { affinity?: number; affinity_rank?: number };
+  location?: {
+    latitude?: number;
+    longitude?: number;
+    lat?: number;
+    lon?: number;
+    geohash?: string;
+  };
 };
 
 export function normalizeHeatmapCells(raw: RawHeatmapCell[]): QlooHeatmapCell[] {
   const cells: QlooHeatmapCell[] = [];
   for (const cell of raw) {
-    const latitude = cell.location?.latitude ?? cell.latitude;
-    const longitude = cell.location?.longitude ?? cell.longitude;
+    const latitude =
+      cell.location?.lat ??
+      cell.location?.latitude ??
+      cell.latitude;
+    const longitude =
+      cell.location?.lon ??
+      cell.location?.longitude ??
+      cell.longitude;
     if (latitude === undefined || longitude === undefined) continue;
+    const affinity = cell.query?.affinity ?? cell.affinity;
+    const affinityRank =
+      cell.query?.affinity_rank ?? cell.affinity_rank ?? affinity ?? 0;
     cells.push({
       latitude,
       longitude,
-      affinity_rank: cell.affinity_rank ?? cell.affinity ?? 0,
-      affinity: cell.affinity,
+      affinity_rank: affinityRank,
+      affinity,
       popularity: cell.popularity,
     });
   }
@@ -162,7 +179,7 @@ export class QlooClient {
   }): Promise<QlooInsight[]> {
     const url = new URL('/v2/insights', this.baseUrl);
     url.searchParams.set('filter.type', 'urn:entity:brand');
-    applyQlooLocationParams(url, params.location);
+    applyQlooInsightsLocationParams(url, params.location);
 
     if (params.brandIds.length > 0) {
       url.searchParams.set('filter.results.entities', params.brandIds.join(','));
@@ -233,7 +250,7 @@ export class QlooClient {
 
     const url = new URL('/v2/insights', this.baseUrl);
     url.searchParams.set('filter.type', 'urn:heatmap');
-    applyQlooLocationParams(url, params.location);
+    applyQlooHeatmapLocationParams(url, params.location);
 
     if (params.entityId) {
       url.searchParams.set('signal.interests.entities', params.entityId);

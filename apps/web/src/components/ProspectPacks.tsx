@@ -56,7 +56,7 @@ export function ProspectPacks({ results, selectedId, onSelect }: ProspectPacksPr
         const err = await res.json();
         throw new Error(err.error || 'Outreach failed');
       }
-      return (await res.json()) as { draft: string };
+      return (await res.json()) as { draft: string; model: string | null };
     },
   });
 
@@ -104,6 +104,9 @@ export function ProspectPacks({ results, selectedId, onSelect }: ProspectPacksPr
                   </span>
                 </div>
                 <p className="text-xs text-zinc-500 mt-1">{prospect.brand.verified}</p>
+                {prospect.coverageNote && (
+                  <p className="text-xs text-amber-400/90 mt-1">{prospect.coverageNote}</p>
+                )}
                 {prospect.qlooSignals && prospect.qlooSignals.length > 0 && (
                   <p className="text-xs text-zinc-400 mt-2">Qloo: {prospect.qlooSignals.join(' · ')}</p>
                 )}

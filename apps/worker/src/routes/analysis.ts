@@ -137,7 +137,7 @@ analysisRouter.post('/outreach', async (c) => {
   const request = OutreachRequestSchema.parse(body);
 
   const service = new AnalysisService(c.env);
-  const draft = await service.generateOutreachForBrand(
+  const { draft, model } = await service.generateOutreachForBrand(
     request.brandName,
     request.address,
     request.reasons,
@@ -149,7 +149,7 @@ analysisRouter.post('/outreach', async (c) => {
     }
   );
 
-  return c.json({ draft });
+  return c.json({ draft, model });
 });
 
 analysisRouter.get('/analyze/:runId', async (c) => {
