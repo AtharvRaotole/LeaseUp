@@ -19,7 +19,7 @@ export function Switch({
   return (
     <label
       className={cn(
-        'grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-0 text-sm text-ink-2',
+        'grid grid-cols-[minmax(0,1fr)_36px] items-center gap-x-2 text-sm text-ink-2',
         disabled && 'cursor-not-allowed'
       )}
       title={title}
@@ -27,10 +27,11 @@ export function Switch({
       <span className={disabled ? 'text-ink-3' : undefined}>{label}</span>
       {disabled ? (
         <span
-          className="relative inline-flex h-5 w-9 shrink-0 rounded-pill border border-border bg-surface-2 opacity-40"
+          className="relative inline-flex h-5 w-9 shrink-0 items-center rounded-pill border border-border-strong bg-surface-2 opacity-40"
+          role="presentation"
           aria-hidden
         >
-          <span className="absolute left-0.5 top-0.5 block h-4 w-4 rounded-full bg-surface" />
+          <span className="absolute left-0.5 top-0.5 block h-4 w-4 rounded-full bg-surface shadow-sm" />
         </span>
       ) : (
         <SwitchPrimitive.Root
@@ -41,7 +42,7 @@ export function Switch({
           )}
         >
           <SwitchPrimitive.Thumb
-            className="block h-4 w-4 translate-x-0.5 rounded-full bg-surface transition-transform data-[state=checked]:translate-x-[18px]"
+            className="block h-4 w-4 translate-x-0.5 rounded-full bg-surface shadow-sm transition-transform data-[state=checked]:translate-x-[18px]"
           />
         </SwitchPrimitive.Root>
       )}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { AnalysisStep } from '@leaseup/contracts';
 import { cn } from '../../lib/cn';
+import { formatUserFacingDate } from '../../lib/format-date';
 
 const STEP_ORDER = ['locate', 'taste', 'backtest', 'prospects', 'verify'] as const;
 const STEP_LABELS: Record<string, string> = {
@@ -10,10 +11,6 @@ const STEP_LABELS: Record<string, string> = {
   prospects: 'Find gaps',
   verify: 'Double check',
 };
-
-function formatRecordedDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
 
 export function AgentRunStrip({
   steps,
@@ -40,7 +37,7 @@ export function AgentRunStrip({
             className="text-ink underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-accent rounded-control"
             onClick={() => setExpanded(true)}
           >
-            Recorded data from {formatRecordedDate(recordedAt)}. Show steps
+            Recorded data from {formatUserFacingDate(recordedAt)}. Show steps
           </button>
         </div>
       );

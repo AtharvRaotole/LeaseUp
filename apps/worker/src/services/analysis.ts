@@ -22,6 +22,10 @@ import {
 } from '@leaseup/fixtures';
 import { createStoreCatalog, type StoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
+import { brandCategoryLabel } from '../lib/brand-category';
+
+/** Live Qloo recording instant (Oct 22, 2026 ~11:36 PM US Eastern). */
+const DEMO_DATA_RECORDED_AT = '2026-10-23T03:36:00.000Z';
 import { toOverpassSearchBrand } from '../lib/osm-brand-hints';
 import { OSM_WIKIDATA_BY_ENTITY } from '../data/osm-wikidata-map';
 import type { OverpassSearchBrand } from '../lib/overpass-query';
@@ -215,7 +219,7 @@ export class AnalysisService {
         dataQuality,
         warnings,
         runId,
-        timestamp: new Date().toISOString(),
+        timestamp: this.mode === 'demo' ? DEMO_DATA_RECORDED_AT : new Date().toISOString(),
         mode: this.mode,
         chainPriorWeight: CHAIN_PRIOR_BLEND_WEIGHT,
       };
@@ -448,7 +452,16 @@ export class AnalysisService {
           nationalStoreCount: nationalCount,
           nearbyStoreCount: 0,
         },
-        tenantMixScore: undefined,
+        tenantMixScore: (() => {
+          const categoryFit = brandCategoryLabel(candidate.entity_id);
+          if (!categoryFit) return undefined;
+          return {
+            score: 0,
+            coAffinityMean: 0,
+            categoryFit,
+            explanation: '',
+          };
+        })(),
         demographics: undefined,
         outreachDraft: '',
         reasons,
@@ -694,7 +707,7 @@ export class AnalysisService {
         'Try a nearby larger city or well-known neighborhood',
       ],
       runId,
-      timestamp: new Date().toISOString(),
+      timestamp: this.mode === 'demo' ? DEMO_DATA_RECORDED_AT : new Date().toISOString(),
     };
   }
 

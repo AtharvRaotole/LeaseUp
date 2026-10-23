@@ -1,6 +1,7 @@
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Accordion } from '../ui/Accordion';
 import { affinitiesAllIdentical } from '../../lib/fit-display';
+import { formatUserFacingDate } from '../../lib/format-date';
 
 export function HowWeKnowSection({ results }: { results: AnalysisResponse }) {
   const auc = results.backtest.auc?.toFixed(3) ?? 'n/a';
@@ -20,7 +21,7 @@ export function HowWeKnowSection({ results }: { results: AnalysisResponse }) {
                 <li>Qloo Taste AI rankings (mode: {results.mode ?? 'demo'})</li>
                 <li>All The Places store locations (CC0)</li>
                 <li>OpenStreetMap via Overpass for second-source checks</li>
-                <li>Run {results.runId.slice(0, 8)} at {new Date(results.timestamp).toLocaleString()}</li>
+                <li>Run {results.runId.slice(0, 8)} on {formatUserFacingDate(results.timestamp)}</li>
                 {hideFit && (
                   <li>
                     Fit scores were identical across the top brands in this recording, so we hid the Fit column.

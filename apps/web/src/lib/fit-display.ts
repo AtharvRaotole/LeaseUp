@@ -6,14 +6,16 @@ export function affinitiesAllIdentical(rows: BrandRankingRow[]): boolean {
   return rows.every((r) => Math.abs(r.affinity - first) < 1e-9);
 }
 
-/** Top X% fit by Qloo rank among brands scored for this pin (lower rank = stronger). */
-export function fitPercentileLabel(qlooRank: number, totalScored: number): string {
-  if (totalScored <= 0) return 'Top fit';
-  const pct = Math.max(1, Math.min(99, Math.round((qlooRank / totalScored) * 100)));
-  return `Top ${pct}%`;
+/** Shared top-percentile (1-99) from Qloo rank among brands scored for this pin. */
+export function fitTopPercent(rank: number, totalScored: number): number {
+  if (totalScored <= 0) return 1;
+  return Math.max(1, Math.min(99, Math.round((rank / totalScored) * 100)));
 }
 
-export function fitPercentileFromRank(rank: number, total: number): number {
-  if (total <= 1) return 1;
-  return Math.max(1, Math.min(99, Math.round(((rank - 1) / (total - 1)) * 100)));
+export function fitPercentileLabel(rank: number, totalScored: number): string {
+  return `Top ${fitTopPercent(rank, totalScored)}%`;
+}
+
+export function fitTopPercentPhrase(rank: number, totalScored: number): string {
+  return `top ${fitTopPercent(rank, totalScored)}%`;
 }
