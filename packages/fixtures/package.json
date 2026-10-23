@@ -11,7 +11,7 @@
     }
   },
   "scripts": {
-    "build": "node ../../scripts/embed-demo-stores.mjs && tsc",
+    "build": "node ../../scripts/embed-demo-stores.mjs && node ../../scripts/embed-overpass-demo.mjs && tsc",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts"
   },
