@@ -9,6 +9,7 @@ import {
   pitchTradeAreaFacts,
 } from '../../lib/pitch-pack-copy';
 import { fitPercentileLabel } from '../../lib/fit-display';
+import { BrandReachLine } from '../report/BrandReachLine';
 
 export function PitchPackBrief({ snapshot }: { snapshot: PitchPackSnapshot }) {
   const propertyTitle = pitchPropertyHeadline(snapshot);
@@ -100,10 +101,16 @@ export function PitchPackBrief({ snapshot }: { snapshot: PitchPackSnapshot }) {
               )}
 
               <div
-                className="pitch-brand-contact-slot mt-5 min-h-[2.75rem] rounded-control border border-dashed border-border bg-surface-2/60 px-3 py-2.5 text-sm text-ink-3 print:mt-3 print:min-h-0 print:border-ink/25 print:bg-transparent"
+                className="pitch-brand-contact-slot mt-5 min-h-[2.75rem] rounded-control border border-dashed border-border bg-surface-2/60 px-3 py-2.5 text-sm print:mt-3 print:min-h-0 print:border-ink/25 print:bg-transparent"
                 data-testid="pitch-brand-contact-slot"
               >
-                How to reach them: brand real-estate contact will appear here when your team adds it.
+                {prospect.brandReach ? (
+                  <BrandReachLine reach={prospect.brandReach} />
+                ) : (
+                  <span className="text-ink-3">
+                    How to reach them: brand real-estate contact will appear here when your team adds it.
+                  </span>
+                )}
               </div>
 
               <p className="mt-4 text-sm font-medium text-ink print:mt-2">{pitchNextStepLine(brandName)}</p>

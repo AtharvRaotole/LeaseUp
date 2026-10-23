@@ -92,3 +92,19 @@ export {
 export { overpassDemoByFixture, DEMO_OSM_UNRECORDED_NOTE } from './overpass-demo.js';
 export { brandReverseFixtures, type BrandReverseDemoFixture } from './brand-reverse-chicago.js';
 export { storeLocationsEmbedded as storeLocations } from './store-locations-data.js';
+export {
+  brandRealEstateForEntity,
+  brandRealEstateDataset,
+  brandRealEstateContactLine,
+  type BrandRealEstateEntry,
+} from './brand-real-estate.js';
+export {
+  tradeAreaShopperFixtureForDemo,
+  type TradeAreaShopperFixture,
+} from './trade-area-shoppers-loader.js';
+export {
+  parseQlooTradeAreaTagInsights,
+  TRADE_AREA_SHOPPER_TAG_SUBTYPES,
+  WICKER_TRADE_AREA_TAG_INSIGHTS_SAMPLE,
+  type ParsedTradeAreaShoppersSnapshot,
+} from './qloo-trade-area-tag-insights.js';

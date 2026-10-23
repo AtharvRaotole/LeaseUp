@@ -1,0 +1,47 @@
+{
+  "results": {
+    "tags": [
+      {
+        "tag_id": "urn:tag:customer_identity:qloo:outdoor_enthusiasts",
+        "name": "Outdoor Enthusiasts",
+        "types": ["urn:entity:place"],
+        "subtype": "urn:tag:customer_identity:qloo",
+        "tag_value": "outdoor_enthusiasts",
+        "popularity": 0.9999,
+        "query": { "affinity": 0.99996 }
+      },
+      {
+        "tag_id": "urn:tag:customer_identity:qloo:health_conscious",
+        "name": "Health Conscious",
+        "types": ["urn:entity:place"],
+        "subtype": "urn:tag:customer_identity:qloo",
+        "tag_value": "health_conscious",
+        "popularity": 0.99988,
+        "query": { "affinity": 0.99994 }
+      },
+      {
+        "tag_id": "urn:tag:ambience:qloo:relaxed",
+        "name": "Relaxed",
+        "types": ["urn:entity:place"],
+        "subtype": "urn:tag:ambience:qloo",
+        "tag_value": "relaxed",
+        "popularity": 0.99986,
+        "query": { "affinity": 0.99993 }
+      },
+      {
+        "tag_id": "urn:tag:customer_identity:qloo:foodies",
+        "name": "Foodies",
+        "types": ["urn:entity:place"],
+        "subtype": "urn:tag:customer_identity:qloo",
+        "tag_value": "foodies",
+        "popularity": 0.99984,
+        "query": { "affinity": 0.99991 }
+      }
+    ]
+  },
+  "query": {
+    "geospatial": {
+      "panel_size": { "context": 9800, "target": 9200 }
+    }
+  }
+}

@@ -5,6 +5,7 @@ import {
   boulderFixture,
   seviervilleFixture,
   parseQlooExplainabilityRows,
+  TRADE_AREA_SHOPPER_TAG_SUBTYPES,
 } from '@leaseup/fixtures/worker';
 import { ConfigurationError, UpstreamError } from '../lib/errors';
 import {
@@ -265,6 +266,69 @@ export class QlooClient {
     const audiences = parseQlooExplainabilityRows(audienceJson, 'audience');
     if (tags.length === 0 && audiences.length === 0) return null;
     return { tags, audiences };
+  }
+
+  /** Location-level tag insights for trade-area shopper snapshot (no brand signal). */
+  async getTradeAreaShopperTagInsights(params: {
+    location: QlooLocation;
+    runId?: string;
+  }): Promise<unknown | null> {
+    if (this.mode === 'demo') {
+      return null;
+    }
+
+    const take = 12;
+    const tagTypes = TRADE_AREA_SHOPPER_TAG_SUBTYPES.join(',');
+    const locationKey = this.locationCacheKey(params.location);
+    const cacheKey = `trade-area-tags:${locationKey}:take=${take}:${tagTypes}`;
+
+    const cached = await this.cache.get(cacheKey, 'text');
+    if (typeof cached === 'string') {
+      await recordApiMetric(this.db, {
+        runId: params.runId,
+        provider: 'qloo',
+        endpoint: '/v2/insights',
+        statusCode: 200,
+        latencyMs: 0,
+        cached: true,
+      });
+      return JSON.parse(cached) as unknown;
+    }
+
+    const url = new URL('/v2/insights', this.baseUrl);
+    url.searchParams.set('filter.type', 'urn:tag');
+    applyQlooInsightsLocationParams(url, params.location);
+    url.searchParams.set('take', take.toString());
+    url.searchParams.set('filter.tag.types', tagTypes);
+
+    const start = Date.now();
+    const response = await fetchQlooWithRetry(url.toString(), this.apiKey);
+    const latency = Date.now() - start;
+
+    if (!response.ok) {
+      await recordApiMetric(this.db, {
+        runId: params.runId,
+        provider: 'qloo',
+        endpoint: '/v2/insights',
+        statusCode: response.status,
+        latencyMs: latency,
+        cached: false,
+      });
+      throw this.mapQlooHttpError(response.status, response.statusText, 'urn:tag');
+    }
+
+    const data = await response.json();
+    await recordApiMetric(this.db, {
+      runId: params.runId,
+      provider: 'qloo',
+      endpoint: '/v2/insights',
+      statusCode: 200,
+      latencyMs: latency,
+      cached: false,
+    });
+
+    await this.cache.putJsonIfChanged(cacheKey, data, 86400);
+    return data;
   }
 
   private async fetchExplainabilityInsights(params: {

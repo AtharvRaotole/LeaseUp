@@ -39,6 +39,8 @@ export function OutreachSheet({
           nearestStoreKm: prospect.nearestExistingStoreKm,
           coTenantBrands: coTenantBrandNames(results),
           verificationLabel: verificationShortLabel(prospect.brand.verified),
+          brandEntityId: prospect.brand.entityId,
+          brandReach: prospect.brandReach,
         }),
       });
       if (!res.ok) throw new Error('Draft failed');

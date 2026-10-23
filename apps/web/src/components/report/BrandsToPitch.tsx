@@ -15,6 +15,7 @@ import { localFitTooltip } from '../../lib/broker-copy';
 import { InfoPopover } from '../ui/InfoPopover';
 import { InfoTooltip } from '../ui/InfoTooltip';
 import { pitchExpandedLines } from '../../lib/pitch-detail-copy';
+import { BrandReachLine } from './BrandReachLine';
 import { cn } from '../../lib/cn';
 import { AddToPipelineButton } from '../pipeline/AddToPipelineButton';
 import { pipelineCardFromProspect } from '../../lib/build-pipeline-card';
@@ -276,6 +277,11 @@ export function BrandsToPitch({
                         <li key={line}>{line}</li>
                       ))}
                     </ul>
+                    {prospect.brandReach && (
+                      <div className="mt-2">
+                        <BrandReachLine reach={prospect.brandReach} />
+                      </div>
+                    )}
                     {prospect.coverageNote && (
                       <p className="mt-2 text-xs text-warn">{prospect.coverageNote}</p>
                     )}
