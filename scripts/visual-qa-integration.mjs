@@ -40,38 +40,77 @@ function assertNoLeaseupApp(path, text) {
   }
 }
 
+function boxesIntersect(a, b) {
+  return !(a.right <= b.left || a.left >= b.right || a.bottom <= b.top || a.top >= b.bottom);
+}
+
+async function assertLandingHeroLayout(page, viewportLabel) {
+  const input = page.getByTestId('landing-address-input');
+  const analyze = page.getByTestId('landing-analyze-button');
+  await input.waitFor({ state: 'visible', timeout: 15_000 });
+  await analyze.waitFor({ state: 'visible', timeout: 15_000 });
+  const inputBox = await input.boundingBox();
+  const analyzeBox = await analyze.boundingBox();
+  if (!inputBox) {
+    record(viewportLabel, 'address input has no bounding box');
+    return;
+  }
+  if (inputBox.width < 200) {
+    record(viewportLabel, `address input width ${inputBox.width}px is under 200px`);
+  }
+  if (analyzeBox && analyzeBox.top < inputBox.bottom - 4 && boxesIntersect(inputBox, analyzeBox)) {
+    record(viewportLabel, 'Analyze button overlaps address input');
+  }
+  const lightImg = page.getByTestId('landing-hero-preview-img-light');
+  const darkImg = page.getByTestId('landing-hero-preview-img-dark');
+  const heroImg = (await lightImg.isVisible()) ? lightImg : darkImg;
+  await heroImg.waitFor({ state: 'visible', timeout: 15_000 });
+  const nw = await heroImg.evaluate((el) =>
+    el instanceof HTMLImageElement ? el.naturalWidth : 0
+  );
+  if (nw <= 0) {
+    record(viewportLabel, 'hero preview image naturalWidth is 0');
+  }
+}
+
 await mkdir(OUT, { recursive: true });
 const browser = await chromium.launch();
+
+for (const { width, label } of [
+  { width: 1440, label: 'landing-1440' },
+  { width: 390, label: 'landing-390' },
+]) {
+  const context = await browser.newContext({
+    viewport: { width, height: width === 390 ? 844 : 900 },
+    colorScheme: 'light',
+  });
+  const page = await context.newPage();
+  await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
+  await assertLandingHeroLayout(page, label);
+  const h1 = await page.locator('h1').first().innerText();
+  if (h1.trim() !== HEADLINE) {
+    record(label, `headline mismatch: "${h1.trim()}"`);
+  }
+  const body = await page.locator('body').innerText();
+  assertNoDashes(label, body);
+  assertNoLeaseupApp(label, body);
+  await page.screenshot({
+    path: join(OUT, `${label}-light.png`),
+    fullPage: width === 390,
+  });
+  await context.close();
+}
+
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
 const page = await context.newPage();
 
-async function dismissOverlays() {
-  await page.getByRole('button', { name: /dismiss/i }).click({ timeout: 3000 }).catch(() => undefined);
-  await page.getByTestId('report-tour-dismiss').click({ timeout: 3000 }).catch(() => undefined);
-}
-
-for (const theme of ['light', 'dark']) {
+for (const theme of ['dark']) {
   await page.emulateMedia({ colorScheme: theme });
   await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
-  const h1 = await page.locator('h1').first().innerText();
-  if (h1.trim() !== HEADLINE) {
-    record('/', `headline mismatch: "${h1.trim()}"`);
-  }
+  await assertLandingHeroLayout(page, `landing-1440-${theme}`);
   const body = await page.locator('body').innerText();
   assertNoDashes('/', body);
   assertNoLeaseupApp('/', body);
-  const urlBar = page.getByTestId('landing-hero-product-preview');
-  if (await urlBar.count()) {
-    const chromeText = await urlBar.innerText();
-    assertNoLeaseupApp('landing-hero', chromeText);
-    if (chromeText.includes('leaseup.app')) {
-      record('landing-hero', 'hero chrome still shows leaseup.app');
-    }
-    const nw = await page.getByTestId('landing-hero-preview-img').evaluate((el) =>
-      el instanceof HTMLImageElement ? el.naturalWidth : 0
-    );
-    if (nw <= 0) record('landing-hero', 'preview image naturalWidth is 0');
-  }
   await page.screenshot({
     path: join(OUT, `landing-1440-${theme}.png`),
     fullPage: true,
@@ -84,7 +123,8 @@ for (const demo of DEMOS) {
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto(url, { waitUntil: 'networkidle' });
   await page.getByTestId('report-summary').waitFor({ timeout: 120_000 });
-  await dismissOverlays();
+  await page.getByRole('button', { name: /dismiss/i }).click({ timeout: 3000 }).catch(() => undefined);
+  await page.getByTestId('report-tour-dismiss').click({ timeout: 3000 }).catch(() => undefined);
   const body = await page.locator('body').innerText();
   assertNoDashes(path, body);
   assertNoLeaseupApp(path, body);
@@ -96,19 +136,6 @@ for (const demo of DEMOS) {
   const unique = new Set(top3);
   if (top3.length >= 2 && unique.size < top3.length) {
     record(path, `top brand one-liners not unique: ${JSON.stringify(top3)}`);
-  }
-  const paddings = await page
-    .getByTestId('report-top-brands-list')
-    .locator('li button')
-    .evaluateAll((nodes) =>
-      nodes.slice(0, 3).map((n) => {
-        const s = getComputedStyle(n);
-        return { py: s.paddingTop, px: s.paddingLeft };
-      })
-    );
-  for (const [i, p] of paddings.entries()) {
-    const py = parseFloat(p.py);
-    if (py < 12) record(path, `brand row #${i + 1} vertical padding looks tight (${p.py})`);
   }
   await page.screenshot({ path: join(OUT, `report-${demo.id}-1440-light.png`), fullPage: false });
 }

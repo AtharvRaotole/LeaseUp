@@ -3,14 +3,13 @@ import { Link } from 'react-router-dom';
 import { landingWickerReportPath } from './LandingReportPreview';
 import { LandingHeroFixtureFrame } from './LandingHeroFixtureFrame';
 import { LANDING_PUBLIC_HOST } from '../../lib/landing-public-host';
-import heroLightAvif from '../../assets/landing-hero/hero-wicker-light.avif';
 import heroLightWebp from '../../assets/landing-hero/hero-wicker-light.webp';
-import heroDarkAvif from '../../assets/landing-hero/hero-wicker-dark.avif';
 import heroDarkWebp from '../../assets/landing-hero/hero-wicker-dark.webp';
 
 /** CSS display width on desktop; raster assets are 2× for crisp type. */
 const HERO_DISPLAY_WIDTH = 600;
 const HERO_DISPLAY_HEIGHT = 299;
+const HERO_ASPECT = `${HERO_DISPLAY_WIDTH} / ${HERO_DISPLAY_HEIGHT}`;
 
 export function LandingHeroProductPreview() {
   const [useFixtureFallback, setUseFixtureFallback] = useState(false);
@@ -46,28 +45,30 @@ export function LandingHeroProductPreview() {
           {useFixtureFallback ? (
             <LandingHeroFixtureFrame />
           ) : (
-            <picture className="block">
-              <source
-                type="image/avif"
-                media="(prefers-color-scheme: dark)"
-                srcSet={heroDarkAvif}
-              />
-              <source type="image/webp" media="(prefers-color-scheme: dark)" srcSet={heroDarkWebp} />
-              <source type="image/avif" srcSet={heroLightAvif} />
-              <source type="image/webp" srcSet={heroLightWebp} />
+            <div className="relative w-full bg-bg" style={{ aspectRatio: HERO_ASPECT }}>
               <img
-                data-testid="landing-hero-preview-img"
+                data-testid="landing-hero-preview-img-light"
                 src={heroLightWebp}
                 alt=""
                 width={HERO_DISPLAY_WIDTH}
                 height={HERO_DISPLAY_HEIGHT}
                 loading="eager"
                 decoding="async"
-                fetchPriority="high"
-                className="block h-auto w-full bg-bg"
+                className="absolute inset-0 block h-full w-full object-cover object-top dark:hidden"
                 onError={() => setUseFixtureFallback(true)}
               />
-            </picture>
+              <img
+                data-testid="landing-hero-preview-img-dark"
+                src={heroDarkWebp}
+                alt=""
+                width={HERO_DISPLAY_WIDTH}
+                height={HERO_DISPLAY_HEIGHT}
+                loading="eager"
+                decoding="async"
+                className="absolute inset-0 hidden h-full w-full object-cover object-top dark:block"
+                onError={() => setUseFixtureFallback(true)}
+              />
+            </div>
           )}
         </div>
         <p className="mt-3 text-center text-meta text-ink-2 lg:text-left">
