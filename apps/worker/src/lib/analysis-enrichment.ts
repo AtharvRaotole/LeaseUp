@@ -7,23 +7,33 @@ import type {
 import type { QlooInsight } from '../providers/qloo';
 import type { Location } from '@leaseup/contracts';
 import {
-  blendWithNationalPrior,
+  orderInsightsByLogisticBlend,
   computeBacktest,
-  CHAIN_PRIOR_BLEND_WEIGHT,
   orderInsightsByNationalStoreCount,
   getNationalStoreCount,
+  adaptiveEvalRadiusKm,
+  buildTierFitByEntityId,
+  chainSizeTierFromStoreCount,
 } from '@leaseup/fixtures';
+import type { EvalSiteDensity } from '@leaseup/fixtures';
 import type { StoreCatalog } from '../services/store-catalog';
 import { displayBrandName } from './brand-display';
+
+function presenceRadiusKm(density: EvalSiteDensity, searchRadiusKm: number): number {
+  return adaptiveEvalRadiusKm(density, searchRadiusKm);
+}
 
 export async function buildBrandRankings(
   location: Location,
   insights: QlooInsight[],
   radiusKm: number,
-  catalog: StoreCatalog
+  catalog: StoreCatalog,
+  density: EvalSiteDensity = 'urban'
 ): Promise<BrandRankingRow[]> {
-  const blended = blendWithNationalPrior(insights);
+  const blended = orderInsightsByLogisticBlend(insights, density);
   const brandIds = new Set(catalog.getBrandIds());
+  const tierFit = buildTierFitByEntityId(insights.map((i) => i.entity_id));
+  const scoreRadiusKm = presenceRadiusKm(density, radiusKm);
 
   const baselineOrdered = orderInsightsByNationalStoreCount(insights);
   const baselineRankById = new Map(
@@ -38,9 +48,10 @@ export async function buildBrandRankings(
       insight.entity_id,
       location.latitude,
       location.longitude,
-      radiusKm
+      scoreRadiusKm
     );
     const blendedRow = blended.find((row) => row.entity_id === insight.entity_id);
+    const tier = tierFit.get(insight.entity_id);
 
     rows.push({
       entityId: insight.entity_id,
@@ -50,6 +61,8 @@ export async function buildBrandRankings(
       blendedRank: blendedRow?.blendedRank ?? index + 1,
       baselineRank: baselineRankById.get(insight.entity_id) ?? index + 1,
       nationalStoreCount: getNationalStoreCount(insight.entity_id),
+      chainSizeTier: tier?.tier,
+      tasteFitBeyondChainPercentile: tier?.tasteFitBeyondChainPercentile,
       presentInRadius: nearby.length > 0,
       nearestStoreKm: nearby[0]?.distance,
     });
@@ -91,16 +104,18 @@ export async function buildDualBacktest(
   location: Location,
   insights: QlooInsight[],
   radiusKm: number,
-  catalog: StoreCatalog
+  catalog: StoreCatalog,
+  density: EvalSiteDensity = 'urban'
 ): Promise<{ raw: BacktestResult; blended: BacktestResult }> {
   const brandIds = new Set(catalog.getBrandIds());
+  const scoreRadiusKm = presenceRadiusKm(density, radiusKm);
   const nearbyCache = new Map<string, Array<{ distance: number }>>();
   for (const insight of insights.filter((i) => brandIds.has(i.entity_id))) {
     const rows = await catalog.findStoresNearby(
       insight.entity_id,
       location.latitude,
       location.longitude,
-      radiusKm
+      scoreRadiusKm
     );
     nearbyCache.set(insight.entity_id, rows.map((s) => ({ distance: s.distance })));
   }
@@ -112,17 +127,17 @@ export async function buildDualBacktest(
     insights,
     location.latitude,
     location.longitude,
-    radiusKm,
+    scoreRadiusKm,
     findFromCache,
     brandIds
   );
 
-  const blendedOrder = blendWithNationalPrior(insights);
+  const blendedOrder = orderInsightsByLogisticBlend(insights, density);
   const blended = computeBacktest(
     blendedOrder,
     location.latitude,
     location.longitude,
-    radiusKm,
+    scoreRadiusKm,
     findFromCache,
     brandIds
   );
@@ -137,17 +152,19 @@ export async function buildBaselineBacktest(
   location: Location,
   insights: QlooInsight[],
   radiusKm: number,
-  catalog: StoreCatalog
+  catalog: StoreCatalog,
+  density: EvalSiteDensity = 'urban'
 ): Promise<BacktestResult> {
   const brandIds = new Set(catalog.getBrandIds());
   const ordered = orderInsightsByNationalStoreCount(insights);
+  const scoreRadiusKm = presenceRadiusKm(density, radiusKm);
   const nearbyCache = new Map<string, Array<{ distance: number }>>();
   for (const insight of ordered.filter((i) => brandIds.has(i.entity_id))) {
     const rows = await catalog.findStoresNearby(
       insight.entity_id,
       location.latitude,
       location.longitude,
-      radiusKm
+      scoreRadiusKm
     );
     nearbyCache.set(insight.entity_id, rows.map((s) => ({ distance: s.distance })));
   }
@@ -158,7 +175,7 @@ export async function buildBaselineBacktest(
     ordered,
     location.latitude,
     location.longitude,
-    radiusKm,
+    scoreRadiusKm,
     (brandId, _lat, _lon, _r) => findFromCache(brandId),
     brandIds
   );
@@ -205,9 +222,9 @@ export function extractQlooSignals(insight: QlooInsight): string[] {
     signals.push(`affinity rank ${insight.query.affinity_rank}`);
   }
   if (insight.query?.affinity !== undefined) {
-    signals.push(`affinity ${insight.query.affinity.toFixed(3)}`);
+    signals.push(`tier taste fit (not raw affinity)`);
   }
   return signals;
 }
 
-export { CHAIN_PRIOR_BLEND_WEIGHT };
+export { chainSizeTierFromStoreCount };

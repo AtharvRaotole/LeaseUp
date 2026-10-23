@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
+  qlooEvalHeadlineParts,
   qlooProofSentence,
   qlooProofTieDetail,
   qlooProofWinner,
@@ -16,6 +17,18 @@ function bt(present: number): BacktestResult {
     examples: [],
   };
 }
+
+describe('qlooEvalHeadlineParts', () => {
+  it('states same-size AUC and does not claim raw Qloo beats chain size', () => {
+    const { headline, companion, caveat } = qlooEvalHeadlineParts();
+    expect(headline).toMatch(/two-thirds of the time/);
+    expect(headline).toMatch(/0\.67/);
+    expect(companion).toMatch(/82%/);
+    expect(companion).toMatch(/76%/);
+    expect(caveat).toMatch(/partly reflect/);
+    expect(headline.toLowerCase()).not.toMatch(/raw qloo beats/);
+  });
+});
 
 describe('qlooProofSentence', () => {
   it('formats computed hit counts', () => {

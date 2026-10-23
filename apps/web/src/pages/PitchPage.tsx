@@ -134,7 +134,11 @@ export function PitchPage() {
           <ol className="mt-4 space-y-5 print:space-y-1.5">
             {snapshot.prospects.map(({ prospect, whyLine }, index) => {
               const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
-              const rankLabel = fitPercentileLabel(prospect.brand.affinityRank, totalScored);
+              const rankLabel = fitPercentileLabel(
+                prospect.brand.affinityRank,
+                totalScored,
+                prospect.brand.tasteFitBeyondChainPercentile
+              );
               const fact = pitchProspectFact(prospect, snapshot.radiusKm);
               return (
                 <li key={prospect.brand.entityId} className="pitch-prospect-block border-b border-border pb-5 last:border-0 print:pb-2">
