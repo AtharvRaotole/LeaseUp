@@ -8,14 +8,16 @@ export function HeadlineCard({
   results,
   radiusKm,
   chipSlug,
+  backtestOverride,
 }: {
   results: AnalysisResponse;
   radiusKm: number;
   chipSlug?: string | null;
+  backtestOverride?: AnalysisResponse['backtest'];
 }) {
   const count = results.prospects.length;
   const area = placeHeadlineLabel(results.location, chipSlug);
-  const hitLabel = hitRateStatLabel(results.backtest);
+  const hitLabel = hitRateStatLabel(backtestOverride ?? results.backtest);
   const analyzed = results.rankings?.length ?? 0;
 
   return (

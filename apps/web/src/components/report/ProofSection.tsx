@@ -1,9 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Check, X } from 'lucide-react';
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
-import { SegmentedControl } from '../ui/SegmentedControl';
 import { affinitiesAllIdentical, fitPercentileLabel } from '../../lib/fit-display';
 import { presentInTop10Count } from '../../lib/hit-rate';
 import { displayBrandName } from '../../lib/brand-display';
@@ -11,13 +10,15 @@ export function ProofSection({
   results,
   radiusKm,
   onBrandSelect,
+  rankingMode,
 }: {
   results: AnalysisResponse;
   radiusKm: number;
   onBrandSelect?: (entityId: string, name: string) => void;
+  rankingMode: 'raw' | 'blended';
 }) {
-  const [mode, setMode] = useState<'raw' | 'blended'>('raw');
-  const backtest = mode === 'blended' && results.backtestBlended ? results.backtestBlended : results.backtest;
+  const backtest =
+    rankingMode === 'blended' && results.backtestBlended ? results.backtestBlended : results.backtest;
   const top10 = (results.rankings ?? []).slice(0, 10);
   const present = presentInTop10Count(backtest);
   const totalScored = results.rankings?.length ?? top10.length;
@@ -29,19 +30,6 @@ export function ProofSection({
       <p className="mt-2 text-sm text-ink-2">
         Hit rate {present} of 10: Qloo's strongest local brands that already have a store nearby.
       </p>
-      <div className="mt-4">
-        <SegmentedControl
-          value={mode}
-          onChange={setMode}
-          options={[
-            { value: 'raw', label: 'Qloo only' },
-            { value: 'blended', label: 'Qloo + chain size' },
-          ]}
-        />
-        <p className="mt-2 text-meta text-ink-3">
-          Blended reorders by national footprint to reduce one-off spikes.
-        </p>
-      </div>
       <Card className="mt-4 overflow-hidden p-0">
         <table className="w-full text-sm">
           <thead className="bg-surface-2 text-left text-label uppercase text-ink-3">
