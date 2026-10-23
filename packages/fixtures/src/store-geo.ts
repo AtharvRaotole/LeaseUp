@@ -1,4 +1,4 @@
-import storeLocations from './store-locations.json';
+import storeLocations from './store-locations.json' with { type: 'json' };
 
 interface BrandData {
   name: string;

@@ -10,7 +10,7 @@ export { wickerparkFixture } from './wicker-park.js';
 export { boulderFixture } from './boulder.js';
 export { seviervilleFixture } from './sevierville.js';
 
-import storeLocations from './store-locations.json';
+import storeLocations from './store-locations.json' with { type: 'json' };
 
 export { storeLocations };
 export {
