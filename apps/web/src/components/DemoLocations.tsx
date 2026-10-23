@@ -7,8 +7,8 @@ export function DemoLocations({ onSelect }: DemoLocationsProps) {
     {
       name: 'Wicker Park, Chicago',
       address: '1574 N Milwaukee Ave, Chicago, IL 60622',
-      description: 'Urban creative district • 10/10 backtest accuracy',
-      badge: 'Perfect Match',
+      description: 'Urban creative district • recorded Qloo validation fixture',
+      badge: 'Chicago',
     },
     {
       name: 'Sevierville, Tennessee',
@@ -19,8 +19,8 @@ export function DemoLocations({ onSelect }: DemoLocationsProps) {
     {
       name: 'Boulder, Colorado',
       address: '1125 Pearl St, Boulder, CO 80302',
-      description: 'Active lifestyle hub • High accuracy',
-      badge: 'Outdoor Focus',
+      description: 'Active lifestyle hub • recorded Qloo validation fixture',
+      badge: 'Colorado',
     },
   ];
 

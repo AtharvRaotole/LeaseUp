@@ -1,8 +1,8 @@
 /**
- * Real Qloo validation data for Wicker Park, Chicago
- * Source: round2/neigh_test_10km.json
- * AUC: 0.797, P@10: 1, Radius: 10km
- * Generated: 2026-10-22T20:27:49.292Z
+ * Recorded Qloo validation data for Wicker Park, Chicago
+ * Source: data/research/round2/neigh_test_10km.json
+ * Backtest computed by packages/fixtures computeBacktest()
+ * Generated: 2026-10-23T00:52:54.367Z
  */
 
 export const wickerparkFixture = {
@@ -170,9 +170,10 @@ export const wickerparkFixture = {
     }
   ],
   "backtest": {
-    "totalStores": 36,
-    "auc": 0.7970085470085471,
+    "totalStores": 24,
+    "auc": 1,
     "precisionAt10": 1,
+    "presentInTop10": 10,
     "radius_km": 10
   }
 };

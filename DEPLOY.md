@@ -37,6 +37,8 @@ database_name = "leaseup_db"
 database_id = "abc123-def456-ghi789"
 ```
 
+For **local `wrangler dev`**, `apps/worker/wrangler.toml` ships with placeholder D1/KV IDs (`00000000-0000-0000-0000-000000000000` and `local-cache-placeholder`) so Miniflare can boot without creating cloud resources. Replace them before deploying to production.
+
 Copy the `database_id` and update `apps/worker/wrangler.toml`:
 
 ```toml

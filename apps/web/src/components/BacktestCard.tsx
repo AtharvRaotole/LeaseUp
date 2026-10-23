@@ -22,7 +22,9 @@ export function BacktestCard({ backtest }: BacktestCardProps) {
 
       <p className="text-gray-600 mb-6">
         This shows how well Qloo's affinity scores predict where brands <em>actually are</em> in this neighborhood.
-        Our model correctly ranked <strong>{backtest.examples.length}</strong> existing stores in the top 10.
+        Our model correctly ranked{' '}
+        <strong>{backtest.presentInTop10 ?? backtest.examples.filter((e) => e.rank <= 10).length}</strong>{' '}
+        existing stores in the top 10.
       </p>
 
       {backtest.auc !== undefined && (

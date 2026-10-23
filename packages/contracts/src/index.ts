@@ -36,6 +36,7 @@ export const BacktestResultSchema = z.object({
   predictedStores: z.number(),
   accuracy: z.number(),
   precisionAt10: z.number(),
+  presentInTop10: z.number().optional(),
   auc: z.number().optional(),
   examples: z.array(z.object({
     name: z.string(),
@@ -76,6 +77,15 @@ export const AnalysisRequestSchema = z.object({
 });
 
 export type AnalysisRequest = z.infer<typeof AnalysisRequestSchema>;
+
+export const OutreachRequestSchema = z.object({
+  brandName: z.string().min(1),
+  address: z.string().min(3),
+  reasons: z.array(z.string()).default([]),
+  runId: z.string().optional(),
+});
+
+export type OutreachRequest = z.infer<typeof OutreachRequestSchema>;
 
 export const AnalysisResponseSchema = z.object({
   location: LocationSchema,

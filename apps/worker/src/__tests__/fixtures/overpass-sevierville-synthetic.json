@@ -1,4 +1,9 @@
 {
+  "_meta": {
+    "synthetic": true,
+    "purpose": "unit test fixture (not a recorded Overpass response)",
+    "recorded": null
+  },
   "version": 0.6,
   "generator": "Overpass API",
   "elements": [

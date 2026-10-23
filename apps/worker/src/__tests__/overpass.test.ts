@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { OverpassClient } from '../services/overpass';
-import boulderResponse from './fixtures/overpass-boulder.json';
-import wickerParkResponse from './fixtures/overpass-wicker-park.json';
-import severvilleResponse from './fixtures/overpass-sevierville.json';
+import boulderResponse from './fixtures/overpass-boulder-synthetic.json';
+import wickerParkResponse from './fixtures/overpass-wicker-park-synthetic.json';
 import emptyResponse from './fixtures/overpass-empty.json';
 
 describe('OverpassClient', () => {
@@ -20,7 +19,7 @@ describe('OverpassClient', () => {
 
   describe('queryBrands', () => {
     it('returns cached response when available', async () => {
-      vi.mocked(mockCache.get).mockResolvedValue(boulderResponse);
+      vi.mocked(mockCache.get).mockResolvedValue(boulderResponse as never);
 
       const result = await client.queryBrands(40.0150, -105.2705, 10);
 

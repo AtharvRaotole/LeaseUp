@@ -1,0 +1,236 @@
+{
+ "madewell_us": {
+  "query": "Madewell",
+  "name": "Madewell",
+  "id": "632FE105-DF1C-4279-85BD-5E86858E5981"
+ },
+ "j_crew_us": {
+  "query": "J.Crew",
+  "name": "J.Crew",
+  "id": "A4F0BE29-87A4-4074-9ABB-21B215E532FD"
+ },
+ "nordstrom": {
+  "query": "Nordstrom",
+  "name": "Nordstrom",
+  "id": "F969F822-9C3E-4044-AAF6-884AADC2064B"
+ },
+ "sprouts_farmers_market": {
+  "query": "Sprouts Farmers Market",
+  "name": "Sprouts Farmers Market",
+  "id": "A30D6F1D-AD57-4048-9597-2956EAEE8FFB"
+ },
+ "ulta_beauty_us": {
+  "query": "Ulta",
+  "name": "Ulta",
+  "id": "0F77E9A4-121C-4941-ACE1-28502DBF1865"
+ },
+ "hobby_lobby_us": {
+  "query": "Hobby Lobby",
+  "name": "Hobby Lobby",
+  "id": "423EDCAF-1289-474E-9982-0CC39A5BAEFE"
+ },
+ "cost_plus_world_market": {
+  "query": "Cost Plus World Market",
+  "name": "Cost Plus World Market",
+  "id": "D269C836-9B58-413F-B583-CF7CC64C5BDC"
+ },
+ "kohls_us": {
+  "query": "Kohl's",
+  "name": "Kohl's",
+  "id": "945C90D2-07D7-43B3-98FE-C437DE7A6D16"
+ },
+ "old_navy": {
+  "query": "Old Navy",
+  "name": "Old Navy",
+  "id": "81EC4A41-53FB-47FD-995A-B8AE3EE90652"
+ },
+ "academy_us": {
+  "query": "Academy Sports + Outdoors",
+  "name": "Academy Sports + Outdoors",
+  "id": "81100467-8F5D-4796-B222-A84983379402"
+ },
+ "dicks_sporting_goods": {
+  "query": "Dick's Sporting Goods",
+  "name": "Dick's Sporting Goods",
+  "id": "CA5AE7AD-7CA2-4C8B-BC17-DC89B09ABD35"
+ },
+ "bath_and_body_works_us": {
+  "query": "Bath & Body Works",
+  "name": "Bath & Body Works",
+  "id": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E"
+ },
+ "lush": {
+  "query": "Lush",
+  "name": "Lush",
+  "id": "E4182E04-0D61-4DAD-AE66-EF4208951A5C"
+ },
+ "kendra_scott_us": {
+  "query": "Kendra Scott",
+  "name": "Kendra Scott",
+  "id": "98110AE6-7C15-4B69-88DF-DB4E040C26B0"
+ },
+ "target_us": {
+  "query": "Target",
+  "name": "Target",
+  "id": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A"
+ },
+ "williams_sonoma_us": {
+  "query": "Williams Sonoma",
+  "name": "Williams-Sonoma",
+  "id": "2B7931BB-8C2D-4FE0-BA41-8A5216BE6B4D"
+ },
+ "paper_source_us": {
+  "query": "Paper Source",
+  "name": "Paper Source",
+  "id": "C7CDAEC5-8939-4754-941D-0FFFE70A2172"
+ },
+ "equinox": {
+  "query": "Equinox",
+  "name": "Equinox",
+  "id": "A09F35D3-38CB-4657-9562-ED485E715D25"
+ },
+ "american_eagle_outfitters": {
+  "query": "American Eagle Outfitters",
+  "name": "American Eagle Outfitters",
+  "id": "2D890327-8794-4C5A-898F-FFF0323325CF"
+ },
+ "rei_us": {
+  "query": "Recreational Equipment Inc",
+  "name": "Recreational Equipment Inc",
+  "id": "205AF33F-118E-4C49-9721-6BDBAF981DA0"
+ },
+ "warby_parker": {
+  "query": "Warby Parker",
+  "name": "Warby Parker",
+  "id": "AB8D769A-CCEB-4C2D-A3D8-21641E0EC664"
+ },
+ "blue_bottle_coffee": {
+  "query": "Blue Bottle Coffee",
+  "name": "Blue Bottle Coffee",
+  "id": "22B1BC87-CDFE-4340-86F8-8E0E6E1E6A7D"
+ },
+ "athleta": {
+  "query": "Athleta",
+  "name": "Athleta",
+  "id": "DFFF4470-F663-4742-A503-4FD0CB152498"
+ },
+ "buckle_us": {
+  "query": "Buckle",
+  "name": "Buckle",
+  "id": "5D0DD386-C35C-479B-98F6-407938E29949"
+ },
+ "vuori": {
+  "query": "Vuori",
+  "name": "Vuori",
+  "id": "D619A0B2-F0ED-4DD3-97D9-00BDC4F32E7C"
+ },
+ "orangetheory_fitness": {
+  "query": "Orangetheory Fitness",
+  "name": "Orangetheory Fitness",
+  "id": "90390722-A8D1-4499-80FD-76703E3798A3"
+ },
+ "barrys": {
+  "query": "Barry's",
+  "name": "Barry's",
+  "id": "A0F72175-1344-41A3-AA23-E2A9CBE4AFF1"
+ },
+ "solidcore_us": {
+  "query": "Solidcore",
+  "name": "solidcore",
+  "id": "00DA3218-DD1E-466F-8EFD-E2E71724AD9B"
+ },
+ "cava_us": {
+  "query": "Cava",
+  "name": "CAVA",
+  "id": "270D2B55-C8A7-4886-A46A-685B16E7D90B"
+ },
+ "chick_fil_a": {
+  "query": "Chick-fil-A",
+  "name": "Chick-fil-A",
+  "id": "B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7"
+ },
+ "raising_canes_us": {
+  "query": "Raising Cane's",
+  "name": "Raising Cane's",
+  "id": "20E485DE-70A9-4635-AF36-F1305B60827D"
+ },
+ "torchys_tacos_us": {
+  "query": "Torchy's Tacos",
+  "name": "Torchy's Tacos",
+  "id": "C65DC16F-5CBA-4790-A548-77BD8B014C1D"
+ },
+ "crumbl_cookies_us": {
+  "query": "Crumbl Cookies",
+  "name": "Crumbl Cookies",
+  "id": "7C4CC0B9-1C3C-4C5C-A732-5991046EBB03"
+ },
+ "philz_coffee_us": {
+  "query": "Philz Coffee",
+  "name": "Philz Coffee",
+  "id": "1AE523DD-3DE5-419F-9FDF-FFF48A863E5D"
+ },
+ "banana_republic": {
+  "query": "Banana Republic",
+  "name": "Banana Republic",
+  "id": "BEE83976-354E-4991-95BB-C32595C9C96D"
+ },
+ "petsmart": {
+  "query": "PetSmart",
+  "name": "Petsmart",
+  "id": "D019C9FF-8F94-4734-B1FC-E9D1F6541645"
+ },
+ "planet_fitness_us": {
+  "query": "Planet Fitness",
+  "name": "Planet Fitness",
+  "id": "CF8FDD0C-2601-4F42-95A7-05B5DAD71529"
+ },
+ "uniqlo": {
+  "query": "Uniqlo",
+  "name": "Uniqlo",
+  "id": "46C9F889-EC89-4715-A767-DEABACF52C41"
+ },
+ "waffle_house_us": {
+  "name": "Waffle House",
+  "id": "4C7C9E59-5CD7-4EDF-860D-5427FEA4046C"
+ },
+ "wawa": {
+  "name": "Wawa",
+  "id": "3D47E593-FAD0-41F6-A289-CEDD54BCD8CC"
+ },
+ "publix_us": {
+  "name": "Publix",
+  "id": "2BAF7E3C-1A8C-496D-9E3E-30E0D067DE96"
+ },
+ "whataburger": {
+  "name": "Whataburger",
+  "id": "48803C8A-4E24-4888-B029-CDDF0D4547CE"
+ },
+ "culvers_us": {
+  "name": "Culver's",
+  "id": "54057197-DAD6-4798-846B-4A6EB72C8D9F"
+ },
+ "trader_joes_us": {
+  "name": "Trader Joe's",
+  "id": "096B986E-3D63-44F4-BE44-F85D52A2979D"
+ },
+ "lululemon_ca_us": {
+  "name": "Lululemon",
+  "id": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E"
+ },
+ "dutch_bros": {
+  "name": "Dutch Bros. Coffee",
+  "id": "1DCF5C56-35D6-4CCA-AF5E-13F6ACB63C0F"
+ },
+ "sweetgreen_us": {
+  "name": "Sweetgreen",
+  "id": "E515D012-5197-4B01-BFAD-5E5FAC25B525"
+ },
+ "bass_pro_shops": {
+  "name": "Bass Pro Shops",
+  "id": "2D00EBC5-9F4C-46E2-86D5-99E55B8D30D9"
+ },
+ "whole_foods": {
+  "name": "Whole Foods Market",
+  "id": "1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23"
+ }
+}
