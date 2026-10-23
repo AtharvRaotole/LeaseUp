@@ -16,6 +16,7 @@ import {
 } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { osmTagsMatchBrand } from './lib/osm-brand-match.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const rawDir = join(root, 'data/osm-snapshot/raw');
@@ -301,7 +302,13 @@ async function main() {
     if (!existsSync(rawPath)) continue;
     const { points } = JSON.parse(readFileSync(rawPath, 'utf8'));
     const bIdx = brandIndex.get(brandId);
+    const brandMeta = manifest.brands[brandId];
+    const matchSpec = {
+      expectedQid: brandMeta?.qid,
+      names: [brandMeta?.name ?? brandId],
+    };
     for (const p of points) {
+      if (!osmTagsMatchBrand(p.tags ?? {}, matchSpec)) continue;
       const gh = encodeGeohash(p.lat, p.lon, 3);
       if (!tiles.has(gh)) tiles.set(gh, []);
       const lat5 = Math.round(p.lat * 1e5);

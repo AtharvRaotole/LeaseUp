@@ -43,6 +43,7 @@ import { brandCategoryLabel } from '../lib/brand-category';
 const DEMO_DATA_RECORDED_AT = '2026-10-23T03:36:00.000Z';
 import { toOverpassSearchBrand } from '../lib/osm-brand-hints';
 import { OSM_WIKIDATA_BY_ENTITY } from '../data/osm-wikidata-map';
+import { overpassBrandMatchesSearch } from '../lib/osm-brand-match';
 import type { QlooLocation } from '../providers/qloo';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
@@ -833,22 +834,14 @@ export class AnalysisService {
       };
     }
 
-    const needles = [brandName, qlooName].filter(Boolean).map((s) => s!.toLowerCase());
     const wikidata = entityId ? OSM_WIKIDATA_BY_ENTITY[entityId] : undefined;
+    const search = {
+      name: brandName,
+      wikidata,
+      aliases: qlooName ? [qlooName] : undefined,
+    };
 
-    const osmHasBrand = osmResult.brands.some((b) => {
-      if (wikidata && b.brandWikidata === wikidata) return true;
-      const brandLower = b.brand?.toLowerCase() ?? '';
-      const nameLower = b.name.toLowerCase();
-      return needles.some(
-        (n) =>
-          n.length > 0 &&
-          (brandLower.includes(n) ||
-            n.includes(brandLower) ||
-            nameLower.includes(n) ||
-            n.includes(nameLower))
-      );
-    });
+    const osmHasBrand = osmResult.brands.some((b) => overpassBrandMatchesSearch(b, search));
 
     if (osmHasBrand) {
       return {
