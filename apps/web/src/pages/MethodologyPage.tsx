@@ -189,13 +189,6 @@ export function MethodologyPage() {
               {adaptiveEval.agg.same_size_auc_ci[1].toFixed(3)}). Qloo taste may partly reflect brands that
               already operate nearby.
             </p>
-            {adaptiveEval.per_address.length < adaptiveEval.agg.n_sites && (
-              <p className="mt-3 text-sm text-amber-800 dark:text-amber-200">
-                Showing {adaptiveEval.per_address.length} of {adaptiveEval.agg.n_sites} committed site rows.
-                Sync the full study with{' '}
-                <code className="rounded bg-surface-2 px-1 text-xs">node scripts/eval/sync-results-adaptive.mjs</code>.
-              </p>
-            )}
             <div className="mt-6 overflow-x-auto rounded-card border border-border">
               <table className="w-full min-w-[960px] border-collapse text-left text-sm">
                 <caption className="sr-only">Adaptive-radius eval by address</caption>

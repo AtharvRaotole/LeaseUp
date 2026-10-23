@@ -1,0 +1,322 @@
+[
+ {
+  "id": "chi_wicker",
+  "cat": "dense_urban",
+  "addr": "1560 N Milwaukee Ave, Chicago, IL 60622",
+  "lat": 41.9097032,
+  "lon": -87.6768326,
+  "display": "1560, North Milwaukee Avenue, Wicker Park, West Town, Chicago, West Chicago Township, Cook County, Illinois, 60622, United States"
+ },
+ {
+  "id": "chi_lakeview",
+  "cat": "dense_urban",
+  "addr": "3400 N Southport Ave, Chicago, IL 60657",
+  "lat": 41.9435638,
+  "lon": -87.6641472,
+  "display": "3400, North Southport Avenue, Southport Corridor, Lake View, Chicago, Lake View Township, Cook County, Illinois, 60657, United States"
+ },
+ {
+  "id": "nyc_williamsburg",
+  "cat": "dense_urban",
+  "addr": "250 Bedford Ave, Brooklyn, NY 11249",
+  "lat": 40.7158723,
+  "lon": -73.9600453,
+  "display": "Duane Reade, 250, Bedford Avenue, Williamsburg, Brooklyn, Kings County, New York, 11249, United States"
+ },
+ {
+  "id": "nyc_uws",
+  "cat": "dense_urban",
+  "addr": "2200 Broadway, New York, NY 10024",
+  "lat": 40.783156,
+  "lon": -73.9801545,
+  "display": "Canine Styles, 2200, Broadway, Upper West Side, Manhattan Community Board 7, Manhattan, New York County, New York, 10024, United States"
+ },
+ {
+  "id": "sf_fillmore",
+  "cat": "dense_urban",
+  "addr": "2100 Fillmore St, San Francisco, CA 94115",
+  "lat": 37.7891589,
+  "lon": -122.4336826,
+  "display": "Wells Fargo, 2100, Fillmore Street, Japantown, Pacific Heights, San Francisco, California, 94115, United States"
+ },
+ {
+  "id": "sf_mission",
+  "cat": "dense_urban",
+  "addr": "2000 Mission St, San Francisco, CA 94110",
+  "lat": 37.7650686,
+  "lon": -122.419678,
+  "display": "16th Street Mission, 2000, Mission Street, Mission, San Francisco, California, 94110, United States"
+ },
+ {
+  "id": "dc_14th",
+  "cat": "dense_urban",
+  "addr": "1400 14th St NW, Washington, DC 20005",
+  "lat": 38.903402,
+  "lon": -77.032272,
+  "display": "United States Post Office, 1400, 14th Street Northwest, Downtown, Ward 2, Washington, District of Columbia, 20005, United States"
+ },
+ {
+  "id": "phl_walnut",
+  "cat": "dense_urban",
+  "addr": "1600 Walnut St, Philadelphia, PA 19103",
+  "lat": 39.94954,
+  "lon": -75.1677422,
+  "display": "1600, Walnut Street, Rittenhouse Square, Center City, Philadelphia, Philadelphia County, Pennsylvania, 19104, United States"
+ },
+ {
+  "id": "sea_caphill",
+  "cat": "dense_urban",
+  "addr": "400 Broadway E, Seattle, WA 98102",
+  "lat": 47.622112,
+  "lon": -122.3207132,
+  "display": "Mattress Firm, 400, Broadway East, Madison Valley, Capitol Hill, Seattle, King County, Washington, 98102, United States"
+ },
+ {
+  "id": "greenwich_ct",
+  "cat": "affluent_suburban",
+  "addr": "100 Greenwich Ave, Greenwich, CT 06830",
+  "lat": 41.0292718,
+  "lon": -73.626525,
+  "display": "100, Greenwich Avenue, Greenwich, Western Connecticut Planning Region, Connecticut, 06830, United States"
+ },
+ {
+  "id": "bethesda_md",
+  "cat": "affluent_suburban",
+  "addr": "7100 Wisconsin Ave, Bethesda, MD 20814",
+  "lat": 38.9801828,
+  "lon": -77.0924486,
+  "display": "True Food Kitchen, 7100, Wisconsin Avenue, Wisconsin South, Bethesda, Montgomery County, Maryland, 20814, United States"
+ },
+ {
+  "id": "naperville_il",
+  "cat": "affluent_suburban",
+  "addr": "100 W Jefferson Ave, Naperville, IL 60540",
+  "lat": 41.772891,
+  "lon": -88.149722,
+  "display": "100, West Jefferson Avenue, Downtown Naperville, Naperville, Naperville Township, DuPage County, Illinois, 60540, United States"
+ },
+ {
+  "id": "palo_alto_ca",
+  "cat": "affluent_suburban",
+  "addr": "400 University Ave, Palo Alto, CA 94301",
+  "lat": 37.4472126,
+  "lon": -122.1600137,
+  "display": "Union Bank, 400, University Avenue, Palo Alto, Santa Clara County, California, 94301, United States"
+ },
+ {
+  "id": "edina_mn",
+  "cat": "affluent_suburban",
+  "addr": "3911 W 50th St, Edina, MN 55424",
+  "lat": 44.9121817,
+  "lon": -93.3297124,
+  "display": "3911, West 50th Street, 50th and France, Edina, Hennepin County, Minnesota, 55424, United States"
+ },
+ {
+  "id": "wellesley_ma",
+  "cat": "affluent_suburban",
+  "addr": "60 Central St, Wellesley, MA 02482",
+  "lat": 42.2959577,
+  "lon": -71.2979838,
+  "display": "Central Street, Wellesley Hills, Wellesley, Norfolk County, Massachusetts, 02482, United States"
+ },
+ {
+  "id": "boulder_co",
+  "cat": "college_town",
+  "addr": "1300 Pearl St, Boulder, CO 80302",
+  "lat": 40.0180211,
+  "lon": -105.2784572,
+  "display": "Rocky Mountain Chocolate Factory, 1300, Pearl Street, Boulder, Boulder County, Colorado, 80302, United States"
+ },
+ {
+  "id": "annarbor_mi",
+  "cat": "college_town",
+  "addr": "300 S State St, Ann Arbor, MI 48104",
+  "lat": 42.2792452,
+  "lon": -83.7409521,
+  "display": "Potbelly's Sandwich Shop, 300, South State Street, Germantown, Ann Arbor, Washtenaw County, Michigan, 48104, United States"
+ },
+ {
+  "id": "athens_ga",
+  "cat": "college_town",
+  "addr": "200 E Clayton St, Athens, GA 30601",
+  "lat": 33.95849,
+  "lon": -83.37534,
+  "display": "200, East Clayton Street, Athens, Clarke County, Georgia, 30601, United States"
+ },
+ {
+  "id": "madison_wi",
+  "cat": "college_town",
+  "addr": "500 State St, Madison, WI 53703",
+  "lat": 43.074912,
+  "lon": -89.393513,
+  "display": "500, State Street, State-Langdon, Downtown, Bowens Addition, Madison, Dane County, Wisconsin, 53703, United States"
+ },
+ {
+  "id": "ithaca_ny",
+  "cat": "college_town",
+  "addr": "200 E State St, Ithaca, NY 14850",
+  "lat": 42.439697,
+  "lon": -76.496645,
+  "display": "200, East State Street, Downtown, Ward 2, City of Ithaca, Tompkins County, New York, 14850, United States"
+ },
+ {
+  "id": "chapelhill_nc",
+  "cat": "college_town",
+  "addr": "150 E Franklin St, Chapel Hill, NC 27514",
+  "lat": 35.9132614,
+  "lon": -79.0534667,
+  "display": "150, East Franklin Street, Franklin-Rosemary Historic District, Downtown, Chapel Hill, Orange County, North Carolina, 27514, United States"
+ },
+ {
+  "id": "hutchinson_ks",
+  "cat": "small_town",
+  "addr": "100 N Main St, Hutchinson, KS 67501",
+  "lat": 38.053564,
+  "lon": -97.93174,
+  "display": "100, North Main Street, Hutchinson, Reno County, Kansas, 67501, United States"
+ },
+ {
+  "id": "ottumwa_ia",
+  "cat": "small_town",
+  "addr": "105 E Main St, Ottumwa, IA 52501",
+  "lat": 41.0179748,
+  "lon": -92.4122569,
+  "display": "105, East Main Street, Ottumwa, Wapello County, Iowa, 52501, United States"
+ },
+ {
+  "id": "elko_nv",
+  "cat": "small_town",
+  "addr": "400 Idaho St, Elko, NV 89801",
+  "lat": 40.831873,
+  "lon": -115.763884,
+  "display": "400, East Idaho Street, Elko, Elko County, Nevada, 89801, United States"
+ },
+ {
+  "id": "sedalia_mo",
+  "cat": "small_town",
+  "addr": "200 S Ohio Ave, Sedalia, MO 65301",
+  "lat": 38.70967,
+  "lon": -93.227985,
+  "display": "200, South Ohio Avenue, Sedalia, Pettis County, Missouri, 65301, United States"
+ },
+ {
+  "id": "bemidji_mn",
+  "cat": "small_town",
+  "addr": "300 Beltrami Ave NW, Bemidji, MN 56601",
+  "lat": 47.4707613,
+  "lon": -94.8808678,
+  "display": "Tutto Bene, 300, Beltrami Avenue Northwest, Bemidji, Beltrami County, Minnesota, 56601, United States"
+ },
+ {
+  "id": "laramie_wy",
+  "cat": "small_town",
+  "addr": "200 S 2nd St, Laramie, WY 82070",
+  "lat": 41.311909,
+  "lon": -105.5950121,
+  "display": "WEST Inc., 200, South 2nd Street, Downtown Laramie, Laramie, Albany County, Wyoming, 82070, United States"
+ },
+ {
+  "id": "sevierville_tn",
+  "cat": "tourist",
+  "addr": "1645 Parkway, Sevierville, TN 37862",
+  "lat": 35.8323603,
+  "lon": -83.569381,
+  "display": "Chop House, 1645, Parkway, Sevierville, Sevier County, East Tennessee, Tennessee, 37862, United States"
+ },
+ {
+  "id": "lasvegas_strip",
+  "cat": "tourist",
+  "addr": "3500 Las Vegas Blvd S, Las Vegas, NV 89109",
+  "lat": 36.1190618,
+  "lon": -115.173594,
+  "display": "The Escape Game Las Vegas, 3500, South Las Vegas Boulevard, Las Vegas, Clark County, Nevada, 89109, United States"
+ },
+ {
+  "id": "keywest_fl",
+  "cat": "tourist",
+  "addr": "500 Duval St, Key West, FL 33040",
+  "lat": 24.5556012,
+  "lon": -81.8027503,
+  "display": "Margaritaville, 500, Duval Street, Downtown, Old Town, Key West, Monroe County, Florida, 33040, United States"
+ },
+ {
+  "id": "myrtle_sc",
+  "cat": "tourist",
+  "addr": "1301 N Ocean Blvd, Myrtle Beach, SC 29577",
+  "lat": 33.694852,
+  "lon": -78.876951,
+  "display": "1301, North Ocean Boulevard, Carolina Oaks Village, Myrtle Beach, Horry County, South Carolina, 29577, United States"
+ },
+ {
+  "id": "parkcity_ut",
+  "cat": "tourist",
+  "addr": "500 Main St, Park City, UT 84060",
+  "lat": 40.644381,
+  "lon": -111.496114,
+  "display": "500, Main Street, Historic Park City, Park City, Summit County, Utah, 84060, United States"
+ },
+ {
+  "id": "branson_mo",
+  "cat": "tourist",
+  "addr": "100 Branson Landing Blvd, Branson, MO 65616",
+  "lat": 36.646865,
+  "lon": -93.2152486,
+  "display": "Branson Landing, 100, Branson Landing Boulevard, Branson, Taney County, Missouri, 65616, United States"
+ },
+ {
+  "id": "frisco_tx",
+  "cat": "sunbelt_growth",
+  "addr": "3300 Dallas Pkwy, Frisco, TX 75034",
+  "lat": 33.1570116,
+  "lon": -96.8406614,
+  "display": "Dallas Parkway, Frisco, Denton County, Texas, 75034, United States"
+ },
+ {
+  "id": "boise_id",
+  "cat": "sunbelt_growth",
+  "addr": "800 W Main St, Boise, ID 83702",
+  "lat": 43.6160942,
+  "lon": -116.2035078,
+  "display": "Eighth & Main, 800, West Main Street, Downtown, North End, Boise, Ada County, Idaho, 83702, United States"
+ },
+ {
+  "id": "nashville_12s",
+  "cat": "sunbelt_growth",
+  "addr": "2400 12th Ave S, Nashville, TN 37204",
+  "lat": 36.126286,
+  "lon": -86.789172,
+  "display": "2400, 12th Avenue South, Nashville, Davidson County, Middle Tennessee, Tennessee, 37204, United States"
+ },
+ {
+  "id": "austin_soco",
+  "cat": "sunbelt_growth",
+  "addr": "1400 S Congress Ave, Austin, TX 78704",
+  "lat": 30.249952,
+  "lon": -97.74994,
+  "display": "1400, South Congress Avenue, South River City, Austin, Travis County, Texas, 78704, United States"
+ },
+ {
+  "id": "gilbert_az",
+  "cat": "sunbelt_growth",
+  "addr": "2218 E Williams Field Rd, Gilbert, AZ 85295",
+  "lat": 33.308836,
+  "lon": -111.7425067,
+  "display": "NuView Pools & Landscape, 2218, East Williams Field Road, Gilbert, Maricopa County, Arizona, 85295, United States"
+ },
+ {
+  "id": "charlotte_se",
+  "cat": "sunbelt_growth",
+  "addr": "2000 South Blvd, Charlotte, NC 28203",
+  "lat": 35.2095551,
+  "lon": -80.8604965,
+  "display": "ClipperCole, 2000, South Boulevard, South End, Charlotte, Mecklenburg County, North Carolina, 28203, United States"
+ },
+ {
+  "id": "cary_nc",
+  "cat": "sunbelt_growth",
+  "addr": "300 S Academy St, Cary, NC 27511",
+  "lat": 35.78496,
+  "lon": -78.781331,
+  "display": "300, South Academy Street, Cary, Wake County, North Carolina, 27511, United States"
+ }
+]
