@@ -1,12 +1,7 @@
 import { Link } from 'react-router-dom';
-import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
-import { buildReportPath } from '../../lib/report-params';
 import { LandingReveal } from './LandingReveal';
-
-const wickerReportPath = buildReportPath(
-  { address: DEMO_CHIP_ADDRESSES.wicker, radius: 10 },
-  'wicker'
-);
+import { LandingHeroVideo } from './LandingHeroVideo';
+import { landingWickerReportPath } from './LandingReportPreview';
 
 export function LandingProductVisual() {
   return (
@@ -31,29 +26,15 @@ export function LandingProductVisual() {
               <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" aria-hidden />
               <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" aria-hidden />
               <div className="ml-3 flex-1 truncate rounded-md border border-border bg-surface px-3 py-1 text-[11px] text-ink-3">
-                leaseup.app{wickerReportPath}
+                leaseup.app{landingWickerReportPath}
               </div>
             </div>
-            <picture>
-              <source
-                srcSet="/images/landing-wicker-report-dark.png"
-                media="(prefers-color-scheme: dark)"
-              />
-              <img
-                src="/images/landing-wicker-report-light.png"
-                alt="LeaseUp report for Wicker Park showing ranked brands and map"
-                className="block w-full bg-bg"
-                width={1200}
-                height={720}
-                loading="eager"
-                decoding="async"
-              />
-            </picture>
+            <LandingHeroVideo />
           </div>
           <p className="mt-6 text-center text-sm text-ink-2">
             Recorded Wicker Park demo: ranked pitch list and map from fixture data.{' '}
             <Link
-              to={wickerReportPath}
+              to={landingWickerReportPath}
               className="font-medium text-accent underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
             >
               Open the live report
