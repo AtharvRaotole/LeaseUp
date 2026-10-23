@@ -2,19 +2,24 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { landingWickerReportPath } from './LandingReportPreview';
 import { LandingHeroFixtureFrame } from './LandingHeroFixtureFrame';
+import { LANDING_PUBLIC_HOST } from '../../lib/landing-public-host';
 import heroLightAvif from '../../assets/landing-hero/hero-wicker-light.avif';
 import heroLightWebp from '../../assets/landing-hero/hero-wicker-light.webp';
 import heroDarkAvif from '../../assets/landing-hero/hero-wicker-dark.avif';
 import heroDarkWebp from '../../assets/landing-hero/hero-wicker-dark.webp';
 
-const HERO_WIDTH = 720;
-const HERO_HEIGHT = 400;
+/** CSS display width on desktop; raster assets are 2× for crisp type. */
+const HERO_DISPLAY_WIDTH = 600;
+const HERO_DISPLAY_HEIGHT = 299;
 
 export function LandingHeroProductPreview() {
   const [useFixtureFallback, setUseFixtureFallback] = useState(false);
 
   return (
-    <div className="mx-auto w-full max-w-[720px] lg:mx-0" data-testid="landing-hero-product-preview">
+    <div
+      className="mx-auto w-full max-w-[600px] lg:mx-0 xl:max-w-[640px]"
+      data-testid="landing-hero-product-preview"
+    >
       <Link
         to={landingWickerReportPath}
         className="group relative block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
@@ -31,8 +36,12 @@ export function LandingHeroProductPreview() {
             <span className="h-2 w-2 rounded-full bg-[#ff5f57] sm:h-2.5 sm:w-2.5" aria-hidden />
             <span className="h-2 w-2 rounded-full bg-[#febc2e] sm:h-2.5 sm:w-2.5" aria-hidden />
             <span className="h-2 w-2 rounded-full bg-[#28c840] sm:h-2.5 sm:w-2.5" aria-hidden />
-            <div className="ml-2 min-w-0 flex-1 truncate rounded-md border border-border bg-surface px-2 py-0.5 text-[10px] text-ink-3 sm:ml-3 sm:px-3 sm:py-1 sm:text-[11px]">
-              leaseup.app{landingWickerReportPath}
+            <div
+              className="ml-2 min-w-0 flex-1 truncate rounded-md border border-border bg-surface px-2 py-0.5 text-[10px] text-ink-3 sm:ml-3 sm:px-3 sm:py-1 sm:text-[11px]"
+              title={`${LANDING_PUBLIC_HOST}${landingWickerReportPath}`}
+            >
+              {LANDING_PUBLIC_HOST}
+              {landingWickerReportPath}
             </div>
           </div>
           {useFixtureFallback ? (
@@ -51,8 +60,8 @@ export function LandingHeroProductPreview() {
                 data-testid="landing-hero-preview-img"
                 src={heroLightWebp}
                 alt=""
-                width={HERO_WIDTH}
-                height={HERO_HEIGHT}
+                width={HERO_DISPLAY_WIDTH}
+                height={HERO_DISPLAY_HEIGHT}
                 loading="eager"
                 decoding="async"
                 fetchPriority="low"
