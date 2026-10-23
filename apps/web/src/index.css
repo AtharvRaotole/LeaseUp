@@ -11,6 +11,27 @@
     transition-duration: 175ms;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
+
+  [data-tour-active='true'] {
+    box-shadow: 0 0 0 2px var(--accent);
+    border-radius: 12px;
+    transition: box-shadow 175ms ease;
+  }
+}
+
+.report-content-enter {
+  animation: report-fade-in 200ms ease-out forwards;
+}
+
+@keyframes report-fade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 @layer base {

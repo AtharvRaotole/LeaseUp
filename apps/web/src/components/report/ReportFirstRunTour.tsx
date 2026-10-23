@@ -17,7 +17,7 @@ const STEPS = [
   {
     title: 'Track outreach',
     body: 'Add strong fits to your pipeline so nothing falls through the cracks.',
-    targetTestId: 'add-to-pipeline',
+    targetTestId: 'report-pipeline-cta',
   },
 ] as const;
 
@@ -45,11 +45,18 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
   };
 
   useEffect(() => {
+    document.querySelectorAll('[data-tour-active]').forEach((node) => {
+      node.removeAttribute('data-tour-active');
+    });
     if (!visible) return;
     const id = STEPS[step]?.targetTestId;
     if (!id) return;
     const el = document.querySelector(`[data-testid="${id}"]`);
+    el?.setAttribute('data-tour-active', 'true');
     el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    return () => {
+      el?.removeAttribute('data-tour-active');
+    };
   }, [step, visible]);
 
   if (!visible) return null;
