@@ -1,0 +1,124 @@
+{
+  "recordedAt": "2026-10-23T15:00:11.238Z",
+  "radiusKm": 10,
+  "qlooSource": "fixtures",
+  "recordingStatus": "partial",
+  "recordingNote": "QLOO_API_KEY was not set. Only fixture-backed metros were scored. Run: QLOO_API_KEY=... node scripts/eval-metros.mjs",
+  "rows": [
+    {
+      "id": "wicker-park",
+      "label": "Wicker Park, Chicago",
+      "address": "1574 N Milwaukee Ave, Chicago, IL 60622",
+      "density": "urban",
+      "status": "recorded",
+      "qlooPresentInTop10": 10,
+      "chainSizePresentInTop10": 10,
+      "expectedRandomPresentInTop10": 6.785714285714286,
+      "liftVsChainSize": 0,
+      "liftVsRandomExpected": 3.2142857142857144,
+      "precisionAt10Qloo": 1,
+      "precisionAt10ChainSize": 1,
+      "brandsInPool": 224
+    },
+    {
+      "id": "williamsburg",
+      "label": "Williamsburg, Brooklyn",
+      "address": "240 Bedford Ave, Brooklyn, NY 11249",
+      "density": "urban",
+      "status": "pending_qloo"
+    },
+    {
+      "id": "buckhead",
+      "label": "Buckhead, Atlanta",
+      "address": "3500 Peachtree Rd NE, Atlanta, GA 30326",
+      "density": "suburban",
+      "status": "pending_qloo"
+    },
+    {
+      "id": "pearl-portland",
+      "label": "Pearl District, Portland",
+      "address": "1022 NW Marshall St, Portland, OR 97209",
+      "density": "urban",
+      "status": "pending_qloo"
+    },
+    {
+      "id": "scottsdale",
+      "label": "Scottsdale, Arizona",
+      "address": "7014 E Camelback Rd, Scottsdale, AZ 85251",
+      "density": "suburban",
+      "status": "pending_qloo"
+    },
+    {
+      "id": "woodlands",
+      "label": "The Woodlands, Texas",
+      "address": "9595 Six Pines Dr, The Woodlands, TX 77380",
+      "density": "suburban",
+      "status": "pending_qloo"
+    },
+    {
+      "id": "plano",
+      "label": "Plano, Texas",
+      "address": "6121 W Park Blvd, Plano, TX 75093",
+      "density": "suburban",
+      "status": "pending_qloo"
+    },
+    {
+      "id": "boulder",
+      "label": "Pearl Street, Boulder",
+      "address": "1125 Pearl St, Boulder, CO 80302",
+      "density": "urban",
+      "status": "recorded",
+      "qlooPresentInTop10": 8,
+      "chainSizePresentInTop10": 8,
+      "expectedRandomPresentInTop10": 3.2142857142857144,
+      "liftVsChainSize": 0,
+      "liftVsRandomExpected": 4.785714285714286,
+      "precisionAt10Qloo": 0.8,
+      "precisionAt10ChainSize": 0.8,
+      "brandsInPool": 224
+    },
+    {
+      "id": "miami-design",
+      "label": "Miami Design District",
+      "address": "140 NE 39th St, Miami, FL 33137",
+      "density": "urban",
+      "status": "pending_qloo"
+    },
+    {
+      "id": "nashville-gulch",
+      "label": "The Gulch, Nashville",
+      "address": "1200 4th Ave S, Nashville, TN 37210",
+      "density": "urban",
+      "status": "pending_qloo"
+    },
+    {
+      "id": "cherry-creek",
+      "label": "Cherry Creek, Denver",
+      "address": "3000 E 1st Ave, Denver, CO 80206",
+      "density": "suburban",
+      "status": "pending_qloo"
+    },
+    {
+      "id": "sevierville",
+      "label": "Sevierville, Tennessee",
+      "address": "125 Collier Dr, Sevierville, TN 37862",
+      "density": "tourist",
+      "status": "recorded",
+      "qlooPresentInTop10": 9,
+      "chainSizePresentInTop10": 10,
+      "expectedRandomPresentInTop10": 4.464285714285714,
+      "liftVsChainSize": -1,
+      "liftVsRandomExpected": 4.535714285714286,
+      "precisionAt10Qloo": 0.9,
+      "precisionAt10ChainSize": 1,
+      "brandsInPool": 224
+    }
+  ],
+  "summary": {
+    "recordedCount": 3,
+    "meanQlooPresentInTop10": 9,
+    "meanChainSizePresentInTop10": 9.333333333333334,
+    "meanExpectedRandomPresentInTop10": 4.821428571428572,
+    "meanLiftVsChainSize": -0.3333333333333333
+  }
+}
