@@ -5,6 +5,8 @@ import { Logo } from '../components/brand/Logo';
 import { Button } from '../components/ui/Button';
 import { VacancyCostCalculator } from '../components/report/VacancyCostCalculator';
 import { PitchPackBrief } from '../components/pitch/PitchPackBrief';
+import { PitchPackLoadingSkeleton } from '../components/pitch/PitchPackLoadingSkeleton';
+import { shareLinkExpiredLine } from '../lib/empty-state-copy';
 import { apiUrl } from '../lib/api';
 import { formatUserFacingDate } from '../lib/format-date';
 import {
@@ -39,7 +41,7 @@ export function PitchPage() {
           setVacancy(loadVacancyDraft(data.address));
         }
       } catch {
-        setError('This pitch link is missing or expired.');
+        setError(shareLinkExpiredLine);
       }
     })();
   }, [id]);
@@ -65,8 +67,13 @@ export function PitchPage() {
 
   if (!snapshot) {
     return (
-      <div className="min-h-screen bg-bg px-4 py-24 text-center text-ink-2" data-testid="pitch-loading">
-        Loading pitch…
+      <div className="min-h-screen bg-bg pitch-pack" data-testid="pitch-loading">
+        <header className="border-b border-border bg-surface/90 px-4 py-4">
+          <div className="mx-auto max-w-[880px]">
+            <Logo variant="lockup" size="sm" />
+          </div>
+        </header>
+        <PitchPackLoadingSkeleton />
       </div>
     );
   }

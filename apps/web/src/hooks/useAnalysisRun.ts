@@ -31,7 +31,7 @@ export function useAnalysisRun() {
     setSlowHint(false);
     startedRef.current = performance.now();
 
-    const slowTimer = window.setTimeout(() => setSlowHint(true), 6000);
+    const slowTimer = window.setTimeout(() => setSlowHint(true), 8000);
 
     let completed = false;
     let errored = false;

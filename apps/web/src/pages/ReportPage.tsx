@@ -26,6 +26,8 @@ import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { ReportErrorBanner } from '../components/report/ReportErrorBanner';
 import { apiErrorFromUnknown, type ApiErrorInfo } from '../lib/api-error';
 import { SERVER_BUSY_MESSAGE } from '../lib/calm-error-copy';
+import { SLOW_LOAD_STATUS } from '../lib/slow-load-copy';
+import { ReportShortListNotice } from '../components/report/ReportShortListNotice';
 import { QlooRankingToggle, type QlooRankingMode } from '../components/report/QlooRankingToggle';
 import { QlooProofBanner } from '../components/report/QlooProofBanner';
 import { StrictEvalCard } from '../components/report/StrictEvalCard';
@@ -241,6 +243,14 @@ export function ReportPage() {
             radiusKm={request.radius}
             analysis={results}
           />
+          {results.prospects.length <= 2 && (
+            <ReportShortListNotice
+              count={results.prospects.length}
+              radiusKm={request.radius}
+              request={request}
+              slug={slug ?? 'run'}
+            />
+          )}
           {(loading || steps.length > 0) && (
             <AgentRunStrip
               steps={steps}
@@ -417,7 +427,9 @@ export function ReportPage() {
             }`}
           >
             {slowHint && loading && (
-              <p className="text-sm text-ink-2">Still working. Large cities take a few extra seconds.</p>
+              <p className="text-sm text-ink-2" data-testid="report-slow-hint" role="status">
+                {SLOW_LOAD_STATUS}
+              </p>
             )}
             {showErrorBanner && (
               <ReportErrorBanner

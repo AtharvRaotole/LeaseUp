@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';
+import { useOnEscape } from '../../hooks/useOnEscape';
 import type { AnalysisRequest, AnalysisResponse } from '@leaseup/contracts';
 import { draftToPitchVacancy, type VacancyCalculatorDraft } from '../../lib/vacancy-cost';
 import { Button } from '../ui/Button';
@@ -35,6 +36,9 @@ export function SharePitchDialog({
   const [pitchUrl, setPitchUrl] = useState<string | null>(null);
   const [copyHint, setCopyHint] = useState<string | null>(null);
   const linkInputRef = useRef<HTMLInputElement>(null);
+
+  const close = useCallback(() => onOpenChange(false), [onOpenChange]);
+  useOnEscape(close, open);
 
   if (!open) return null;
 
@@ -103,8 +107,17 @@ export function SharePitchDialog({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 sm:items-center" role="dialog" aria-modal="true" aria-labelledby="share-pitch-title">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-card border border-border bg-surface p-5 shadow-pop">
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 sm:items-center"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="share-pitch-title"
+      onClick={() => close()}
+    >
+      <div
+        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-card border border-border bg-surface p-5 shadow-pop"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h2 id="share-pitch-title" className="font-display font-semibold text-2xl text-ink">Share pitch pack</h2>
         <p className="mt-1 text-sm text-ink-2">
           Creates a frozen snapshot with today&apos;s rankings and map. The link stays read only.
@@ -168,7 +181,7 @@ export function SharePitchDialog({
               Open pitch
             </Button>
           )}
-          <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+          <Button type="button" variant="ghost" onClick={() => close()}>
             Close
           </Button>
         </div>

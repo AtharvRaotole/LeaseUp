@@ -166,9 +166,9 @@ export function BrandsToPitch({
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-surface-2 text-ink-2">
           <Store className="h-6 w-6" aria-hidden />
         </div>
-        <h3 className="mt-4 text-h3 font-semibold text-ink">No pitch list yet</h3>
+        <h3 className="mt-4 text-h3 font-semibold text-ink">No brands to pitch here</h3>
         <p className="mt-2 text-sm text-ink-2">
-          Every top brand already has a store in this radius. Try a wider search or narrow by category.
+          Every strong taste match already has a store in this radius. Widen the radius or pick another category.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Button

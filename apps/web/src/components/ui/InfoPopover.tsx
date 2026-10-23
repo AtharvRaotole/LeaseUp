@@ -1,4 +1,5 @@
-import { useId, useRef, useState } from 'react';
+import { useId, useRef, useState, useCallback } from 'react';
+import { useOnEscape } from '../../hooks/useOnEscape';
 import { Info } from 'lucide-react';
 import { cn } from '../../lib/cn';
 
@@ -15,6 +16,8 @@ export function InfoPopover({
   const [open, setOpen] = useState(false);
   const id = useId();
   const panelRef = useRef<HTMLDivElement>(null);
+  const close = useCallback(() => setOpen(false), []);
+  useOnEscape(close, open);
 
   return (
     <span className={cn('relative inline-flex', className)}>

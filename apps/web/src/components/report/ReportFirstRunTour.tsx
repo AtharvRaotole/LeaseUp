@@ -1,9 +1,10 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { REPORT_TOUR_STORAGE_KEY } from '../../lib/broker-copy';
 import { cn } from '../../lib/cn';
+import { useOnEscape } from '../../hooks/useOnEscape';
 
 const STEPS = [
   {
@@ -112,7 +113,7 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
     setVisible(true);
   }, [ready]);
 
-  const dismiss = () => {
+  const dismiss = useCallback(() => {
     try {
       localStorage.setItem(REPORT_TOUR_STORAGE_KEY, 'done');
     } catch {
@@ -120,7 +121,9 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
     }
     setVisible(false);
     highlightTarget(undefined);
-  };
+  }, []);
+
+  useOnEscape(dismiss, visible);
 
   const placePopover = () => {
     const current = STEPS[step] ?? STEPS[0];
