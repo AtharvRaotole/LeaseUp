@@ -49,6 +49,7 @@ import { ProductExplainer } from '../components/report/ProductExplainer';
 import { ReportLoadingPanel } from '../components/report/ReportLoadingPanel';
 import { ReportMapSkeleton } from '../components/report/ReportMapSkeleton';
 import { ReportSidebarFacts } from '../components/report/ReportSidebarFacts';
+import { WhoShopsHereCard } from '../components/report/WhoShopsHereCard';
 import { ShareHead } from '../components/seo/ShareHead';
 import { reportShareHead } from '../lib/share-preview';
 
@@ -510,6 +511,9 @@ export function ReportPage() {
                     radiusKm={request.radius}
                     chipSlug={slug}
                   />
+                  {results.tradeAreaShoppers && (
+                    <WhoShopsHereCard snapshot={results.tradeAreaShoppers} />
+                  )}
                 </div>
               </ErrorBoundary>
             )}

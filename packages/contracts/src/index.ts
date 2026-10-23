@@ -88,6 +88,30 @@ export const TradeAreaTasteContextSchema = z.object({
 
 export type TradeAreaTasteContext = z.infer<typeof TradeAreaTasteContextSchema>;
 
+export const BrandReachContactSchema = z.object({
+  status: z.enum(['verified', 'not_yet_found']),
+  url: z.string().url().optional(),
+  source: z.string().optional(),
+  searchUrl: z.string().url().optional(),
+});
+
+export type BrandReachContact = z.infer<typeof BrandReachContactSchema>;
+
+export const TradeAreaShopperGroupSchema = z.object({
+  id: z.enum(['customer_identity', 'ambience', 'other']),
+  label: z.string().max(80),
+  names: z.array(z.string().max(120)).min(1).max(12),
+});
+
+export type TradeAreaShopperGroup = z.infer<typeof TradeAreaShopperGroupSchema>;
+
+export const TradeAreaShoppersSnapshotSchema = z.object({
+  groups: z.array(TradeAreaShopperGroupSchema).min(1).max(3),
+  qlooFields: z.array(z.string()).max(12),
+});
+
+export type TradeAreaShoppersSnapshot = z.infer<typeof TradeAreaShoppersSnapshotSchema>;
+
 export const ProspectPackSchema = z.object({
   coverageNote: z.string().optional(),
   brand: BrandAffinitySchema,
@@ -101,6 +125,7 @@ export const ProspectPackSchema = z.object({
   nearestExistingStoreKm: z.number().optional(),
   qlooSignals: z.array(z.string()).optional(),
   tradeAreaTaste: TradeAreaTasteContextSchema.optional(),
+  brandReach: BrandReachContactSchema.optional(),
 });
 
 export type ProspectPack = z.infer<typeof ProspectPackSchema>;
@@ -176,6 +201,7 @@ export type MapStorePoint = z.infer<typeof MapStorePointSchema>;
 
 export const OutreachRequestSchema = z.object({
   brandName: z.string().min(1),
+  brandEntityId: z.string().optional(),
   address: z.string().min(3),
   reasons: z.array(z.string()).default([]),
   runId: z.string().optional(),
@@ -184,6 +210,7 @@ export const OutreachRequestSchema = z.object({
   nearestStoreKm: z.number().optional(),
   coTenantBrands: z.array(z.string()).max(8).optional(),
   verificationLabel: z.string().optional(),
+  brandReach: BrandReachContactSchema.optional(),
 });
 
 export type OutreachRequest = z.infer<typeof OutreachRequestSchema>;
@@ -237,6 +264,7 @@ export const AnalysisResponseSchema = z.object({
   storefrontSqFt: z.number().optional(),
   formatFilteredCount: z.number().int().optional(),
   strictEval: StrictEvalSnapshotSchema.optional(),
+  tradeAreaShoppers: TradeAreaShoppersSnapshotSchema.optional(),
 });
 
 export type AnalysisResponse = z.infer<typeof AnalysisResponseSchema>;
@@ -617,5 +645,43 @@ export const PipelineUpdateCardSchema = z.object({
 });
 
 export type PipelineUpdateCard = z.infer<typeof PipelineUpdateCardSchema>;
+
+export const OwnerUpdateBrandRowSchema = z.object({
+  brandEntityId: z.string(),
+  brandName: z.string(),
+  column: PipelineColumnSchema,
+  columnLabel: z.string(),
+  outreachStatus: PipelineOutreachStatusSchema,
+  followUpAt: z.string().optional(),
+  lastTouchedAt: z.string(),
+  notes: z.string().max(5000).optional(),
+  nextStep: z.string().max(500),
+});
+
+export type OwnerUpdateBrandRow = z.infer<typeof OwnerUpdateBrandRowSchema>;
+
+export const OwnerUpdateSnapshotSchema = z.object({
+  id: z.string().uuid(),
+  createdAt: z.string(),
+  propertyAddress: z.string(),
+  propertyNeighborhood: z.string().optional(),
+  brandsContacted: z.number().int(),
+  brands: z.array(OwnerUpdateBrandRowSchema),
+  pipelineUpdatedAt: z.string(),
+});
+
+export type OwnerUpdateSnapshot = z.infer<typeof OwnerUpdateSnapshotSchema>;
+
+export const OwnerUpdateShareRequestSchema = z.object({
+  propertyAddress: z.string().min(3).max(500),
+});
+
+export type OwnerUpdateShareRequest = z.infer<typeof OwnerUpdateShareRequestSchema>;
+
+export const OwnerUpdatePropertyListSchema = z.object({
+  properties: z.array(z.string()),
+});
+
+export type OwnerUpdatePropertyList = z.infer<typeof OwnerUpdatePropertyListSchema>;
 
 export * from './outreach-quality';

@@ -1,0 +1,47 @@
+{
+  "results": {
+    "tags": [
+      {
+        "tag_id": "urn:tag:customer_identity:qloo:families",
+        "name": "Families",
+        "types": ["urn:entity:place"],
+        "subtype": "urn:tag:customer_identity:qloo",
+        "tag_value": "families",
+        "popularity": 0.99992,
+        "query": { "affinity": 0.99997 }
+      },
+      {
+        "tag_id": "urn:tag:customer_identity:qloo:tourists",
+        "name": "Tourists",
+        "types": ["urn:entity:place"],
+        "subtype": "urn:tag:customer_identity:qloo",
+        "tag_value": "tourists",
+        "popularity": 0.9999,
+        "query": { "affinity": 0.99995 }
+      },
+      {
+        "tag_id": "urn:tag:ambience:qloo:family_friendly",
+        "name": "Family Friendly",
+        "types": ["urn:entity:place"],
+        "subtype": "urn:tag:ambience:qloo",
+        "tag_value": "family_friendly",
+        "popularity": 0.99988,
+        "query": { "affinity": 0.99994 }
+      },
+      {
+        "tag_id": "urn:tag:customer_identity:qloo:value_seekers",
+        "name": "Value Seekers",
+        "types": ["urn:entity:place"],
+        "subtype": "urn:tag:customer_identity:qloo",
+        "tag_value": "value_seekers",
+        "popularity": 0.99986,
+        "query": { "affinity": 0.99992 }
+      }
+    ]
+  },
+  "query": {
+    "geospatial": {
+      "panel_size": { "context": 15200, "target": 14100 }
+    }
+  }
+}
