@@ -2,7 +2,7 @@ import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { ShowMethod } from '../ui/ShowMethod';
 import {
-  qlooEvalHeadlineCopy,
+  qlooEvalHeadlineParts,
   qlooProofSentence,
   qlooProofSentenceTechnical,
   qlooProofTieDetail,
@@ -31,7 +31,7 @@ export function QlooProofBanner({
   const technical = qlooProofSentenceTechnical(results.backtest, baseline);
   const tieTechnical =
     winner === 'tie' ? qlooProofTieDetailTechnical(results.rankings) : null;
-  const cohortHeadline = qlooEvalHeadlineCopy();
+  const cohort = qlooEvalHeadlineParts();
 
   if (compact) {
     return (
@@ -42,7 +42,8 @@ export function QlooProofBanner({
           {winner === 'baseline' && !legacySaturated &&
             ' Chain size alone matched taste at this pin.'}
         </p>
-        <p className="mt-2 text-xs text-ink-3">{cohortHeadline}</p>
+        <p className="mt-2 text-xs text-ink-3">{cohort.headline}</p>
+        <p className="mt-1 text-xs text-ink-3">{cohort.companion}</p>
         <ShowMethod>
           <p>{technical}</p>
           {tieTechnical && <p>{tieTechnical}</p>}
@@ -63,7 +64,9 @@ export function QlooProofBanner({
         {legacySaturated &&
           ' Legacy present-in-top-10 is maxed out at this pin. See the evaluation metrics panel for alternate scores.'}
       </p>
-      <p className="mt-2 text-sm text-ink-2">{cohortHeadline}</p>
+      <p className="mt-3 text-sm font-medium text-ink">{cohort.headline}</p>
+      <p className="mt-1 text-sm text-ink-2">{cohort.companion}</p>
+      <p className="mt-1 text-xs text-ink-3">{cohort.caveat}</p>
       <ShowMethod>
         <p>{technical}</p>
         {tieTechnical && <p>{tieTechnical}</p>}
