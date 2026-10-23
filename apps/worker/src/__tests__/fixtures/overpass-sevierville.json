@@ -1,0 +1,30 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API",
+  "elements": [
+    {
+      "type": "node",
+      "id": 5555555555,
+      "lat": 35.8695,
+      "lon": -83.5635,
+      "tags": {
+        "brand": "Walmart",
+        "brand:wikidata": "Q483551",
+        "name": "Walmart Supercenter",
+        "shop": "supermarket"
+      }
+    },
+    {
+      "type": "node",
+      "id": 5555555556,
+      "lat": 35.8670,
+      "lon": -83.5605,
+      "tags": {
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "name": "McDonald's",
+        "amenity": "fast_food"
+      }
+    }
+  ]
+}

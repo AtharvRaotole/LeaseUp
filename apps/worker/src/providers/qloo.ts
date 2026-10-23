@@ -88,6 +88,9 @@ export class QlooClient {
     const latency = Date.now() - start;
     
     if (!response.ok) {
+      const statusCode = response.status;
+      const statusText = response.statusText;
+      
       await recordApiMetric(this.db, {
         runId: params.runId,
         provider: 'qloo',
@@ -96,7 +99,18 @@ export class QlooClient {
         latencyMs: latency,
         cached: false,
       });
-      throw new Error(`Qloo API error: ${response.status} ${response.statusText}`);
+
+      // Specific error messages for UI
+      if (statusCode === 401) {
+        throw new Error('Qloo API authentication failed (401). Check QLOO_API_KEY configuration.');
+      } else if (statusCode === 429) {
+        throw new Error('Qloo API rate limit exceeded (429). Please try again in a few moments.');
+      } else if (statusCode >= 500) {
+        throw new Error(`Qloo API service unavailable (${statusCode}). The service may be experiencing issues.`);
+      } else {
+        throw new Error(`Qloo API error (${statusCode}): ${statusText}`);
+      }
+    }
     }
 
     const data = await response.json() as QlooResponse<QlooInsight>;
@@ -155,6 +169,9 @@ export class QlooClient {
     const latency = Date.now() - start;
     
     if (!response.ok) {
+      const statusCode = response.status;
+      const statusText = response.statusText;
+      
       await recordApiMetric(this.db, {
         runId: params.runId,
         provider: 'qloo',
@@ -163,7 +180,17 @@ export class QlooClient {
         latencyMs: latency,
         cached: false,
       });
-      throw new Error(`Qloo API error: ${response.status} ${response.statusText}`);
+
+      if (statusCode === 401) {
+        throw new Error('Qloo API authentication failed (401). Check QLOO_API_KEY configuration.');
+      } else if (statusCode === 429) {
+        throw new Error('Qloo API rate limit exceeded (429). Please try again in a few moments.');
+      } else if (statusCode >= 500) {
+        throw new Error(`Qloo API service unavailable (${statusCode}). The service may be experiencing issues.`);
+      } else {
+        throw new Error(`Qloo heatmap API error (${statusCode}): ${statusText}`);
+      }
+    }
     }
 
     const data = await response.json() as QlooResponse<QlooHeatmapCell>;

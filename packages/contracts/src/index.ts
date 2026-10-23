@@ -19,7 +19,12 @@ export const BrandAffinitySchema = z.object({
   popularity: z.number().optional(),
   nationalStoreCount: z.number().optional(),
   nearbyStoreCount: z.number().optional(),
-  verified: z.union([z.literal('verified'), z.literal('unverified (1 source)'), z.literal('unverified')]),
+  verified: z.union([
+    z.literal('verified (2 sources)'),
+    z.literal('unverified (1 source)'),
+    z.literal('conflict'),
+    z.literal('unverified')
+  ]),
   verificationSources: z.array(z.string()).optional(),
   explanation: z.string().optional(),
 });
