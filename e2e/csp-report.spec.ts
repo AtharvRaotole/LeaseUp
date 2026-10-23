@@ -10,6 +10,7 @@ const WORKER_ORIGIN = 'https://leaseup-worker.issue-atharva.workers.dev';
 
 test.describe('Production CSP on report + map', () => {
   test('report loads API and MapLibre under committed _headers CSP', async ({ page }) => {
+    test.setTimeout(240_000);
     const csp = readFileSync(join(process.cwd(), 'apps/web/public/_headers'), 'utf8');
     const cspLine = csp
       .split('\n')
@@ -48,11 +49,17 @@ test.describe('Production CSP on report + map', () => {
     });
     expect(analyzeProbe.ok(), 'Proxied /api/analyze under CSP').toBeTruthy();
 
-    await page.goto(WICKER, { waitUntil: 'domcontentloaded' });
+    await page.goto(WICKER, { waitUntil: 'load' });
     await page
-      .locator('[data-testid="report-summary"], [data-testid="brands-to-pitch"]')
+      .locator(
+        '[data-testid="report-summary"], [data-testid="brands-to-pitch"], [data-testid="report-error"]'
+      )
       .first()
-      .waitFor({ timeout: 120_000 });
+      .waitFor({ timeout: 180_000 });
+    const error = page.getByTestId('report-error');
+    if (await error.isVisible().catch(() => false)) {
+      throw new Error(`Report failed to load: ${await error.innerText()}`);
+    }
 
     const pageViolations = await page.evaluate(() =>
       (window as unknown as { __cspViolations?: string[] }).__cspViolations ?? []
