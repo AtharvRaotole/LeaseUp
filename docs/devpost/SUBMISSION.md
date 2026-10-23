@@ -16,6 +16,26 @@ Do not claim raw Qloo affinity beats national chain size on mean top-10 presence
 
 ---
 
+## Devpost judging criteria (plain English)
+
+### Technological Implementation
+
+LeaseUp is a real split stack: a React site on Cloudflare Pages talks to a Hono worker that batches live Qloo `/v2/insights` brand calls (45 IDs per request, 227 tracked chains), merges them with a fitted logistic taste blend, and checks open store footprints from All The Places and OSM before a broker pitches. We preregistered a **40-address** live API study, fixed a ground-truth bug in OSM tiles, and committed the headline metrics in the repo. Raw Qloo order reached **P@10 0.54** on that panel; national chain size reached **0.76**; our shipped blend reached **0.82** (**+6.2** percentage points vs chain, 95% CI **2.8 to 9.3**). Among similar-size chains, Qloo separated present vs absent about two thirds of the time (**same-size tier AUC 0.667**, 95% CI **0.646 to 0.689**). We do not use Qloo heatmap to rank the pitch list.
+
+### Design
+
+Brokers see a summary-first report: top brands to pitch, trade area shopper tags as plain names (not misleading 0.999 affinities), vacancy math they control, and a pitch pack they can share. The landing pairs the address form with a static product preview. **How we know** shows Qloo proof beside chain-size baselines so judges can see where taste helps and where it does not (raw Qloo **0.54** vs chain **0.76** on the 40-address top-10 presence check). Demo chips use recorded JSON so walkthroughs stay fast without faking live scores.
+
+### Potential Impact
+
+Empty storefronts cost landlords carry every month; brokers waste outreach on chains that already operate nearby. LeaseUp shortens the path from address to a defensible shortlist: ranked brands, map context, reach lines when we have them, pipeline and owner-update links. The eval shows the biggest lift on mid-size chains landlords actually pitch (**P@5 0.53** vs **0.23** when ordering within the 439 to 864 store tier). Random guessing on the same panel only hits **P@10 0.29**.
+
+### Quality of Idea
+
+The idea is to treat Qloo as **local taste beyond chain size**, not a replacement for footprint data. National store count is a strong "already here" signal; Qloo adds signal when you compare brands of similar size and when you blend taste with size (**0.82** vs **0.76** top-10 presence on 40 US addresses). The product is honest about limits: presence in open data is not a signed lease, and we label verification sources on every pitch row.
+
+---
+
 ## Inspiration
 
 Brokers and landlords lose time pitching chains that already operate inside the trade area. National chain size is a strong guess for who is "already here," but it does not tell you which mid-size brands fit a specific block. We built LeaseUp to combine Qloo Taste AI with open store footprints so a broker can walk into a landlord meeting with a ranked list, a map, and numbers that survive scrutiny.

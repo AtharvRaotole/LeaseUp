@@ -56,8 +56,8 @@ export const DEMO_ADAPTIVE_PROOF_AGG: ResultsAdaptiveAgg = {
   p10_chain: 0.755,
   p10_blend: 0.8175,
   p10_legacy_blend: 0.59,
-  same_size_auc: 0.6764348812319292,
-  same_size_auc_ci: [0.6546501353910917, 0.698719266554742],
+  same_size_auc: 0.6670294642091228,
+  same_size_auc_ci: [0.6461676947462455, 0.6885277968924622],
   blend_lift_vs_chain_pp: 6.25,
   blend_lift_vs_chain_ci: [2.75, 9.25],
 };

@@ -12,7 +12,7 @@ describe('results_adaptive.json', () => {
     expect(agg.p10_blend).toBeCloseTo(0.8175, 3);
     expect(agg.p10_chain).toBeCloseTo(0.755, 3);
     expect(agg.p10_raw).toBeCloseTo(0.5375, 3);
-    expect(agg.same_size_auc).toBeCloseTo(0.676, 3);
+    expect(agg.same_size_auc).toBeCloseTo(0.667, 3);
   });
 
   it('includes Wicker dense-urban row at 1.5 km (9 vs 7 blend vs chain)', () => {

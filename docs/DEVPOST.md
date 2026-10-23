@@ -33,10 +33,11 @@ Preregistered adaptive-radius study on `/methodology` (see `packages/fixtures/sr
 
 | Claim | Value |
 | --- | --- |
-| Same-size tier AUC (Qloo within chain-size tier) | **0.67** [0.65, 0.69] |
-| Mean top-10 presence, taste-aware logistic blend | **82%** |
+| Same-size tier AUC (mean per-address stratified) | **0.667** [0.646, 0.689] |
+| Mean top-10 presence, taste-aware logistic blend | **82%** (+6.2 pp vs chain, 95% CI 2.8 to 9.3) |
 | Mean top-10 presence, chain size alone | **76%** |
 | Raw Qloo affinity order (mean top-10) | **54%** (does **not** beat chain size) |
+| Random baseline P@10 (adaptive radius) | **29%** |
 | Mid-size chain tier (Q3) P@5, Qloo vs chain | **53%** vs **23%** |
 
 **Caveat:** Qloo taste may partly reflect brands that already operate nearby; read lift alongside store absence checks on the pitch list. Never claim that raw Qloo beats national chain size on mean top-10 presence.
