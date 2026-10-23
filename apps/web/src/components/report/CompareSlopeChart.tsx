@@ -11,6 +11,9 @@ type Swing = {
   delta: number;
 };
 
+const LABEL_GUTTER = 140;
+const PLOT_WIDTH = 420;
+
 function useMobileChart() {
   const [mobile, setMobile] = useState(false);
   useEffect(() => {
@@ -21,6 +24,10 @@ function useMobileChart() {
     return () => mq.removeEventListener('change', apply);
   }, []);
   return mobile;
+}
+
+function rankLabel(displayName: string, rank: number): string {
+  return `${displayName} #${rank}`;
 }
 
 export function CompareSlopeChart({
@@ -53,20 +60,22 @@ export function CompareSlopeChart({
 
   const layout = useMemo(() => {
     const maxRank = Math.max(...rows.flatMap((s) => [s.leftRank, s.rightRank]), 10);
-    const w = 640;
+    const w = LABEL_GUTTER + PLOT_WIDTH + LABEL_GUTTER;
     const h = Math.max(360, 56 + rows.length * 28);
-    const pad = { t: 72, r: 108, b: 20, l: 108 };
+    const pad = { t: 72, r: LABEL_GUTTER, b: 20, l: LABEL_GUTTER };
     const innerH = h - pad.t - pad.b;
     const yFor = (rank: number) => pad.t + ((rank - 1) / Math.max(1, maxRank - 1)) * innerH;
     const xL = pad.l;
     const xR = w - pad.r;
+    const leftTextX = LABEL_GUTTER - 10;
+    const rightTextX = w - LABEL_GUTTER + 10;
     const leftNatural = rows.map((r) => yFor(r.leftRank));
     const rightNatural = rows.map((r) => yFor(r.rightRank));
     const minY = pad.t + 8;
     const maxY = h - pad.b - 8;
     const leftLabelY = resolveLabelYs(leftNatural, minY, maxY);
     const rightLabelY = resolveLabelYs(rightNatural, minY, maxY);
-    return { w, h, pad, xL, xR, yFor, leftLabelY, rightLabelY, maxRank };
+    return { w, h, pad, xL, xR, leftTextX, rightTextX, yFor, leftLabelY, rightLabelY, maxRank };
   }, [rows]);
 
   return (
@@ -107,7 +116,7 @@ export function CompareSlopeChart({
           </div>
           <svg
             viewBox={`0 0 ${layout.w} ${layout.h}`}
-            className="w-full min-w-[320px] min-h-[360px]"
+            className="w-full min-w-[min(100%,700px)] min-h-[360px]"
             role="img"
             aria-label={`Rank comparison ${shortLeft} and ${shortRight}`}
           >
@@ -136,6 +145,8 @@ export function CompareSlopeChart({
               const opacity = hover && !active ? 0.2 : 1;
               const ly = layout.leftLabelY[index]!;
               const ry = layout.rightLabelY[index]!;
+              const leftCaption = rankLabel(row.displayName, row.leftRank);
+              const rightCaption = rankLabel(row.displayName, row.rightRank);
               return (
                 <g
                   key={row.entityId}
@@ -153,15 +164,37 @@ export function CompareSlopeChart({
                   />
                   <circle cx={layout.xL} cy={y1} r={4} fill={stroke} />
                   <circle cx={layout.xR} cy={y2} r={4} fill={stroke} />
-                  <line x1={layout.xL - 6} y1={y1} x2={layout.xL - 72} y2={ly} stroke="var(--border)" strokeWidth={1} />
-                  <line x1={layout.xR + 6} y1={y2} x2={layout.xR + 72} y2={ry} stroke="var(--border)" strokeWidth={1} />
-                  <text x={layout.xL - 76} y={ly + 4} textAnchor="end" className="fill-ink-2 text-[11px]">
-                    {row.displayName.length > 18 ? `${row.displayName.slice(0, 17)}…` : row.displayName}
-                    <tspan className="fill-ink-3 font-mono text-[10px]"> #{row.leftRank}</tspan>
+                  <line
+                    x1={layout.xL - 6}
+                    y1={y1}
+                    x2={layout.leftTextX - 4}
+                    y2={ly}
+                    stroke="var(--border)"
+                    strokeWidth={1}
+                  />
+                  <line
+                    x1={layout.xR + 6}
+                    y1={y2}
+                    x2={layout.rightTextX + 4}
+                    y2={ry}
+                    stroke="var(--border)"
+                    strokeWidth={1}
+                  />
+                  <text
+                    x={layout.leftTextX}
+                    y={ly + 4}
+                    textAnchor="end"
+                    className="fill-ink-2 text-[11px]"
+                  >
+                    {leftCaption}
                   </text>
-                  <text x={layout.xR + 76} y={ry + 4} textAnchor="start" className="fill-ink-2 text-[11px]">
-                    {row.displayName.length > 18 ? `${row.displayName.slice(0, 17)}…` : row.displayName}
-                    <tspan className="fill-ink-3 font-mono text-[10px]"> #{row.rightRank}</tspan>
+                  <text
+                    x={layout.rightTextX}
+                    y={ry + 4}
+                    textAnchor="start"
+                    className="fill-ink-2 text-[11px]"
+                  >
+                    {rightCaption}
                   </text>
                 </g>
               );

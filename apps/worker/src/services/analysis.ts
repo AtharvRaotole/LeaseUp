@@ -19,6 +19,7 @@ import {
   CHAIN_PRIOR_BLEND_WEIGHT,
   DEMO_OSM_UNRECORDED_NOTE,
   matchDemoFixtureId,
+  matchDemoChipWithinMeters,
 } from '@leaseup/fixtures';
 import { createStoreCatalog, type StoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
@@ -298,7 +299,14 @@ export class AnalysisService {
       return this.resolveDemoLocation(address);
     }
 
-    return this.nominatim.geocode(address);
+    const located = await this.nominatim.geocode(address);
+    const chip = matchDemoChipWithinMeters(located.latitude, located.longitude);
+    if (!chip) return located;
+    return {
+      ...located,
+      neighborhood: chip.neighborhood,
+      city: chip.city,
+    };
   }
 
   private resolveDemoLocation(address: string): Location {

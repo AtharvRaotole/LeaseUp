@@ -83,6 +83,15 @@ export function ReportPage() {
   const reportSections = results && (
     <>
       <HeadlineCard results={results} radiusKm={request.radius} chipSlug={slug} />
+      {(loading || steps.length > 0) && (
+        <AgentRunStrip
+          steps={steps}
+          loading={loading}
+          elapsedMs={elapsedMs}
+          demoMode={results?.mode === 'demo'}
+          recordedAt={results?.timestamp}
+        />
+      )}
       <BrandsToPitch
         results={results}
         request={request}
@@ -93,15 +102,6 @@ export function ReportPage() {
         radiusKm={request.radius}
         forceEmpty={emptyPitch}
       />
-      {(loading || steps.length > 0) && (
-        <AgentRunStrip
-          steps={steps}
-          loading={loading}
-          elapsedMs={elapsedMs}
-          demoMode={results?.mode === 'demo'}
-          recordedAt={results?.timestamp}
-        />
-      )}
       <ProofSection results={results} radiusKm={request.radius} onBrandSelect={selectMapBrand} />
       <CompareSection />
       <HowWeKnowSection results={results} />
