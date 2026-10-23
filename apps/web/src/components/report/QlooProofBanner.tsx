@@ -2,7 +2,13 @@ import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { qlooProofSentence, qlooProofTieDetail, qlooProofWinner } from '../../lib/qloo-proof';
 
-export function QlooProofBanner({ results }: { results: AnalysisResponse }) {
+export function QlooProofBanner({
+  results,
+  compact = false,
+}: {
+  results: AnalysisResponse;
+  compact?: boolean;
+}) {
   const baseline = results.backtestBaseline;
   if (!baseline) return null;
 
@@ -10,6 +16,15 @@ export function QlooProofBanner({ results }: { results: AnalysisResponse }) {
   const sentence = qlooProofSentence(results.backtest, baseline);
   const tieDetail =
     winner === 'tie' ? qlooProofTieDetail(results.rankings) : null;
+
+  if (compact) {
+    return (
+      <p className="text-sm text-ink-2" data-testid="qloo-proof-banner">
+        <span className="font-medium text-ink">{sentence}</span>
+        {winner === 'baseline' && ' Chain-size baseline matched taste at this pin.'}
+      </p>
+    );
+  }
 
   return (
     <Card className="border-accent/20 bg-surface" data-testid="qloo-proof-banner">
