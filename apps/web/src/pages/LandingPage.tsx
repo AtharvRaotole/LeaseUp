@@ -24,8 +24,6 @@ import {
 } from '../lib/report-params';
 import { startProspectingJob } from '../lib/start-prospecting';
 import { LANDING_PLAIN_SUMMARY } from '../lib/broker-copy';
-import { ProductExplainer } from '../components/report/ProductExplainer';
-
 export function LandingPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -85,7 +83,6 @@ export function LandingPage() {
           <p className="mt-4 text-lg text-ink-2" data-testid="landing-plain-summary">
             {LANDING_PLAIN_SUMMARY}
           </p>
-          <ProductExplainer className="mt-3 text-base text-ink-2" testId="landing-product-explainer" />
         </div>
 
         <form

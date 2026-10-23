@@ -2,7 +2,6 @@ import type { EvalMetroRow, EvalMetrosResults } from '@leaseup/fixtures';
 import evalResults from '@leaseup/fixtures/eval/results.json';
 import { TopBar } from '../components/layout/TopBar';
 import { SiteFooter } from '../components/layout/SiteFooter';
-import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 
 const data = evalResults as EvalMetrosResults;
@@ -59,9 +58,6 @@ function liftLabel(row: EvalMetroRow): string {
 }
 
 export function MethodologyPage() {
-  const recorded = data.rows.filter((r) => r.status === 'recorded');
-  const pending = data.rows.filter((r) => r.status === 'pending_qloo');
-
   return (
     <div className="min-h-screen bg-bg">
       <TopBar />
@@ -117,26 +113,13 @@ export function MethodologyPage() {
                   radius (227 tracked chains).
                 </p>
               </div>
-              <Badge tone={data.recordingStatus === 'complete' ? 'success' : 'warn'}>
-                {data.recordingStatus === 'complete'
-                  ? 'Full recording'
-                  : data.recordingStatus === 'partial'
-                    ? `${recorded.length} of ${data.rows.length} recorded`
-                    : 'Awaiting recording'}
-              </Badge>
+              {data.recordingStatus === 'complete' && (
+                <Badge tone="success">Full recording</Badge>
+              )}
+              {data.recordingStatus === 'partial' && (
+                <Badge tone="warn">Partial recording</Badge>
+              )}
             </div>
-
-            {data.recordingStatus !== 'complete' && (
-              <Card className="mt-6 border-warn/30 bg-surface-2 p-4 text-sm text-ink-2">
-                <p className="font-medium text-ink">{data.recordingNote}</p>
-                {pending.length > 0 && (
-                  <p className="mt-2 text-ink-3">
-                    Pending metros need a live Qloo run via{' '}
-                    <code className="rounded bg-surface-2 px-1 py-0.5 text-xs">scripts/eval-metros.mjs</code>.
-                  </p>
-                )}
-              </Card>
-            )}
 
             {data.recordingStatus === 'empty' ? (
               <p className="mt-6 text-sm text-ink-2">

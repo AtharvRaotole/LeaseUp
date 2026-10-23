@@ -56,6 +56,7 @@ export function PortfolioPage() {
   const [draft, setDraft] = useState('');
   const [portfolio, setPortfolio] = useState<PortfolioResponse | null>(null);
   const [busy, setBusy] = useState(false);
+  const [loadingPortfolio, setLoadingPortfolio] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>('property');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
@@ -197,7 +198,10 @@ export function PortfolioPage() {
 
   useEffect(() => {
     if (!id) return;
-    void loadPortfolio(id).catch(() => setError('Could not load this portfolio link.'));
+    setLoadingPortfolio(true);
+    void loadPortfolio(id)
+      .catch(() => setError('Could not load this portfolio link.'))
+      .finally(() => setLoadingPortfolio(false));
   }, [id, loadPortfolio]);
 
   useEffect(() => {
@@ -344,8 +348,24 @@ export function PortfolioPage() {
                     </tbody>
                   </table>
                 </Card>
+              ) : loadingPortfolio ? (
+                <Skeleton className="min-h-[320px] w-full rounded-card" data-testid="portfolio-loading" />
               ) : (
-                <Skeleton className="min-h-[320px] w-full rounded-card" />
+                <Card
+                  className="flex min-h-[320px] flex-col items-center justify-center p-8 text-center"
+                  data-testid="portfolio-empty-state"
+                >
+                  <p className="max-w-sm text-ink-2">
+                    Add up to 10 storefront addresses on the left. We geocode each pin, run Qloo taste
+                    rankings, and show hit rates side by side.
+                  </p>
+                  <a
+                    href="#portfolio-addresses"
+                    className="mt-6 text-sm font-medium text-accent hover:underline"
+                  >
+                    Start with your first address
+                  </a>
+                </Card>
               )}
               {portfolio && (
                 <p className="mt-3 text-meta text-ink-3">
