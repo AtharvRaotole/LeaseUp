@@ -5,11 +5,11 @@ import { formatUserFacingDate } from '../../lib/format-date';
 
 const STEP_ORDER = ['locate', 'taste', 'backtest', 'prospects', 'verify'] as const;
 const STEP_LABELS: Record<string, string> = {
-  locate: 'Locate',
-  taste: 'Read taste',
-  backtest: 'Prove',
-  prospects: 'Find gaps',
-  verify: 'Double check',
+  locate: 'Find your pin on the map',
+  taste: 'Read what shoppers love nearby',
+  backtest: 'Compare picks to real stores',
+  prospects: 'Build your pitch list',
+  verify: 'Double-check with a second map',
 };
 
 export function AgentRunStrip({
@@ -32,7 +32,7 @@ export function AgentRunStrip({
   if (loading) {
     return (
       <div className="rounded-card border border-border bg-surface p-4 no-print" aria-live="polite">
-        <p className="text-label uppercase text-ink-3">Agent run</p>
+        <p className="text-label uppercase text-ink-3">Progress</p>
         <p className="mt-1 text-sm text-ink-2">{STEP_LABELS[activeId]}…</p>
         <ol className="mt-4 space-y-3">
           {STEP_ORDER.map((id) => {
@@ -104,7 +104,7 @@ export function AgentRunStrip({
 
   return (
     <div className="rounded-card border border-border bg-surface p-4 no-print">
-      <p className="text-label uppercase text-ink-3">Agent run</p>
+      <p className="text-label uppercase text-ink-3">Progress</p>
       <ul className="mt-3 space-y-2 text-sm">
         {STEP_ORDER.map((id) => {
           const step = byId.get(id);

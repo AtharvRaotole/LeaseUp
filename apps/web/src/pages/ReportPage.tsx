@@ -38,6 +38,9 @@ import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton'
 import { pipelineCardFromProspect } from '../lib/build-pipeline-card';
 import { StorefrontSizeControl } from '../components/report/StorefrontSizeControl';
 import { CoTenancyMixSection } from '../components/report/CoTenancyMixSection';
+import { ProductExplainer } from '../components/report/ProductExplainer';
+import { ReportFirstRunTour } from '../components/report/ReportFirstRunTour';
+import { ReportLoadingSkeleton } from '../components/report/ReportLoadingSkeleton';
 import { ShareHead } from '../components/seo/ShareHead';
 import { reportShareHead } from '../lib/share-preview';
 
@@ -167,6 +170,8 @@ export function ReportPage() {
     <>
       <ErrorBoundary fallback={<SectionUnavailable />}>
         <div className="print-pitch-block space-y-4">
+          <ProductExplainer className="no-print rounded-card border border-border bg-surface-2/80 px-4 py-3" />
+          <ReportFirstRunTour ready={results.prospects.length > 0} />
           <div className="no-print flex flex-col gap-3 border-b border-border pb-4 lg:flex-row lg:items-center lg:justify-between">
             <QlooRankingToggle
               mode={rankingMode}
@@ -333,13 +338,19 @@ export function ReportPage() {
             )}
             {reportSections}
             {!results && (loading || geocodeChecking) && !simulateError && !geocodeCandidates && (
-              <BrandLoading
-                label={
-                  geocodeChecking
-                    ? 'Checking address on the map…'
-                    : `Running analysis for ${slug ?? 'report'}…`
-                }
-              />
+              <>
+                <ReportLoadingSkeleton />
+                {(loading || geocodeChecking) && (
+                  <BrandLoading
+                    className="py-6"
+                    label={
+                      geocodeChecking
+                        ? 'Checking address on the map…'
+                        : 'Reading local taste and store locations…'
+                    }
+                  />
+                )}
+              </>
             )}
           </div>
           <div

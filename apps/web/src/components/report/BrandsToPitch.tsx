@@ -11,7 +11,9 @@ import { buildReportPath } from '../../lib/report-params';
 import { displayBrandName } from '../../lib/brand-display';
 import { brandCategoryLabel } from '../../lib/brand-category';
 import { verificationShortLabel, verificationSourceHelp } from '../../lib/copy';
+import { localFitTooltip } from '../../lib/broker-copy';
 import { InfoPopover } from '../ui/InfoPopover';
+import { InfoTooltip } from '../ui/InfoTooltip';
 import { pitchExpandedLines } from '../../lib/pitch-detail-copy';
 import { cn } from '../../lib/cn';
 import { AddToPipelineButton } from '../pipeline/AddToPipelineButton';
@@ -22,17 +24,17 @@ const OSM_VERIFY_WAIT_MS = 30_000;
 function PitchPill({
   children,
   tone,
-  title,
+  tooltip,
   spinner,
 }: {
   children: ReactNode;
   tone: 'accent' | 'neutral';
-  title?: string;
+  tooltip?: string;
   spinner?: boolean;
 }) {
   return (
     <span
-      title={title}
+      title={tooltip}
       className={cn(
         'inline-flex h-[22px] max-w-[9.5rem] items-center gap-1 truncate rounded-pill px-2 text-[11px] font-medium leading-none',
         tone === 'accent' ? 'bg-accent-soft text-accent' : 'border border-border bg-surface text-ink-2'
@@ -187,7 +189,10 @@ export function BrandsToPitch({
 
   return (
     <section>
-      <h3 className="mb-3 text-h3 font-semibold text-ink" data-testid="brands-to-pitch">Brands to pitch</h3>
+      <div className="mb-3 flex items-center gap-2">
+        <h3 className="text-h3 font-semibold text-ink" data-testid="brands-to-pitch">Brands to pitch</h3>
+        <InfoTooltip label="Brands local shoppers love that we did not find in your trade area." />
+      </div>
       {dropNotes.length > 0 && (
         <div className="mb-3 space-y-2" aria-live="polite">
           {dropNotes.map((note) => (
@@ -238,7 +243,7 @@ export function BrandsToPitch({
                     <p className="mt-0.5 truncate text-xs text-ink-3">{subline}</p>
                   </div>
                   <div className="flex shrink-0 items-center gap-1.5">
-                    <PitchPill tone="accent">{fitLabel}</PitchPill>
+                    <PitchPill tone="accent" tooltip={localFitTooltip()}>{fitLabel}</PitchPill>
                     {(() => {
                       const pill = verificationPillCopy(
                         prospect,
@@ -249,7 +254,7 @@ export function BrandsToPitch({
                       );
                       return (
                         <span className="inline-flex items-center gap-0.5">
-                          <PitchPill tone="neutral" title={pill.help} spinner={pill.spinner}>
+                          <PitchPill tone="neutral" tooltip={pill.help} spinner={pill.spinner}>
                             {pill.label}
                           </PitchPill>
                           <InfoPopover label={`Store check: ${pill.label}`} body={pill.help} />

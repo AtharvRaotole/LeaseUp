@@ -14,7 +14,11 @@ export function humanizeApiError(status: number, body: { error?: string; code?: 
     };
   }
   if (status >= 500) {
-    return { message: 'Something went wrong on our side. Try again in a moment.', code };
+    return {
+      message:
+        'Our servers could not finish this report. Your address is saved; wait a moment and try again.',
+      code,
+    };
   }
   if (status === 404) {
     return { message: 'We could not find that resource.', code };
