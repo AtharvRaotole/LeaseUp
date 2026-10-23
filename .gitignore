@@ -10,6 +10,8 @@ coverage/
 dist/
 dist-dry/
 apps/worker/public/tiles/*.json
+data/osm-snapshot/raw/
+# OSM snapshot tiles are committed under data/osm-snapshot/tiles and copied to public at build.
 build/
 *.tsbuildinfo
 .next/

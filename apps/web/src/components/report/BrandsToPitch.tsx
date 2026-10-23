@@ -50,7 +50,8 @@ function verificationPillCopy(
   verified: ProspectPack['brand']['verified'],
   entityId: string,
   osmTimedOut: Set<string>,
-  radiusKm: number
+  radiusKm: number,
+  osmSnapshotLabel?: string
 ): { label: string; title: string; spinner: boolean } {
   if (verified === 'verifying...' && osmTimedOut.has(entityId)) {
     return {
@@ -61,7 +62,7 @@ function verificationPillCopy(
   }
   return {
     label: verificationShortLabel(verified),
-    title: verificationTooltip(verified, radiusKm),
+    title: verificationTooltip(verified, radiusKm, osmSnapshotLabel),
     spinner: verified === 'verifying...',
   };
 }
@@ -238,7 +239,8 @@ export function BrandsToPitch({
                         prospect.brand.verified,
                         prospect.brand.entityId,
                         osmTimedOut,
-                        radiusKm
+                        radiusKm,
+                        results.osmSnapshotLabel
                       );
                       return (
                         <PitchPill tone="neutral" title={pill.title} spinner={pill.spinner}>

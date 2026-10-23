@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { AnalysisService } from '../services/analysis';
-import { DEMO_CHIP_ADDRESSES, DEMO_OSM_UNRECORDED_NOTE } from '@leaseup/fixtures';
+import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 
 // All demo chips now ship Overpass recordings; simulate an unrecorded chip.
 vi.mock('@leaseup/fixtures', async (importOriginal) => ({
@@ -33,7 +33,7 @@ function demoEnv() {
 }
 
 describe('Demo mode OSM honesty', () => {
-  it('does not claim 2-source OSM verification without a recorded Overpass file', async () => {
+  it('does not claim 2-source OSM verification without OSM snapshot tiles', async () => {
     const service = new AnalysisService(demoEnv());
     const result = await service.analyze(
       { address: DEMO_CHIP_ADDRESSES.wicker, radius: 10 },
@@ -47,9 +47,9 @@ describe('Demo mode OSM honesty', () => {
     }
 
     if (result.prospects.length > 0) {
-      expect(
-        result.prospects.some((p) => p.coverageNote?.includes(DEMO_OSM_UNRECORDED_NOTE))
-      ).toBe(true);
+      expect(result.prospects.every((p) => p.brand.verified === 'unverified (1 source)')).toBe(
+        true
+      );
     }
   });
 });

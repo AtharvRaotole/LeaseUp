@@ -29,7 +29,6 @@ import { brandCategoryLabel } from '../lib/brand-category';
 const DEMO_DATA_RECORDED_AT = '2026-10-23T03:36:00.000Z';
 import { toOverpassSearchBrand } from '../lib/osm-brand-hints';
 import { OSM_WIKIDATA_BY_ENTITY } from '../data/osm-wikidata-map';
-import type { OverpassSearchBrand } from '../lib/overpass-query';
 import type { QlooLocation } from '../providers/qloo';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
@@ -42,6 +41,12 @@ import {
 import { runStep, type StepEmitter } from '../lib/analysis-steps';
 import { encodeGeohash } from '../lib/geohash';
 import { sha256Short } from '../lib/cache-key';
+import {
+  OsmSnapshotCatalog,
+  osmSnapshotBrandStatus,
+  osmSnapshotDisplayLabel,
+  osmSnapshotRecordedAt,
+} from './osm-snapshot-catalog';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -55,6 +60,8 @@ export class AnalysisService {
   private cache: KVNamespace;
   private mode: 'live' | 'demo';
   private catalog: StoreCatalog;
+  private osmSnapshot: OsmSnapshotCatalog | null;
+  private verifyInflight = new Map<string, Promise<unknown>>();
 
   constructor(env: Env) {
     this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
@@ -68,6 +75,7 @@ export class AnalysisService {
     );
     this.db = env.DB;
     this.catalog = createStoreCatalog(env, this.mode);
+    this.osmSnapshot = env.ASSETS ? new OsmSnapshotCatalog(env.ASSETS, env.CACHE) : null;
   }
 
   async analyze(request: AnalysisRequest, runId: string, ipHash: string): Promise<AnalysisResponse> {
@@ -227,6 +235,8 @@ export class AnalysisService {
         timestamp: this.mode === 'demo' ? DEMO_DATA_RECORDED_AT : new Date().toISOString(),
         mode: this.mode,
         chainPriorWeight: CHAIN_PRIOR_BLEND_WEIGHT,
+        osmSnapshotRecordedAt: this.osmSnapshot ? osmSnapshotRecordedAt() : undefined,
+        osmSnapshotLabel: this.osmSnapshot ? osmSnapshotDisplayLabel() : undefined,
       };
 
       await this.persistRun(runId, location, response, 'completed');
@@ -385,54 +395,13 @@ export class AnalysisService {
       }
     }
 
-    const searchBrands: OverpassSearchBrand[] = eligible.map(({ candidate }) =>
-      toOverpassSearchBrand(
-        candidate.entity_id,
-        candidate.name,
-        [displayBrandName(candidate.entity_id, candidate.name)]
-      )
-    );
-
-    const osmBatch =
-      this.mode === 'demo' && eligible.length > 0
-        ? await this.overpass.queryProspectBrands(
-            location.latitude,
-            location.longitude,
-            radius,
-            searchBrands,
-            location.address
-          )
-        : null;
-
-    const demoOsmUnrecorded = osmBatch?.error === 'demo_osm_unrecorded';
-
     for (const { candidate, nationalCount } of eligible) {
       const displayName = displayBrandName(candidate.entity_id, candidate.name);
-      let verification:
-        | ReturnType<AnalysisService['verifyAbsence']>
-        | { status: 'verifying...'; sources: string[] };
-      if (this.mode === 'demo') {
-        if (demoOsmUnrecorded) {
-          verification = {
-            status: 'unverified (1 source)',
-            sources: ['All The Places (CC0)'],
-          };
-        } else if (osmBatch) {
-          verification = this.verifyAbsence(
-            osmBatch,
-            displayName,
-            candidate.entity_id,
-            candidate.name
-          );
-        } else {
-          verification = {
-            status: 'unverified (1 source)',
-            sources: ['All The Places (CC0)'],
-          };
-        }
-      } else {
-        verification = { status: 'verifying...', sources: ['All The Places (CC0)'] };
-      }
+      const verification = await this.verifyFromOsmSnapshot(
+        candidate.entity_id,
+        location,
+        radius
+      );
 
       if (verification.status === 'conflict - likely present') {
         continue;
@@ -447,8 +416,16 @@ export class AnalysisService {
       );
 
       let coverageNote = this.catalog.getCoverageNote(candidate.entity_id, nationalCount);
-      if (demoOsmUnrecorded) {
-        coverageNote = this.appendCoverageNote(DEMO_OSM_UNRECORDED_NOTE, coverageNote);
+      if (osmSnapshotBrandStatus(candidate.entity_id) === 'failed') {
+        coverageNote = this.appendCoverageNote(
+          'OpenStreetMap snapshot fetch failed for this brand; showing ATP only.',
+          coverageNote
+        );
+      } else if (osmSnapshotBrandStatus(candidate.entity_id) === 'missing') {
+        coverageNote = this.appendCoverageNote(
+          'No Wikidata QID for this brand in our OSM snapshot; showing ATP only.',
+          coverageNote
+        );
       }
 
       prospectPacks.push({
@@ -483,12 +460,89 @@ export class AnalysisService {
     return prospectPacks;
   }
 
+  private async verifyFromOsmSnapshot(
+    entityId: string,
+    location: Location,
+    radiusKm: number
+  ): Promise<{
+    status:
+      | 'verified (2 sources)'
+      | 'unverified (1 source)'
+      | 'conflict - likely present';
+    sources: string[];
+  }> {
+    const sources: string[] = ['All The Places (CC0)'];
+    const snapshotLabel = osmSnapshotDisplayLabel();
+    const status = osmSnapshotBrandStatus(entityId);
+    if (status === 'failed' || status === 'missing' || !this.osmSnapshot) {
+      return { status: 'unverified (1 source)', sources };
+    }
+    const found = await this.osmSnapshot.hasBrandNearby(
+      entityId,
+      location.latitude,
+      location.longitude,
+      radiusKm
+    );
+    if (found) {
+      return {
+        status: 'conflict - likely present',
+        sources: [...sources, `${snapshotLabel} (store found)`],
+      };
+    }
+    return {
+      status: 'verified (2 sources)',
+      sources: [...sources, snapshotLabel],
+    };
+  }
+
   async warmOsmVerification(
     location: Location,
     radiusKm: number,
     prospects: ProspectPack[]
   ): Promise<void> {
     await this.applyOsmVerification(location, radiusKm, prospects);
+    void this.refreshLiveOverpassOptional(location, radiusKm, prospects);
+  }
+
+  /** Live Overpass refresh only; never downgrades snapshot-based verification. */
+  private async refreshLiveOverpassOptional(
+    location: Location,
+    radiusKm: number,
+    prospects: ProspectPack[]
+  ): Promise<void> {
+    if (this.mode !== 'live') return;
+    const pending = prospects.filter((p) => p.brand.verified === 'unverified (1 source)');
+    if (pending.length === 0) return;
+    const lockKey = `verify:live-overpass:${await sha256Short(
+      `${location.latitude},${location.longitude}:${radiusKm}:${pending.map((p) => p.brand.entityId).sort().join(',')}`
+    )}`;
+    const existing = await this.cache.get(lockKey);
+    if (existing) return;
+    await this.cache.put(lockKey, '1', { expirationTtl: 60 });
+    const searchBrands = pending.map((pack) =>
+      toOverpassSearchBrand(pack.brand.entityId, pack.brand.name)
+    );
+    const osmResult = await this.overpass.queryProspectBrands(
+      location.latitude,
+      location.longitude,
+      radiusKm,
+      searchBrands,
+      location.address
+    );
+    if (!osmResult.error) {
+      for (const pack of pending.slice(0, 5)) {
+        const hint = this.verifyAbsence(osmResult, pack.brand.name, pack.brand.entityId);
+        if (hint.status === 'conflict - likely present') {
+          console.log(
+            JSON.stringify({
+              event: 'overpass_live_conflict_hint',
+              brand: pack.brand.name,
+              entityId: pack.brand.entityId,
+            })
+          );
+        }
+      }
+    }
   }
 
   private async verifyResultCacheKey(
@@ -496,10 +550,7 @@ export class AnalysisService {
     radiusKm: number,
     prospects: ProspectPack[]
   ): Promise<string | null> {
-    const pendingIds = prospects
-      .filter((p) => p.brand.verified === 'verifying...')
-      .map((p) => p.brand.entityId)
-      .sort();
+    const pendingIds = prospects.map((p) => p.brand.entityId).sort();
     if (pendingIds.length === 0) return null;
     const gh5 = encodeGeohash(location.latitude, location.longitude, 5);
     const idHash = await sha256Short(pendingIds.join(','));
@@ -519,19 +570,24 @@ export class AnalysisService {
       unavailable: boolean;
     };
   }> {
-    const pending = prospects.filter((p) => p.brand.verified === 'verifying...');
-    if (pending.length === 0) {
-      return {
-        prospects,
-        summary: { verifiedTwoSource: 0, singleSource: 0, conflicts: 0, unavailable: false },
-      };
-    }
-
     const verifyCacheKey = await this.verifyResultCacheKey(location, radiusKm, prospects);
     if (verifyCacheKey) {
       const cached = await this.cache.get(verifyCacheKey);
       if (cached) {
-        return JSON.parse(cached) as {
+        const parsed = JSON.parse(cached) as {
+          prospects: ProspectPack[];
+          summary: {
+            verifiedTwoSource: number;
+            singleSource: number;
+            conflicts: number;
+            unavailable: boolean;
+          };
+        };
+        if (!parsed.summary.unavailable) return parsed;
+      }
+      const inflight = this.verifyInflight.get(verifyCacheKey);
+      if (inflight) {
+        return (await inflight) as {
           prospects: ProspectPack[];
           summary: {
             verifiedTwoSource: number;
@@ -543,61 +599,58 @@ export class AnalysisService {
       }
     }
 
-    const searchBrands = pending.map((pack) =>
-      toOverpassSearchBrand(pack.brand.entityId, pack.brand.name)
-    );
+    const compute = async () => {
+      let verifiedTwoSource = 0;
+      let singleSource = 0;
+      let conflicts = 0;
 
-    const osmResult = await this.overpass.queryProspectBrands(
-      location.latitude,
-      location.longitude,
-      radiusKm,
-      searchBrands,
-      location.address
-    );
+      const mapped = await Promise.all(
+        prospects.map(async (pack) => {
+          const verification = await this.verifyFromOsmSnapshot(
+            pack.brand.entityId,
+            location,
+            radiusKm
+          );
+          if (verification.status === 'verified (2 sources)') verifiedTwoSource += 1;
+          if (verification.status === 'unverified (1 source)') singleSource += 1;
+          if (verification.status === 'conflict - likely present') conflicts += 1;
+          return {
+            ...pack,
+            brand: {
+              ...pack.brand,
+              verified: verification.status,
+              verificationSources: verification.sources,
+            },
+          };
+        })
+      );
 
-    let verifiedTwoSource = 0;
-    let singleSource = 0;
-    let conflicts = 0;
+      const updated = mapped.filter((pack) => pack.brand.verified !== 'conflict - likely present');
 
-    const updated = prospects
-      .map((pack) => {
-        if (pack.brand.verified !== 'verifying...') {
-          return pack;
-        }
-        const verification = this.verifyAbsence(
-          osmResult,
-          pack.brand.name,
-          pack.brand.entityId
-        );
-        if (verification.status === 'verified (2 sources)') verifiedTwoSource += 1;
-        if (verification.status === 'unverified (1 source)') singleSource += 1;
-        if (verification.status === 'conflict - likely present') conflicts += 1;
-        return {
-          ...pack,
-          brand: {
-            ...pack.brand,
-            verified: verification.status,
-            verificationSources: verification.sources,
-          },
-        };
-      })
-      .filter((pack) => pack.brand.verified !== 'conflict - likely present');
+      const payload = {
+        prospects: updated,
+        summary: {
+          verifiedTwoSource,
+          singleSource,
+          conflicts,
+          unavailable: false,
+        },
+      };
 
-    const payload = {
-      prospects: updated,
-      summary: {
-        verifiedTwoSource,
-        singleSource,
-        conflicts,
-        unavailable: !!osmResult.error,
-      },
+      if (verifyCacheKey) {
+        await this.cache.put(verifyCacheKey, JSON.stringify(payload), { expirationTtl: 3600 });
+      }
+
+      return payload;
     };
 
+    const promise = compute();
     if (verifyCacheKey) {
-      await this.cache.put(verifyCacheKey, JSON.stringify(payload), { expirationTtl: 3600 });
+      this.verifyInflight.set(verifyCacheKey, promise);
+      promise.finally(() => this.verifyInflight.delete(verifyCacheKey));
     }
 
-    return payload;
+    return promise;
   }
 
   private verifyAbsence(

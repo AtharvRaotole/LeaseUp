@@ -20,7 +20,11 @@ export function HowWeKnowSection({ results }: { results: AnalysisResponse }) {
               <ul className="list-disc pl-5 space-y-1">
                 <li>Qloo Taste AI rankings (mode: {results.mode ?? 'demo'})</li>
                 <li>All The Places store locations (CC0)</li>
-                <li>OpenStreetMap via Overpass for second-source checks</li>
+                <li>
+                  {results.osmSnapshotLabel
+                    ? `${results.osmSnapshotLabel} for second-source checks`
+                    : 'OpenStreetMap snapshot for second-source checks'}
+                </li>
                 <li>Run {results.runId.slice(0, 8)} on {formatUserFacingDate(results.timestamp)}</li>
                 {hideFit && (
                   <li>
