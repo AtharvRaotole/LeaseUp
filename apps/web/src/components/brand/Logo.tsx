@@ -44,6 +44,28 @@ function MarkIcon({ box }: { box: number }) {
   );
 }
 
+/** Spinning-loader glyph (same mark as Logo). */
+export function LeaseUpGlyph({
+  className,
+  size = 24,
+  title,
+}: {
+  className?: string;
+  size?: number;
+  title?: string;
+}) {
+  return (
+    <span
+      className={cn('inline-flex text-accent', className)}
+      role={title ? 'img' : undefined}
+      aria-hidden={title ? undefined : true}
+      aria-label={title}
+    >
+      <MarkIcon box={size} />
+    </span>
+  );
+}
+
 export function Logo({
   variant = 'lockup',
   size = 'sm',

@@ -2,20 +2,22 @@ import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { dataConfidenceLabel, dataConfidenceSubtitle } from '../../lib/copy';
 import { placeHeadlineLabel } from '../../lib/location-label';
+import { hitRateStatLabel } from '../../lib/hit-rate';
 
 export function HeadlineCard({
   results,
   radiusKm,
   chipSlug,
+  backtestOverride,
 }: {
   results: AnalysisResponse;
   radiusKm: number;
   chipSlug?: string | null;
+  backtestOverride?: AnalysisResponse['backtest'];
 }) {
   const count = results.prospects.length;
   const area = placeHeadlineLabel(results.location, chipSlug);
-  const present = results.backtest.presentInTop10 ?? Math.round(results.backtest.precisionAt10 * 10);
-  const hitLabel = `${present} of 10`;
+  const hitLabel = hitRateStatLabel(backtestOverride ?? results.backtest);
   const analyzed = results.rankings?.length ?? 0;
 
   return (
