@@ -1,41 +1,40 @@
 import { Hono } from 'hono';
-import {
-  wickerparkFixture,
-  seviervilleFixture,
-  blendWithNationalPrior,
-} from '@leaseup/fixtures';
+import { wickerparkFixture, seviervilleFixture } from '@leaseup/fixtures';
 
 export const compareRouter = new Hono();
 
-compareRouter.get('/flip', () => {
-  const wickerInsights = wickerparkFixture.insights.map((row) => ({
-    entity_id: row.entity_id,
+function topFromFixture(
+  fixture: typeof wickerparkFixture,
+  limit = 8
+): Array<{ entityId: string; name: string; qlooRank: number; affinity: number }> {
+  return fixture.insights.slice(0, limit).map((row, index) => ({
+    entityId: row.entity_id,
     name: row.name,
-    query: { affinity: row.affinity },
+    qlooRank: index + 1,
+    affinity: row.affinity,
   }));
-  const seviervilleInsights = seviervilleFixture.insights.map((row) => ({
-    entity_id: row.entity_id,
-    name: row.name,
-    query: { affinity: row.affinity },
-  }));
+}
 
-  const wickerBlended = blendWithNationalPrior(wickerInsights);
-  const seviervilleBlended = blendWithNationalPrior(seviervilleInsights);
+compareRouter.get('/flip', () => {
+  const wickerTop = topFromFixture(wickerparkFixture);
+  const seviervilleTop = topFromFixture(seviervilleFixture);
 
   const seviervilleRankById = new Map(
-    seviervilleBlended.map((row) => [row.entity_id, row.qlooRank])
+    seviervilleFixture.insights.map((row, index) => [row.entity_id, index + 1])
   );
-  const wickerRankById = new Map(wickerBlended.map((row) => [row.entity_id, row.qlooRank]));
+  const wickerRankById = new Map(
+    wickerparkFixture.insights.map((row, index) => [row.entity_id, index + 1])
+  );
 
-  const sharedIds = wickerInsights
+  const sharedIds = wickerparkFixture.insights
     .map((row) => row.entity_id)
     .filter((id) => seviervilleRankById.has(id));
 
   const flipExamples = sharedIds
     .map((entityId) => {
       const name =
-        wickerInsights.find((i) => i.entity_id === entityId)?.name ||
-        seviervilleInsights.find((i) => i.entity_id === entityId)?.name ||
+        wickerparkFixture.insights.find((i) => i.entity_id === entityId)?.name ||
+        seviervilleFixture.insights.find((i) => i.entity_id === entityId)?.name ||
         entityId;
       const wickerRank = wickerRankById.get(entityId) ?? 99;
       const seviervilleRank = seviervilleRankById.get(entityId) ?? 99;
@@ -53,21 +52,11 @@ compareRouter.get('/flip', () => {
   return Response.json({
     left: {
       name: wickerparkFixture.location.name,
-      top: wickerBlended.slice(0, 8).map((row) => ({
-        entityId: row.entity_id,
-        name: row.name,
-        qlooRank: row.qlooRank,
-        affinity: row.query?.affinity ?? 0,
-      })),
+      top: wickerTop,
     },
     right: {
       name: seviervilleFixture.location.name,
-      top: seviervilleBlended.slice(0, 8).map((row) => ({
-        entityId: row.entity_id,
-        name: row.name,
-        qlooRank: row.qlooRank,
-        affinity: row.query?.affinity ?? 0,
-      })),
+      top: seviervilleTop,
     },
     flipExamples,
     source: 'Recorded Qloo fixtures (demo)',

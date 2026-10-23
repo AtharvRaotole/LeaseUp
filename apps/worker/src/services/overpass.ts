@@ -1,14 +1,9 @@
 /**
  * OSM Overpass API client for second-source absence verification
- * 
- * Queries OpenStreetMap for branded retail locations within a radius.
- * Used as a second source to verify absence detected by All The Places dataset.
- * 
- * Rate limits: ~2 req/s per IP, timeout 180s server-side
- * Caches responses in KV with 24h TTL
  */
 
 import type { KVNamespace } from '@cloudflare/workers-types';
+import { matchDemoFixtureId, overpassDemoByFixture } from '@leaseup/fixtures';
 
 export interface OverpassElement {
   type: 'node' | 'way' | 'relation';
@@ -33,31 +28,43 @@ export interface OverpassBrand {
   lon: number;
 }
 
+const OVERPASS_ENDPOINTS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+];
+
 export class OverpassClient {
-  private baseUrl: string;
   private cache: KVNamespace;
   private timeout: number;
+  private demoMode: boolean;
 
-  constructor(cache: KVNamespace, timeout: number = 5000) {
-    this.baseUrl = 'https://overpass-api.de/api/interpreter';
+  constructor(cache: KVNamespace, timeout: number = 8000, demoMode = false) {
     this.cache = cache;
     this.timeout = timeout;
+    this.demoMode = demoMode;
   }
 
   /**
-   * Query for branded retail locations within radius
-   * 
-   * Searches for nodes/ways with brand, brand:wikidata, or name tags.
-   * Implements request timeout, KV caching (24h), and graceful error handling.
+   * Query branded retail locations within radius (single batched request).
    */
   async queryBrands(
     lat: number,
     lng: number,
-    radiusKm: number
+    radiusKm: number,
+    addressForDemo?: string
   ): Promise<{ brands: OverpassBrand[]; cached: boolean; error?: string }> {
+    if (this.demoMode && addressForDemo) {
+      const fixtureId = matchDemoFixtureId(addressForDemo);
+      if (fixtureId && overpassDemoByFixture[fixtureId]) {
+        return {
+          brands: overpassDemoByFixture[fixtureId].brands,
+          cached: true,
+        };
+      }
+    }
+
     const cacheKey = `overpass:${lat.toFixed(4)},${lng.toFixed(4)}:${radiusKm}`;
-    
-    // Check cache first (24h TTL)
+
     const cached = await this.cache.get(cacheKey, 'json') as OverpassResponse | null;
     if (cached) {
       return {
@@ -66,74 +73,57 @@ export class OverpassClient {
       };
     }
 
-    // Build Overpass query (QL format)
-    // Query branded retail POIs (nodes and ways) within radius
-    const radiusMeters = radiusKm * 1000;
+    const radiusMeters = Math.round(radiusKm * 1000);
     const query = `
-      [out:json][timeout:${Math.floor(this.timeout / 1000)}];
+      [out:json][timeout:${Math.max(1, Math.floor(this.timeout / 1000) - 1)}];
       (
         node["brand"](around:${radiusMeters},${lat},${lng});
         way["brand"](around:${radiusMeters},${lat},${lng});
         node["brand:wikidata"](around:${radiusMeters},${lat},${lng});
         way["brand:wikidata"](around:${radiusMeters},${lat},${lng});
       );
-      out center tags ${Math.min(50, radiusKm * 5)};
+      out center tags 200;
     `.trim();
 
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+    for (const baseUrl of OVERPASS_ENDPOINTS) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
-      const response = await fetch(this.baseUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'User-Agent': 'LeaseUp/1.0 (hackathon@qloo.com)',
-        },
-        body: `data=${encodeURIComponent(query)}`,
-        signal: controller.signal,
-      });
+        const response = await fetch(baseUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'User-Agent': 'LeaseUp/1.0 (hackathon@qloo.com)',
+          },
+          body: `data=${encodeURIComponent(query)}`,
+          signal: controller.signal,
+        });
 
-      clearTimeout(timeoutId);
+        clearTimeout(timeoutId);
 
-      if (!response.ok) {
-        const statusText = `${response.status} ${response.statusText}`;
-        console.warn(`Overpass API error: ${statusText}`);
+        if (!response.ok) {
+          continue;
+        }
+
+        const data = await response.json() as OverpassResponse;
+
+        await this.cache.put(cacheKey, JSON.stringify(data), {
+          expirationTtl: 86400,
+        });
+
         return {
-          brands: [],
+          brands: this.parseResponse(data),
           cached: false,
-          error: statusText,
         };
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') {
+          return { brands: [], cached: false, error: 'timeout' };
+        }
       }
-
-      const data = await response.json() as OverpassResponse;
-      
-      // Cache successful response (24h TTL)
-      await this.cache.put(cacheKey, JSON.stringify(data), {
-        expirationTtl: 86400, // 24 hours
-      });
-
-      return {
-        brands: this.parseResponse(data),
-        cached: false,
-      };
-    } catch (err) {
-      if ((err as Error).name === 'AbortError') {
-        console.warn('Overpass API timeout');
-        return {
-          brands: [],
-          cached: false,
-          error: 'timeout',
-        };
-      }
-      
-      console.warn('Overpass API fetch error:', (err as Error).message);
-      return {
-        brands: [],
-        cached: false,
-        error: (err as Error).message,
-      };
     }
+
+    return { brands: [], cached: false, error: 'overpass_unavailable' };
   }
 
   private parseResponse(data: OverpassResponse): OverpassBrand[] {
@@ -144,15 +134,13 @@ export class OverpassClient {
 
       const lat = element.lat ?? element.center?.lat;
       const lon = element.lon ?? element.center?.lon;
-      
+
       if (!lat || !lon) continue;
 
-      // Extract brand info from tags
       const brand = element.tags['brand'];
       const brandWikidata = element.tags['brand:wikidata'];
       const name = element.tags['name'];
 
-      // Must have at least brand or name
       if (!brand && !name) continue;
 
       brands.push({

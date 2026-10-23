@@ -47,10 +47,22 @@ app.use('/api/*', rateLimiter({
   keyPrefix: 'global',
 }));
 
+app.use('/api/analyze/stream', rateLimiter({
+  windowMs: 60_000,
+  maxRequests: 10,
+  keyPrefix: 'analyze-stream',
+}));
+
 app.use('/api/analyze', rateLimiter({
   windowMs: 60_000,
   maxRequests: 10,
   keyPrefix: 'analyze',
+}));
+
+app.use('/api/outreach', rateLimiter({
+  windowMs: 60_000,
+  maxRequests: 5,
+  keyPrefix: 'outreach',
 }));
 
 app.route('/api/health', healthRouter);

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@leaseup/contracts": "workspace:*",
+    "@leaseup/fixtures": "workspace:*",
     "@tanstack/react-query": "^5.62.7",
     "framer-motion": "^11.15.0",
     "maplibre-gl": "^4.7.1",

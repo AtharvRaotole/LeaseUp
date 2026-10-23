@@ -22,15 +22,15 @@ export function rateLimiter(options: RateLimitOptions): MiddlewareHandler<{ Bind
   return async (c: Context<{ Bindings: Env }>, next) => {
     const ip = c.req.header('cf-connecting-ip') || 'unknown';
     const ipHash = await hashIP(ip);
-    const key = `${options.keyPrefix}:${ipHash}`;
     const now = Date.now();
     const windowStart = Math.floor(now / options.windowMs) * options.windowMs;
+    const key = `${options.keyPrefix}:${ipHash}:${windowStart}`;
 
     const db = c.env.DB;
-    
+
     const existing = await db
-      .prepare('SELECT count FROM rate_limits WHERE id = ? AND window_start = ?')
-      .bind(key, windowStart)
+      .prepare('SELECT count FROM rate_limits WHERE id = ?')
+      .bind(key)
       .first<{ count: number }>();
 
     if (existing && existing.count >= options.maxRequests) {

@@ -6,6 +6,8 @@ import {
   seviervilleFixture,
 } from '@leaseup/fixtures';
 import { ConfigurationError, UpstreamError } from '../lib/errors';
+import { sha256Short } from '../lib/cache-key';
+import { DemoModeRequiredError } from '../lib/demo-mode';
 
 export interface QlooInsight {
   entity_id: string;
@@ -32,6 +34,36 @@ export interface QlooResponse<T> {
   };
 }
 
+export type QlooLocation =
+  | { kind: 'query'; query: string }
+  | { kind: 'point'; latitude: number; longitude: number; radiusKm: number };
+
+type RawHeatmapCell = {
+  latitude?: number;
+  longitude?: number;
+  affinity_rank?: number;
+  affinity?: number;
+  popularity?: number;
+  location?: { latitude?: number; longitude?: number };
+};
+
+export function normalizeHeatmapCells(raw: RawHeatmapCell[]): QlooHeatmapCell[] {
+  const cells: QlooHeatmapCell[] = [];
+  for (const cell of raw) {
+    const latitude = cell.location?.latitude ?? cell.latitude;
+    const longitude = cell.location?.longitude ?? cell.longitude;
+    if (latitude === undefined || longitude === undefined) continue;
+    cells.push({
+      latitude,
+      longitude,
+      affinity_rank: cell.affinity_rank ?? cell.affinity ?? 0,
+      affinity: cell.affinity,
+      popularity: cell.popularity,
+    });
+  }
+  return cells;
+}
+
 export class QlooClient {
   private baseUrl: string;
   private apiKey: string;
@@ -55,19 +87,25 @@ export class QlooClient {
   }
 
   async getBrandInsights(params: {
-    location: string;
+    location: QlooLocation;
     brandIds?: string[];
     tags?: string[];
     take?: number;
     runId?: string;
   }): Promise<QlooInsight[]> {
     if (this.mode === 'demo') {
-      return this.getDemoInsights(params.location);
+      if (params.location.kind !== 'query') {
+        throw new DemoModeRequiredError();
+      }
+      return this.getDemoInsights(params.location.query);
     }
 
     const take = params.take ?? 50;
-    const brandKey = params.brandIds?.length ? params.brandIds.join(',') : 'all';
-    const cacheKey = `insights:${params.location}:${params.tags?.join(',') || 'all'}:${brandKey}:take=${take}`;
+    const locationKey = this.locationCacheKey(params.location);
+    const brandKey = params.brandIds?.length
+      ? await sha256Short(params.brandIds.join(','))
+      : 'all';
+    const cacheKey = `insights:${locationKey}:${params.tags?.join(',') || 'all'}:${brandKey}:take=${take}`;
 
     const cached = await this.cache.get(cacheKey);
     if (cached) {
@@ -84,7 +122,7 @@ export class QlooClient {
 
     const url = new URL('/v2/insights', this.baseUrl);
     url.searchParams.set('filter.type', 'urn:entity:brand');
-    url.searchParams.set('signal.location.query', params.location);
+    this.applyLocationToUrl(url, params.location);
 
     if (params.brandIds && params.brandIds.length > 0) {
       url.searchParams.set('filter.results.entities', params.brandIds.join(','));
@@ -133,7 +171,7 @@ export class QlooClient {
   }
 
   async getHeatmap(params: {
-    location: string;
+    location: QlooLocation;
     entityId?: string;
     runId?: string;
   }): Promise<QlooHeatmapCell[]> {
@@ -141,7 +179,8 @@ export class QlooClient {
       return [];
     }
 
-    const cacheKey = `heatmap:${params.location}:${params.entityId || 'all'}`;
+    const locationKey = this.locationCacheKey(params.location);
+    const cacheKey = `heatmap:${locationKey}:${params.entityId || 'all'}`;
 
     const cached = await this.cache.get(cacheKey);
     if (cached) {
@@ -158,7 +197,7 @@ export class QlooClient {
 
     const url = new URL('/v2/insights', this.baseUrl);
     url.searchParams.set('filter.type', 'urn:heatmap');
-    url.searchParams.set('filter.location.query', params.location);
+    this.applyLocationToUrl(url, params.location, 'heatmap');
 
     if (params.entityId) {
       url.searchParams.set('signal.interests.entities', params.entityId);
@@ -180,8 +219,8 @@ export class QlooClient {
       throw this.mapQlooHttpError(response.status, response.statusText, 'heatmap');
     }
 
-    const data = (await response.json()) as QlooResponse<QlooHeatmapCell>;
-    const cells = data.results?.heatmap || [];
+    const data = (await response.json()) as QlooResponse<RawHeatmapCell>;
+    const cells = normalizeHeatmapCells(data.results?.heatmap || []);
 
     await recordApiMetric(this.db, {
       runId: params.runId,
@@ -197,6 +236,28 @@ export class QlooClient {
     });
 
     return cells;
+  }
+
+  private locationCacheKey(location: QlooLocation): string {
+    if (location.kind === 'point') {
+      return `${location.latitude},${location.longitude}:r${location.radiusKm}`;
+    }
+    return `q:${location.query}`;
+  }
+
+  private applyLocationToUrl(url: URL, location: QlooLocation, kind: 'insights' | 'heatmap' = 'insights') {
+    if (location.kind === 'point') {
+      url.searchParams.set('signal.location.latitude', String(location.latitude));
+      url.searchParams.set('signal.location.longitude', String(location.longitude));
+      url.searchParams.set('filter.location.radius', String(location.radiusKm));
+      return;
+    }
+
+    if (kind === 'heatmap') {
+      url.searchParams.set('filter.location.query', location.query);
+    } else {
+      url.searchParams.set('signal.location.query', location.query);
+    }
   }
 
   private mapQlooHttpError(statusCode: number, statusText: string, kind = 'insights'): UpstreamError {
@@ -259,8 +320,8 @@ export class QlooClient {
     }
   }
 
-  private getDemoInsights(location: string): QlooInsight[] {
-    const fixture = this.fixtureForLocation(location);
+  private getDemoInsights(fixtureName: string): QlooInsight[] {
+    const fixture = this.fixtureForQuery(fixtureName);
     return fixture.insights.map((row) => ({
       entity_id: row.entity_id,
       name: row.name,
@@ -271,19 +332,17 @@ export class QlooClient {
     }));
   }
 
-  private fixtureForLocation(location: string) {
-    const lowerLocation = location.toLowerCase();
-
-    if (lowerLocation.includes('wicker') || lowerLocation.includes('milwaukee')) {
+  private fixtureForQuery(query: string) {
+    if (query === wickerparkFixture.location.name) {
       return wickerparkFixture;
     }
-    if (lowerLocation.includes('sevierville') || lowerLocation.includes('collier')) {
+    if (query === seviervilleFixture.location.name) {
       return seviervilleFixture;
     }
-    if (lowerLocation.includes('boulder') || lowerLocation.includes('pearl')) {
+    if (query === boulderFixture.location.name) {
       return boulderFixture;
     }
 
-    return wickerparkFixture;
+    throw new DemoModeRequiredError();
   }
 }
