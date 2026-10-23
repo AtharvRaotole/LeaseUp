@@ -1,6 +1,7 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 import { brandCategoryLabel } from './brand-category';
 import { tasteFitMatchHerePhrase } from './fit-display';
+import { shopperInterestHighlight } from './broker-copy';
 
 /** Broker-facing one-line summary built only from fields on the prospect payload. */
 export function prospectOneLineReason(
@@ -28,7 +29,7 @@ export function prospectOneLineReason(
   const taste = prospect.tradeAreaTaste;
   const tasteSignal = taste?.tags?.[0] ?? taste?.audiences?.[0];
   if (tasteSignal?.name?.trim()) {
-    parts.push(`Shoppers here over-index for ${tasteSignal.name.trim()}`);
+    parts.push(shopperInterestHighlight(tasteSignal.name.trim()));
   }
 
   const category =

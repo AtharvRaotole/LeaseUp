@@ -1,9 +1,7 @@
 import type { AnalysisResponse, PitchPackSnapshot, ProspectPack } from '@leaseup/contracts';
 import { displayBrandName } from './brand-display';
-import { fitTopPercentPhrase } from './fit-display';
-import { formatTradeAreaTasteRow } from './trade-area-taste-copy';
-import { absenceVerificationSummary } from './absence-verification-copy';
 import { formatUserFacingDate } from './format-date';
+import { whyBrandBulletLines } from './why-brand-lines';
 
 export function pitchPropertyHeadline(snapshot: PitchPackSnapshot): string {
   return (
@@ -31,38 +29,13 @@ export function pitchBrandFitLines(
   prospect: ProspectPack,
   snapshot: PitchPackSnapshot
 ): string[] {
-  const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   const total = snapshot.rankingsTotal ?? prospect.brand.affinityRank;
-  const rank = prospect.brand.affinityRank;
-  const lines: string[] = [
-    `Local taste rank #${rank} of ${total} (${fitTopPercentPhrase(
-      rank,
-      total,
-      prospect.brand.tasteFitBeyondChainPercentile
-    )}).`,
-  ];
-
-  if (prospect.nearestExistingStoreKm !== undefined) {
-    lines.push(`Nearest ${name} is ${prospect.nearestExistingStoreKm.toFixed(1)} km from this pin.`);
-  } else {
-    const stubResults = {
-      osmSnapshotLabel: snapshot.osmSnapshotLabel,
-      osmSnapshotRecordedAt: snapshot.osmSnapshotRecordedAt,
-    } as AnalysisResponse;
-    lines.push(absenceVerificationSummary(prospect, snapshot.radiusKm, stubResults));
-  }
-
-  const taste = prospect.tradeAreaTaste;
-  if (taste?.tags?.length) {
-    lines.push(
-      `Qloo tags over-indexing here: ${taste.tags.map(formatTradeAreaTasteRow).join('; ')}.`
-    );
-  }
-  if (taste?.audiences?.length) {
-    lines.push(
-      `Qloo audiences over-indexing here: ${taste.audiences.map(formatTradeAreaTasteRow).join('; ')}.`
-    );
-  }
+  const stubResults = {
+    rankings: Array.from({ length: total }, () => ({})),
+    osmSnapshotLabel: snapshot.osmSnapshotLabel,
+    osmSnapshotRecordedAt: snapshot.osmSnapshotRecordedAt,
+  } as AnalysisResponse;
+  const lines = whyBrandBulletLines(prospect, stubResults, snapshot.radiusKm);
   for (const reason of prospect.reasons.slice(0, 3)) {
     if (reason.trim()) lines.push(reason.trim());
   }

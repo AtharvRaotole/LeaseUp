@@ -123,7 +123,7 @@ export function PitchPage() {
         <footer className="pitch-methodology mt-10 border-t border-border pt-6 text-sm text-ink-2 print:mt-4 print:pt-3">
           <h2 className="font-display font-semibold text-lg text-ink print:text-base">Data sources</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5 print:text-xs">
-            <li>Qloo taste rankings ({snapshot.mode ?? 'demo'} mode) for this address</li>
+            <li>Local shopper taste from Qloo ({snapshot.mode ?? 'demo'} mode) for this address</li>
             <li>All The Places store locations (CC0)</li>
             <li>
               {snapshot.osmSnapshotLabel ?? 'OpenStreetMap'} for second-source store checks

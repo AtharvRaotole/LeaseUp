@@ -53,7 +53,8 @@ export function fitTopPercentPhrase(
   tasteFitBeyondChainPercentile?: number
 ): string {
   if (tasteFitBeyondChainPercentile !== undefined) {
-    return `stronger taste fit than ${tasteFitBeyondChainPercentile}% of brands scored here`;
+    const top = tasteFitTopBucketFromBeyondChainPercentile(tasteFitBeyondChainPercentile);
+    return `top ${top}% fit among brands we scored here`;
   }
-  return `top ${fitTopPercent(rank, totalScored)}%`;
+  return `top ${fitTopPercent(rank, totalScored)}% of brands scored here`;
 }
