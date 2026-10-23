@@ -13,6 +13,7 @@
     "screenshots": "node scripts/ui-snapshots.mjs",
     "brand:assets": "node scripts/generate-brand-assets.mjs",
     "brand:screenshots": "node scripts/brand-screenshots.mjs",
+    "story:screenshots": "node scripts/story-screenshots.mjs",
     "deploy": "pnpm --filter @leaseup/worker deploy"
   },
   "devDependencies": {
