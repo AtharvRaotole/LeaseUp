@@ -33,11 +33,7 @@ describe('REI SoHo on committed geotiles (350 Bleecker)', () => {
   });
 
   it('finds REI within trade area (after supplement), not a distant-only false absence', async () => {
-    const cache = {
-      get: async () => null,
-      put: async () => undefined,
-    } as unknown as KVNamespace;
-    const responseCache = new ResponseCache(cache);
+    const responseCache = new ResponseCache();
     const catalog = new GeoTileStoreCatalog(assets, responseCache);
     const osm = new OsmSnapshotCatalog(assets, responseCache);
 
