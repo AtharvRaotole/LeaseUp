@@ -61,7 +61,7 @@ Brand batches: `filter.results.entities` comma-separated, max 45 ids per request
 For a brand entity and trade-area pin, Qloo returns locally over-indexing **tags** and **audiences** when you anchor taste on the brand and location:
 
 ```http
-GET /v2/insights?filter.type=urn:tag&signal.location=POINT(-105.2805434%2040.0179234)&signal.location.radius=10000&signal.interests.entities=205AF33F-118E-4C49-9721-6BDBAF981DA0&take=25&feature.explainability=true
+GET /v2/insights?filter.type=urn:tag&signal.location=POINT(-105.2805434%2040.0179234)&signal.location.radius=10000&signal.interests.entities=C70CE2B8-0AD1-4150-BF18-5A6347F2E860&take=25&feature.explainability=true
 X-Api-Key: <secret>
 ```
 

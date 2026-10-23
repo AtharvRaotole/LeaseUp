@@ -20,16 +20,17 @@ const { seviervilleFixture } = require('../packages/fixtures/dist/sevierville.js
 const key = process.env.QLOO_API_KEY;
 const baseUrl = process.env.QLOO_BASE_URL || 'https://hackathon.api.qloo.com';
 
+/** Demo chip pins; brands are top-ranked prospects (no store in radius) as of Oct 2026 fixtures. */
 const TARGETS = {
   boulder: {
     fixture: boulderFixture,
-    brandEntityId: '205AF33F-118E-4C49-9721-6BDBAF981DA0',
-    brandName: 'Recreational Equipment Inc',
+    brandEntityId: 'C70CE2B8-0AD1-4150-BF18-5A6347F2E860',
+    brandName: 'Nike',
   },
   wicker: {
     fixture: wickerparkFixture,
-    brandEntityId: '1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23',
-    brandName: 'Whole Foods Market',
+    brandEntityId: 'AC8F9047-F23D-4A54-BBAA-A3CBD2991C02',
+    brandName: 'Vans',
   },
   sevierville: {
     fixture: seviervilleFixture,
@@ -99,11 +100,11 @@ async function fetchInsights(filterType, site, brandEntityId) {
   return { json: JSON.parse(text), url: url.toString() };
 }
 
-function loadMockRaw(chip, kind) {
+function loadMockRaw(chip, brandEntityId, kind) {
   const path = join(
     process.cwd(),
     'packages/fixtures/src/brand-explainability/captures',
-    `${chip}-${TARGETS[chip].brandEntityId}-${kind}.json`
+    `${chip}-${brandEntityId}-${kind}.json`
   );
   if (!existsSync(path)) {
     throw new Error(`Missing mock capture ${path}`);
@@ -149,7 +150,7 @@ async function main() {
       let json;
       let url;
       if (useMock) {
-        json = loadMockRaw(chip, kind);
+        json = loadMockRaw(chip, meta.brandEntityId, kind);
         url = `mock:captures/${chip}-${meta.brandEntityId}-${kind}.json`;
       } else {
         const fetched = await fetchInsights(filterType, site, meta.brandEntityId);
