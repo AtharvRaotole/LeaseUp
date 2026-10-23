@@ -11,6 +11,7 @@ import { healthRouter } from './routes/health';
 import { compareRouter } from './routes/compare';
 import { brandRouter } from './routes/brand';
 import { portfolioRouter } from './routes/portfolio';
+import { pitchRouter } from './routes/pitch';
 
 export interface Env {
   DB: D1Database;
@@ -59,6 +60,7 @@ function skipRateLimit(c: Context<{ Bindings: Env }>): boolean {
   if (path === '/api/compare/flip' || path.startsWith('/api/heatmap')) return true;
   if (path.startsWith('/api/brand') || path === '/api/brands' || path === '/api/metros') return true;
   if (path.startsWith('/api/portfolio')) return true;
+  if (path.startsWith('/api/pitch')) return true;
   if (path === '/api/analyze/stream' || path === '/api/analyze') return true;
   return false;
 }
@@ -102,6 +104,7 @@ app.route('/api/health', healthRouter);
 app.route('/api/compare', compareRouter);
 app.route('/api', brandRouter);
 app.route('/api', portfolioRouter);
+app.route('/api', pitchRouter);
 app.route('/api', analysisRouter);
 
 app.onError(errorHandler);

@@ -21,6 +21,11 @@ import type { ApiErrorInfo } from '../lib/api-error';
 import { QlooRankingToggle, type QlooRankingMode } from '../components/report/QlooRankingToggle';
 import { WhyThisBrandCard } from '../components/report/WhyThisBrandCard';
 import { BrandLoading } from '../components/brand/BrandLoading';
+import { VacancyCostCalculator } from '../components/report/VacancyCostCalculator';
+import { SharePitchDialog } from '../components/report/SharePitchDialog';
+import type { ReportMapCaptureRef } from '../components/report/ReportMap';
+import type { VacancyCalculatorInput } from '@leaseup/contracts';
+import { DEFAULT_VACANCY_INPUT } from '../lib/vacancy-cost';
 
 type MobilePane = 'report' | 'map';
 
@@ -37,6 +42,9 @@ export function ReportPage() {
   const [outreach, setOutreach] = useState<ProspectPack | null>(null);
   const [mobilePane, setMobilePane] = useState<MobilePane>('report');
   const [rankingMode, setRankingMode] = useState<QlooRankingMode>('raw');
+  const [sharePitchOpen, setSharePitchOpen] = useState(false);
+  const [vacancyInput, setVacancyInput] = useState<VacancyCalculatorInput>(DEFAULT_VACANCY_INPUT);
+  const mapCaptureRef = useRef<ReportMapCaptureRef | null>(null);
   const ranKey = useRef('');
 
   useEffect(() => {
@@ -126,6 +134,11 @@ export function ReportPage() {
         </div>
       </ErrorBoundary>
       <ErrorBoundary fallback={<SectionUnavailable />}>
+        <div className="no-print print-pitch-block">
+          <VacancyCostCalculator initial={vacancyInput} onChange={setVacancyInput} />
+        </div>
+      </ErrorBoundary>
+      <ErrorBoundary fallback={<SectionUnavailable />}>
         <div className="no-print">
           <ProofSection
             results={results}
@@ -158,6 +171,7 @@ export function ReportPage() {
           location={results.location}
           chipSlug={slug}
           onRadiusChange={() => { ranKey.current = ''; }}
+          onSharePitch={() => setSharePitchOpen(true)}
         />
       )}
       {!results && (
@@ -212,6 +226,7 @@ export function ReportPage() {
                   selectedBrand={mapBrand}
                   pitchBrandIds={results.prospects.map((p) => p.brand.entityId)}
                   radiusKm={request.radius}
+                  captureRef={mapCaptureRef}
                   className="h-[max(400px,calc(100vh-11rem))] w-full md:sticky md:top-[7.5rem] md:h-[max(520px,calc(100vh-8rem))]"
                 />
               </ErrorBoundary>
@@ -219,6 +234,16 @@ export function ReportPage() {
           </div>
         </div>
       </div>
+      {results && (
+        <SharePitchDialog
+          open={sharePitchOpen}
+          onOpenChange={setSharePitchOpen}
+          results={results}
+          request={request}
+          mapCaptureRef={mapCaptureRef}
+          vacancy={vacancyInput}
+        />
+      )}
       {results && (
         <OutreachSheet
           open={!!outreach}

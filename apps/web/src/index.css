@@ -114,3 +114,33 @@ html.screenshot-capture [class*='backdrop-blur'] {
   }
 
 }
+
+@page pitch {
+  size: A4;
+  margin: 18mm;
+}
+
+@page pitch-letter {
+  size: letter;
+  margin: 0.75in;
+}
+
+@media print {
+  .print-pitch-page {
+    page: pitch;
+  }
+
+  @media (width: 8.5in) {
+    .print-pitch-page {
+      page: pitch-letter;
+    }
+  }
+
+  .pitch-prospect-block {
+    break-inside: avoid;
+  }
+
+  .pitch-methodology {
+    break-inside: avoid;
+  }
+}

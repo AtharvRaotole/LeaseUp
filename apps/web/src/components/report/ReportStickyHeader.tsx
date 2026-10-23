@@ -12,11 +12,13 @@ export function ReportStickyHeader({
   location,
   chipSlug,
   onRadiusChange,
+  onSharePitch,
 }: {
   request: AnalysisRequest;
   location: Location;
   chipSlug?: string | null;
   onRadiusChange: (radius: number) => void;
+  onSharePitch?: () => void;
 }) {
   const navigate = useNavigate();
   const { slug } = useParams();
@@ -25,8 +27,6 @@ export function ReportStickyHeader({
   const menuRef = useRef<HTMLDivElement>(null);
   const neighborhood = placeNeighborhoodBold(location, chipSlug ?? slug);
   const radiusKey = String(request.radius) as '2' | '5' | '10';
-
-  const share = () => void navigator.clipboard.writeText(window.location.href);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -76,8 +76,11 @@ export function ReportStickyHeader({
         </div>
         <div className="hidden items-center gap-2 md:flex">
           <Button variant="ghost" size="sm" onClick={() => navigate('/')}>New search</Button>
-          <Button variant="secondary" size="sm" onClick={share}>Share</Button>
-          <Button variant="secondary" size="sm" onClick={() => window.print()}>Export PDF</Button>
+          {onSharePitch && (
+            <Button variant="secondary" size="sm" onClick={onSharePitch} data-testid="share-pitch">
+              Share pitch
+            </Button>
+          )}
         </div>
         <div className="relative shrink-0 md:hidden" ref={menuRef}>
           <button
@@ -93,12 +96,11 @@ export function ReportStickyHeader({
               <button type="button" className="block w-full px-3 py-2 text-left text-sm hover:bg-surface-2" onClick={() => navigate('/')}>
                 New search
               </button>
-              <button type="button" className="block w-full px-3 py-2 text-left text-sm hover:bg-surface-2" onClick={share}>
-                Share
-              </button>
-              <button type="button" className="block w-full px-3 py-2 text-left text-sm hover:bg-surface-2" onClick={() => window.print()}>
-                Export PDF
-              </button>
+              {onSharePitch && (
+                <button type="button" className="block w-full px-3 py-2 text-left text-sm hover:bg-surface-2" onClick={onSharePitch}>
+                  Share pitch
+                </button>
+              )}
             </div>
           )}
         </div>
