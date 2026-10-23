@@ -3,6 +3,7 @@ import type { ResponseCache } from '../lib/response-cache';
 import {
   dedupeGeocodeCandidatesWithinMeters,
   formatGeocodeCandidateLabel,
+  primaryHouseNumber,
 } from '../lib/geocode-label';
 import { UpstreamError } from '../lib/errors';
 import {
@@ -281,7 +282,15 @@ export class NominatimClient {
   }
 }
 
+/** POI nodes are usable when Nominatim still attached a street address (common for storefronts). */
+export function nominatimResultHasStreetAddress(result: NominatimResult): boolean {
+  const house = primaryHouseNumber(result.address?.house_number);
+  const road = result.address?.road?.trim();
+  return Boolean(house && road);
+}
+
 function isPoiOnlyResult(result: NominatimResult): boolean {
+  if (nominatimResultHasStreetAddress(result)) return false;
   const cls = result.class?.toLowerCase();
   const typ = result.type?.toLowerCase();
   if (!cls) return false;
