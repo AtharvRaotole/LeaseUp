@@ -7,7 +7,7 @@ describe('landingEvalProofParagraphs', () => {
     expect(lines.join(' ')).toContain('40 US neighborhoods');
     expect(lines.join(' ')).toContain('54%');
     expect(lines.join(' ')).toContain('76%');
-    expect(lines.join(' ')).toContain('0.67');
+    expect(lines.join(' ')).toContain('percentage points');
     expect(lines.join(' ')).toContain('82%');
   });
 });

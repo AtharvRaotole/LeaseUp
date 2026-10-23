@@ -170,14 +170,14 @@ function buildOgTextTree() {
     h('div', {
       style: {
         fontFamily: 'Schibsted Grotesk',
-        fontSize: 56,
+        fontSize: 48,
         fontWeight: 600,
-        lineHeight: 1.08,
+        lineHeight: 1.1,
         letterSpacing: '-0.03em',
         color: '#121212',
         width: 560,
       },
-      children: 'Find the tenants your space is missing.',
+      children: 'Find the right stores for your empty retail space.',
     }),
     h('div', {
       style: {
@@ -187,7 +187,7 @@ function buildOgTextTree() {
         color: '#77756E',
         width: 500,
       },
-      children: 'Qloo taste data, verified against real stores.',
+      children: 'Brands people nearby love but cannot find close by.',
     })
     )
   );
@@ -432,7 +432,8 @@ writeFileSync(
     {
       name: 'LeaseUp',
       short_name: 'LeaseUp',
-      description: 'Find the tenants your space is missing.',
+      description:
+        "Type in an address. LeaseUp shows which brands people nearby love but can't find close by, and helps you pitch them.",
       start_url: '/',
       display: 'standalone',
       background_color: '#FAFAF7',

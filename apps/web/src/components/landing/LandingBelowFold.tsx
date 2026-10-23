@@ -14,7 +14,7 @@ const STEPS = [
   },
   {
     title: 'See brands shoppers want',
-    body: 'We rank chains by local taste and cross-check real stores so you pitch gaps, not guesses.',
+    body: 'We compare what people nearby want with real store locations so you pitch openings, not guesses.',
     Crop: BrandsStepCrop,
   },
   {

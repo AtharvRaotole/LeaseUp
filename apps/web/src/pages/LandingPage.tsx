@@ -14,7 +14,7 @@ import {
   type CategoryKey,
 } from '../lib/report-params';
 import { startProspectingJob } from '../lib/start-prospecting';
-import { LANDING_PLAIN_SUMMARY } from '../lib/broker-copy';
+import { LANDING_HEADLINE, LANDING_PLAIN_SUMMARY } from '../lib/broker-copy';
 import { LANDING_DEMO_CHIPS } from '../data/landing-demo-chips';
 
 const LandingBelowFold = lazy(() =>
@@ -68,7 +68,7 @@ export function LandingPage() {
           <div className="mx-auto max-w-[880px] px-4 pb-16 pt-[14vh] md:px-6 md:pb-20 md:pt-[16vh]">
             <div className="mx-auto max-w-[640px] text-center">
               <h1 className="font-display font-semibold text-[clamp(2rem,5vw,3.25rem)] leading-[1.12] tracking-tight text-ink">
-                Find the tenants your space is missing.
+                {LANDING_HEADLINE}
               </h1>
               <p className="mt-5 text-body-lg text-ink-2" data-testid="landing-plain-summary">
                 {LANDING_PLAIN_SUMMARY}

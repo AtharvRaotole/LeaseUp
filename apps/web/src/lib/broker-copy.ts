@@ -6,8 +6,10 @@ import { presentInTop10Count } from './hit-rate';
 export const REPORT_PLAIN_SUMMARY =
   'These are brands your neighborhood shoppers love that do not have a store nearby yet.';
 
+export const LANDING_HEADLINE = 'Find the right stores for your empty retail space.';
+
 export const LANDING_PLAIN_SUMMARY =
-  'Enter an address to see which brands local shoppers want nearby, then check real store locations before you pitch.';
+  'Type in an address. LeaseUp shows which brands people nearby love but can\'t find close by, and helps you pitch them.';
 
 export function tradeAreaLabel(radiusKm: number): string {
   return `${radiusKm} km area`;
