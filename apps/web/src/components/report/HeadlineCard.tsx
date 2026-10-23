@@ -29,7 +29,7 @@ export function HeadlineCard({
 
   return (
     <Card>
-      <h2 className="font-serif text-[40px] leading-[1.15] text-ink">
+      <h2 className="font-serif text-[28px] leading-[1.2] text-ink md:text-[32px]">
         {count > 0
           ? `${count} brand${count === 1 ? '' : 's'} fit ${area} but have no store within ${radiusKm} km.`
           : `Every top brand for ${area} already has a store within ${radiusKm} km.`}

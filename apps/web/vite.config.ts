@@ -2,6 +2,10 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import viteCompression from 'vite-plugin-compression';
 import { fontPreloadPlugin } from './vite-font-preload';
+import { loadPagesHeaders } from './load-pages-headers.mjs';
+
+const productionPageHeaders = loadPagesHeaders();
+const workerProxyTarget = `http://127.0.0.1:${process.env.CSP_E2E_WORKER_PORT || '8787'}`;
 
 export default defineConfig({
   plugins: [
@@ -14,7 +18,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:8787',
+        target: workerProxyTarget,
         changeOrigin: true,
       },
     },
@@ -41,9 +45,10 @@ export default defineConfig({
   },
   preview: {
     port: 4173,
+    headers: productionPageHeaders,
     proxy: {
       '/api': {
-        target: 'http://localhost:8787',
+        target: workerProxyTarget,
         changeOrigin: true,
       },
     },
