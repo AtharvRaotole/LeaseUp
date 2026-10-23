@@ -1,6 +1,11 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { isAcceptableOutreachDraft } from '@leaseup/contracts';
 import { OpenAIClient, buildOutreachPrompt } from '../providers/openai';
 import type { Env } from '../index';
+import {
+  OUTREACH_TEMPLATE_DEMO_LABEL,
+  OUTREACH_TEMPLATE_FALLBACK_LABEL,
+} from '../lib/outreach-model-labels';
 
 describe('buildOutreachPrompt', () => {
   it('includes only supplied facts and forbids invented statistics', () => {
@@ -19,6 +24,8 @@ describe('buildOutreachPrompt', () => {
     expect(prompt).toContain('4.2 km');
     expect(prompt).toContain('No store within 10km');
     expect(prompt).toMatch(/Do NOT invent foot traffic/i);
+    expect(prompt).toMatch(/under 120 words/i);
+    expect(prompt).toMatch(/No placeholders/i);
     expect(prompt).not.toContain('Local demographics:');
   });
 });
@@ -39,6 +46,10 @@ describe('OpenAIClient', () => {
     client = new OpenAIClient(mockEnv);
   });
 
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   describe('generateOutreach', () => {
     it('returns demo outreach in demo mode', async () => {
       const result = await client.generateOutreach({
@@ -51,11 +62,46 @@ describe('OpenAIClient', () => {
 
       expect(result).toHaveProperty('subject');
       expect(result).toHaveProperty('body');
-      expect(result.model).toBe('gpt-4o-mini');
+      expect(result.model).toBe(OUTREACH_TEMPLATE_DEMO_LABEL);
+      expect(result.subject).not.toMatch(/—/);
       expect(result.subject).toContain('Test Brand');
       expect(result.body).toContain('Wicker Park');
       expect(result.body).not.toContain('foot traffic');
       expect(result.body).not.toContain('10 out of 10');
+      expect(isAcceptableOutreachDraft(result.body)).toBe(true);
+      expect(result.body).toMatch(/Qloo ranks/i);
+    });
+
+    it('labels template when live OpenAI fails', async () => {
+      const liveEnv: Env = {
+        DB: {} as D1Database,
+        CACHE: {} as KVNamespace,
+        APP_MODE: 'live',
+        OPENAI_API_KEY: 'sk-test-key',
+        OPENAI_MODEL: 'gpt-4o-mini',
+      };
+      const liveClient = new OpenAIClient(liveEnv);
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(async () => ({
+          ok: false,
+          status: 500,
+          statusText: 'Internal Server Error',
+        }))
+      );
+
+      const result = await liveClient.generateOutreach({
+        brandName: 'Vans',
+        address: '1574 N Milwaukee Ave, Chicago, IL',
+        reasons: ['No store within 10 km'],
+        affinityRank: 13,
+        neighborhood: 'Wicker Park',
+      });
+
+      expect(result.model).toBe(OUTREACH_TEMPLATE_FALLBACK_LABEL);
+      expect(result.model).not.toBe('gpt-4o-mini');
+      expect(result.subject).not.toMatch(/—/);
+      expect(isAcceptableOutreachDraft(result.body)).toBe(true);
     });
 
     it('includes brand name in subject', async () => {

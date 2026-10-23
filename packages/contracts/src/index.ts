@@ -11,6 +11,10 @@ export const LocationSchema = z.object({
 
 export type Location = z.infer<typeof LocationSchema>;
 
+export const StorefrontFormatSchema = z.enum(['streetfront', 'mall_inline', 'big_box']);
+
+export type StorefrontFormat = z.infer<typeof StorefrontFormatSchema>;
+
 export const BrandAffinitySchema = z.object({
   entityId: z.string(),
   name: z.string(),
@@ -19,6 +23,8 @@ export const BrandAffinitySchema = z.object({
   popularity: z.number().optional(),
   nationalStoreCount: z.number().optional(),
   nearbyStoreCount: z.number().optional(),
+  storefrontFormat: StorefrontFormatSchema.optional(),
+  minStorefrontSqFt: z.number().int().optional(),
   verified: z.union([
     z.literal('verified (2 sources)'),
     z.literal('unverified (1 source)'),
@@ -79,6 +85,8 @@ export const AnalysisRequestSchema = z.object({
   address: z.string().min(3).max(500),
   radius: z.number().min(0.5).max(50).default(10),
   categoryTags: z.array(z.string()).optional(),
+  /** User storefront size (sq ft) for format-fit filtering. */
+  storefrontSqFt: z.number().min(200).max(500_000).optional(),
   /** When set, skip re-geocoding and use these coordinates for Qloo signal.location. */
   confirmedLocation: LocationSchema.optional(),
 });
@@ -148,6 +156,8 @@ export const OutreachRequestSchema = z.object({
   affinityRank: z.number().optional(),
   neighborhood: z.string().optional(),
   nearestStoreKm: z.number().optional(),
+  coTenantBrands: z.array(z.string()).max(8).optional(),
+  verificationLabel: z.string().optional(),
 });
 
 export type OutreachRequest = z.infer<typeof OutreachRequestSchema>;
@@ -170,6 +180,8 @@ export const AnalysisResponseSchema = z.object({
   chainPriorWeight: z.number().optional(),
   osmSnapshotRecordedAt: z.string().optional(),
   osmSnapshotLabel: z.string().optional(),
+  storefrontSqFt: z.number().optional(),
+  formatFilteredCount: z.number().int().optional(),
 });
 
 export type AnalysisResponse = z.infer<typeof AnalysisResponseSchema>;
@@ -464,11 +476,17 @@ export const PipelineOutreachDraftSchema = z.object({
 
 export type PipelineOutreachDraft = z.infer<typeof PipelineOutreachDraftSchema>;
 
+export const PipelineOutreachStatusSchema = z.enum(['none', 'drafted', 'sent', 'replied']);
+
+export type PipelineOutreachStatus = z.infer<typeof PipelineOutreachStatusSchema>;
+
 export const PipelineOutreachContextSchema = z.object({
   reasons: z.array(z.string()).default([]),
   neighborhood: z.string().optional(),
   nearestStoreKm: z.number().optional(),
   runId: z.string().optional(),
+  coTenantBrands: z.array(z.string()).max(8).optional(),
+  verificationLabel: z.string().optional(),
 });
 
 export type PipelineOutreachContext = z.infer<typeof PipelineOutreachContextSchema>;
@@ -492,6 +510,7 @@ export const PipelineCardSchema = z.object({
   followUpAt: z.string().optional(),
   outreachContext: PipelineOutreachContextSchema.optional(),
   outreachDraft: PipelineOutreachDraftSchema.optional(),
+  outreachStatus: PipelineOutreachStatusSchema.default('none'),
 });
 
 export type PipelineCard = z.infer<typeof PipelineCardSchema>;
@@ -537,6 +556,9 @@ export const PipelineUpdateCardSchema = z.object({
   recipientEmail: z.string().max(320).optional(),
   followUpAt: z.string().nullable().optional(),
   outreachDraft: PipelineOutreachDraftSchema.nullable().optional(),
+  outreachStatus: PipelineOutreachStatusSchema.optional(),
 });
 
 export type PipelineUpdateCard = z.infer<typeof PipelineUpdateCardSchema>;
+
+export * from './outreach-quality';
