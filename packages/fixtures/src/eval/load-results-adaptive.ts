@@ -8,10 +8,10 @@ import type { AdaptiveEvalAddressRow, ResultsAdaptive } from './results-adaptive
 
 const BUNDLE = resultsAdaptive as unknown as ResultsAdaptive;
 
-const DEMO_ROW_ID: Record<DemoFixtureId, string> = {
-  wicker: 'wicker-park',
-  boulder: 'boulder',
-  sevierville: 'sevierville',
+const DEMO_EVAL_ID: Record<DemoFixtureId, string> = {
+  wicker: 'chi_wicker',
+  boulder: 'boulder_co',
+  sevierville: 'sevierville_tn',
 };
 
 export function loadResultsAdaptive(): ResultsAdaptive {
@@ -31,16 +31,19 @@ export function findAdaptiveEvalRowByAddress(address: string): AdaptiveEvalAddre
 
   const fixtureId = matchDemoFixtureId(address);
   if (!fixtureId) return undefined;
-  const wantId = DEMO_ROW_ID[fixtureId];
+  const evalId = DEMO_EVAL_ID[fixtureId];
   return loadResultsAdaptive().per_address.find(
-    (row) => row.id === wantId || row.id?.startsWith(fixtureId)
+    (row) =>
+      row.eval_id === evalId ||
+      row.id === fixtureId ||
+      row.id?.replace(/-park$/, '') === fixtureId
   );
 }
 
 export function findAdaptiveEvalRowForDemo(fixtureId: DemoFixtureId): AdaptiveEvalAddressRow | undefined {
-  const wantId = DEMO_ROW_ID[fixtureId];
+  const evalId = DEMO_EVAL_ID[fixtureId];
   return loadResultsAdaptive().per_address.find(
-    (row) => row.id === wantId || row.id?.startsWith(fixtureId)
+    (row) => row.eval_id === evalId || row.id === fixtureId || row.id?.includes(fixtureId)
   );
 }
 

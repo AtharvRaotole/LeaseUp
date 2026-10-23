@@ -66,7 +66,10 @@ export {
 export {
   orderInsightsByLogisticBlend,
   getLogisticBlendCoefficients,
+  DEMO_LOGISTIC_SITE_CONTEXT,
+  defaultLogisticSiteContext,
   type LogisticBlendCoefficients,
+  type LogisticBlendSiteContext,
 } from './logistic-blend.js';
 export {
   chainSizeTierFromStoreCount,

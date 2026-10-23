@@ -1,19 +1,42 @@
 {
-  "version": 1,
-  "fittedOn": "live-qloo-lift cohort (see QLOO_LIFT_EVAL.md)",
-  "features": {
-    "qlooRankScore": "1 minus normalized Qloo list position (0 worst, 1 best)",
-    "logChainSize": "ln(1 + national ATP store count)",
-    "densityUrban": "1 when site density is urban else 0",
-    "densitySuburban": "1 when site density is suburban else 0",
-    "densityExurban": "1 when site density is exurban else 0",
-    "densityTourist": "1 when site density is tourist else 0"
+  "version": 2,
+  "fittedOn": "data/qloo-eval-40 pooled M1 (log chain, log radius, log density, tier, Qloo z)",
+  "model": "M1_pooled",
+  "features": [
+    "logChainSize",
+    "logRadiusKm",
+    "logDensity3km",
+    "tierUrban",
+    "tierSuburban",
+    "qlooAffinityZ"
+  ],
+  "standardize": {
+    "mean": {
+      "logChainSize": 6.417244599333324,
+      "logRadiusKm": 1.467424718593475,
+      "logDensity3km": 4.228215760786707,
+      "tierUrban": 0.2334414080592867,
+      "tierSuburban": 0.6399953682260305,
+      "qlooAffinityZ": 1.8987950525374668e-17
+    },
+    "std": {
+      "logChainSize": 1.319652167077402,
+      "logRadiusKm": 0.6862745211829281,
+      "logDensity3km": 0.9115855535206705,
+      "tierUrban": 0.42302070624098204,
+      "tierSuburban": 0.48000135190984716,
+      "qlooAffinityZ": 1.0000000009818295
+    }
   },
-  "intercept": -1.85,
-  "qlooRankScore": 2.45,
-  "logChainSize": 0.38,
-  "densityUrban": 0.12,
-  "densitySuburban": 0.05,
-  "densityExurban": -0.08,
-  "densityTourist": -0.15
+  "intercept": -1.0736917973646363,
+  "coefficients": {
+    "logChainSize": 0.8237018227742742,
+    "logRadiusKm": 0.7413486712415467,
+    "logDensity3km": 0.8738043540435125,
+    "tierUrban": -0.4036327290248127,
+    "tierSuburban": -0.21924151387504254,
+    "qlooAffinityZ": 0.6637611360236632
+  },
+  "cohortMeanP10PooledRank": 0.82,
+  "cohortMeanP10LoaoFromResults": 0.82
 }
