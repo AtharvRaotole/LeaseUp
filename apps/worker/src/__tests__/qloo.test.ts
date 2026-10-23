@@ -148,6 +148,23 @@ describe('QlooClient', () => {
     });
     expect(insights).toHaveLength(1);
     expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(kv.put).toHaveBeenCalled();
+  });
+
+  it('does not cache when all fetch attempts fail', async () => {
+    const client = new QlooClient(makeEnv({ APP_MODE: 'live', QLOO_API_KEY: 'test-key' }));
+    vi.mocked(kv.put).mockClear();
+
+    const fetchMock = vi.fn().mockRejectedValue(new TypeError('network down'));
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(
+      client.getBrandInsights({
+        location: { kind: 'point', latitude: 40, longitude: -105, radiusKm: 10 },
+        take: 10,
+      })
+    ).rejects.toMatchObject({ code: 'QLOO_UNAVAILABLE' });
+    expect(kv.put).not.toHaveBeenCalled();
   });
 
   it('serves recorded fixture insights in demo mode (no fabricated IDs)', async () => {

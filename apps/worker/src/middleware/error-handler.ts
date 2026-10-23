@@ -55,8 +55,8 @@ export const errorHandler: ErrorHandler<{ Bindings: Env }> = (err: Error, c: Con
     return jsonError(
       c,
       {
-        error: err.message,
-        code: 'UPSTREAM_ERROR',
+        error: err.userMessage ?? err.message,
+        code: err.code ?? 'UPSTREAM_ERROR',
       },
       status === 503 ? 503 : 502
     );
