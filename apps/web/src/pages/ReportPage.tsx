@@ -14,56 +14,54 @@ const GeocodeConfirmPanel = lazy(() =>
 );
 import type { GeocodeCandidate, Location } from '@leaseup/contracts';
 import { AgentRunStrip } from '../components/report/AgentRunStrip';
-import { BrandsToPitch } from '../components/report/BrandsToPitch';
-const ProofSection = lazy(() =>
-  import('../components/report/ProofSection').then((m) => ({ default: m.ProofSection }))
-);
-import { CompareSection, CompareUnavailable } from '../components/report/CompareSection';
+import { ReportDeepSections } from '../components/report/ReportDeepSections';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-import { HowWeKnowSection } from '../components/report/HowWeKnowSection';
-import { ReportMap, type MapBrandSelection } from '../components/report/ReportMap';
-import { OutreachSheet } from '../components/report/OutreachSheet';
+const ReportMap = lazy(() =>
+  import('../components/report/ReportMap').then((m) => ({ default: m.ReportMap }))
+);
+import type { MapBrandSelection, ReportMapCaptureRef } from '../components/report/ReportMap';
+const OutreachSheet = lazy(() =>
+  import('../components/report/OutreachSheet').then((m) => ({ default: m.OutreachSheet }))
+);
 import { DemoBanner } from '../components/report/DemoBanner';
-import { ReportStickyHeader } from '../components/report/ReportStickyHeader';
+const ReportStickyHeader = lazy(() =>
+  import('../components/report/ReportStickyHeader').then((m) => ({ default: m.ReportStickyHeader }))
+);
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { ReportErrorBanner } from '../components/report/ReportErrorBanner';
 import { apiErrorFromUnknown, type ApiErrorInfo } from '../lib/api-error';
 import { SERVER_BUSY_MESSAGE } from '../lib/calm-error-copy';
 import { SLOW_LOAD_STATUS } from '../lib/slow-load-copy';
 import { ReportShortListNotice } from '../components/report/ReportShortListNotice';
-import { QlooRankingToggle, type QlooRankingMode } from '../components/report/QlooRankingToggle';
-const QlooProofBanner = lazy(() =>
-  import('../components/report/QlooProofBanner').then((m) => ({ default: m.QlooProofBanner }))
+const SharePitchDialog = lazy(() =>
+  import('../components/report/SharePitchDialog').then((m) => ({ default: m.SharePitchDialog }))
 );
-const StrictEvalCard = lazy(() =>
-  import('../components/report/StrictEvalCard').then((m) => ({ default: m.StrictEvalCard }))
-);
-import { WhyThisBrandCard } from '../components/report/WhyThisBrandCard';
 import { BrandLoading } from '../components/brand/BrandLoading';
-import { VacancyCostCalculator } from '../components/report/VacancyCostCalculator';
-import { SharePitchDialog } from '../components/report/SharePitchDialog';
-import type { ReportMapCaptureRef } from '../components/report/ReportMap';
 import type { VacancyCalculatorDraft } from '../lib/vacancy-cost';
 import { EMPTY_VACANCY_DRAFT } from '../lib/vacancy-cost';
 import { loadVacancyDraft, saveVacancyDraft } from '../lib/vacancy-cost-storage';
 import { startProspectingJob } from '../lib/start-prospecting';
+import { ReportSummaryAboveFold } from '../components/report/ReportSummaryAboveFold';
+const WatchSpaceButton = lazy(() =>
+  import('../components/report/WatchSpaceButton').then((m) => ({ default: m.WatchSpaceButton }))
+);
+import { ShareHead } from '../components/seo/ShareHead';
+import { reportShareHead } from '../lib/share-preview';
+import { ReportLoadingPanel } from '../components/report/ReportLoadingPanel';
+import { ReportMapSkeleton } from '../components/report/ReportMapSkeleton';
+const ReportSidebarFacts = lazy(() =>
+  import('../components/report/ReportSidebarFacts').then((m) => ({ default: m.ReportSidebarFacts }))
+);
+const WhoShopsHereCard = lazy(() =>
+  import('../components/report/WhoShopsHereCard').then((m) => ({ default: m.WhoShopsHereCard }))
+);
+import { WhyThisBrandCard } from '../components/report/WhyThisBrandCard';
 import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton';
 import { pipelineCardFromProspect } from '../lib/build-pipeline-card';
-import { StorefrontSizeControl } from '../components/report/StorefrontSizeControl';
-import { CoTenancyMixSection } from '../components/report/CoTenancyMixSection';
+
 const ReportFirstRunTour = lazy(() =>
   import('../components/report/ReportFirstRunTour').then((m) => ({ default: m.ReportFirstRunTour }))
 );
-import { ReportSummaryAboveFold } from '../components/report/ReportSummaryAboveFold';
-import { WatchSpaceButton } from '../components/report/WatchSpaceButton';
-import { ReportCollapsibleSection } from '../components/report/ReportCollapsibleSection';
-import { ProductExplainer } from '../components/report/ProductExplainer';
-import { ReportLoadingPanel } from '../components/report/ReportLoadingPanel';
-import { ReportMapSkeleton } from '../components/report/ReportMapSkeleton';
-import { ReportSidebarFacts } from '../components/report/ReportSidebarFacts';
-import { WhoShopsHereCard } from '../components/report/WhoShopsHereCard';
-import { ShareHead } from '../components/seo/ShareHead';
-import { reportShareHead } from '../lib/share-preview';
 
 type MobilePane = 'report' | 'map';
 
@@ -83,11 +81,59 @@ export function ReportPage() {
   const [mobilePane, setMobilePane] = useState<MobilePane>('report');
   const isMdUp = useMediaQuery('(min-width: 768px)');
   const mountMapColumn = isMdUp || mobilePane === 'map';
+  const [deferHeavyUi, setDeferHeavyUi] = useState(false);
 
   useEffect(() => {
     if (mountMapColumn) ensureMapLibreCss();
   }, [mountMapColumn]);
-  const [rankingMode, setRankingMode] = useState<QlooRankingMode>('qloo');
+
+  const expandDeepSections = searchParams.get('screenshot') === '1';
+
+  useEffect(() => {
+    if (!results) {
+      setDeferHeavyUi(false);
+      return;
+    }
+    let cancelled = false;
+    const scheduleTour = () => {
+      if (cancelled) return;
+      const win = window as Window & {
+        requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+        cancelIdleCallback?: (id: number) => void;
+      };
+      if (win.requestIdleCallback) {
+        const id = win.requestIdleCallback(() => {
+          if (!cancelled) setDeferHeavyUi(true);
+        }, { timeout: 2500 });
+        return () => win.cancelIdleCallback?.(id);
+      }
+      const t = window.setTimeout(() => {
+        if (!cancelled) setDeferHeavyUi(true);
+      }, 1200);
+      return () => window.clearTimeout(t);
+    };
+    let clearIdle: (() => void) | undefined;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        clearIdle = scheduleTour();
+      });
+    });
+    return () => {
+      cancelled = true;
+      clearIdle?.();
+    };
+  }, [results]);
+
+  const [geocodeCandidates, setGeocodeCandidates] = useState<GeocodeCandidate[] | null>(null);
+  const [geocodeChecking, setGeocodeChecking] = useState(false);
+  const [geocodeAutoRetrying, setGeocodeAutoRetrying] = useState(false);
+  const needsHealthForGeocode =
+    request != null &&
+    !request.confirmedLocation &&
+    !matchDemoFixtureId(request.address) &&
+    !simulateError;
+  const { data: health } = useHealth({ enabled: needsHealthForGeocode });
+  const [rankingMode, setRankingMode] = useState<'qloo' | 'baseline'>('qloo');
   const [sharePitchOpen, setSharePitchOpen] = useState(false);
   const [vacancyEdits, setVacancyEdits] = useState<VacancyCalculatorDraft | null>(null);
   const vacancyBase = useMemo(
@@ -97,10 +143,6 @@ export function ReportPage() {
   const vacancyInput = vacancyEdits ?? vacancyBase;
   const mapCaptureRef = useRef<ReportMapCaptureRef | null>(null);
   const ranKey = useRef('');
-  const [geocodeCandidates, setGeocodeCandidates] = useState<GeocodeCandidate[] | null>(null);
-  const [geocodeChecking, setGeocodeChecking] = useState(false);
-  const [geocodeAutoRetrying, setGeocodeAutoRetrying] = useState(false);
-  const { data: health } = useHealth();
 
   useEffect(() => {
     if (searchParams.get('screenshot') === '1') {
@@ -146,29 +188,29 @@ export function ReportPage() {
       setGeocodeError(null);
       setGeocodeAutoRetrying(false);
       void fetchGeocodePreview(request.address, {
-      onAutoRetry: () => setGeocodeAutoRetrying(true),
-    })
-      .then((preview) => {
-        if (cancelled) return;
-        if (preview.needsConfirmation && preview.candidates.length > 1) {
-          setGeocodeCandidates(preview.candidates);
-          return;
-        }
-        const withLoc = preview.location
-          ? { ...request, confirmedLocation: preview.location }
-          : request;
-        ranKey.current = JSON.stringify(withLoc);
-        void run(withLoc);
+        onAutoRetry: () => setGeocodeAutoRetrying(true),
       })
-      .catch((err) => {
-        if (!cancelled) setGeocodeError(apiErrorFromUnknown(err));
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setGeocodeChecking(false);
-          setGeocodeAutoRetrying(false);
-        }
-      });
+        .then((preview) => {
+          if (cancelled) return;
+          if (preview.needsConfirmation && preview.candidates.length > 1) {
+            setGeocodeCandidates(preview.candidates);
+            return;
+          }
+          const withLoc = preview.location
+            ? { ...request, confirmedLocation: preview.location }
+            : request;
+          ranKey.current = JSON.stringify(withLoc);
+          void run(withLoc);
+        })
+        .catch((err) => {
+          if (!cancelled) setGeocodeError(apiErrorFromUnknown(err));
+        })
+        .finally(() => {
+          if (!cancelled) {
+            setGeocodeChecking(false);
+            setGeocodeAutoRetrying(false);
+          }
+        });
     };
 
     if (health?.mode === 'demo') {
@@ -228,10 +270,9 @@ export function ReportPage() {
 
   if (!request) return null;
 
-  const displayError: ApiErrorInfo | null =
-    simulateError
-      ? { message: SERVER_BUSY_MESSAGE, code: 'SERVER_BUSY' }
-      : geocodeError ?? error;
+  const displayError: ApiErrorInfo | null = simulateError
+    ? { message: SERVER_BUSY_MESSAGE, code: 'SERVER_BUSY' }
+    : geocodeError ?? error;
 
   const showErrorBanner =
     Boolean(displayError) || (!simulateError && (autoRetrying || geocodeAutoRetrying));
@@ -241,8 +282,6 @@ export function ReportPage() {
     (rankingMode === 'baseline' && results.backtestBaseline
       ? results.backtestBaseline
       : results.backtest);
-
-  const expandDeepSections = searchParams.get('screenshot') === '1';
 
   const reportSections = results && (
     <div className="report-content-enter space-y-8 text-body">
@@ -259,11 +298,13 @@ export function ReportPage() {
             onSelectBrand={selectProspect}
             onSharePitch={() => setSharePitchOpen(true)}
           />
-          <WatchSpaceButton
-            address={request.address}
-            radiusKm={request.radius}
-            analysis={results}
-          />
+          <Suspense fallback={null}>
+            <WatchSpaceButton
+              address={request.address}
+              radiusKm={request.radius}
+              analysis={results}
+            />
+          </Suspense>
           {results.prospects.length <= 2 && (
             <ReportShortListNotice
               count={results.prospects.length}
@@ -284,127 +325,27 @@ export function ReportPage() {
         </div>
       </ErrorBoundary>
 
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <ReportCollapsibleSection
-          testId="report-section-why-brands"
-          sectionId="report-why-brands"
-          title="Why these brands"
-          description="Full pitch list, detail for the selected brand, and who already leases nearby."
-          defaultOpen={expandDeepSections}
-        >
-          <div className="print-pitch-block">
-            <BrandsToPitch
-              results={results}
-              request={request}
-              slug={slug ?? 'run'}
-              selectedId={selected?.brand.entityId ?? null}
-              onSelect={selectProspect}
-              onDraft={(p) => setOutreach(p)}
-              radiusKm={request.radius}
-              forceEmpty={emptyPitch}
-            />
-          </div>
-          <WhyThisBrandCard
-            className="md:hidden"
-            prospect={selected}
+      <ReportDeepSections
             results={results}
-            radiusKm={request.radius}
-            actions={
-              selected ? (
-                <AddToPipelineButton
-                  buildPayload={() =>
-                    pipelineCardFromProspect(selected, results, {
-                      reportPath: buildReportPath(request, slug ?? 'run'),
-                    })
-                  }
-                />
-              ) : null
-            }
+            request={request}
+            slug={slug ?? 'run'}
+            expandDeepSections={expandDeepSections}
+            selected={selected}
+            onSelectProspect={selectProspect}
+            onDraftOutreach={setOutreach}
+            emptyPitch={emptyPitch}
+            vacancyInput={vacancyInput}
+            onVacancyChange={handleVacancyChange}
+            onStorefrontSqFtChange={(sqFt) => {
+              ranKey.current = '';
+              navigate(buildReportPath({ ...request, storefrontSqFt: sqFt }, slug ?? 'run'), {
+                replace: true,
+              });
+            }}
+            rankingMode={rankingMode}
+            onRankingModeChange={setRankingMode}
+            onMapBrandSelect={selectMapBrand}
           />
-          <CoTenancyMixSection results={results} radiusKm={request.radius} />
-        </ReportCollapsibleSection>
-      </ErrorBoundary>
-
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <ReportCollapsibleSection
-          testId="report-section-vacancy-costs"
-          sectionId="report-vacancy-costs"
-          title="What it costs you"
-          description="Monthly vacancy cost and how big the space is."
-          defaultOpen={expandDeepSections}
-        >
-          <div className="no-print print-pitch-block">
-            <VacancyCostCalculator
-              key={request.address}
-              compact
-              initial={vacancyInput}
-              onChange={handleVacancyChange}
-              showPitchOptIn
-            />
-          </div>
-          <div className="no-print print-pitch-block">
-            <StorefrontSizeControl
-              sqFt={request.storefrontSqFt ?? 2500}
-              onChange={(sqFt) => {
-                ranKey.current = '';
-                navigate(buildReportPath({ ...request, storefrontSqFt: sqFt }, slug ?? 'run'), {
-                  replace: true,
-                });
-              }}
-            />
-          </div>
-        </ReportCollapsibleSection>
-      </ErrorBoundary>
-
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <ReportCollapsibleSection
-          testId="report-section-how-we-know"
-          sectionId="report-how-we-know"
-          title="How we know"
-          description="How we ranked brands, charts, and methodology."
-          defaultOpen={expandDeepSections}
-        >
-          <ProductExplainer className="no-print rounded-card border border-border bg-surface-2/80 px-4 py-4 text-body" />
-          <div className="no-print flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <QlooRankingToggle
-              mode={rankingMode}
-              onChange={setRankingMode}
-              compact
-              className="shrink-0"
-            />
-            {results.backtestBaseline && (
-              <div className="min-w-0 flex-1">
-                <Suspense fallback={null}>
-                  <QlooProofBanner results={results} compact />
-                </Suspense>
-              </div>
-            )}
-          </div>
-          <div className="no-print">
-            <Suspense fallback={null}>
-              <StrictEvalCard results={results} />
-            </Suspense>
-          </div>
-          <div className="no-print">
-            <Suspense fallback={null}>
-              <ProofSection
-                results={results}
-                radiusKm={request.radius}
-                onBrandSelect={selectMapBrand}
-                rankingMode={rankingMode}
-              />
-            </Suspense>
-          </div>
-          <ErrorBoundary fallback={<CompareUnavailable />}>
-            <div className="no-print">
-              <CompareSection />
-            </div>
-          </ErrorBoundary>
-          <div className="no-print">
-            <HowWeKnowSection results={results} />
-          </div>
-        </ReportCollapsibleSection>
-      </ErrorBoundary>
     </div>
   );
 
@@ -413,19 +354,22 @@ export function ReportPage() {
       {shareHead && <ShareHead {...shareHead} />}
       <TopBar />
       {results?.mode === 'demo' && <DemoBanner />}
-      {results && (
-        <ReportStickyHeader
-          request={request}
-          location={results.location}
-          chipSlug={slug}
-          onRadiusChange={() => { ranKey.current = ''; }}
-          onSharePitch={() => setSharePitchOpen(true)}
-          onRunProspecting={() => {
-            void startProspectingJob(request).then((jobId) => navigate(`/prospect/${jobId}`));
-          }}
-        />
-      )}
-      {!results && (
+      {results ? (
+        <Suspense fallback={null}>
+          <ReportStickyHeader
+            request={request}
+            location={results.location}
+            chipSlug={slug}
+            onRadiusChange={() => {
+              ranKey.current = '';
+            }}
+            onSharePitch={() => setSharePitchOpen(true)}
+            onRunProspecting={() => {
+              void startProspectingJob(request).then((jobId) => navigate(`/prospect/${jobId}`));
+            }}
+          />
+        </Suspense>
+      ) : (
         <div className="sticky top-16 z-20 border-b border-border bg-surface/90 backdrop-blur-md px-4 py-3">
           <p className="mx-auto max-w-[1280px] truncate text-sm text-ink-2">{request.address}</p>
         </div>
@@ -499,9 +443,7 @@ export function ReportPage() {
                   candidates={geocodeCandidates}
                   onConfirm={confirmGeocode}
                   onCancel={() => navigate('/')}
-                  onNoneOfThese={() =>
-                    navigate(`/?address=${encodeURIComponent(request.address)}`)
-                  }
+                  onNoneOfThese={() => navigate(`/?address=${encodeURIComponent(request.address)}`)}
                 />
               </Suspense>
             )}
@@ -526,14 +468,16 @@ export function ReportPage() {
             {results && mountMapColumn && (
               <ErrorBoundary fallback={<SectionUnavailable label="Map unavailable right now." />}>
                 <div className="flex flex-col gap-4 md:sticky md:top-[7.5rem]">
-                  <ReportMap
-                    results={results}
-                    selectedBrand={mapBrand}
-                    pitchBrandIds={results.prospects.map((p) => p.brand.entityId)}
-                    radiusKm={request.radius}
-                    captureRef={mapCaptureRef}
-                    className="h-[min(72vh,640px)] min-h-[360px] w-full xl:h-[min(78vh,720px)]"
-                  />
+                  <Suspense fallback={<ReportMapSkeleton />}>
+                    <ReportMap
+                      results={results}
+                      selectedBrand={mapBrand}
+                      pitchBrandIds={results.prospects.map((p) => p.brand.entityId)}
+                      radiusKm={request.radius}
+                      captureRef={mapCaptureRef}
+                      className="h-[min(72vh,640px)] min-h-[360px] w-full xl:h-[min(78vh,720px)]"
+                    />
+                  </Suspense>
                   <WhyThisBrandCard
                     className="hidden md:block"
                     prospect={selected}
@@ -551,13 +495,17 @@ export function ReportPage() {
                       ) : null
                     }
                   />
-                  <ReportSidebarFacts
-                    results={results}
-                    radiusKm={request.radius}
-                    chipSlug={slug}
-                  />
+                  <Suspense fallback={null}>
+                    <ReportSidebarFacts
+                      results={results}
+                      radiusKm={request.radius}
+                      chipSlug={slug}
+                    />
+                  </Suspense>
                   {results.tradeAreaShoppers && (
-                    <WhoShopsHereCard snapshot={results.tradeAreaShoppers} />
+                    <Suspense fallback={null}>
+                      <WhoShopsHereCard snapshot={results.tradeAreaShoppers} />
+                    </Suspense>
                   )}
                 </div>
               </ErrorBoundary>
@@ -565,25 +513,29 @@ export function ReportPage() {
           </div>
         </div>
       </main>
-      {results && (
-        <SharePitchDialog
-          open={sharePitchOpen}
-          onOpenChange={setSharePitchOpen}
-          results={results}
-          request={request}
-          mapCaptureRef={mapCaptureRef}
-          vacancy={vacancyInput}
-        />
+      {results && sharePitchOpen && (
+        <Suspense fallback={null}>
+          <SharePitchDialog
+            open={sharePitchOpen}
+            onOpenChange={setSharePitchOpen}
+            results={results}
+            request={request}
+            mapCaptureRef={mapCaptureRef}
+            vacancy={vacancyInput}
+          />
+        </Suspense>
       )}
-      {results && (
-        <OutreachSheet
-          open={!!outreach}
-          onOpenChange={(o) => !o && setOutreach(null)}
-          prospect={outreach}
-          results={results}
-        />
+      {results && outreach && (
+        <Suspense fallback={null}>
+          <OutreachSheet
+            open
+            onOpenChange={(o) => !o && setOutreach(null)}
+            prospect={outreach}
+            results={results}
+          />
+        </Suspense>
       )}
-      {results && (
+      {results && deferHeavyUi && (
         <Suspense fallback={null}>
           <ReportFirstRunTour ready={results.prospects.length > 0} />
         </Suspense>

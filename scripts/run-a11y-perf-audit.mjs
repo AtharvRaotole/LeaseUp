@@ -17,6 +17,15 @@ const WICKER = '1574 N Milwaukee Ave, Chicago, IL 60622';
 
 const MAP_EXCLUDE = '.maplibregl-map, .maplibregl-ctrl-group, .maplibregl-canvas';
 
+async function warmWorker() {
+  const res = await fetch(`${API}/api/analyze`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ address: WICKER, radius: 10 }),
+  });
+  if (!res.ok) throw new Error('worker warmup analyze failed');
+}
+
 async function createPitchUrl() {
   const analyzeRes = await fetch(`${API}/api/analyze`, {
     method: 'POST',
@@ -95,6 +104,34 @@ function runLighthouseMobile(url) {
   };
 }
 
+function median(values) {
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0 ? Math.round((sorted[mid - 1] + sorted[mid]) / 2) : sorted[mid];
+}
+
+function lighthouseMedian(url, runs = 3) {
+  const scores = [];
+  for (let i = 0; i < runs; i++) {
+    scores.push(runLighthouseMobile(url));
+  }
+  return {
+    performance: median(scores.map((s) => s.performance)),
+    accessibility: median(scores.map((s) => s.accessibility)),
+    bestPractices: median(scores.map((s) => s.bestPractices)),
+  };
+}
+
+await warmWorker();
+
+const reportUrl = `${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`;
+runLighthouseMobile(`${BASE}/`); // discard cold landing run
+runLighthouseMobile(reportUrl); // discard cold report run
+const lhScores = {
+  landing: runLighthouseMobile(`${BASE}/`),
+  report: lighthouseMedian(reportUrl, 3),
+};
+
 const browser = await chromium.launch();
 const context = await browser.newContext();
 const page = await context.newPage();
@@ -108,20 +145,5 @@ axe.pitch = await runAxe(page, pitchUrl.replace(BASE, ''), async (p) => {
 });
 
 await browser.close();
-
-const reportUrl = `${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`;
-{
-  const warm = await chromium.launch();
-  const warmCtx = await warm.newContext();
-  const warmPage = await warmCtx.newPage();
-  await warmPage.goto(reportUrl, { waitUntil: 'networkidle' });
-  await warmPage.getByTestId('report-top-brands').waitFor({ timeout: 120_000 });
-  await warm.close();
-}
-
-const lhScores = {
-  landing: await runLighthouseMobile(`${BASE}/`),
-  report: await runLighthouseMobile(reportUrl),
-};
 
 console.log(JSON.stringify({ axe, lighthouse: lhScores }, null, 2));

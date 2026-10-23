@@ -8,9 +8,10 @@ export type HealthResponse = {
   buildTime?: string;
 };
 
-export function useHealth() {
+export function useHealth(options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: ['health'],
+    enabled: options?.enabled ?? true,
     queryFn: async () => {
       const res = await fetch(apiUrl('/api/health'));
       if (!res.ok) throw new Error('Health check failed');

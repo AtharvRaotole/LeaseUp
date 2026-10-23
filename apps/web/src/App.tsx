@@ -4,7 +4,6 @@ import { LandingPage } from './pages/LandingPage';
 import { MapRouteStyles } from './components/layout/MapRouteStyles';
 import { RouteFallback } from './components/layout/RouteFallback';
 import { SkipToContent } from './components/layout/SkipToContent';
-
 const ReportPage = lazy(() => import('./pages/ReportPage').then((m) => ({ default: m.ReportPage })));
 const BrandPage = lazy(() => import('./pages/BrandPage').then((m) => ({ default: m.BrandPage })));
 const PortfolioPage = lazy(() =>
