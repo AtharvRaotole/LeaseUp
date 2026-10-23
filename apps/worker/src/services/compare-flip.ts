@@ -4,7 +4,7 @@ import { wickerparkFixture, seviervilleFixture } from '@leaseup/fixtures';
 import { createStoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
 
-const CACHE_KEY = 'compare:flip:live:v1';
+const CACHE_KEY = 'compare:flip:live:v2';
 
 export type CompareFlipPayload = {
   left: { name: string; top: Array<{ entityId: string; name: string; qlooRank: number; affinity: number }> };
@@ -110,9 +110,10 @@ export async function getCompareFlip(env: Env): Promise<CompareFlipPayload> {
     radiusKm,
   };
 
+  const take = Math.max(brandIds.length, 50);
   const [wickerInsights, seviervilleInsights] = await Promise.all([
-    qloo.getBrandInsights({ location: wickerLoc, brandIds, take: 50 }),
-    qloo.getBrandInsights({ location: seviervilleLoc, brandIds, take: 50 }),
+    qloo.getBrandInsights({ location: wickerLoc, brandIds, take }),
+    qloo.getBrandInsights({ location: seviervilleLoc, brandIds, take }),
   ]);
 
   const wickerRankById = new Map(
@@ -126,7 +127,9 @@ export async function getCompareFlip(env: Env): Promise<CompareFlipPayload> {
       .map((row, index) => [row.entity_id, index + 1])
   );
 
-  const sharedIds = wickerInsights.map((r) => r.entity_id).filter((id) => seviervilleRankById.has(id));
+  const sharedIds = brandIds.filter(
+    (id) => wickerRankById.has(id) && seviervilleRankById.has(id)
+  );
 
   const flipExamples = sharedIds
     .map((entityId) => {

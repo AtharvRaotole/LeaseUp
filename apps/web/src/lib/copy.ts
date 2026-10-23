@@ -5,9 +5,9 @@ export function verificationShortLabel(verified: ProspectPack['brand']['verified
     case 'verified (2 sources)':
       return 'Verified';
     case 'verifying...':
-      return 'Checking';
+      return 'Checking OSM';
     case 'unverified (1 source)':
-      return '1 source';
+      return 'Only 1 source';
     case 'conflict - likely present':
       return 'Likely present';
     case 'conflict':

@@ -37,6 +37,11 @@ export {
   type DemoFixtureId,
 } from './demo-addresses.js';
 export {
+  DEMO_CHIP_DISPLAYS,
+  matchDemoChipWithinMeters,
+  type DemoChipDisplay,
+} from './demo-chip-proximity.js';
+export {
   overpassDemoByFixture,
   DEMO_OSM_UNRECORDED_NOTE,
   type OverpassDemoRecording,

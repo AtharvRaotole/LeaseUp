@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Store } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { AnalysisRequest, AnalysisResponse, ProspectPack } from '@leaseup/contracts';
@@ -14,26 +14,56 @@ import { verificationShortLabel, verificationTooltip } from '../../lib/copy';
 import { pitchExpandedLines } from '../../lib/pitch-detail-copy';
 import { cn } from '../../lib/cn';
 
+const OSM_VERIFY_WAIT_MS = 20_000;
+
 function PitchPill({
   children,
   tone,
   title,
+  spinner,
 }: {
   children: ReactNode;
   tone: 'accent' | 'neutral';
   title?: string;
+  spinner?: boolean;
 }) {
   return (
     <span
       title={title}
       className={cn(
-        'inline-flex h-[22px] max-w-[8.5rem] items-center truncate rounded-pill px-2 text-[11px] font-medium leading-none',
+        'inline-flex h-[22px] max-w-[9.5rem] items-center gap-1 truncate rounded-pill px-2 text-[11px] font-medium leading-none',
         tone === 'accent' ? 'bg-accent-soft text-accent' : 'border border-border bg-surface text-ink-2'
       )}
     >
-      {children}
+      {spinner && (
+        <span
+          className="inline-block h-3 w-3 shrink-0 animate-spin rounded-full border-2 border-ink-3 border-t-accent"
+          aria-hidden
+        />
+      )}
+      <span className="truncate">{children}</span>
     </span>
   );
+}
+
+function verificationPillCopy(
+  verified: ProspectPack['brand']['verified'],
+  entityId: string,
+  osmTimedOut: Set<string>,
+  radiusKm: number
+): { label: string; title: string; spinner: boolean } {
+  if (verified === 'verifying...' && osmTimedOut.has(entityId)) {
+    return {
+      label: 'Only 1 source',
+      title: 'OpenStreetMap did not respond in time',
+      spinner: false,
+    };
+  }
+  return {
+    label: verificationShortLabel(verified),
+    title: verificationTooltip(verified, radiusKm),
+    spinner: verified === 'verifying...',
+  };
 }
 
 export function BrandsToPitch({
@@ -58,13 +88,30 @@ export function BrandsToPitch({
   const navigate = useNavigate();
   const [prospects, setProspects] = useState(results.prospects);
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [osmTimedOut, setOsmTimedOut] = useState<Set<string>>(() => new Set());
+  const [dropNotes, setDropNotes] = useState<Array<{ id: string; brand: string }>>([]);
+  const prospectsRef = useRef(prospects);
+  prospectsRef.current = prospects;
   const totalScored = results.rankings?.length ?? 100;
 
   useEffect(() => setProspects(results.prospects), [results.prospects]);
 
   useEffect(() => {
     if (results.mode !== 'live') return;
-    if (!results.prospects.some((p) => p.brand.verified === 'verifying...')) return;
+    const verifying = results.prospects.filter((p) => p.brand.verified === 'verifying...');
+    if (verifying.length === 0) return;
+
+    const verifyingIds = verifying.map((p) => p.brand.entityId);
+    let cancelled = false;
+
+    const timeout = window.setTimeout(() => {
+      setOsmTimedOut((prev) => {
+        const next = new Set(prev);
+        for (const id of verifyingIds) next.add(id);
+        return next;
+      });
+    }, OSM_VERIFY_WAIT_MS);
+
     void fetch(apiUrl('/api/verify'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -72,10 +119,37 @@ export function BrandsToPitch({
     })
       .then((r) => r.json())
       .then((d: { prospects?: ProspectPack[] }) => {
-        if (d.prospects) setProspects(d.prospects);
+        if (cancelled || !d.prospects) return;
+        window.clearTimeout(timeout);
+        const prev = prospectsRef.current;
+        const nextIds = new Set(d.prospects.map((p) => p.brand.entityId));
+        const dropped = prev.filter(
+          (p) => !nextIds.has(p.brand.entityId) && p.brand.verified === 'verifying...'
+        );
+        if (dropped.length > 0) {
+          for (const p of dropped) {
+            const id = `${p.brand.entityId}-${Date.now()}`;
+            const brand = displayBrandName(p.brand.entityId, p.brand.name);
+            setDropNotes((notes) => [{ id, brand }, ...notes]);
+            window.setTimeout(() => {
+              setDropNotes((notes) => notes.filter((n) => n.id !== id));
+            }, 6000);
+          }
+        }
+        setProspects(d.prospects);
+        setOsmTimedOut((prev) => {
+          const next = new Set(prev);
+          for (const id of verifyingIds) next.delete(id);
+          return next;
+        });
       })
       .catch(() => undefined);
-  }, [results, radiusKm]);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, [results.mode, results.prospects, results.location, radiusKm]);
 
   if (forceEmpty || prospects.length === 0) {
     return (
@@ -108,6 +182,18 @@ export function BrandsToPitch({
   return (
     <section>
       <h3 className="mb-3 text-h3 font-semibold text-ink" data-testid="brands-to-pitch">Brands to pitch</h3>
+      {dropNotes.length > 0 && (
+        <div className="mb-3 space-y-2" aria-live="polite">
+          {dropNotes.map((note) => (
+            <p
+              key={note.id}
+              className="rounded-card border border-border bg-surface-2 px-3 py-2 text-sm text-ink-2 transition-opacity duration-300"
+            >
+              {note.brand} dropped: found in OpenStreetMap
+            </p>
+          ))}
+        </div>
+      )}
       <Card className="overflow-hidden p-0">
         <ul className="divide-y divide-border">
           {prospects.map((prospect) => {
@@ -147,9 +233,19 @@ export function BrandsToPitch({
                   </div>
                   <div className="flex shrink-0 items-center gap-1.5">
                     <PitchPill tone="accent">{fitLabel}</PitchPill>
-                    <PitchPill tone="neutral" title={verificationTooltip(prospect.brand.verified, radiusKm)}>
-                      {verificationShortLabel(prospect.brand.verified)}
-                    </PitchPill>
+                    {(() => {
+                      const pill = verificationPillCopy(
+                        prospect.brand.verified,
+                        prospect.brand.entityId,
+                        osmTimedOut,
+                        radiusKm
+                      );
+                      return (
+                        <PitchPill tone="neutral" title={pill.title} spinner={pill.spinner}>
+                          {pill.label}
+                        </PitchPill>
+                      );
+                    })()}
                   </div>
                 </button>
                 {open && (
