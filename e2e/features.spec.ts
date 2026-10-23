@@ -22,6 +22,12 @@ test.describe('LeaseUp feature pages (demo)', () => {
     await page.getByTestId('portfolio-input').fill(`${WICKER}\n${BOULDER}`);
     await page.getByRole('button', { name: 'Geocode and analyze' }).click();
     await expect(page.getByTestId('portfolio-table')).toBeVisible({ timeout: 120000 });
+    // Live Nominatim can return ambiguous matches; confirm the top one and start the run if needed.
+    if (await page.getByText('Needs confirmation').first().isVisible().catch(() => false)) {
+      await page.getByTestId('portfolio-timeline').getByRole('button').first().click();
+      const run = page.getByRole('button', { name: 'Run analyses' });
+      if (await run.isEnabled().catch(() => false)) await run.click();
+    }
     await expect(page.getByText('Complete').first()).toBeVisible({ timeout: 180000 });
     const share = page.getByText(/\/portfolio\//);
     await expect(share).toBeVisible();

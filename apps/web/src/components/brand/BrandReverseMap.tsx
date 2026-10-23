@@ -146,17 +146,33 @@ export function BrandReverseMap({
       const el = document.createElement('button');
       el.type = 'button';
       el.className = 'brand-opp-pin';
-      el.innerHTML = pinHtml(opp.rank, highlightRank === opp.rank);
-      el.setAttribute('aria-label', `Opportunity ${opp.rank}`);
+      el.dataset.rank = String(opp.rank);
+      el.innerHTML = pinHtml(opp.rank, false);
       el.addEventListener('mouseenter', () => onHoverRank?.(opp.rank));
       el.addEventListener('mouseleave', () => onHoverRank?.(null));
       el.addEventListener('click', () => onHoverRank?.(opp.rank));
       const marker = new maplibregl.Marker({ element: el, anchor: 'center' })
         .setLngLat([opp.longitude, opp.latitude])
         .addTo(map);
+      // MapLibre overwrites aria-label with "Map marker" in the constructor.
+      el.setAttribute('aria-label', `Opportunity ${opp.rank}`);
       markersRef.current.push(marker);
     }
-  }, [data.opportunities, highlightRank, onHoverRank]);
+    return () => {
+      markersRef.current.forEach((m) => m.remove());
+      markersRef.current = [];
+    };
+  }, [data.opportunities, onHoverRank]);
+
+  // Update highlight in place instead of recreating every marker on hover.
+  useEffect(() => {
+    for (const m of markersRef.current) {
+      const el = m.getElement();
+      const rank = Number(el.dataset.rank);
+      el.innerHTML = pinHtml(rank, highlightRank === rank);
+      el.style.zIndex = highlightRank === rank ? '2' : '';
+    }
+  }, [highlightRank, data.opportunities]);
 
   return (
     <div className="relative h-full min-h-[360px] w-full">
