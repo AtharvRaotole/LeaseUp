@@ -1,7 +1,7 @@
 import type { Context, ErrorHandler } from 'hono';
 import type { Env } from '../index';
 import { ZodError } from 'zod';
-import { ConfigurationError, UpstreamError } from '../lib/errors';
+import { ConfigurationError, GeocodeAmbiguousError, UpstreamError } from '../lib/errors';
 
 export const errorHandler: ErrorHandler<{ Bindings: Env }> = (err: Error, c: Context<{ Bindings: Env }>) => {
   console.error('Error:', err);
@@ -24,6 +24,17 @@ export const errorHandler: ErrorHandler<{ Bindings: Env }> = (err: Error, c: Con
         code: 'CONFIGURATION_ERROR',
       },
       503
+    );
+  }
+
+  if (err instanceof GeocodeAmbiguousError) {
+    return c.json(
+      {
+        error: err.message,
+        code: err.code,
+        candidates: err.candidates,
+      },
+      409
     );
   }
 

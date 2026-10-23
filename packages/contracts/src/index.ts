@@ -247,6 +247,20 @@ export const GeocodeCandidateSchema = z.object({
 
 export type GeocodeCandidate = z.infer<typeof GeocodeCandidateSchema>;
 
+export const GeocodePreviewRequestSchema = z.object({
+  address: z.string().min(3).max(500),
+});
+
+export type GeocodePreviewRequest = z.infer<typeof GeocodePreviewRequestSchema>;
+
+export const GeocodePreviewResponseSchema = z.object({
+  needsConfirmation: z.boolean(),
+  candidates: z.array(GeocodeCandidateSchema).max(3),
+  location: LocationSchema.optional(),
+});
+
+export type GeocodePreviewResponse = z.infer<typeof GeocodePreviewResponseSchema>;
+
 export const PortfolioRowStatusSchema = z.enum([
   'pending',
   'geocoding',

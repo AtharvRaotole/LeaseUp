@@ -1,7 +1,7 @@
 import { QlooClient } from '../providers/qloo';
 import { OpenAIClient } from '../providers/openai';
 import { OverpassClient } from './overpass';
-import { NominatimClient } from './nominatim';
+import { GeocodeService } from './geocode';
 import type { Env } from '../index';
 import type {
   AnalysisRequest,
@@ -56,7 +56,7 @@ export class AnalysisService {
   private qloo: QlooClient;
   private openai: OpenAIClient;
   private overpass: OverpassClient;
-  private nominatim: NominatimClient;
+  private geocode: GeocodeService;
   private db: D1Database;
   private cache: KVNamespace;
   private mode: 'live' | 'demo';
@@ -70,9 +70,10 @@ export class AnalysisService {
     this.openai = new OpenAIClient(env);
     this.overpass = new OverpassClient(env.CACHE, 12000, this.mode === 'demo');
     this.cache = env.CACHE;
-    this.nominatim = new NominatimClient(
+    this.geocode = new GeocodeService(
       env.CACHE,
-      env.NOMINATIM_CONTACT || DEFAULT_NOMINATIM_CONTACT
+      env.NOMINATIM_CONTACT || DEFAULT_NOMINATIM_CONTACT,
+      this.mode
     );
     this.db = env.DB;
     this.catalog = createStoreCatalog(env, this.mode);
@@ -100,8 +101,9 @@ export class AnalysisService {
 
     try {
       const location = await runStep(emit, 'locate', 'Locate storefront', async () => {
-        const resolved =
-          request.confirmedLocation ?? (await this.resolveLocation(request.address));
+        const resolved = await this.polishDemoChipLocation(
+          await this.geocode.resolveForAnalysis(request.address, request.confirmedLocation)
+        );
         return {
           summary: resolved.resolvedAddress || resolved.address,
           detail: {
@@ -318,45 +320,13 @@ export class AnalysisService {
     };
   }
 
-  private async resolveLocation(address: string): Promise<Location> {
-    if (this.mode === 'demo') {
-      return this.resolveDemoLocation(address);
-    }
-
-    const located = await this.nominatim.geocode(address);
-    const chip = matchDemoChipWithinMeters(located.latitude, located.longitude);
-    if (!chip) return located;
+  private async polishDemoChipLocation(location: Location): Promise<Location> {
+    const chip = matchDemoChipWithinMeters(location.latitude, location.longitude);
+    if (!chip) return location;
     return {
-      ...located,
+      ...location,
       neighborhood: chip.neighborhood,
       city: chip.city,
-    };
-  }
-
-  private resolveDemoLocation(address: string): Location {
-    const fixtureId = matchDemoFixtureId(address);
-    if (!fixtureId) {
-      throw new DemoModeRequiredError();
-    }
-
-    const fixture =
-      fixtureId === 'wicker'
-        ? wickerparkFixture
-        : fixtureId === 'boulder'
-          ? boulderFixture
-          : seviervilleFixture;
-
-    const placeParts = fixture.location.name.split(',').map((p) => p.trim()).filter(Boolean);
-    const neighborhood = placeParts[0] ?? fixture.location.name;
-    const city = placeParts.length > 1 ? placeParts.slice(1).join(', ') : undefined;
-
-    return {
-      address,
-      latitude: fixture.location.latitude,
-      longitude: fixture.location.longitude,
-      neighborhood,
-      city,
-      resolvedAddress: fixture.location.name,
     };
   }
 
