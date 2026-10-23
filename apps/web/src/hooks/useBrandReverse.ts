@@ -8,7 +8,7 @@ export function useMetros() {
     queryKey: ['metros'],
     queryFn: async () => {
       const res = await fetch(apiUrl('/api/metros'));
-      if (!res.ok) throw new Error('Failed to load metros');
+      if (!res.ok) throw new Error('Metro list did not load. Try again in a moment.');
       const data = (await res.json()) as { metros: MetroOption[] };
       return data.metros;
     },
@@ -22,7 +22,7 @@ export function useBrandSearch(query: string) {
       const params = new URLSearchParams();
       if (query.trim()) params.set('q', query.trim());
       const res = await fetch(apiUrl(`/api/brands?${params}`));
-      if (!res.ok) throw new Error('Failed to load brands');
+      if (!res.ok) throw new Error('Brand list did not load. Try again in a moment.');
       const data = (await res.json()) as { brands: TrackedBrand[] };
       return data.brands;
     },
@@ -40,7 +40,7 @@ export function useBrandReverse(entityId: string | undefined, metroId: string) {
       const res = await fetch(apiUrl(`/api/brand/${entityId}/reverse?${params}`));
       if (!res.ok) {
         const err = (await res.json().catch(() => ({}))) as { error?: string };
-        throw new Error(err.error || 'Could not load brand heatmap');
+        throw new Error(err.error || 'Brand heatmap did not load. Try again in a moment.');
       }
       return (await res.json()) as BrandReverseResponse;
     },

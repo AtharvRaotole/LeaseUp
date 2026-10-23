@@ -11,6 +11,8 @@ import { useBrandReverse, useBrandSearch, useMetros } from '../hooks/useBrandRev
 import { displayBrandName } from '../lib/brand-display';
 import { formatMetroMatchLabel } from '../lib/affinity-label';
 import { cn } from '../lib/cn';
+import { CalmErrorPanel } from '../components/ui/CalmErrorPanel';
+import { apiErrorFromUnknown } from '../lib/api-error';
 
 const BrandReverseMap = lazy(() =>
   import('../components/brand/BrandReverseMap').then((m) => ({ default: m.BrandReverseMap }))
@@ -40,7 +42,7 @@ export function BrandPage() {
   const [hoverRank, setHoverRank] = useState<number | null>(null);
   const { data: metros } = useMetros();
   const { data: brands, isLoading: brandsLoading } = useBrandSearch(search);
-  const { data, isLoading, error, isFetching } = useBrandReverse(id, metroId);
+  const { data, isLoading, error, isFetching, refetch } = useBrandReverse(id, metroId);
 
   const metroOptions = useMemo(
     () => (metros ?? []).map((m) => ({ value: m.id, label: m.label })),
@@ -149,9 +151,13 @@ export function BrandPage() {
               <p className="mt-3 text-sm text-ink-3">{data.sourceNote}</p>
             )}
             {error && (
-              <p className="mt-3 text-sm text-red-600" role="alert">
-                {(error as Error).message}
-              </p>
+              <div className="mt-3" data-testid="brand-mode-error">
+                <CalmErrorPanel
+                  error={apiErrorFromUnknown(error)}
+                  onRetry={() => void refetch()}
+                  testId="brand-mode-error"
+                />
+              </div>
             )}
             <ErrorBoundary>
               <section className="mt-6 flex-1" aria-label="Top opportunities">

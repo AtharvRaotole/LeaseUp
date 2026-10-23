@@ -59,9 +59,13 @@ export function PitchPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-bg px-4 py-24 text-center">
-        <p className="text-ink-2">{error}</p>
-        <Link to="/" className="mt-4 inline-block text-accent hover:underline">Back home</Link>
+      <div className="min-h-screen bg-bg px-4 py-24 text-center" data-testid="pitch-error">
+        <h1 className="font-display font-semibold text-h2 text-ink">Pitch unavailable</h1>
+        <p className="mt-3 max-w-md mx-auto text-ink-2">{error}</p>
+        <p className="mt-2 text-sm text-ink-3">Ask the sender for a fresh link, or run a new site search.</p>
+        <Link to="/" className="mt-6 inline-block">
+          <Button size="lg">Back to home</Button>
+        </Link>
       </div>
     );
   }
