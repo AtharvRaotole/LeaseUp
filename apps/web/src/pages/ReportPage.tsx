@@ -44,6 +44,7 @@ import { ProductExplainer } from '../components/report/ProductExplainer';
 import { ReportFirstRunTour } from '../components/report/ReportFirstRunTour';
 import { ReportLoadingPanel } from '../components/report/ReportLoadingPanel';
 import { ReportMapSkeleton } from '../components/report/ReportMapSkeleton';
+import { ReportSidebarFacts } from '../components/report/ReportSidebarFacts';
 import { ShareHead } from '../components/seo/ShareHead';
 import { reportShareHead } from '../lib/share-preview';
 
@@ -400,6 +401,11 @@ export function ReportPage() {
                         />
                       ) : null
                     }
+                  />
+                  <ReportSidebarFacts
+                    results={results}
+                    radiusKm={request.radius}
+                    chipSlug={slug}
                   />
                 </div>
               </ErrorBoundary>

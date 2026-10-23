@@ -36,7 +36,7 @@ function PitchPill({
     <span
       title={tooltip}
       className={cn(
-        'inline-flex h-[22px] max-w-[9.5rem] items-center gap-1 truncate rounded-pill px-2 text-[11px] font-medium leading-none',
+        'inline-flex min-h-[22px] max-w-full items-center gap-1 rounded-pill px-2 py-0.5 text-[11px] font-medium leading-snug sm:max-w-[10.5rem]',
         tone === 'accent' ? 'bg-accent-soft text-accent' : 'border border-border bg-surface text-ink-2'
       )}
     >
@@ -46,7 +46,7 @@ function PitchPill({
           aria-hidden
         />
       )}
-      <span className="truncate">{children}</span>
+      <span className="break-words sm:truncate">{children}</span>
     </span>
   );
 }
@@ -224,7 +224,7 @@ export function BrandsToPitch({
                 <button
                   type="button"
                   className={cn(
-                    'flex min-h-[56px] w-full items-center gap-3 px-3 py-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent',
+                    'flex min-h-[56px] w-full flex-col gap-2 px-3 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent sm:flex-row sm:items-center sm:gap-3 sm:py-2',
                     selected ? 'bg-surface-2 border-l-2 border-l-accent pl-[10px]' : 'border-l-2 border-l-transparent'
                   )}
                   onClick={() => {
@@ -232,17 +232,19 @@ export function BrandsToPitch({
                     setExpanded(open ? null : prospect.brand.entityId);
                   }}
                 >
-                  <div
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-xs font-semibold text-ink"
-                    style={{ background: brandTint(name) }}
-                  >
-                    {brandMonogram(name)}
+                  <div className="flex min-w-0 w-full items-start gap-3 sm:flex-1">
+                    <div
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-xs font-semibold text-ink"
+                      style={{ background: brandTint(name) }}
+                    >
+                      {brandMonogram(name)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium leading-snug text-ink">{name}</p>
+                      <p className="mt-0.5 text-xs leading-snug text-ink-3">{subline}</p>
+                    </div>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="line-clamp-2 font-medium leading-snug text-ink md:line-clamp-1 md:truncate">{name}</p>
-                    <p className="mt-0.5 truncate text-xs text-ink-3">{subline}</p>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-1.5">
+                  <div className="flex w-full flex-wrap items-center gap-1.5 sm:w-auto sm:shrink-0 sm:justify-end">
                     <PitchPill tone="accent" tooltip={localFitTooltip()}>{fitLabel}</PitchPill>
                     {(() => {
                       const pill = verificationPillCopy(
