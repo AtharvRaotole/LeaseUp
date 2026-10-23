@@ -1,32 +1,34 @@
-import { DEMO_CHIP_ADDRESSES, demoChipHitRateLabel, type DemoFixtureId } from '@leaseup/fixtures';
+import {
+  DEMO_CHIP_ADDRESSES,
+  demoChipIdsByQlooLift,
+  demoChipProofHitRateLabel,
+  type DemoFixtureId,
+} from '@leaseup/fixtures';
 
-/** Hit rates from fixture backtests (recorded Qloo validation, Oct 2026). */
-export const DEMO_EXAMPLES: Array<{
-  id: DemoFixtureId;
-  neighborhood: string;
-  city: string;
-  hitRateLabel: string;
-  address: string;
-}> = [
-  {
-    id: 'wicker',
+const DEMO_CHIP_META: Record<
+  DemoFixtureId,
+  { neighborhood: string; city: string; address: string }
+> = {
+  wicker: {
     neighborhood: 'Wicker Park',
     city: 'Chicago',
-    hitRateLabel: demoChipHitRateLabel('wicker'),
     address: DEMO_CHIP_ADDRESSES.wicker,
   },
-  {
-    id: 'boulder',
+  boulder: {
     neighborhood: 'Pearl Street',
     city: 'Boulder',
-    hitRateLabel: demoChipHitRateLabel('boulder'),
     address: DEMO_CHIP_ADDRESSES.boulder,
   },
-  {
-    id: 'sevierville',
+  sevierville: {
     neighborhood: 'Sevierville',
     city: 'Tennessee',
-    hitRateLabel: demoChipHitRateLabel('sevierville'),
     address: DEMO_CHIP_ADDRESSES.sevierville,
   },
-];
+};
+
+/** Demo chips ordered by honest Qloo lift vs chain-size baseline (fixtures @ 10 km). */
+export const DEMO_EXAMPLES = demoChipIdsByQlooLift().map((id) => ({
+  id,
+  ...DEMO_CHIP_META[id],
+  hitRateLabel: demoChipProofHitRateLabel(id),
+}));

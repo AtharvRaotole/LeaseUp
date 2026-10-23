@@ -23,8 +23,12 @@ export function pitchExpandedLines(
     lines.push(`No ${name} store within ${radiusKm} km.`);
   }
 
+  const snapshotDate = formatUserFacingDate(
+    results.osmSnapshotRecordedAt ?? results.timestamp
+  );
+  const osmLabel = results.osmSnapshotLabel ?? 'OpenStreetMap';
   lines.push(
-    `Checked against All The Places and ${results.osmSnapshotLabel ?? 'OpenStreetMap'} on ${formatUserFacingDate(results.osmSnapshotRecordedAt ?? results.timestamp)}.`
+    `Checked against All The Places and ${osmLabel} as of ${snapshotDate}.`
   );
 
   return lines;
