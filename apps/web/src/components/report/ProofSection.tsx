@@ -5,6 +5,7 @@ import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { SegmentedControl } from '../ui/SegmentedControl';
 import { affinitiesAllIdentical, fitPercentileLabel } from '../../lib/fit-display';
+import { presentInTop10Count } from '../../lib/hit-rate';
 import { displayBrandName } from '../../lib/brand-display';
 export function ProofSection({
   results,
@@ -18,7 +19,7 @@ export function ProofSection({
   const [mode, setMode] = useState<'raw' | 'blended'>('raw');
   const backtest = mode === 'blended' && results.backtestBlended ? results.backtestBlended : results.backtest;
   const top10 = (results.rankings ?? []).slice(0, 10);
-  const present = backtest.presentInTop10 ?? Math.round(backtest.precisionAt10 * 10);
+  const present = presentInTop10Count(backtest);
   const totalScored = results.rankings?.length ?? top10.length;
   const hideFit = useMemo(() => affinitiesAllIdentical(top10), [top10]);
 

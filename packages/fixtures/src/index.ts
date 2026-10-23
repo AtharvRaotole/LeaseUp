@@ -42,6 +42,10 @@ export {
   type DemoChipDisplay,
 } from './demo-chip-proximity.js';
 export {
+  demoChipPresentInTop10,
+  demoChipHitRateLabel,
+} from './demo-chip-hit-rates.js';
+export {
   overpassDemoByFixture,
   DEMO_OSM_UNRECORDED_NOTE,
   type OverpassDemoRecording,
