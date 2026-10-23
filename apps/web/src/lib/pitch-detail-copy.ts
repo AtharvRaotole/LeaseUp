@@ -1,6 +1,7 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 import { formatUserFacingDate } from './format-date';
 import { whyBrandBulletLines } from './why-brand-lines';
+import { pitchCheckedSourcesLabel } from './copy';
 
 export function pitchExpandedLines(
   prospect: ProspectPack,
@@ -12,8 +13,7 @@ export function pitchExpandedLines(
   const snapshotDate = formatUserFacingDate(
     results.osmSnapshotRecordedAt ?? results.timestamp
   );
-  const osmLabel = results.osmSnapshotLabel ?? 'OpenStreetMap';
-  lines.push(`Store checks use All The Places and ${osmLabel} as of ${snapshotDate}.`);
+  lines.push(`${pitchCheckedSourcesLabel(prospect)} as of ${snapshotDate}.`);
 
   return lines;
 }

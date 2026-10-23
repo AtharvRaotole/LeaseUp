@@ -68,6 +68,10 @@ import type { ResponseCache } from '../lib/response-cache';
 import { tryAcquireOverpassRefreshLock } from '../lib/overpass-refresh-lock';
 import { loadTradeAreaShoppersSnapshot } from '../lib/trade-area-shoppers';
 import { brandReachForEntity } from '../lib/brand-reach';
+import {
+  METRO_COVERAGE_SCAN_KM,
+  metroStoreCoverageIncomplete,
+} from '../lib/verification-coverage';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -519,6 +523,9 @@ export class AnalysisService {
       );
 
       let coverageNote = this.catalog.getCoverageNote(candidate.entity_id, nationalCount);
+      if (verification.metroCoverageNote) {
+        coverageNote = this.appendCoverageNote(verification.metroCoverageNote, coverageNote);
+      }
       if (osmSnapshotBrandStatus(candidate.entity_id) === 'failed') {
         coverageNote = this.appendCoverageNote(
           'OpenStreetMap snapshot fetch failed for this brand; showing ATP only.',
@@ -581,6 +588,7 @@ export class AnalysisService {
       | 'unverified (1 source)'
       | 'conflict - likely present';
     sources: string[];
+    metroCoverageNote?: string;
   }> {
     const sources: string[] = ['All The Places (CC0)'];
     const snapshotLabel = osmSnapshotDisplayLabel();
@@ -600,6 +608,34 @@ export class AnalysisService {
         sources: [...sources, `${snapshotLabel} (store found)`],
       };
     }
+
+    const nationalCount = await this.catalog.getNationalStoreCount(entityId);
+    const atpNearby = await this.catalog.findStoresNearby(
+      entityId,
+      location.latitude,
+      location.longitude,
+      METRO_COVERAGE_SCAN_KM
+    );
+    const nearestAtpKm = atpNearby[0]?.distance;
+    const nearestOsmKm = await this.osmSnapshot.nearestStoreKm(
+      entityId,
+      location.latitude,
+      location.longitude,
+      METRO_COVERAGE_SCAN_KM
+    );
+    const metroGap = metroStoreCoverageIncomplete({
+      nationalStoreCount: nationalCount,
+      nearestAtpKm,
+      nearestOsmKm,
+    });
+    if (metroGap.incomplete) {
+      return {
+        status: 'unverified (1 source)',
+        sources,
+        metroCoverageNote: metroGap.reason,
+      };
+    }
+
     return {
       status: 'verified (2 sources)',
       sources: [...sources, snapshotLabel],

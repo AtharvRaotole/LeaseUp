@@ -81,27 +81,39 @@ export class OsmSnapshotCatalog {
     return data;
   }
 
+  async nearestStoreKm(
+    brandId: string,
+    lat: number,
+    lon: number,
+    maxRadiusKm: number
+  ): Promise<number | undefined> {
+    if (osmSnapshotBrandStatus(brandId) !== 'ok') return undefined;
+    const index = await this.loadBrandsIndex();
+    if (!index) return undefined;
+    const brandIdx = index.brands.findIndex((b) => b.id === brandId);
+    if (brandIdx < 0) return undefined;
+
+    let nearest = Infinity;
+    const tiles = coveringGeohash3(lat, lon, maxRadiusKm);
+    for (const gh of tiles) {
+      const tile = await this.loadTile(gh);
+      if (!tile) continue;
+      for (const [bIdx, tLat, tLon] of tile.stores) {
+        if (bIdx !== brandIdx) continue;
+        const d = haversineKm(lat, lon, tLat, tLon);
+        if (d <= maxRadiusKm && d < nearest) nearest = d;
+      }
+    }
+    return nearest === Infinity ? undefined : nearest;
+  }
+
   async hasBrandNearby(
     brandId: string,
     lat: number,
     lon: number,
     radiusKm: number
   ): Promise<boolean> {
-    if (osmSnapshotBrandStatus(brandId) !== 'ok') return false;
-    const index = await this.loadBrandsIndex();
-    if (!index) return false;
-    const brandIdx = index.brands.findIndex((b) => b.id === brandId);
-    if (brandIdx < 0) return false;
-
-    const tiles = coveringGeohash3(lat, lon, radiusKm);
-    for (const gh of tiles) {
-      const tile = await this.loadTile(gh);
-      if (!tile) continue;
-      for (const [bIdx, tLat, tLon] of tile.stores) {
-        if (bIdx !== brandIdx) continue;
-        if (haversineKm(lat, lon, tLat, tLon) <= radiusKm) return true;
-      }
-    }
-    return false;
+    const nearest = await this.nearestStoreKm(brandId, lat, lon, radiusKm);
+    return nearest !== undefined;
   }
 }
