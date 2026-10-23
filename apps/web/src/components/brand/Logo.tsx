@@ -11,6 +11,12 @@ const sizeMap: Record<LogoSize, { mark: number; text: string }> = {
   lg: { mark: 26, text: 'text-lg leading-none' },
 };
 
+const MARK_PATH_32 =
+  'M9 5h14a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3Zm-1.1 3.9h14.2a2.1 2.1 0 0 1 2.1 2.1v14.2a2.1 2.1 0 0 1-2.1 2.1H7.9a2.1 2.1 0 0 1-2.1-2.1V11a2.1 2.1 0 0 1 2.1-2.1ZM5 25.15V11.05h9.35v7.2H27v7.9H5Z';
+
+const MARK_PATH_16 =
+  'M4.5 2.5h7a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 11V4a1.5 1.5 0 0 1 1.5-1.5Zm-.55 1.95h7.1a1.05 1.05 0 0 1 1.05 1.05v7.1a1.05 1.05 0 0 1-1.05 1.05h-7.1A1.05 1.05 0 0 1 3.95 11V5.5a1.05 1.05 0 0 1 1.05-1.05ZM2.5 12.575V5.525h4.675v3.6H13.5v3.45H2.5Z';
+
 export type LogoProps = {
   variant?: LogoVariant;
   size?: LogoSize;
@@ -20,35 +26,20 @@ export type LogoProps = {
 
 function MarkIcon({ box }: { box: number }) {
   const useSnap16 = box <= 18;
-  if (useSnap16) {
-    return (
-      <svg
-        width={box}
-        height={box}
-        viewBox="0 0 16 16"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden
-        className="shrink-0"
-      >
-        <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
-        <path fill="currentColor" d="M3.5 12.5V5.5H7.25V9.25H12.5V12.5H3.5Z" />
-      </svg>
-    );
-  }
+  const viewBox = useSnap16 ? '0 0 16 16' : '0 0 32 32';
+  const d = useSnap16 ? MARK_PATH_16 : MARK_PATH_32;
 
   return (
     <svg
       width={box}
       height={box}
-      viewBox="0 0 32 32"
+      viewBox={viewBox}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden
       className="shrink-0"
     >
-      <rect x="5" y="5" width="22" height="22" rx="4" stroke="currentColor" strokeWidth="2.9" />
-      <path fill="currentColor" d="M8 25.15V11.05H14.35V18.25H25.15V25.15H8Z" />
+      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d={d} />
     </svg>
   );
 }
