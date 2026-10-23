@@ -65,6 +65,29 @@ CREATE TABLE IF NOT EXISTS owner_updates (
 
 CREATE INDEX IF NOT EXISTS idx_owner_updates_created ON owner_updates(created_at);
 
+-- Broker watchlist (saved report addresses and analyze snapshots)
+CREATE TABLE IF NOT EXISTS watch_spaces (
+  watch_id TEXT PRIMARY KEY,
+  workspace_id TEXT NOT NULL,
+  address TEXT NOT NULL,
+  address_key TEXT NOT NULL,
+  radius_km REAL NOT NULL,
+  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+);
+
+CREATE INDEX IF NOT EXISTS idx_watch_spaces_workspace ON watch_spaces(workspace_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_watch_spaces_workspace_address ON watch_spaces(workspace_id, address_key, radius_km);
+
+CREATE TABLE IF NOT EXISTS watch_snapshots (
+  snapshot_id TEXT PRIMARY KEY,
+  watch_id TEXT NOT NULL,
+  payload TEXT NOT NULL,
+  created_at INTEGER NOT NULL DEFAULT (unixepoch())
+);
+
+CREATE INDEX IF NOT EXISTS idx_watch_snapshots_watch ON watch_snapshots(watch_id, created_at DESC);
+
 -- Autonomous full prospecting agent runs
 CREATE TABLE IF NOT EXISTS prospecting_jobs (
   job_id TEXT PRIMARY KEY,

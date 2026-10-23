@@ -17,6 +17,7 @@ import { prospectingRouter } from './routes/prospecting';
 import { geocodeRouter } from './routes/geocode';
 import { pipelineRouter } from './routes/pipeline';
 import { ownerUpdateRouter } from './routes/owner-update';
+import { watchlistRouter } from './routes/watchlist';
 import { shareRouter } from './routes/share';
 import { allowedOrigins } from './lib/cors-allowed-origins';
 
@@ -70,6 +71,7 @@ function skipRateLimit(c: Context<{ Bindings: Env }>): boolean {
   if (path === '/api/geocode') return true;
   if (path.startsWith('/api/pipeline')) return true;
   if (path.startsWith('/api/owner-update')) return true;
+  if (path.startsWith('/api/watchlist')) return true;
   if (path === '/api/analyze/stream' || path === '/api/analyze') return true;
   if (path.startsWith('/api/og') || path.startsWith('/api/share')) return true;
   return false;
@@ -125,6 +127,7 @@ app.route('/api', pitchRouter);
 app.route('/api', prospectingRouter);
 app.route('/api', pipelineRouter);
 app.route('/api', ownerUpdateRouter);
+app.route('/api', watchlistRouter);
 app.route('/api', analysisRouter);
 app.route('/api', geocodeRouter);
 app.route('/api', shareRouter);

@@ -684,4 +684,74 @@ export const OwnerUpdatePropertyListSchema = z.object({
 
 export type OwnerUpdatePropertyList = z.infer<typeof OwnerUpdatePropertyListSchema>;
 
+export const WatchBrandRowSchema = z.object({
+  entityId: z.string(),
+  name: z.string(),
+  affinityRank: z.number(),
+  nearestExistingStoreKm: z.number().optional(),
+});
+
+export type WatchBrandRow = z.infer<typeof WatchBrandRowSchema>;
+
+export const WatchRunSnapshotSchema = z.object({
+  snapshotId: z.string().uuid(),
+  recordedAt: z.string(),
+  runId: z.string(),
+  brands: z.array(WatchBrandRowSchema).max(10),
+});
+
+export type WatchRunSnapshot = z.infer<typeof WatchRunSnapshotSchema>;
+
+export const WatchDiffKindSchema = z.enum(['first_check', 'changes', 'no_changes']);
+
+export type WatchDiffKind = z.infer<typeof WatchDiffKindSchema>;
+
+export const WatchDiffResultSchema = z.object({
+  kind: WatchDiffKindSchema,
+  newlyOpenedStore: z.array(WatchBrandRowSchema),
+  newInTop10: z.array(WatchBrandRowSchema),
+  droppedFromTop10: z.array(WatchBrandRowSchema),
+});
+
+export type WatchDiffResult = z.infer<typeof WatchDiffResultSchema>;
+
+export const WatchSpaceSummarySchema = z.object({
+  watchId: z.string().uuid(),
+  address: z.string(),
+  radiusKm: z.number(),
+  createdAt: z.string(),
+  lastCheckedAt: z.string(),
+  snapshotCount: z.number().int(),
+});
+
+export type WatchSpaceSummary = z.infer<typeof WatchSpaceSummarySchema>;
+
+export const WatchSpaceDetailSchema = WatchSpaceSummarySchema.extend({
+  latestSnapshot: WatchRunSnapshotSchema,
+  diff: WatchDiffResultSchema.optional(),
+});
+
+export type WatchSpaceDetail = z.infer<typeof WatchSpaceDetailSchema>;
+
+export const WatchlistResponseSchema = z.object({
+  spaces: z.array(WatchSpaceSummarySchema),
+});
+
+export type WatchlistResponse = z.infer<typeof WatchlistResponseSchema>;
+
+export const WatchSaveRequestSchema = z.object({
+  address: z.string().min(3).max(500),
+  radiusKm: z.number().min(0.5).max(50),
+  analysis: AnalysisResponseSchema,
+});
+
+export type WatchSaveRequest = z.infer<typeof WatchSaveRequestSchema>;
+
+export const WatchSaveResponseSchema = z.object({
+  watchId: z.string().uuid(),
+  detail: WatchSpaceDetailSchema,
+});
+
+export type WatchSaveResponse = z.infer<typeof WatchSaveResponseSchema>;
+
 export * from './outreach-quality';

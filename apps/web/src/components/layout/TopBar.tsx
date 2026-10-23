@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { to: '/brand', label: 'Brand sites' },
   { to: '/portfolio', label: 'Portfolio' },
   { to: '/pipeline', label: 'Pipeline' },
+  { to: '/watchlist', label: 'Watchlist' },
   { to: '/methodology', label: 'How it works' },
 ];
 
