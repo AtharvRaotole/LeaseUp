@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+import { assertOwnerAuthorizedRecording } from './media-capture-guard.mjs';
+
+assertOwnerAuthorizedRecording();
+
 import { spawn } from 'node:child_process';
 import { execSync } from 'node:child_process';
 import net from 'node:net';

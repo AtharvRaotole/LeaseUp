@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 /** Local wrangler + vite preview, then Devpost screenshots (no production traffic). */
+import { assertOwnerAuthorizedRecording } from './media-capture-guard.mjs';
+
+assertOwnerAuthorizedRecording();
+
 import { spawn } from 'node:child_process';
 import { execSync } from 'node:child_process';
 import net from 'node:net';

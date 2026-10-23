@@ -16,7 +16,9 @@ import { mkdir, rm, copyFile, writeFile, stat } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { assertLocalMediaCapture } from './media-capture-guard.mjs';
+import { assertLocalMediaCapture, assertOwnerAuthorizedRecording } from './media-capture-guard.mjs';
+
+assertOwnerAuthorizedRecording();
 
 const BASE = (process.env.RECORD_DEMO_BASE || 'http://127.0.0.1:4173').replace(/\/$/, '');
 const WORKER_ORIGIN = (process.env.RECORD_DEMO_API || 'http://127.0.0.1:8787').replace(/\/$/, '');

@@ -12,7 +12,7 @@ Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-
 
 Do not claim raw Qloo affinity beats national chain size on mean top-10 presence.
 
-**Media note:** Do **not** record against production until explicitly approved (including after tonight's deploy). Use the **local demo stack** only: `pnpm capture:devpost:local`, `pnpm record:demo:local`. `MEDIA_CAPTURE_ALLOW_PROD=1` is for when you intentionally lift that guard.
+**Recording hold (owner):** Record **nothing** until Atharv explicitly says capture may start. That means no walkthrough video, no Devpost screenshots, no hero loop, and **no local test recordings** either. A message about "after the deploy" is **not** that signal. Script and doc edits are fine. When authorized, use the local stack (`pnpm record:demo:local`, `pnpm capture:devpost:local`) and set `LEASEUP_RECORDING_AUTHORIZED=1`. Production still requires `MEDIA_CAPTURE_ALLOW_PROD=1` separately.
 
 ---
 
@@ -130,7 +130,7 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 ## What's next
 
-- Re-record the judge walkthrough **locally** after you approve post-deploy capture (no prod recording until then).
+- Re-record the judge walkthrough locally only after Atharv explicitly authorizes recording.
 - Expand live-address coverage and refresh logistic coefficients on a schedule.
 - More verified brand real-estate URLs in `brand-real-estate.json` for reach lines.
 
@@ -138,7 +138,7 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 ## Three-minute demo video script (180 seconds)
 
-**Format:** 1440x900 light mode, visible cursor overlay, no browser chrome. **`pnpm record:demo:local` only** until you approve production capture.
+**Format:** 1440x900 light mode, visible cursor overlay, no browser chrome. **Do not run this script** until Atharv authorizes recording (`LEASEUP_RECORDING_AUTHORIZED=1`), then use `pnpm record:demo:local` only.
 
 **Narration:** plain and confident. Backtest lines use the eval definition: each ranker's **top 10** checked against open store footprints in the trade area.
 
@@ -174,6 +174,6 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 ## Devpost gallery checklist
 
-- [ ] 5-6 PNGs at 1600x1000 in `docs/media/devpost/` via `pnpm capture:devpost:local`
-- [ ] `walkthrough.mp4` / `walkthrough.webm` from local capture after you approve post-deploy recording
+- [ ] 5-6 PNGs at 1600x1000 in `docs/media/devpost/` via `pnpm capture:devpost:local` (after owner authorization only)
+- [ ] `walkthrough.mp4` / `walkthrough.webm` from local capture (after owner authorization only)
 - [ ] Link to live demo when allowed; note commit SHA for local captures

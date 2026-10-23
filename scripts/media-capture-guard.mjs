@@ -1,7 +1,20 @@
 /**
  * Block accidental production / worker traffic during media capture.
  * Set MEDIA_CAPTURE_ALLOW_PROD=1 only after KV budget is available.
+ *
+ * All recording (prod, local, hero loop, Devpost PNGs) stays off until the owner
+ * explicitly authorizes capture. "After deploy" is not authorization.
+ * Set LEASEUP_RECORDING_AUTHORIZED=1 only when Atharv says recording may start.
  */
+
+export function assertOwnerAuthorizedRecording() {
+  if (process.env.LEASEUP_RECORDING_AUTHORIZED === '1') return;
+  console.error(
+    'Recording is halted. Do not run walkthrough video, screen capture, hero loop, or local test recordings until Atharv explicitly says capture may start.'
+  );
+  console.error('Script and doc edits are still allowed. Set LEASEUP_RECORDING_AUTHORIZED=1 only on his signal.');
+  process.exit(1);
+}
 
 const PROD_PAGE_HOSTS = new Set(['leaseup-59m.pages.dev', 'leaseup.app', 'www.leaseup.app']);
 const PROD_API_HOST_PATTERNS = [/\.workers\.dev$/i, /leaseup-worker\./i];
