@@ -48,3 +48,11 @@ export function parseUsAddress(input: string): ParsedUsAddress {
   const city = parts.slice(1).join(', ');
   return { street, city, state, postalCode };
 }
+
+/** Normalize street line for Nominatim when suites or ranges confuse structured search. */
+export function streetForGeocodeSearch(street: string): string {
+  let s = street.trim();
+  s = s.replace(/^(\d+)\s*-\s*\d+/, '$1');
+  s = s.replace(/\s+(?:ste|suite|unit|#|apt|bldg)\.?\s*[\da-z-]+$/i, '');
+  return s.trim();
+}
