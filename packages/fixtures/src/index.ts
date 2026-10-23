@@ -164,3 +164,4 @@ export {
   brandReverseFixtures,
   type BrandReverseDemoFixture,
 } from './brand-reverse-chicago.js';
+export { buildWatchRunSnapshot, diffWatchSnapshots } from './watch-diff.js';

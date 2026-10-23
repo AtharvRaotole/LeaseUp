@@ -20,6 +20,9 @@ const PipelinePage = lazy(() =>
 const OwnerUpdatePage = lazy(() =>
   import('./pages/OwnerUpdatePage').then((m) => ({ default: m.OwnerUpdatePage }))
 );
+const WatchlistPage = lazy(() =>
+  import('./pages/WatchlistPage').then((m) => ({ default: m.WatchlistPage }))
+);
 const NotFoundPage = lazy(() =>
   import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage }))
 );
@@ -52,6 +55,8 @@ export default function App() {
           <Route path="/prospect/:id" element={<ProspectingPage />} />
           <Route path="/pipeline" element={<PipelinePage />} />
           <Route path="/pipeline/view/:shareId" element={<PipelinePage />} />
+          <Route path="/watchlist" element={<WatchlistPage />} />
+          <Route path="/watchlist/:watchId" element={<WatchlistPage />} />
           <Route path="/owner-update/:id" element={<OwnerUpdatePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

@@ -44,6 +44,7 @@ import { StorefrontSizeControl } from '../components/report/StorefrontSizeContro
 import { CoTenancyMixSection } from '../components/report/CoTenancyMixSection';
 import { ReportFirstRunTour } from '../components/report/ReportFirstRunTour';
 import { ReportSummaryAboveFold } from '../components/report/ReportSummaryAboveFold';
+import { WatchSpaceButton } from '../components/report/WatchSpaceButton';
 import { ReportCollapsibleSection } from '../components/report/ReportCollapsibleSection';
 import { ProductExplainer } from '../components/report/ProductExplainer';
 import { ReportLoadingPanel } from '../components/report/ReportLoadingPanel';
@@ -234,6 +235,11 @@ export function ReportPage() {
             selected={selected}
             onSelectBrand={selectProspect}
             onSharePitch={() => setSharePitchOpen(true)}
+          />
+          <WatchSpaceButton
+            address={request.address}
+            radiusKm={request.radius}
+            analysis={results}
           />
           {(loading || steps.length > 0) && (
             <AgentRunStrip
