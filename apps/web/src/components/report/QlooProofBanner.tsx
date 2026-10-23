@@ -2,6 +2,7 @@ import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { ShowMethod } from '../ui/ShowMethod';
 import {
+  qlooEvalHeadlineParts,
   qlooProofSentence,
   qlooProofSentenceTechnical,
   qlooProofTieDetail,
@@ -23,17 +24,26 @@ export function QlooProofBanner({
   const sentence = qlooProofSentence(results.backtest, baseline);
   const tieDetail =
     winner === 'tie' ? qlooProofTieDetail(results.rankings) : null;
+  const strict = results.strictEval;
+  const legacyPanel = strict?.panels.find((p) => p.id === 'legacy_present_at10');
+  const legacySaturated =
+    legacyPanel?.qloo === 10 && legacyPanel?.chain === 10;
   const technical = qlooProofSentenceTechnical(results.backtest, baseline);
   const tieTechnical =
     winner === 'tie' ? qlooProofTieDetailTechnical(results.rankings) : null;
+  const cohort = qlooEvalHeadlineParts();
 
   if (compact) {
     return (
       <div className="text-sm text-ink-2" data-testid="qloo-proof-banner">
         <p>
           <span className="font-medium text-ink">{sentence}</span>
-          {winner === 'baseline' && ' Chain size alone matched taste at this pin.'}
+          {legacySaturated && ' Legacy P@10 is saturated; see evaluation metrics below.'}
+          {winner === 'baseline' && !legacySaturated &&
+            ' Chain size alone matched taste at this pin.'}
         </p>
+        <p className="mt-2 text-xs text-ink-3">{cohort.headline}</p>
+        <p className="mt-1 text-xs text-ink-3">{cohort.companion}</p>
         <ShowMethod>
           <p>{technical}</p>
           {tieTechnical && <p>{tieTechnical}</p>}
@@ -51,7 +61,12 @@ export function QlooProofBanner({
         {winner === 'baseline' &&
           'At this pin, chain size alone matched nearby stores as well as taste. You can still compare both orderings below.'}
         {winner === 'tie' && (tieDetail ?? 'Taste and chain size tied on nearby-store match. Compare row movement below.')}
+        {legacySaturated &&
+          ' Legacy present-in-top-10 is maxed out at this pin. See the evaluation metrics panel for alternate scores.'}
       </p>
+      <p className="mt-3 text-sm font-medium text-ink">{cohort.headline}</p>
+      <p className="mt-1 text-sm text-ink-2">{cohort.companion}</p>
+      <p className="mt-1 text-xs text-ink-3">{cohort.caveat}</p>
       <ShowMethod>
         <p>{technical}</p>
         {tieTechnical && <p>{tieTechnical}</p>}

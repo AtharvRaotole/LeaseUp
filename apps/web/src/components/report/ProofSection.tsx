@@ -51,6 +51,8 @@ export function ProofSection({
           We compare taste-ordered (or chain-size-ordered) rankings with All The Places store
           locations inside your radius. Precision at 10: {(backtest.precisionAt10 * 100).toFixed(0)}%.
           {backtest.auc !== undefined && ` Separation score (AUC): ${backtest.auc.toFixed(3)}.`}
+          {' '}
+          When legacy P@10 saturates, the evaluation card uses adaptive radius scoring.
         </p>
       </ShowMethod>
       <Card className="mt-4 overflow-hidden p-0">
@@ -97,10 +99,15 @@ export function ProofSection({
                     ? row.baselineRank ?? row.qlooRank
                     : row.qlooRank}
                 </td>
-                <td className="px-4 py-3 text-ink">{displayBrandName(row.entityId, row.name)}</td>
+                <td className="px-4 py-3 text-ink">
+                  {displayBrandName(row.entityId, row.name)}
+                  {row.chainSizeTier === 'big' && (
+                    <span className="ml-2 text-xs text-ink-3">(size-driven)</span>
+                  )}
+                </td>
                 {!hideFit && rankingMode === 'qloo' && (
                   <td className="px-4 py-3 tabular-nums text-ink-2">
-                    {fitPercentileLabel(row.qlooRank, totalScored)}
+                    {fitPercentileLabel(row.qlooRank, totalScored, row.tasteFitBeyondChainPercentile)}
                   </td>
                 )}
                 <td

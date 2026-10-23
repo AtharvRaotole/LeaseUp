@@ -28,6 +28,7 @@ import { ReportErrorBanner } from '../components/report/ReportErrorBanner';
 import type { ApiErrorInfo } from '../lib/api-error';
 import { QlooRankingToggle, type QlooRankingMode } from '../components/report/QlooRankingToggle';
 import { QlooProofBanner } from '../components/report/QlooProofBanner';
+import { StrictEvalCard } from '../components/report/StrictEvalCard';
 import { WhyThisBrandCard } from '../components/report/WhyThisBrandCard';
 import { BrandLoading } from '../components/brand/BrandLoading';
 import { VacancyCostCalculator } from '../components/report/VacancyCostCalculator';
@@ -271,6 +272,11 @@ export function ReportPage() {
       </ErrorBoundary>
       <ErrorBoundary fallback={<SectionUnavailable />}>
         <CoTenancyMixSection results={results} radiusKm={request.radius} />
+      </ErrorBoundary>
+      <ErrorBoundary fallback={<SectionUnavailable />}>
+        <div className="no-print mt-8">
+          <StrictEvalCard results={results} />
+        </div>
       </ErrorBoundary>
       <ErrorBoundary fallback={<SectionUnavailable />}>
         <div className="no-print">
