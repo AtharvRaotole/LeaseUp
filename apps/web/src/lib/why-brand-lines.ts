@@ -12,7 +12,11 @@ export function whyBrandBulletLines(
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   const total = results.rankings?.length ?? 0;
   const rank = prospect.brand.affinityRank;
-  const topPhrase = fitTopPercentPhrase(rank, total || rank);
+  const topPhrase = fitTopPercentPhrase(
+    rank,
+    total || rank,
+    prospect.brand.tasteFitBeyondChainPercentile
+  );
 
   const lines: string[] = [
     `Ranked #${rank} of ${total || 'many'} brands for local taste (${topPhrase}).`,

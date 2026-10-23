@@ -66,7 +66,7 @@ describe('prospectOneLineReason', () => {
           affinity: 0.8,
           affinityRank: 20,
           verified: 'unverified',
-          tasteFitBeyondChainPercentile: 18,
+          tasteFitBeyondChainPercentile: 82,
         },
         nearestExistingStoreKm: 4.2,
         tenantMixScore: { score: 1, coAffinityMean: 1, categoryFit: 'Coffee', explanation: '' },
@@ -76,7 +76,7 @@ describe('prospectOneLineReason', () => {
     );
     expect(a).not.toBe(b);
     expect(a).toContain('Streetwear');
-    expect(b).toContain('Top 18% taste match here');
+    expect(b).toContain('Top 18% for taste fit here');
     expect(b).toContain('Coffee');
   });
 });
