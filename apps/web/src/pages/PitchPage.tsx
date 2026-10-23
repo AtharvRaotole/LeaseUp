@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import type { PitchPackSnapshot, VacancyCalculatorInput } from '@leaseup/contracts';
+import type { PitchPackSnapshot } from '@leaseup/contracts';
 import { Logo } from '../components/brand/Logo';
 import { Button } from '../components/ui/Button';
 import { VacancyCostCalculator } from '../components/report/VacancyCostCalculator';
@@ -14,7 +14,12 @@ import {
   pitchProspectFact,
   shouldShowStoredWhyLine,
 } from '../lib/pitch-pack-copy';
-import { DEFAULT_VACANCY_INPUT } from '../lib/vacancy-cost';
+import {
+  EMPTY_VACANCY_DRAFT,
+  pitchVacancyToDraft,
+  type VacancyCalculatorDraft,
+} from '../lib/vacancy-cost';
+import { loadVacancyDraft, saveVacancyDraft } from '../lib/vacancy-cost-storage';
 import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton';
 import { pipelineCardFromPitchProspect } from '../lib/build-pipeline-card';
 import { ShareHead } from '../components/seo/ShareHead';
@@ -24,7 +29,7 @@ export function PitchPage() {
   const { id } = useParams();
   const [snapshot, setSnapshot] = useState<PitchPackSnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [vacancy, setVacancy] = useState<VacancyCalculatorInput>(DEFAULT_VACANCY_INPUT);
+  const [vacancy, setVacancy] = useState<VacancyCalculatorDraft>(EMPTY_VACANCY_DRAFT);
 
   useEffect(() => {
     if (!id) return;
@@ -34,7 +39,11 @@ export function PitchPage() {
         if (!res.ok) throw new Error('Pitch not found');
         const data = (await res.json()) as PitchPackSnapshot;
         setSnapshot(data);
-        if (data.vacancy) setVacancy(data.vacancy);
+        if (data.vacancy) {
+          setVacancy(pitchVacancyToDraft(data.vacancy));
+        } else {
+          setVacancy(loadVacancyDraft(data.address));
+        }
       } catch {
         setError('This pitch link is missing or expired.');
       }
@@ -175,8 +184,12 @@ export function PitchPage() {
               key={snapshot.id}
               className="pitch-vacancy"
               compact
-              initial={snapshot.vacancy ?? vacancy}
-              onChange={setVacancy}
+              readOnly={!!snapshot.vacancy}
+              initial={snapshot.vacancy ? pitchVacancyToDraft(snapshot.vacancy) : vacancy}
+              onChange={(next) => {
+                setVacancy(next);
+                if (!snapshot.vacancy) saveVacancyDraft(snapshot.address, next);
+              }}
             />
           </div>
 

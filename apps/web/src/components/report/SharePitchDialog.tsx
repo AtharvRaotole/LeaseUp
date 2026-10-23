@@ -1,5 +1,6 @@
-import { useRef, useState, type RefObject } from 'react';
-import type { AnalysisRequest, AnalysisResponse, VacancyCalculatorInput } from '@leaseup/contracts';
+import { useEffect, useRef, useState, type RefObject } from 'react';
+import type { AnalysisRequest, AnalysisResponse } from '@leaseup/contracts';
+import { draftToPitchVacancy, type VacancyCalculatorDraft } from '../../lib/vacancy-cost';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { VacancyCostCalculator } from './VacancyCostCalculator';
@@ -20,11 +21,15 @@ export function SharePitchDialog({
   results: AnalysisResponse;
   request: AnalysisRequest;
   mapCaptureRef: RefObject<ReportMapCaptureRef | null>;
-  vacancy: VacancyCalculatorInput;
+  vacancy: VacancyCalculatorDraft;
 }) {
   const [landlordName, setLandlordName] = useState('');
   const [landlordContact, setLandlordContact] = useState('');
   const [vacancyDraft, setVacancyDraft] = useState(vacancy);
+
+  useEffect(() => {
+    if (open) setVacancyDraft(vacancy);
+  }, [open, vacancy]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pitchUrl, setPitchUrl] = useState<string | null>(null);
@@ -57,7 +62,7 @@ export function SharePitchDialog({
             name: landlordName.trim() || undefined,
             contact: landlordContact.trim() || undefined,
           },
-          vacancy: vacancyDraft,
+          vacancy: draftToPitchVacancy(vacancyDraft),
         }),
       });
       if (!res.ok) {
@@ -122,6 +127,7 @@ export function SharePitchDialog({
           compact
           initial={vacancyDraft}
           onChange={setVacancyDraft}
+          showPitchOptIn
         />
 
         {error && <p className="mt-3 text-sm text-danger">{error}</p>}

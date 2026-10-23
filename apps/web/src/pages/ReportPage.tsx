@@ -34,8 +34,9 @@ import { BrandLoading } from '../components/brand/BrandLoading';
 import { VacancyCostCalculator } from '../components/report/VacancyCostCalculator';
 import { SharePitchDialog } from '../components/report/SharePitchDialog';
 import type { ReportMapCaptureRef } from '../components/report/ReportMap';
-import type { VacancyCalculatorInput } from '@leaseup/contracts';
-import { DEFAULT_VACANCY_INPUT } from '../lib/vacancy-cost';
+import type { VacancyCalculatorDraft } from '../lib/vacancy-cost';
+import { EMPTY_VACANCY_DRAFT } from '../lib/vacancy-cost';
+import { loadVacancyDraft, saveVacancyDraft } from '../lib/vacancy-cost-storage';
 import { startProspectingJob } from '../lib/start-prospecting';
 import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton';
 import { pipelineCardFromProspect } from '../lib/build-pipeline-card';
@@ -65,7 +66,12 @@ export function ReportPage() {
   const [mobilePane, setMobilePane] = useState<MobilePane>('report');
   const [rankingMode, setRankingMode] = useState<QlooRankingMode>('qloo');
   const [sharePitchOpen, setSharePitchOpen] = useState(false);
-  const [vacancyInput, setVacancyInput] = useState<VacancyCalculatorInput>(DEFAULT_VACANCY_INPUT);
+  const [vacancyEdits, setVacancyEdits] = useState<VacancyCalculatorDraft | null>(null);
+  const vacancyBase = useMemo(
+    () => (request?.address ? loadVacancyDraft(request.address) : EMPTY_VACANCY_DRAFT),
+    [request?.address]
+  );
+  const vacancyInput = vacancyEdits ?? vacancyBase;
   const mapCaptureRef = useRef<ReportMapCaptureRef | null>(null);
   const ranKey = useRef('');
   const [geocodeCandidates, setGeocodeCandidates] = useState<GeocodeCandidate[] | null>(null);
@@ -79,6 +85,15 @@ export function ReportPage() {
     }
     return undefined;
   }, [searchParams]);
+
+  useEffect(() => {
+    setVacancyEdits(null);
+  }, [request?.address]);
+
+  const handleVacancyChange = (next: VacancyCalculatorDraft) => {
+    setVacancyEdits(next);
+    if (request?.address) saveVacancyDraft(request.address, next);
+  };
 
   useEffect(() => {
     if (!request) {
@@ -267,7 +282,13 @@ export function ReportPage() {
       </ErrorBoundary>
       <ErrorBoundary fallback={<SectionUnavailable />}>
         <div className="no-print print-pitch-block">
-          <VacancyCostCalculator initial={vacancyInput} onChange={setVacancyInput} />
+          <VacancyCostCalculator
+            key={request.address}
+            compact
+            initial={vacancyInput}
+            onChange={handleVacancyChange}
+            showPitchOptIn
+          />
         </div>
       </ErrorBoundary>
       <ErrorBoundary fallback={<SectionUnavailable />}>
