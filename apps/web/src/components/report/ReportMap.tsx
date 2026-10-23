@@ -1,8 +1,12 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, type RefObject } from 'react';
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Skeleton } from '../ui/Skeleton';
 
 export type MapBrandSelection = { entityId: string; name: string };
+
+export type ReportMapCaptureRef = {
+  captureSnapshot: () => string | null;
+};
 
 const MapInner = lazy(() => import('./ReportMapInner'));
 
@@ -12,12 +16,14 @@ export function ReportMap({
   pitchBrandIds,
   radiusKm,
   className,
+  captureRef,
 }: {
   results: AnalysisResponse;
   selectedBrand: MapBrandSelection | null;
   pitchBrandIds: string[];
   radiusKm: number;
   className?: string;
+  captureRef?: RefObject<ReportMapCaptureRef | null>;
 }) {
   return (
     <div className={className ?? 'h-full min-h-[520px] w-full'}>
@@ -27,6 +33,7 @@ export function ReportMap({
           selectedBrand={selectedBrand}
           pitchBrandIds={pitchBrandIds}
           radiusKm={radiusKm}
+          captureRef={captureRef}
         />
       </Suspense>
     </div>

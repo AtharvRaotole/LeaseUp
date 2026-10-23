@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, type RefObject } from 'react';
 import { ChevronDown } from 'lucide-react';
 import maplibregl from 'maplibre-gl';
 import type { FeatureCollection, Point } from 'geojson';
@@ -7,7 +7,7 @@ import { apiUrl } from '../../lib/api';
 import { heatmapWeightsFromAffinity } from '../../lib/heatmap-scale';
 import { Switch } from '../ui/Switch';
 import { cn } from '../../lib/cn';
-import type { MapBrandSelection } from './ReportMap';
+import type { MapBrandSelection, ReportMapCaptureRef } from './ReportMap';
 
 function mapStyle() {
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -21,11 +21,13 @@ export default function ReportMapInner({
   selectedBrand,
   pitchBrandIds,
   radiusKm,
+  captureRef,
 }: {
   results: AnalysisResponse;
   selectedBrand: MapBrandSelection | null;
   pitchBrandIds: string[];
   radiusKm: number;
+  captureRef?: RefObject<ReportMapCaptureRef | null>;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -50,6 +52,7 @@ export default function ReportMapInner({
       style: mapStyle(),
       center: [results.location.longitude, results.location.latitude],
       zoom: 12,
+      preserveDrawingBuffer: true,
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
     new maplibregl.Marker({ color: '#0f6b4f' })
@@ -66,6 +69,22 @@ export default function ReportMapInner({
       setMapReady(false);
     };
   }, [results.location.latitude, results.location.longitude]);
+
+  useImperativeHandle(
+    captureRef,
+    () => ({
+      captureSnapshot: () => {
+        const canvas = mapRef.current?.getCanvas();
+        if (!canvas || !mapReady) return null;
+        try {
+          return canvas.toDataURL('image/jpeg', 0.85);
+        } catch {
+          return null;
+        }
+      },
+    }),
+    [mapReady]
+  );
 
   useEffect(() => {
     const el = containerRef.current;

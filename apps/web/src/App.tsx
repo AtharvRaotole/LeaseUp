@@ -4,6 +4,7 @@ import { NotFoundPage } from './pages/NotFoundPage';
 import { ReportPage } from './pages/ReportPage';
 import { BrandPage } from './pages/BrandPage';
 import { PortfolioPage } from './pages/PortfolioPage';
+import { PitchPage } from './pages/PitchPage';
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/portfolio" element={<PortfolioPage />} />
         <Route path="/portfolio/:id" element={<PortfolioPage />} />
         <Route path="/r/:slug" element={<ReportPage />} />
+        <Route path="/pitch/:id" element={<PitchPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
