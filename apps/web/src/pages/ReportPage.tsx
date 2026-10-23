@@ -4,8 +4,10 @@ import type { ProspectPack } from '@leaseup/contracts';
 import { TopBar } from '../components/layout/TopBar';
 import { useAnalysisRun } from '../hooks/useAnalysisRun';
 import { buildReportPath, parseReportSearch } from '../lib/report-params';
-import { matchDemoFixtureId } from '@leaseup/fixtures';
+import { DEMO_CHIP_ADDRESSES, matchDemoFixtureId } from '@leaseup/fixtures';
 import { fetchGeocodePreview } from '../lib/geocode-preview';
+import { demoGeocodePreviewForAddress } from '../lib/demo-geocode-preview';
+import { useHealth } from '../hooks/useHealth';
 const GeocodeConfirmPanel = lazy(() =>
   import('../components/report/GeocodeConfirmPanel').then((m) => ({ default: m.GeocodeConfirmPanel }))
 );
@@ -43,6 +45,7 @@ import { ProductExplainer } from '../components/report/ProductExplainer';
 import { ReportFirstRunTour } from '../components/report/ReportFirstRunTour';
 import { ReportLoadingPanel } from '../components/report/ReportLoadingPanel';
 import { ReportMapSkeleton } from '../components/report/ReportMapSkeleton';
+import { ReportSidebarFacts } from '../components/report/ReportSidebarFacts';
 import { ShareHead } from '../components/seo/ShareHead';
 import { reportShareHead } from '../lib/share-preview';
 
@@ -67,6 +70,7 @@ export function ReportPage() {
   const ranKey = useRef('');
   const [geocodeCandidates, setGeocodeCandidates] = useState<GeocodeCandidate[] | null>(null);
   const [geocodeChecking, setGeocodeChecking] = useState(false);
+  const { data: health } = useHealth();
 
   useEffect(() => {
     if (searchParams.get('screenshot') === '1') {
@@ -92,6 +96,13 @@ export function ReportPage() {
 
     if (request.confirmedLocation || matchDemoFixtureId(request.address)) {
       startAnalysis();
+      return;
+    }
+
+    const demoPreview =
+      health?.mode === 'demo' ? demoGeocodePreviewForAddress(request.address) : null;
+    if (demoPreview?.needsConfirmation && demoPreview.candidates.length > 1) {
+      setGeocodeCandidates(demoPreview.candidates);
       return;
     }
 
@@ -121,11 +132,19 @@ export function ReportPage() {
     return () => {
       cancelled = true;
     };
-  }, [request, run, simulateError, navigate]);
+  }, [request, run, simulateError, navigate, health?.mode]);
 
   const confirmGeocode = (location: Location) => {
     if (!request) return;
-    const next = { ...request, confirmedLocation: location };
+    let address = request.address;
+    if (
+      health?.mode === 'demo' &&
+      demoGeocodePreviewForAddress(request.address) &&
+      location.resolvedAddress === DEMO_CHIP_ADDRESSES.wicker
+    ) {
+      address = DEMO_CHIP_ADDRESSES.wicker;
+    }
+    const next = { ...request, address, confirmedLocation: location };
     setGeocodeCandidates(null);
     navigate(buildReportPath(next, slug ?? 'run'), { replace: true });
   };
@@ -388,6 +407,11 @@ export function ReportPage() {
                         />
                       ) : null
                     }
+                  />
+                  <ReportSidebarFacts
+                    results={results}
+                    radiusKm={request.radius}
+                    chipSlug={slug}
                   />
                 </div>
               </ErrorBoundary>
