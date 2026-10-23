@@ -1,5 +1,6 @@
 import type { AnalysisRequest, AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 import { Button } from '../ui/Button';
+import { Card } from '../ui/Card';
 import { HeadlineCard } from './HeadlineCard';
 import { displayBrandName } from '../../lib/brand-display';
 import { prospectOneLineReason } from '../../lib/prospect-one-line';
@@ -43,12 +44,12 @@ export function ReportSummaryAboveFold({
       />
 
       {topFive.length > 0 && (
-        <div data-testid="report-top-brands">
+        <Card data-testid="report-top-brands" className="print-pitch-block">
           <h3 className="font-display text-h3 font-semibold text-ink">Top brands to pitch</h3>
           <p className="mt-2 text-body text-ink-2">
             Local taste leaders with no store in your trade area yet. Tap a row to highlight it on the map.
           </p>
-          <ol className="mt-5 space-y-4">
+          <ol className="mt-5 space-y-4" data-testid="report-top-brands-list">
             {topFive.map((prospect, index) => {
               const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
               const reason = prospectOneLineReason(prospect, results, radiusKm);
@@ -78,7 +79,7 @@ export function ReportSummaryAboveFold({
               );
             })}
           </ol>
-        </div>
+        </Card>
       )}
 
       <div
