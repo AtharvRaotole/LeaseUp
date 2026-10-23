@@ -1,0 +1,18 @@
+{
+  "body": {
+    "results": {
+      "audiences": [
+        {
+          "audience_id": "aud-beauty-shoppers",
+          "name": "Beauty Shoppers",
+          "query": { "affinity": 0.89, "affinity_rank": 0.87 }
+        },
+        {
+          "audience_id": "aud-tourist-retail",
+          "name": "Tourist Retail Visitors",
+          "query": { "affinity": 0.83, "affinity_rank": 0.81 }
+        }
+      ]
+    }
+  }
+}

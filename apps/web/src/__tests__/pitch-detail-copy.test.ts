@@ -16,6 +16,7 @@ describe('pitchExpandedLines', () => {
 
     const line = pitchExpandedLines(prospect, results, 10).at(-1);
     expect(line).toMatch(/as of Oct 23, 2026/);
+    expect(line).toMatch(/Store checks use/);
     expect(line).not.toMatch(/on Oct 23, 2026 on/);
     expect(line).not.toMatch(/snapshot, Oct 23, 2026 on/);
   });

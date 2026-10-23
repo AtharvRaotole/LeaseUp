@@ -61,6 +61,16 @@ export {
   type DemoChipRankMover,
 } from './demo-chip-qloo-proof.js';
 export {
+  parseQlooExplainabilityRows,
+  topOverIndexRows,
+  type TradeAreaTasteRow,
+  type BrandExplainabilityRecording,
+} from './qloo-explainability.js';
+export {
+  brandExplainabilityForDemo,
+  listDemoExplainabilityRecordings,
+} from './brand-explainability-loader.js';
+export {
   wickerLandingTasteSnippet,
   type LandingTasteRow,
 } from './landing-taste-snippet.js';

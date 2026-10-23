@@ -49,6 +49,7 @@ import {
   osmSnapshotDisplayLabel,
   osmSnapshotRecordedAt,
 } from './osm-snapshot-catalog';
+import { loadTradeAreaTasteForProspect } from '../lib/trade-area-taste';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -230,14 +231,24 @@ export class AnalysisService {
       const rankings = await buildBrandRankings(location, insights, request.radius, this.catalog);
       const mapStores = await buildMapStores(location, insights, request.radius, this.catalog);
       const nearestEnriched = await enrichProspectsWithNearest(prospects, location, this.catalog);
-      const enrichedProspects = nearestEnriched.map((pack) => {
-        const insight = insights.find((i) => i.entity_id === pack.brand.entityId);
-        const signals = insight ? extractQlooSignals(insight) : [];
-        return {
-          ...pack,
-          qlooSignals: signals.length > 0 ? signals : undefined,
-        };
-      });
+      const enrichedProspects = await Promise.all(
+        nearestEnriched.map(async (pack) => {
+          const insight = insights.find((i) => i.entity_id === pack.brand.entityId);
+          const signals = insight ? extractQlooSignals(insight) : [];
+          const tradeAreaTaste = await loadTradeAreaTasteForProspect(
+            this.qloo,
+            location,
+            pack.brand.entityId,
+            request.radius,
+            runId
+          );
+          return {
+            ...pack,
+            qlooSignals: signals.length > 0 ? signals : undefined,
+            tradeAreaTaste,
+          };
+        })
+      );
 
       const dataQuality = this.assessDataQuality(insights.length, backtest);
       const warnings = this.generateWarnings(insights.length, backtest, location);
@@ -416,7 +427,6 @@ export class AnalysisService {
         candidate,
         location,
         nationalCount,
-        radius,
         rankedCount
       );
 
@@ -738,7 +748,6 @@ export class AnalysisService {
     prospect: { name: string; qlooRank: number; query?: { affinity?: number } },
     location: Location,
     nationalCount: number,
-    radius: number,
     rankedCount: number
   ): string[] {
     const reasons: string[] = [];
@@ -756,7 +765,6 @@ export class AnalysisService {
       }
     }
 
-    reasons.push(`No existing location within ${radius}km radius (verified via All The Places store data)`);
     reasons.push(
       `Prospect ordering blends Qloo rank with national footprint (weight ${CHAIN_PRIOR_BLEND_WEIGHT}); backtest uses raw Qloo order`
     );

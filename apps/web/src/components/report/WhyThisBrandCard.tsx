@@ -4,7 +4,7 @@ import { Card } from '../ui/Card';
 import { cn } from '../../lib/cn';
 import { displayBrandName } from '../../lib/brand-display';
 import { pitchExpandedLines } from '../../lib/pitch-detail-copy';
-import { verificationShortLabel, verificationTooltip } from '../../lib/copy';
+import { absenceVerificationSummary } from '../../lib/absence-verification-copy';
 
 export function WhyThisBrandCard({
   prospect,
@@ -27,9 +27,8 @@ export function WhyThisBrandCard({
   return (
     <Card className={cn('mb-4 print-pitch-block md:mb-4', className)} data-testid="why-this-brand">
       <h3 className="text-h3 font-semibold text-ink">Why {name}?</h3>
-      <p className="mt-1 text-sm text-ink-2">
-        {verificationShortLabel(prospect.brand.verified)}:{' '}
-        {verificationTooltip(prospect.brand.verified, radiusKm, results.osmSnapshotLabel)}
+      <p className="mt-1 text-sm text-ink-2" data-testid="why-absence-verification">
+        {absenceVerificationSummary(prospect, radiusKm, results)}
       </p>
       <ul className="mt-3 space-y-2 text-sm text-ink-2">
         {lines.map((line) => (
