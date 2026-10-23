@@ -66,7 +66,7 @@ test.describe('LeaseUp feature pages (demo)', () => {
   test('full prospecting agent completes on demo chip', async ({ page }) => {
     test.setTimeout(300_000);
     await page.goto(`${BASE}/`);
-    await page.getByPlaceholder(/Storefront address/i).fill(WICKER);
+    await page.getByPlaceholder(/Street address/i).fill(WICKER);
     await page.getByTestId('landing-run-prospecting').click();
     await expect(page.getByTestId('prospecting-page')).toBeVisible({ timeout: 30000 });
     await expect(page.getByRole('link', { name: 'Open pitch pack' })).toBeVisible({

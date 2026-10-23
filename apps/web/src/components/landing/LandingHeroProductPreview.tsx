@@ -71,7 +71,7 @@ export function LandingHeroProductPreview() {
           )}
         </div>
         <p className="mt-3 text-center text-meta text-ink-2 lg:text-left">
-          <span className="text-ink-3">Recorded demo</span>
+          <span className="text-ink-3">Sample report: Wicker Park, Chicago</span>
           <span className="mx-1.5 text-ink-3" aria-hidden>·</span>
           <span className="font-medium text-accent group-hover:underline">Open Wicker Park report</span>
         </p>

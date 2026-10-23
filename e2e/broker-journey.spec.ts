@@ -15,7 +15,7 @@ test.describe('Broker journey (demo)', () => {
   test('landing search opens report with explainer', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${BASE}/`);
-    await page.getByPlaceholder(/Storefront address/i).fill(WICKER);
+    await page.getByPlaceholder(/Street address/i).fill(WICKER);
     await page.getByRole('button', { name: 'Analyze' }).click();
     await expect(page).toHaveURL(/\/r\//, { timeout: 30_000 });
     await expect(page.getByTestId('report-summary')).toBeVisible({ timeout: 120_000 });

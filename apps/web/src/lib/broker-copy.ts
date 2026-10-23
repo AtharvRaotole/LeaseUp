@@ -8,6 +8,8 @@ export const REPORT_PLAIN_SUMMARY =
 
 export const LANDING_HEADLINE = 'Find the right stores for your empty retail space.';
 
+export const LANDING_ADDRESS_PLACEHOLDER = 'Street address';
+
 export const LANDING_PLAIN_SUMMARY =
   'Type in an address. LeaseUp shows which brands people nearby love but can\'t find close by, and helps you pitch them.';
 
