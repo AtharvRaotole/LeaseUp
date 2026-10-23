@@ -211,11 +211,11 @@ export function PortfolioPage() {
   return (
     <div className="min-h-screen bg-bg" data-testid="portfolio-page">
       <TopBar />
-      <main className="mx-auto max-w-[1280px] px-4 py-8 md:px-6">
-        <div className="grid gap-8 lg:grid-cols-12">
-          <div className="lg:col-span-5">
-            <h1 className="font-serif text-display text-ink">Portfolio mode</h1>
-            <p className="mt-3 text-ink-2">
+      <main className="mx-auto max-w-[1280px] min-w-0 overflow-x-hidden px-4 py-8 md:px-6">
+        <div className="grid min-w-0 gap-8 lg:grid-cols-12">
+          <div className="min-w-0 lg:col-span-5">
+            <h1 className="break-words font-serif text-display text-ink">Portfolio mode</h1>
+            <p className="mt-3 break-words text-ink-2">
               Paste up to 10 storefronts or upload a CSV. We geocode, confirm ambiguous matches, then run Qloo analyses in sequence.
             </p>
             {!portfolio && (
@@ -256,12 +256,12 @@ export function PortfolioPage() {
             )}
             {portfolio && (
               <ErrorBoundary>
-                <section className="mt-8" aria-label="Progress timeline">
+                <section className="mt-8 min-w-0" aria-label="Progress timeline">
                   <h2 className="text-label uppercase text-ink-3">Progress</h2>
-                  <ol className="mt-3 space-y-2" data-testid="portfolio-timeline">
+                  <ol className="mt-3 min-w-0 space-y-2" data-testid="portfolio-timeline">
                     {portfolio.rows.map((row) => (
-                      <li key={row.id} className="rounded-control border border-border bg-surface px-3 py-2 text-sm">
-                        <p className="font-medium text-ink truncate">{row.inputAddress}</p>
+                      <li key={row.id} className="min-w-0 rounded-control border border-border bg-surface px-3 py-2 text-sm">
+                        <p className="break-words font-medium text-ink">{row.inputAddress}</p>
                         <p className="text-ink-3">{statusLabel(row.status)}</p>
                         {row.status === 'ambiguous' && row.geocodeCandidates && (
                           <div className="mt-2 space-y-1">
@@ -269,7 +269,7 @@ export function PortfolioPage() {
                               <button
                                 key={c.resolvedAddress}
                                 type="button"
-                                className="block w-full rounded-control border border-border px-2 py-1 text-left text-xs hover:border-accent"
+                                className="block w-full break-words rounded-control border border-border px-2 py-1 text-left text-xs hover:border-accent"
                                 onClick={() => void confirmRow(row.id, i)}
                               >
                                 {c.resolvedAddress}
@@ -294,7 +294,7 @@ export function PortfolioPage() {
               </ErrorBoundary>
             )}
           </div>
-          <div className="lg:col-span-7">
+          <div className="min-w-0 lg:col-span-7">
             <ErrorBoundary>
               {portfolio ? (
                 <Card className="overflow-x-auto p-0">
@@ -350,7 +350,7 @@ export function PortfolioPage() {
               {portfolio && (
                 <p className="mt-3 text-meta text-ink-3">
                   Shareable link:{' '}
-                  <span className="font-mono text-ink-2">{`/portfolio/${portfolio.id}`}</span>
+                  <span className="break-all font-mono text-ink-2">{`/portfolio/${portfolio.id}`}</span>
                 </p>
               )}
             </ErrorBoundary>
