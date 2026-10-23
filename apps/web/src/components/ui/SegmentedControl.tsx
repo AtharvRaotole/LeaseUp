@@ -21,7 +21,7 @@ export function SegmentedControl<T extends string>({
             type="button"
             onClick={() => onChange(opt.value)}
             className={cn(
-              'ui-transition min-h-10 min-w-[2.75rem] px-3 rounded-[6px] text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+              'ui-transition min-h-11 min-w-[2.75rem] px-3 rounded-[6px] text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-2',
               value === opt.value
                 ? 'bg-surface text-ink shadow-sm border border-border'
                 : 'text-ink-2 hover:text-ink'
