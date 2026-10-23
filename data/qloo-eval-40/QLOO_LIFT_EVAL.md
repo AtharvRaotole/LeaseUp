@@ -2,6 +2,8 @@
 
 Run on Oct 23, 2026 (ET). All numbers come from real API calls and are recomputed by scripts in `strategy/qloo_eval/`. The metrics were written down in `qloo_eval/PREREGISTRATION.md` before any ranking result was computed. Raw responses are in `qloo_eval/raw/` (geocode/, insights/, heatmap/, probe/).
 
+**OSM ground-truth refresh (same day):** The first eval pass used OSM snapshot tiles with a coordinate-scale bug (`lat*1e5` in tiles). Ground truth and metrics were regenerated with fixed decimal-degree tiles (`scripts/build-osm-snapshot.mjs --retile-only` from cached Overpass raw). Qloo `insights_affinity.json` is unchanged.
+
 ## Setup
 - **Sample:** 40 US retail addresses, geocoded with Nominatim at 1 request/s. They fall into 6 categories: dense urban (9: NYC, Chicago, SF, DC, Philadelphia, Seattle), affluent suburban (6), college town (6), small town (6), tourist (6) and Sunbelt growth (7).
 - **Candidates:** the app's 227 tracked brands, restricted to those Qloo scored at each address. Most addresses had 224; small towns had 145–205.
@@ -15,7 +17,7 @@ Run on Oct 23, 2026 (ET). All numbers come from real API calls and are recompute
 - **Confidence intervals:** 95%, from 2000 bootstrap resamples over addresses unless the table says otherwise.
 
 ## Findings
-1. **Ranking by raw Qloo affinity does worse than ranking by chain size on "already present" accuracy.** With the adaptive radius, P@10 is 0.54 [0.46, 0.61] for Qloo and 0.76 [0.71, 0.80] for chain size. Random gets 0.29. The cause is that Qloo's top 10 is mostly the same lifestyle and mall list everywhere (Starbucks, Lululemon, Sephora, REI, Nike, Nordstrom, North Face):
+1. **Ranking by raw Qloo affinity does worse than ranking by chain size on "already present" accuracy.** With the adaptive radius, P@10 is 0.54 [0.46, 0.61] for Qloo and 0.76 [0.71, 0.80] for chain size (exact: 0.538 and 0.755 after OSM retile). Random gets 0.29. The cause is that Qloo's top 10 is mostly the same lifestyle and mall list everywhere (Starbucks, Lululemon, Sephora, REI, Nike, Nordstrom, North Face):
    - Two addresses share 62% of their top-10 brands on average.
    - Affinities are compressed: the mean affinity is 0.9997 at rank 1 and 0.9988 at rank 10.
    - 74% of the variance in Qloo z-scores comes from the brand, not the place.
@@ -23,10 +25,10 @@ Run on Oct 23, 2026 (ET). All numbers come from real API calls and are recompute
 
    At a fixed 10 km, Wicker Park scores 10/10 for both Qloo and chain size. The radius saturates, which is why the current backtest shows no difference.
 2. **Once chain size is controlled for, Qloo adds clear and consistent lift.** This was the pre-registered key test, and it passes under all 3 radius definitions:
-   - Within chain-size quintiles, Qloo's AUC is **0.672 [0.650, 0.693]**. 0.5 would mean no lift.
+   - Within chain-size quintiles, Qloo's AUC is **0.667 [0.646, 0.689]** (was 0.672 before OSM tile fix). 0.5 would mean no lift.
    - The partial Spearman correlation is 0.24 [0.21, 0.27].
    - Adding Qloo to a held-out logistic model of chain size and density raises per-address AUC from **0.710 to 0.750 (+0.039 [0.025, 0.054])** and cuts log-loss by **4.1% [2.8, 5.2]**.
-   - In top-10 terms, the logistic blend gets P@10 **0.82 vs 0.76 for chain size (+6.5 pts [3.2, 9.5])**.
+   - In top-10 terms, the logistic blend gets P@10 **0.82 vs 0.76 for chain size (+6.2 pts [2.8, 9.3]; exact 0.818 vs 0.755 after OSM retile)**.
    - The current app blend (d1) is *worse* than chain size (−16.5 pts [−24, −9]), because it gives Qloo's saturated ordering 75% of the weight.
 3. **Some of the signal is genuinely local, not just "Qloo likes this brand everywhere."** I added brand fixed effects (each brand's typical presence rate at other addresses) and then tested Qloo's address-specific deviation on top. It still adds AUC +0.026 [0.016, 0.035] and improves log-loss by 4.9% [3.7, 6.1].
 4. **Where the lift is:**

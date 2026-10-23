@@ -60,6 +60,7 @@ import { sha256Short } from '../lib/cache-key';
 import {
   OsmSnapshotCatalog,
   osmSnapshotBrandStatus,
+  osmSnapshotBrandUsable,
   osmSnapshotDisplayLabel,
   osmSnapshotRecordedAt,
 } from './osm-snapshot-catalog';
@@ -595,7 +596,25 @@ export class AnalysisService {
     const snapshotLabel = osmSnapshotDisplayLabel();
     const status = osmSnapshotBrandStatus(entityId);
     if (status === 'failed' || status === 'missing' || !this.osmSnapshot) {
-      return { status: 'unverified (1 source)', sources };
+      return {
+        status: 'unverified (1 source)',
+        sources,
+        metroCoverageNote:
+          status === 'missing'
+            ? 'OpenStreetMap snapshot does not include this brand; showing ATP only.'
+            : undefined,
+      };
+    }
+    const osmNationalCount = await this.osmSnapshot.getNationalStoreCount(entityId);
+    if (!osmSnapshotBrandUsable(entityId, osmNationalCount)) {
+      return {
+        status: 'unverified (1 source)',
+        sources,
+        metroCoverageNote:
+          status === 'ok'
+            ? 'OpenStreetMap snapshot has no store points for this brand; showing ATP only.'
+            : undefined,
+      };
     }
     const found = await this.osmSnapshot.hasBrandNearby(
       entityId,

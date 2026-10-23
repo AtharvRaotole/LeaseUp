@@ -9,8 +9,8 @@ Headline numbers for LeaseUp product copy (committed in `aggregates.json`).
 | Raw Qloo P@10 | 0.54 | Same ATP presence panel; Qloo list order only |
 | Chain size P@10 | 0.76 | Same pool sorted by national store count |
 | Legacy 0.75/0.25 blend P@10 | 0.59 | Deprecated ranking prior |
-| Same-size tier AUC | 0.672 | 95% CI [0.650, 0.693] |
-| Logistic blend P@10 | 0.82 | +6.5 pp vs chain; 95% CI [3.2, 9.5] pp |
+| Same-size tier AUC | 0.676 | 95% CI [0.655, 0.699] (pooled quintiles; mean 0.667 [0.646, 0.689]) |
+| Logistic blend P@10 | 0.82 | +6.2 pp vs chain; 95% CI [2.8, 9.3] pp |
 
 ## Findings
 

@@ -16,7 +16,7 @@ describe('verificationSourceHelp', () => {
     } as ProspectPack;
     const help = verificationSourceHelp(prospect, 10, 'OpenStreetMap snapshot');
     expect(help).toContain('All The Places');
-    expect(help).toMatch(/Not checked/i);
+    expect(help).toMatch(/offline snapshot|not in our offline snapshot/i);
     expect(help).toContain('OpenStreetMap');
   });
 });

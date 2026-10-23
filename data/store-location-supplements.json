@@ -7,8 +7,8 @@
       "lat": 40.72483,
       "lon": -73.99522,
       "source": "https://www.openstreetmap.org/node/2483671757",
-      "targets": ["atp"],
-      "note": "ATP CC0 has no REI within ~32 km of 350 Bleecker; OSM node 2483671757 has brand:wikidata=Q3414933. OSM snapshot tiles no longer need this row after the Oct 2026 tile-degree fix (Overpass returned the node; we dropped it when coords were stored as lat*1e5)."
+      "targets": ["atp", "osm", "osmData"],
+      "note": "ATP CC0 has no REI within ~32 km of 350 Bleecker. Cached US Overpass for Q3414933 still omits node 2483671757 (SoHo); this row cites that OSM node until a refetch includes it."
     }
   ]
 }

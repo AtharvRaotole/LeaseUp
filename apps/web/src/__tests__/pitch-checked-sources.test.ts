@@ -30,7 +30,7 @@ describe('pitchCheckedSourcesLabel', () => {
       pitchCheckedSourcesLabel(
         prospect({ entityId: 'b', name: 'B', verified: 'unverified (1 source)' })
       )
-    ).toBe('Checked in 1 source');
+    ).toBe('Checked against All The Places');
   });
 
   it('counts All The Places and OpenStreetMap rows', () => {
@@ -43,7 +43,7 @@ describe('pitchCheckedSourcesLabel', () => {
           verificationSources: ['All The Places: no store within 10 km'],
         })
       )
-    ).toBe('Checked in 1 source');
+    ).toBe('Checked against All The Places');
     expect(
       pitchCheckedSourcesLabel(
         prospect({
