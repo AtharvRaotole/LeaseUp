@@ -17,6 +17,7 @@ import {
   seviervilleFixture,
   blendWithNationalPrior,
   CHAIN_PRIOR_BLEND_WEIGHT,
+  DEMO_OSM_UNRECORDED_NOTE,
   matchDemoFixtureId,
 } from '@leaseup/fixtures';
 import { createStoreCatalog, type StoreCatalog } from './store-catalog';
@@ -158,11 +159,27 @@ export class AnalysisService {
       await runStep(emit, 'verify', 'Double-check absence (ATP + OSM)', async () => {
         const pending = prospects.filter((p) => p.brand.verified === 'verifying...').length;
         const verified = prospects.filter((p) => p.brand.verified === 'verified (2 sources)').length;
+        const singleSource = prospects.filter(
+          (p) => p.brand.verified === 'unverified (1 source)'
+        ).length;
+        const demoOsmSkipped = prospects.some((p) =>
+          p.coverageNote?.includes(DEMO_OSM_UNRECORDED_NOTE)
+        );
+        let summary: string;
+        if (pending > 0) {
+          summary = `${pending} prospects queued for OpenStreetMap verification (non-blocking)`;
+        } else if (demoOsmSkipped) {
+          summary = `Demo: ATP only (${DEMO_OSM_UNRECORDED_NOTE})`;
+        } else if (verified > 0) {
+          summary = `${verified} prospects verified by ATP + OpenStreetMap`;
+        } else if (singleSource > 0) {
+          summary = `${singleSource} prospects ATP-only (OSM unavailable or single-source)`;
+        } else {
+          summary = 'No prospects required OSM verification';
+        }
         return {
-          summary: pending
-            ? `${pending} prospects queued for OpenStreetMap verification (non-blocking)`
-            : `${verified} prospects verified by ATP + OpenStreetMap`,
-          detail: { verified, pending },
+          summary,
+          detail: { verified, pending, singleSource },
           result: true,
         };
       });
@@ -364,12 +381,35 @@ export class AnalysisService {
           )
         : null;
 
+    const demoOsmUnrecorded = osmBatch?.error === 'demo_osm_unrecorded';
+
     for (const { candidate, nationalCount } of eligible) {
       const displayName = displayBrandName(candidate.entity_id, candidate.name);
-      const verification =
-        this.mode === 'demo' && osmBatch
-          ? this.verifyAbsence(osmBatch, displayName, candidate.entity_id, candidate.name)
-          : { status: 'verifying...' as const, sources: ['All The Places (CC0)'] };
+      let verification:
+        | ReturnType<AnalysisService['verifyAbsence']>
+        | { status: 'verifying...'; sources: string[] };
+      if (this.mode === 'demo') {
+        if (demoOsmUnrecorded) {
+          verification = {
+            status: 'unverified (1 source)',
+            sources: ['All The Places (CC0)'],
+          };
+        } else if (osmBatch) {
+          verification = this.verifyAbsence(
+            osmBatch,
+            displayName,
+            candidate.entity_id,
+            candidate.name
+          );
+        } else {
+          verification = {
+            status: 'unverified (1 source)',
+            sources: ['All The Places (CC0)'],
+          };
+        }
+      } else {
+        verification = { status: 'verifying...', sources: ['All The Places (CC0)'] };
+      }
 
       if (verification.status === 'conflict - likely present') {
         continue;
@@ -383,7 +423,10 @@ export class AnalysisService {
         rankedCount
       );
 
-      const coverageNote = this.catalog.getCoverageNote(candidate.entity_id, nationalCount);
+      let coverageNote = this.catalog.getCoverageNote(candidate.entity_id, nationalCount);
+      if (demoOsmUnrecorded) {
+        coverageNote = this.appendCoverageNote(DEMO_OSM_UNRECORDED_NOTE, coverageNote);
+      }
 
       prospectPacks.push({
         coverageNote,
@@ -500,6 +543,13 @@ export class AnalysisService {
   } {
     const sources: string[] = ['All The Places (CC0)'];
 
+    if (osmResult.error === 'demo_osm_unrecorded') {
+      return {
+        status: 'unverified (1 source)',
+        sources,
+      };
+    }
+
     if (osmResult.error) {
       console.warn(`Overpass fallback (${osmResult.error}): single-source verification`);
       return {
@@ -537,6 +587,12 @@ export class AnalysisService {
       status: 'verified (2 sources)',
       sources,
     };
+  }
+
+  private appendCoverageNote(extra: string, existing?: string): string {
+    if (!existing) return extra;
+    if (existing.includes(extra)) return existing;
+    return `${existing} ${extra}`;
   }
 
   private generateReasons(

@@ -41,6 +41,8 @@ const OVERPASS_ENDPOINTS = [
 
 const CACHE_TTL_SEC = 7 * 86400;
 
+export type OverpassQueryError = 'overpass_unavailable' | 'demo_osm_unrecorded';
+
 export class OverpassClient {
   private cache: KVNamespace;
   private timeout: number;
@@ -61,12 +63,21 @@ export class OverpassClient {
     radiusKm: number,
     brands: OverpassSearchBrand[],
     addressForDemo?: string
-  ): Promise<{ brands: OverpassBrand[]; cached: boolean; error?: string }> {
+  ): Promise<{ brands: OverpassBrand[]; cached: boolean; error?: OverpassQueryError }> {
     if (this.demoMode && addressForDemo) {
       const fixtureId = matchDemoFixtureId(addressForDemo);
-      if (fixtureId && overpassDemoByFixture[fixtureId]) {
+      if (fixtureId) {
+        const recording = overpassDemoByFixture[fixtureId];
+        if (
+          !recording ||
+          !recording.recordedAt ||
+          !recording.endpoint ||
+          !recording.query
+        ) {
+          return { brands: [], cached: false, error: 'demo_osm_unrecorded' };
+        }
         return {
-          brands: overpassDemoByFixture[fixtureId].brands,
+          brands: recording.brands,
           cached: true,
         };
       }
@@ -134,7 +145,7 @@ export class OverpassClient {
     radiusKm: number,
     addressForDemo?: string,
     brands: OverpassSearchBrand[] = []
-  ): Promise<{ brands: OverpassBrand[]; cached: boolean; error?: string }> {
+  ): Promise<{ brands: OverpassBrand[]; cached: boolean; error?: OverpassQueryError }> {
     return this.queryProspectBrands(lat, lng, radiusKm, brands, addressForDemo);
   }
 

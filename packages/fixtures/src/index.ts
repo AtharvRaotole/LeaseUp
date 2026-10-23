@@ -36,5 +36,9 @@ export {
   normalizeAddress,
   type DemoFixtureId,
 } from './demo-addresses.js';
-export { overpassDemoByFixture } from './overpass-demo.js';
+export {
+  overpassDemoByFixture,
+  DEMO_OSM_UNRECORDED_NOTE,
+  type OverpassDemoRecording,
+} from './overpass-demo.js';
 export type { OverpassBrand } from './overpass-types.js';
