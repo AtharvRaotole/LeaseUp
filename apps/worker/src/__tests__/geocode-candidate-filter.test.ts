@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 import {
   dedupeGeocodeCandidatesByPlaceAndDistance,
   filterCandidatesByInputPostalCode,
@@ -48,10 +47,6 @@ describe('filterCandidatesByInputPostalCode', () => {
     expect(kept).toHaveLength(1);
   });
 });
-
-const DEMO_CHIP_ADDRESSES = {
-  wicker: '1574 N Milwaukee Ave, Chicago, IL 60622',
-};
 
 describe('dedupeGeocodeCandidatesByPlaceAndDistance', () => {
   it('merges two West Village rows within 50 m when city and state match', () => {
