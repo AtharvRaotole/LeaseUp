@@ -12,6 +12,7 @@ import { buildReportPath } from '../lib/report-params';
 import { CalmErrorPanel } from '../components/ui/CalmErrorPanel';
 import type { ApiErrorInfo } from '../lib/api-error';
 import { SERVER_BUSY_MESSAGE } from '../lib/calm-error-copy';
+import { applyPortfolioSseMessage, parsePortfolioSseBlock } from '../lib/portfolio-sse';
 
 type SortKey = 'property' | 'neighborhood' | 'hitRate' | 'status';
 
@@ -105,39 +106,40 @@ export function PortfolioPage() {
   const runPortfolio = async (portfolioId: string) => {
     setBusy(true);
     setError(null);
-    const res = await fetch(apiUrl(`/api/portfolio/${portfolioId}/run`), { method: 'POST' });
-    if (!res.ok || !res.body) {
-      setBusy(false);
-      setError('We could not run analyses right now. Try again in a moment.');
-      return;
-    }
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const chunks = buffer.split('\n\n');
-      buffer = chunks.pop() ?? '';
-      for (const chunk of chunks) {
-        const line = chunk.split('\n').find((l) => l.startsWith('data: '));
-        if (!line) continue;
-        const payload = JSON.parse(line.slice(6)) as PortfolioRow | PortfolioResponse;
-        if ('rows' in payload) {
-          setPortfolio(payload);
-        } else if ('id' in payload && 'inputAddress' in payload) {
-          setPortfolio((prev) => {
-            if (!prev) return prev;
-            return {
-              ...prev,
-              rows: prev.rows.map((r) => (r.id === payload.id ? payload : r)),
-            };
-          });
+    const poll = window.setInterval(() => {
+      void loadPortfolio(portfolioId).catch(() => undefined);
+    }, 2000);
+
+    try {
+      const res = await fetch(apiUrl(`/api/portfolio/${portfolioId}/run`), { method: 'POST' });
+      if (!res.ok || !res.body) {
+        setError('We could not run analyses right now. Try again in a moment.');
+        return;
+      }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const chunks = buffer.split('\n\n');
+        buffer = chunks.pop() ?? '';
+        for (const chunk of chunks) {
+          const message = parsePortfolioSseBlock(chunk);
+          if (!message) continue;
+          setPortfolio((prev) => applyPortfolioSseMessage(prev, message));
         }
       }
+    } finally {
+      window.clearInterval(poll);
+      setBusy(false);
+      try {
+        await loadPortfolio(portfolioId);
+      } catch {
+        /* keep last SSE state */
+      }
     }
-    setBusy(false);
   };
 
   const confirmRow = async (rowId: string, candidateIndex: number) => {
@@ -218,12 +220,16 @@ export function PortfolioPage() {
   }, [id, loadPortfolio]);
 
   useEffect(() => {
-    if (!id || !portfolio?.rows.some((r) => r.status === 'analyzing')) return;
+    if (!id) return;
+    const needsPoll =
+      busy ||
+      portfolio?.rows.some((r) => r.status === 'analyzing' || r.status === 'geocoding');
+    if (!needsPoll) return;
     const timer = window.setInterval(() => {
-      void loadPortfolio(id);
-    }, 3000);
+      void loadPortfolio(id).catch(() => undefined);
+    }, 2000);
     return () => window.clearInterval(timer);
-  }, [id, portfolio?.rows, loadPortfolio]);
+  }, [id, portfolio?.rows, busy, loadPortfolio]);
 
   return (
     <div className="min-h-screen bg-bg" data-testid="portfolio-page">

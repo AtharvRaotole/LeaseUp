@@ -46,7 +46,28 @@ export function formatGeocodeCandidateLabel(
   );
 
   if (parts.length > 0) return parts.join(', ');
+
+  const fromDisplay = streetLineFromDisplayName(displayName);
+  if (fromDisplay) return fromDisplay;
   return stripPoiLead(displayName);
+}
+
+/** House number + road from Nominatim display_name when addressdetails are incomplete. */
+export function streetLineFromDisplayName(displayName: string): string | undefined {
+  const afterPoi = stripPoiLead(displayName);
+  const segments = afterPoi.split(',').map((s) => s.trim()).filter(Boolean);
+  if (segments.length >= 2 && /^\d+[A-Za-z]?(-\d+)?$/.test(segments[0]!)) {
+    return `${segments[0]} ${segments[1]}`.replace(/\s+/g, ' ').trim();
+  }
+  const first = segments[0];
+  if (
+    first &&
+    /\d/.test(first) &&
+    /\b(street|st|avenue|ave|road|rd|boulevard|blvd|drive|dr|lane|ln|way|place|pl)\b/i.test(first)
+  ) {
+    return first;
+  }
+  return undefined;
 }
 
 /** Drop leading POI / shop names Nominatim sometimes prepends to display_name. */
