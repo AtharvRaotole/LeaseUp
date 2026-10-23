@@ -179,6 +179,30 @@ export const OutreachRequestSchema = z.object({
 
 export type OutreachRequest = z.infer<typeof OutreachRequestSchema>;
 
+export const StrictEvalSnapshotSchema = z.object({
+  primaryMetricId: z.literal('spearman_presence'),
+  searchRadiusKm: z.number(),
+  adaptiveRadiusKm: z.number(),
+  density: z.enum(['urban', 'suburban', 'exurban', 'tourist']),
+  poolSize: z.number(),
+  legacyPresentAt10Qloo: z.number(),
+  legacyPresentAt10Chain: z.number(),
+  adaptivePresentAt10Qloo: z.number(),
+  adaptivePresentAt10Chain: z.number(),
+  surprisePresentAt10Qloo: z.number(),
+  surprisePresentAt10Chain: z.number(),
+  spearmanQloo: z.number(),
+  spearmanChain: z.number(),
+  randomExpectedPresentAt10: z.number(),
+  randomMonteCarloPresentAt10: z.number(),
+  primaryWinner: z.enum(['qloo', 'chain', 'tie']),
+  qlooBelowChainAdaptive: z.boolean(),
+  qlooBelowRandomExpected: z.boolean(),
+  honestSummary: z.string(),
+});
+
+export type StrictEvalSnapshot = z.infer<typeof StrictEvalSnapshotSchema>;
+
 export const AnalysisResponseSchema = z.object({
   location: LocationSchema,
   backtest: BacktestResultSchema,
@@ -199,6 +223,7 @@ export const AnalysisResponseSchema = z.object({
   osmSnapshotLabel: z.string().optional(),
   storefrontSqFt: z.number().optional(),
   formatFilteredCount: z.number().int().optional(),
+  strictEval: StrictEvalSnapshotSchema.optional(),
 });
 
 export type AnalysisResponse = z.infer<typeof AnalysisResponseSchema>;

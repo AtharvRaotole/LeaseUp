@@ -9,7 +9,8 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./eval/results.json": "./src/eval/results.json"
+    "./eval/results.json": "./src/eval/results.json",
+    "./eval/strict-results.json": "./src/eval/strict-results.json"
   },
   "scripts": {
     "build": "node ../../scripts/embed-demo-stores.mjs && node ../../scripts/embed-overpass-demo.mjs && tsc && cp -r src/brand-explainability dist/brand-explainability",
