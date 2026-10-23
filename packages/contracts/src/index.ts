@@ -300,3 +300,56 @@ export const PortfolioResponseSchema = z.object({
 });
 
 export type PortfolioResponse = z.infer<typeof PortfolioResponseSchema>;
+
+export const VacancyCalculatorInputSchema = z.object({
+  squareFeet: z.number().min(0).max(1_000_000),
+  rentPerSqFtYear: z.number().min(0).max(10_000),
+  monthsVacant: z.number().min(0).max(120),
+});
+
+export type VacancyCalculatorInput = z.infer<typeof VacancyCalculatorInputSchema>;
+
+export const PitchLandlordSchema = z.object({
+  name: z.string().max(200).optional(),
+  contact: z.string().max(500).optional(),
+});
+
+export type PitchLandlord = z.infer<typeof PitchLandlordSchema>;
+
+export const PitchProspectSnapshotSchema = z.object({
+  prospect: ProspectPackSchema,
+  whyLine: z.string().max(500),
+});
+
+export type PitchProspectSnapshot = z.infer<typeof PitchProspectSnapshotSchema>;
+
+export const PitchPackSnapshotSchema = z.object({
+  id: z.string().uuid(),
+  createdAt: z.string(),
+  address: z.string(),
+  neighborhood: z.string().optional(),
+  location: LocationSchema,
+  radiusKm: z.number(),
+  analysisTimestamp: z.string(),
+  runId: z.string(),
+  mode: z.enum(['live', 'demo']).optional(),
+  osmSnapshotLabel: z.string().optional(),
+  osmSnapshotRecordedAt: z.string().optional(),
+  mapImage: z.string().max(900_000).optional(),
+  prospects: z.array(PitchProspectSnapshotSchema).max(5),
+  rankingsTotal: z.number().int().optional(),
+  landlord: PitchLandlordSchema.optional(),
+  vacancy: VacancyCalculatorInputSchema.optional(),
+});
+
+export type PitchPackSnapshot = z.infer<typeof PitchPackSnapshotSchema>;
+
+export const PitchCreateSchema = z.object({
+  results: AnalysisResponseSchema,
+  radiusKm: z.number().min(0.5).max(50),
+  mapImage: z.string().max(900_000).optional(),
+  landlord: PitchLandlordSchema.optional(),
+  vacancy: VacancyCalculatorInputSchema.optional(),
+});
+
+export type PitchCreate = z.infer<typeof PitchCreateSchema>;

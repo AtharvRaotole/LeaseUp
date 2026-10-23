@@ -47,4 +47,13 @@ CREATE TABLE IF NOT EXISTS portfolios (
 
 CREATE INDEX IF NOT EXISTS idx_portfolios_created ON portfolios(created_at);
 
+-- Immutable shareable site pitch packs
+CREATE TABLE IF NOT EXISTS pitch_packs (
+  pitch_id TEXT PRIMARY KEY,
+  payload TEXT NOT NULL,
+  created_at INTEGER NOT NULL DEFAULT (unixepoch())
+);
+
+CREATE INDEX IF NOT EXISTS idx_pitch_packs_created ON pitch_packs(created_at);
+
 -- Store locations are served from static geotiles (apps/worker/public/tiles), not D1.

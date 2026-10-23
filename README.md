@@ -35,6 +35,7 @@ Mobile landing:
 | Outreach drafts | OpenAI `gpt-4o-mini` when you click, not by default |
 | **Brand sites** (`/brand`) | Qloo heatmap by chain and metro, ATP store overlay, ranked white-space cells |
 | **Portfolio** (`/portfolio`) | Batch up to 10 addresses, confirm geocodes, sequential analyses, shareable CSV |
+| **Pitch pack** (`/pitch/:id`) | Shareable read-only snapshot from a site report, map image, top 5 prospects, print/PDF |
 
 Brand reverse (recorded Chicago heatmap, light 1440px):
 
@@ -43,6 +44,10 @@ Brand reverse (recorded Chicago heatmap, light 1440px):
 Portfolio batch (light 390px):
 
 ![Portfolio mode](docs/screenshots/features/portfolio-light-390.png)
+
+Pitch pack (light 1440px):
+
+![Pitch pack](docs/screenshots/features/pitch-pack-light-1440.png)
 
 ## Architecture
 

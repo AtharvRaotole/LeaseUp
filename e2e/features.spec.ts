@@ -44,6 +44,23 @@ test.describe('LeaseUp feature pages (demo)', () => {
     expect(download.suggestedFilename()).toContain('leaseup-portfolio');
   });
 
+  test('share pitch from site report', async ({ page }) => {
+    test.setTimeout(180_000);
+    await page.goto(
+      `${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`
+    );
+    await expect(page.getByTestId('brands-to-pitch')).toBeVisible({ timeout: 120000 });
+    await page.getByTestId('share-pitch').click();
+    await page.getByRole('button', { name: 'Create public link' }).click();
+    await expect(page.getByText(/\/pitch\//)).toBeVisible({ timeout: 30000 });
+    const linkText = await page.locator('a[href*="/pitch/"]').first().getAttribute('href');
+    expect(linkText).toMatch(/\/pitch\//);
+    await page.goto(linkText!);
+    await expect(page.getByTestId('pitch-page')).toBeVisible({ timeout: 30000 });
+    await expect(page.getByText('Top brands to pitch')).toBeVisible();
+    await expect(page.getByTestId('vacancy-calculator')).toBeVisible();
+  });
+
   test('mobile menu exposes brand and portfolio links', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(`${BASE}/`);
