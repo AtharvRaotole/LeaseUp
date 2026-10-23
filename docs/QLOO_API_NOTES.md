@@ -56,6 +56,25 @@ GET /v2/insights?filter.type=urn:entity:brand&signal.location=POINT(lon%20lat)&s
 
 Brand batches: `filter.results.entities` comma-separated, max 45 ids per request.
 
+## Trade-area tags & audiences (Why this brand)
+
+For a brand entity and trade-area pin, Qloo returns locally over-indexing **tags** and **audiences** when you anchor taste on the brand and location:
+
+```http
+GET /v2/insights?filter.type=urn:tag&signal.location=POINT(-105.2805434%2040.0179234)&signal.location.radius=10000&signal.interests.entities=C70CE2B8-0AD1-4150-BF18-5A6347F2E860&take=25&feature.explainability=true
+X-Api-Key: <secret>
+```
+
+Swap `filter.type` to `urn:audience` for audience lift. Responses use `results.tags` / `results.audiences` (or `results.entities`) with `query.affinity` and `query.affinity_rank`.
+
+Record demo chip fixtures (no API key stored):
+
+```bash
+QLOO_API_KEY=... node scripts/record-brand-explainability-fixture.mjs boulder wicker sevierville
+```
+
+Writes `packages/fixtures/src/brand-explainability/<chip>-<brandEntityId>.json`. For CI without a key, `LEASEUP_EXPLAINABILITY_MOCK=1` replays `packages/fixtures/src/brand-explainability/captures/*.json` (regenerate captures with a live key before shipping).
+
 ## Recording fixtures
 
 ```bash
