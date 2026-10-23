@@ -237,6 +237,51 @@ export class QlooClient {
     return insights;
   }
 
+  /**
+   * One live insights call for trade-area shopper tags (no KV write here; caller caches).
+   * Assumed response fields: results.tags[], optional results.audiences[], query.affinity_rank on each row.
+   */
+  async fetchTradeAreaShopperInsights(params: {
+    location: QlooLocation;
+    runId?: string;
+  }): Promise<unknown | null> {
+    if (this.mode === 'demo') return null;
+
+    const url = new URL('/v2/insights', this.baseUrl);
+    url.searchParams.set('filter.type', 'urn:tag');
+    applyQlooInsightsLocationParams(url, params.location);
+    url.searchParams.set('take', '15');
+    url.searchParams.set('feature.explainability', 'true');
+
+    const start = Date.now();
+    const response = await this.fetchWithRetry(url.toString());
+    const latency = Date.now() - start;
+
+    if (!response.ok) {
+      await recordApiMetric(this.db, {
+        runId: params.runId,
+        provider: 'qloo',
+        endpoint: '/v2/insights',
+        statusCode: response.status,
+        latencyMs: latency,
+        cached: false,
+      });
+      return null;
+    }
+
+    const data = await response.json();
+    await recordApiMetric(this.db, {
+      runId: params.runId,
+      provider: 'qloo',
+      endpoint: '/v2/insights',
+      statusCode: 200,
+      latencyMs: latency,
+      cached: false,
+    });
+
+    return data;
+  }
+
   async getTradeAreaTasteContext(params: {
     location: QlooLocation;
     brandEntityId: string;

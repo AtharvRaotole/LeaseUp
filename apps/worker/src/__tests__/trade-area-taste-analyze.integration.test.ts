@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { AnalysisService } from '../services/analysis';
 import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 
@@ -40,5 +40,36 @@ describe('tradeAreaTaste on analyze response', () => {
     expect(sephora).toBeDefined();
     expect(sephora!.tradeAreaTaste?.tags?.length).toBeGreaterThan(0);
     expect(sephora!.tradeAreaTaste?.tags?.[0]?.affinityRank).toBeGreaterThan(0);
+  });
+
+  it('attaches Who shops here snapshot on demo analyze without KV writes', async () => {
+    const put = vi.fn();
+    const cache = { get: async () => null, put } as unknown as KVNamespace;
+    const service = new AnalysisService({ ...demoEnv(), CACHE: cache });
+    const result = await service.analyze(
+      { address: DEMO_CHIP_ADDRESSES.wicker, radius: 10 },
+      'run-shoppers',
+      'iphash'
+    );
+    expect(result.tradeAreaShoppers?.summary).toMatch(/Shoppers here over-index/);
+    expect(put).not.toHaveBeenCalled();
+  });
+
+  it('attaches brand reach contacts on prospects when known', async () => {
+    const service = new AnalysisService(demoEnv());
+    const result = await service.analyze(
+      { address: DEMO_CHIP_ADDRESSES.wicker, radius: 10 },
+      'run-reach',
+      'iphash'
+    );
+    const withReach = result.prospects.filter((p) => p.brandReach);
+    expect(withReach.length).toBeGreaterThan(0);
+    expect(
+      withReach.some(
+        (p) =>
+          (p.brandReach?.status === 'verified' && p.brandReach.url) ||
+          (p.brandReach?.status === 'not_yet_found' && p.brandReach.searchUrl)
+      )
+    ).toBe(true);
   });
 });
