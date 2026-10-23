@@ -1,13 +1,14 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AnalysisService } from '../services/analysis';
 import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
+import { KV_ROUTE_BUDGET } from '../lib/kv-route-budget';
 
 /** Pre-#45 typical cold live analyze (from docs/qa/kv-analyze-audit.md). */
 export const LEGACY_KV_PER_ANALYZE_COLD = { gets: { min: 25, max: 55 }, puts: { min: 25, max: 55 } };
 export const LEGACY_KV_PER_ANALYZE_WARM = { gets: { min: 10, max: 55 }, puts: { min: 10, max: 30 } };
 
 /** Post-#45 target on demo fixture path (Wicker chip, precomputed insights). */
-export const CURRENT_KV_PER_ANALYZE = { gets: 0, puts: 0 };
+export const CURRENT_KV_PER_ANALYZE = KV_ROUTE_BUDGET.analyzeCold;
 
 function installCacheApiStore() {
   const store = new Map<string, Response>();
