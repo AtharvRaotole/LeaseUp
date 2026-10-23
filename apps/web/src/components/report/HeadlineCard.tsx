@@ -36,16 +36,16 @@ export function HeadlineCard({
       </h2>
       <div className="mt-6 grid grid-cols-3 gap-1.5 md:gap-3">
         <StatTile
-          label="Hit rate"
-          mobileLabel="Hit rate"
+          label="Nearby match"
+          mobileLabel="Nearby"
           value={hitLabel}
-          subtitle={hitTieSubtitle ?? 'Top 10 brands with a store nearby'}
+          subtitle={hitTieSubtitle ?? 'Top picks that already have a store in your radius'}
         />
         <StatTile
-          label="Brands analyzed"
-          mobileLabel="Brands"
+          label="Brands scored"
+          mobileLabel="Scored"
           value={String(analyzed)}
-          subtitle="Brands ranked for this pin in Qloo"
+          subtitle="Chains ranked for this address"
         />
         <StatTile
           label="Data confidence"

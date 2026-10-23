@@ -10,7 +10,8 @@ import { fitPercentileLabel } from '../../lib/fit-display';
 import { buildReportPath } from '../../lib/report-params';
 import { displayBrandName } from '../../lib/brand-display';
 import { brandCategoryLabel } from '../../lib/brand-category';
-import { verificationShortLabel, verificationTooltip } from '../../lib/copy';
+import { verificationShortLabel, verificationSourceHelp } from '../../lib/copy';
+import { InfoPopover } from '../ui/InfoPopover';
 import { pitchExpandedLines } from '../../lib/pitch-detail-copy';
 import { cn } from '../../lib/cn';
 import { AddToPipelineButton } from '../pipeline/AddToPipelineButton';
@@ -49,22 +50,24 @@ function PitchPill({
 }
 
 function verificationPillCopy(
-  verified: ProspectPack['brand']['verified'],
+  prospect: ProspectPack,
   entityId: string,
   osmTimedOut: Set<string>,
   radiusKm: number,
-  osmSnapshotLabel?: string
-): { label: string; title: string; spinner: boolean } {
+  results: AnalysisResponse
+): { label: string; help: string; spinner: boolean } {
+  const verified = prospect.brand.verified;
   if (verified === 'verifying...' && osmTimedOut.has(entityId)) {
+    const osmLabel = results.osmSnapshotLabel ?? 'OpenStreetMap';
     return {
-      label: 'Only 1 source',
-      title: 'OpenStreetMap did not respond in time',
+      label: 'One source',
+      help: `Checked: All The Places (no store within ${radiusKm} km). Not checked: ${osmLabel} (timed out).`,
       spinner: false,
     };
   }
   return {
     label: verificationShortLabel(verified),
-    title: verificationTooltip(verified, radiusKm, osmSnapshotLabel),
+    help: verificationSourceHelp(prospect, radiusKm, results.osmSnapshotLabel, results),
     spinner: verified === 'verifying...',
   };
 }
@@ -238,16 +241,19 @@ export function BrandsToPitch({
                     <PitchPill tone="accent">{fitLabel}</PitchPill>
                     {(() => {
                       const pill = verificationPillCopy(
-                        prospect.brand.verified,
+                        prospect,
                         prospect.brand.entityId,
                         osmTimedOut,
                         radiusKm,
-                        results.osmSnapshotLabel
+                        results
                       );
                       return (
-                        <PitchPill tone="neutral" title={pill.title} spinner={pill.spinner}>
-                          {pill.label}
-                        </PitchPill>
+                        <span className="inline-flex items-center gap-0.5">
+                          <PitchPill tone="neutral" title={pill.help} spinner={pill.spinner}>
+                            {pill.label}
+                          </PitchPill>
+                          <InfoPopover label={`Store check: ${pill.label}`} body={pill.help} />
+                        </span>
                       );
                     })()}
                   </div>

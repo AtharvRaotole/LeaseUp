@@ -1,5 +1,6 @@
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Accordion } from '../ui/Accordion';
+import { ShowMethod } from '../ui/ShowMethod';
 import { affinitiesAllIdentical } from '../../lib/fit-display';
 import { formatUserFacingDate } from '../../lib/format-date';
 
@@ -18,7 +19,7 @@ export function HowWeKnowSection({ results }: { results: AnalysisResponse }) {
             title: 'Data sources',
             content: (
               <ul className="list-disc pl-5 space-y-1">
-                <li>Qloo Taste AI rankings (mode: {results.mode ?? 'demo'})</li>
+                <li>Local taste rankings (Qloo, {results.mode ?? 'demo'} mode)</li>
                 <li>All The Places store locations (CC0)</li>
                 <li>
                   {results.osmSnapshotLabel
@@ -35,16 +36,6 @@ export function HowWeKnowSection({ results }: { results: AnalysisResponse }) {
             ),
           },
           {
-            id: 'method',
-            title: 'Method',
-            content: (
-              <p>
-                We rank brands for the pin, then measure how often top-ranked brands already have a real store nearby.
-                AUC here is {auc}: the chance a random present store ranks above a random absent one (1.0 is perfect separation).
-              </p>
-            ),
-          },
-          {
             id: 'limits',
             title: 'Limitations',
             content: (
@@ -52,13 +43,22 @@ export function HowWeKnowSection({ results }: { results: AnalysisResponse }) {
                 {results.warnings.map((w) => (
                   <li key={w}>{w}</li>
                 ))}
-                <li>ATP coverage can miss stores; OSM may be unavailable.</li>
-                <li>Affinity scores are not calibrated across unrelated API batches.</li>
+                <li>Store datasets can miss locations; street maps may be incomplete.</li>
+                <li>Taste scores are not calibrated across unrelated API batches.</li>
               </ul>
             ),
           },
         ]}
       />
+      <div className="mt-4">
+      <ShowMethod>
+        <p>
+          We rank brands for the pin, then measure how often top-ranked brands already have a real store
+          nearby. AUC here is {auc}: the chance a random present store ranks above a random absent one
+          (1.0 is perfect separation).
+        </p>
+      </ShowMethod>
+      </div>
     </section>
   );
 }

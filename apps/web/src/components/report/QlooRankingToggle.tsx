@@ -20,15 +20,15 @@ export function QlooRankingToggle({
         value={mode}
         onChange={(v) => onChange(v as QlooRankingMode)}
         options={[
-          { value: 'qloo', label: 'With Qloo' },
-          { value: 'baseline', label: 'Without taste' },
+          { value: 'qloo', label: 'Local taste' },
+          { value: 'baseline', label: 'Chain size' },
         ]}
       />
       {!compact && (
         <p className="mt-1 text-meta text-ink-3">
           {mode === 'qloo'
-            ? 'Qloo taste order (same brands, ranked by local affinity).'
-            : 'Same candidate brands, ranked only by national ATP store count.'}
+            ? 'Same brands, ordered by how well they fit this neighborhood.'
+            : 'Same brands, ordered by how many stores they have nationwide.'}
         </p>
       )}
     </div>

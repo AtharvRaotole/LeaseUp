@@ -22,7 +22,7 @@ describe('pitchOneLineWhy', () => {
 
   it('builds line from rank and distance when no reasons', () => {
     const line = pitchOneLineWhy(base, 100);
-    expect(line).toContain('Qloo #3');
+    expect(line).toContain('rank 3');
     expect(line).toContain('4.2 km');
   });
 });

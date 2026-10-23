@@ -20,7 +20,7 @@ function bt(present: number): BacktestResult {
 describe('qlooProofSentence', () => {
   it('formats computed hit counts', () => {
     expect(qlooProofSentence(bt(8), bt(4))).toBe(
-      'Without taste data: 4 of 10. With Qloo: 8 of 10.'
+      'Local taste ranking: 8 of 10 top picks already have a store nearby. Ranking by chain size only: 4 of 10.'
     );
   });
 
@@ -51,7 +51,7 @@ describe('qlooProofSentence', () => {
         presentInRadius: true,
       },
     ]);
-    expect(detail).toMatch(/Same hit count/);
+    expect(detail).toMatch(/Same nearby-store count/);
     expect(detail).toMatch(/REI/);
   });
 });

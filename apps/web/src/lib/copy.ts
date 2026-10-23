@@ -1,4 +1,5 @@
-import type { Location, ProspectPack } from '@leaseup/contracts';
+import type { AnalysisResponse, Location, ProspectPack } from '@leaseup/contracts';
+import { DEMO_OSM_UNRECORDED_NOTE } from '@leaseup/fixtures';
 
 export function verificationShortLabel(verified: ProspectPack['brand']['verified']): string {
   switch (verified) {
@@ -7,7 +8,7 @@ export function verificationShortLabel(verified: ProspectPack['brand']['verified
     case 'verifying...':
       return 'Checking OSM';
     case 'unverified (1 source)':
-      return 'Only 1 source';
+      return 'One source';
     case 'conflict - likely present':
       return 'Likely present';
     case 'conflict':
@@ -22,24 +23,73 @@ export function verificationShortLabel(verified: ProspectPack['brand']['verified
 export function verificationTooltip(
   verified: ProspectPack['brand']['verified'],
   radiusKm: number,
-  osmSnapshotLabel?: string
+  osmSnapshotLabel?: string,
+  verificationSources?: string[]
 ): string {
-  const osmLabel = osmSnapshotLabel ?? 'OpenStreetMap';
-  switch (verified) {
-    case 'verified (2 sources)':
-      return `Absent in All The Places and ${osmLabel} within ${radiusKm} km`;
-    case 'verifying...':
-      return 'Checking OpenStreetMap for a second source';
-    case 'unverified (1 source)':
-      return `Found in only one source within ${radiusKm} km`;
-    case 'conflict - likely present':
-    case 'conflict':
-      return `Sources disagree about a store within ${radiusKm} km`;
-    case 'unverified':
-      return `Found in neither All The Places nor OpenStreetMap within ${radiusKm} km`;
-    default:
-      return `Store check within ${radiusKm} km`;
+  const stub: ProspectPack = {
+    brand: {
+      entityId: '',
+      name: 'Brand',
+      affinity: 0,
+      affinityRank: 1,
+      verified,
+      verificationSources,
+    },
+    outreachDraft: '',
+    reasons: [],
+  };
+  return verificationSourceHelp(stub, radiusKm, osmSnapshotLabel);
+}
+
+function sourceChecked(sources: string[], needle: string): boolean {
+  return sources.some((s) => s.toLowerCase().includes(needle.toLowerCase()));
+}
+
+/** Names the dataset we used and what we have not checked yet (for badges). */
+export function verificationSourceHelp(
+  prospect: ProspectPack,
+  radiusKm: number,
+  osmSnapshotLabel?: string,
+  results?: AnalysisResponse
+): string {
+  const osmLabel = results?.osmSnapshotLabel ?? osmSnapshotLabel ?? 'OpenStreetMap';
+  const verified = prospect.brand.verified;
+  const sources = prospect.brand.verificationSources ?? [];
+  const atpChecked = sourceChecked(sources, 'all the places');
+  const osmChecked =
+    sourceChecked(sources, 'openstreetmap') && !sources.some((s) => s.includes('store found'));
+  const demoOsmSkipped = prospect.coverageNote?.includes(DEMO_OSM_UNRECORDED_NOTE);
+
+  if (verified === 'verified (2 sources)') {
+    return `We checked All The Places and ${osmLabel} within ${radiusKm} km and did not find a store.`;
   }
+
+  if (verified === 'verifying...') {
+    return `All The Places shows no store within ${radiusKm} km. We are still checking ${osmLabel} for a second confirmation.`;
+  }
+
+  if (verified === 'unverified (1 source)') {
+    if (atpChecked && !osmChecked) {
+      if (demoOsmSkipped) {
+        return `Checked: All The Places (no store within ${radiusKm} km). Not checked: ${osmLabel} (${DEMO_OSM_UNRECORDED_NOTE}).`;
+      }
+      return `Checked: All The Places (no store within ${radiusKm} km). Not checked yet: ${osmLabel}.`;
+    }
+    if (osmChecked && !atpChecked) {
+      return `Checked: ${osmLabel} (no store within ${radiusKm} km). Not checked yet: All The Places.`;
+    }
+    return `Only one store dataset confirmed absence within ${radiusKm} km. We still need a second source before calling it verified.`;
+  }
+
+  if (verified === 'conflict - likely present' || verified === 'conflict') {
+    return `All The Places and ${osmLabel} disagree about whether ${prospect.brand.name} has a store within ${radiusKm} km.`;
+  }
+
+  if (verified === 'unverified') {
+    return `We could not confirm absence in All The Places or ${osmLabel} within ${radiusKm} km.`;
+  }
+
+  return `Store check within ${radiusKm} km.`;
 }
 
 export function verificationLabel(verified: ProspectPack['brand']['verified']): string {
@@ -49,7 +99,7 @@ export function verificationLabel(verified: ProspectPack['brand']['verified']): 
     case 'verifying...':
       return 'Checking OpenStreetMap';
     case 'unverified (1 source)':
-      return 'Only 1 source';
+      return 'One source';
     case 'conflict - likely present':
       return 'Likely present';
     case 'conflict':

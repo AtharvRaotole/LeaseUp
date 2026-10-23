@@ -245,7 +245,7 @@ export function ReportPage() {
         </div>
       </ErrorBoundary>
       <ErrorBoundary fallback={<SectionUnavailable />}>
-        <CoTenancyMixSection results={results} />
+        <CoTenancyMixSection results={results} radiusKm={request.radius} />
       </ErrorBoundary>
       <ErrorBoundary fallback={<SectionUnavailable />}>
         <div className="no-print">
