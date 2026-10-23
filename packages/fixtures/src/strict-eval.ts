@@ -5,9 +5,8 @@ import { findStoresNearby } from './store-geo.js';
 import type { FindStoresNearbyFn } from './backtest.js';
 import type { EvalSiteDensity } from './eval/types.js';
 
-export const STRICT_EVAL_PRIMARY_METRIC_ID = 'spearman_presence' as const;
-
-export type StrictEvalPrimaryMetricId = typeof STRICT_EVAL_PRIMARY_METRIC_ID;
+/** Candidate metric id (headline chosen in eval/manifest.json). */
+export const METRIC_ID_SPEARMAN_PRESENCE = 'spearman_presence' as const;
 
 export function adaptiveEvalRadiusKm(
   density: EvalSiteDensity,
@@ -136,8 +135,7 @@ function spearmanForOrdering(
   return spearmanRankCorrelation(ranks, values);
 }
 
-export type StrictEvalMetrics = {
-  primaryMetricId: StrictEvalPrimaryMetricId;
+export type StrictEvalSiteMetrics = {
   searchRadiusKm: number;
   adaptiveRadiusKm: number;
   density: EvalSiteDensity;
@@ -152,10 +150,6 @@ export type StrictEvalMetrics = {
   spearmanChain: number;
   randomExpectedPresentAt10: number;
   randomMonteCarloPresentAt10: number;
-  primaryWinner: 'qloo' | 'chain' | 'tie';
-  qlooBelowChainAdaptive: boolean;
-  qlooBelowRandomExpected: boolean;
-  qlooBelowRandomMonteCarlo: boolean;
 };
 
 export function computeStrictEval(
@@ -165,7 +159,7 @@ export function computeStrictEval(
   searchRadiusKm: number,
   density: EvalSiteDensity,
   findNearby: FindStoresNearbyFn = findStoresNearby
-): StrictEvalMetrics {
+): StrictEvalSiteMetrics {
   const pool = filterInsightsToStoreBrands(insights);
   const chainOrdered = orderInsightsByNationalStoreCount(insights);
   const baselineRankById = new Map(
@@ -203,12 +197,7 @@ export function computeStrictEval(
   );
   const randomMonteCarloPresentAt10 = monteCarloRandomPresentAt10(pool, legacyPresentQloo);
 
-  let primaryWinner: 'qloo' | 'chain' | 'tie' = 'tie';
-  if (spearmanQloo > spearmanChain + 0.01) primaryWinner = 'qloo';
-  else if (spearmanChain > spearmanQloo + 0.01) primaryWinner = 'chain';
-
   return {
-    primaryMetricId: STRICT_EVAL_PRIMARY_METRIC_ID,
     searchRadiusKm,
     adaptiveRadiusKm,
     density,
@@ -223,35 +212,11 @@ export function computeStrictEval(
     spearmanChain,
     randomExpectedPresentAt10,
     randomMonteCarloPresentAt10,
-    primaryWinner,
-    qlooBelowChainAdaptive: adaptivePresentAt10Qloo < adaptivePresentAt10Chain,
-    qlooBelowRandomExpected: legacyPresentAt10Qloo < randomExpectedPresentAt10,
-    qlooBelowRandomMonteCarlo: legacyPresentAt10Qloo < randomMonteCarloPresentAt10,
   };
 }
 
-export function strictEvalHonestSummary(metrics: StrictEvalMetrics): string {
-  const parts: string[] = [];
-  parts.push(
-    `Primary (Spearman): Qloo ${metrics.spearmanQloo.toFixed(3)} vs chain ${metrics.spearmanChain.toFixed(3)} (${metrics.primaryWinner}).`
-  );
-  parts.push(
-    `Legacy P@10 ${metrics.legacyPresentAt10Qloo} of 10 (chain ${metrics.legacyPresentAt10Chain} of 10).`
-  );
-  parts.push(
-    `Adaptive ${metrics.adaptiveRadiusKm} km P@10: Qloo ${metrics.adaptivePresentAt10Qloo} of 10, chain ${metrics.adaptivePresentAt10Chain} of 10.`
-  );
-  if (metrics.qlooBelowChainAdaptive) {
-    parts.push('Qloo adaptive P@10 is below the chain-size baseline on this pin.');
-  }
-  if (metrics.primaryWinner === 'tie' && metrics.legacyPresentAt10Qloo === 10) {
-    parts.push('Legacy hit rate is saturated at 10 of 10; use Spearman and adaptive radius for signal.');
-  }
-  if (metrics.qlooBelowRandomExpected) {
-    parts.push('Qloo legacy P@10 is below the hypergeometric random expectation.');
-  }
-  return parts.join(' ');
-}
+/** @deprecated use StrictEvalSiteMetrics */
+export type StrictEvalMetrics = StrictEvalSiteMetrics;
 
 export function demoFixtureDensity(fixtureId: 'wicker' | 'boulder' | 'sevierville'): EvalSiteDensity {
   if (fixtureId === 'sevierville') return 'tourist';

@@ -10,10 +10,11 @@
       "default": "./dist/index.js"
     },
     "./eval/results.json": "./src/eval/results.json",
-    "./eval/strict-results.json": "./src/eval/strict-results.json"
+    "./eval/strict-results.json": "./src/eval/strict-results.json",
+    "./eval/manifest.json": "./src/eval/manifest.json"
   },
   "scripts": {
-    "build": "node ../../scripts/embed-demo-stores.mjs && node ../../scripts/embed-overpass-demo.mjs && tsc && cp -r src/brand-explainability dist/brand-explainability",
+    "build": "node ../../scripts/embed-demo-stores.mjs && node ../../scripts/embed-overpass-demo.mjs && tsc && cp -r src/brand-explainability dist/brand-explainability && mkdir -p dist/eval && cp src/eval/manifest.json src/eval/strict-results.json dist/eval/",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts"
   },

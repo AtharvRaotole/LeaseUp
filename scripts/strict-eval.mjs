@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 /**
- * Record strict Qloo evaluation (see docs/STRICT_EVAL_PROTOCOL.md).
- * Usage: node scripts/strict-eval.mjs
- *        QLOO_API_KEY=... node scripts/strict-eval.mjs
+ * Record evaluation metrics into packages/fixtures/src/eval/strict-results.json
+ * (or swap bundle path in eval/manifest.json). See scripts/eval/README.md
  */
 import { execSync } from 'node:child_process';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const ROOT = process.cwd();
-const OUT_PATH = join(ROOT, 'packages/fixtures/src/eval/strict-results.json');
+const MANIFEST_PATH = join(ROOT, 'packages/fixtures/src/eval/manifest.json');
 const RADIUS_KM = 10;
 const QLOO_API_KEY = process.env.QLOO_API_KEY;
 const QLOO_BASE_URL = process.env.QLOO_BASE_URL || 'https://hackathon.api.qloo.com';
 
+/** Pilot sites only; replace or extend when the live API bundle arrives. */
 const EVAL_SITES = [
   {
     id: 'wicker-park',
@@ -23,14 +23,6 @@ const EVAL_SITES = [
     longitude: -87.6772824,
     density: 'urban',
     fixtureId: 'wicker',
-  },
-  {
-    id: 'west-village-bleecker',
-    label: 'West Village, Bleecker St',
-    address: '350 Bleecker St, New York, NY 10014',
-    latitude: 40.7322,
-    longitude: -74.0034,
-    density: 'urban',
   },
   {
     id: 'boulder',
@@ -57,15 +49,17 @@ execSync('pnpm --filter @leaseup/fixtures build', { stdio: 'inherit', cwd: ROOT 
 const { wickerparkFixture } = await import('../packages/fixtures/dist/wicker-park.js');
 const { boulderFixture } = await import('../packages/fixtures/dist/boulder.js');
 const { seviervilleFixture } = await import('../packages/fixtures/dist/sevierville.js');
-const { computeStrictEval, strictEvalHonestSummary } = await import(
-  '../packages/fixtures/dist/strict-eval.js'
-);
+const { computeStrictEval } = await import('../packages/fixtures/dist/strict-eval.js');
+const { buildEvalMetricPanels } = await import('../packages/fixtures/dist/eval/present-metrics.js');
 
 const FIXTURE_BY_ID = {
   wicker: wickerparkFixture,
   boulder: boulderFixture,
   sevierville: seviervilleFixture,
 };
+
+const manifest = JSON.parse(await readFile(MANIFEST_PATH, 'utf8'));
+const outPath = join(ROOT, 'packages/fixtures/src/eval', manifest.resultsBundle);
 
 function formatWktPoint(lon, lat) {
   return `POINT(${lon} ${lat})`;
@@ -98,6 +92,7 @@ async function fetchLiveInsights(site) {
 }
 
 const rows = [];
+let dataSource = manifest.dataSource;
 
 for (const site of EVAL_SITES) {
   const base = {
@@ -111,6 +106,7 @@ for (const site of EVAL_SITES) {
     let insights = null;
     if (QLOO_API_KEY) {
       insights = await fetchLiveInsights(site);
+      dataSource = 'live';
       await new Promise((r) => setTimeout(r, 800));
     } else if (site.fixtureId && FIXTURE_BY_ID[site.fixtureId]) {
       insights = FIXTURE_BY_ID[site.fixtureId].insights;
@@ -121,7 +117,7 @@ for (const site of EVAL_SITES) {
       continue;
     }
 
-    const metrics = computeStrictEval(
+    const siteMetrics = computeStrictEval(
       insights,
       site.latitude,
       site.longitude,
@@ -132,26 +128,8 @@ for (const site of EVAL_SITES) {
     rows.push({
       ...base,
       status: 'recorded',
-      metrics: {
-        primaryMetricId: metrics.primaryMetricId,
-        searchRadiusKm: metrics.searchRadiusKm,
-        adaptiveRadiusKm: metrics.adaptiveRadiusKm,
-        poolSize: metrics.poolSize,
-        legacyPresentAt10Qloo: metrics.legacyPresentAt10Qloo,
-        legacyPresentAt10Chain: metrics.legacyPresentAt10Chain,
-        adaptivePresentAt10Qloo: metrics.adaptivePresentAt10Qloo,
-        adaptivePresentAt10Chain: metrics.adaptivePresentAt10Chain,
-        surprisePresentAt10Qloo: metrics.surprisePresentAt10Qloo,
-        surprisePresentAt10Chain: metrics.surprisePresentAt10Chain,
-        spearmanQloo: metrics.spearmanQloo,
-        spearmanChain: metrics.spearmanChain,
-        randomExpectedPresentAt10: metrics.randomExpectedPresentAt10,
-        randomMonteCarloPresentAt10: metrics.randomMonteCarloPresentAt10,
-        primaryWinner: metrics.primaryWinner,
-        qlooBelowChainAdaptive: metrics.qlooBelowChainAdaptive,
-        qlooBelowRandomExpected: metrics.qlooBelowRandomExpected,
-        honestSummary: strictEvalHonestSummary(metrics),
-      },
+      siteMetrics,
+      panels: buildEvalMetricPanels(siteMetrics),
     });
   } catch (err) {
     console.error(`Skip ${site.label}:`, err.message);
@@ -160,35 +138,22 @@ for (const site of EVAL_SITES) {
 }
 
 const recorded = rows.filter((r) => r.status === 'recorded');
-const summary =
-  recorded.length > 0
-    ? {
-        recordedCount: recorded.length,
-        meanSpearmanQloo:
-          recorded.reduce((s, r) => s + r.metrics.spearmanQloo, 0) / recorded.length,
-        meanSpearmanChain:
-          recorded.reduce((s, r) => s + r.metrics.spearmanChain, 0) / recorded.length,
-        qlooPrimaryWins: recorded.filter((r) => r.metrics.primaryWinner === 'qloo').length,
-        chainPrimaryWins: recorded.filter((r) => r.metrics.primaryWinner === 'chain').length,
-        ties: recorded.filter((r) => r.metrics.primaryWinner === 'tie').length,
-        sitesWhereQlooBelowChainAdaptive: recorded
-          .filter((r) => r.metrics.qlooBelowChainAdaptive)
-          .map((r) => r.id),
-        sitesWhereLegacySaturated: recorded
-          .filter((r) => r.metrics.legacyPresentAt10Qloo === 10)
-          .map((r) => r.id),
-      }
-    : undefined;
 
 const payload = {
-  protocolDoc: 'docs/STRICT_EVAL_PROTOCOL.md',
+  manifestId: manifest.id,
   recordedAt: new Date().toISOString(),
-  primaryMetricId: 'spearman_presence',
+  dataSource,
+  siteSetId: manifest.siteSetId,
+  recordingNote: QLOO_API_KEY
+    ? 'Recorded from live Qloo insights API.'
+    : 'Fixture-backed pilot sites only. Replace with live-eval bundle when ready.',
   rows,
-  summary,
+  summary: {
+    recordedCount: recorded.length,
+  },
 };
 
 await mkdir(join(ROOT, 'packages/fixtures/src/eval'), { recursive: true });
-await writeFile(OUT_PATH, JSON.stringify(payload, null, 2) + '\n');
-console.log('Wrote', OUT_PATH);
+await writeFile(outPath, JSON.stringify(payload, null, 2) + '\n');
+console.log('Wrote', outPath);
 console.log('Recorded', recorded.length, 'of', rows.length);

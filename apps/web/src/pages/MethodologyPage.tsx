@@ -1,13 +1,19 @@
-import type { EvalMetroRow, EvalMetrosResults, StrictEvalResults } from '@leaseup/fixtures';
+import type { EvalMetroRow, EvalMetrosResults, EvalRunRow } from '@leaseup/fixtures';
+import {
+  loadEvalRunBundle,
+  getEvalManifest,
+  evalMetricDefinition,
+  formatMetricValue,
+} from '@leaseup/fixtures';
 import evalResults from '@leaseup/fixtures/eval/results.json';
-import strictEvalResults from '@leaseup/fixtures/eval/strict-results.json';
 import { TopBar } from '../components/layout/TopBar';
 import { SiteFooter } from '../components/layout/SiteFooter';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 
 const data = evalResults as EvalMetrosResults;
-const strictData = strictEvalResults as StrictEvalResults;
+const evalBundle = loadEvalRunBundle();
+const evalManifest = getEvalManifest();
 
 const PIPELINE = [
   {
@@ -28,7 +34,7 @@ const PIPELINE = [
   {
     title: 'Backtest',
     body:
-      'We score how many physically present chains appear in the top 10 ranked prospects. Dense pins often saturate that legacy metric, so we also run the strict evaluation (Spearman, adaptive radius, chain-residual hits, random baselines).',
+      'We score how many physically present chains appear in the top 10 ranked prospects. Dense pins often saturate that legacy metric, so we also publish a metric catalog (adaptive radius, Spearman, chain-residual hits, random baselines) with a swappable results bundle.',
   },
   {
     title: 'Outreach',
@@ -51,6 +57,17 @@ function formatRecordedAt(iso: string): string {
 function formatCount(value: number): string {
   if (Number.isInteger(value)) return String(value);
   return value.toFixed(1);
+}
+
+function metricCell(row: EvalRunRow, metricId: string): string {
+  const panel = row.panels?.find((p) => p.id === metricId);
+  if (!panel) return 'n/a';
+  const def = evalMetricDefinition(metricId);
+  const format = def?.format ?? 'decimal';
+  const q = panel.qloo !== undefined ? formatMetricValue(format, panel.qloo) : '';
+  const c = panel.chain !== undefined ? formatMetricValue(format, panel.chain) : '';
+  if (q && c) return `${q} / ${c}`;
+  return q || c || 'n/a';
 }
 
 function liftLabel(row: EvalMetroRow): string {
@@ -110,77 +127,65 @@ export function MethodologyPage() {
 
           <section className="mt-14" aria-labelledby="strict-eval-heading">
             <h2 id="strict-eval-heading" className="font-serif text-title text-ink">
-              Strict evaluation (pre-registered)
+              Evaluation metric catalog
             </h2>
             <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
-              Before reading metro scores we fixed the primary metric to{' '}
-              <strong className="font-medium text-ink">Spearman rank correlation</strong> between Qloo
-              order and ATP store presence. Legacy present-in-top-10 can read 10 of 10 in Chicago and
-              similar corridors while still hiding ordering signal. Full rules:{' '}
+              Headline metric:{' '}
+              {evalManifest.headlineMetricId
+                ? evalManifest.headlineMetricId
+                : 'pending (live API eval in progress)'}. Bundle:{' '}
+              <code className="rounded bg-surface-2 px-1 py-0.5 text-xs">{evalManifest.resultsBundle}</code>{' '}
+              ({evalBundle.dataSource}, site set {evalBundle.siteSetId}). Protocol:{' '}
               <code className="rounded bg-surface-2 px-1 py-0.5 text-xs">
-                docs/STRICT_EVAL_PROTOCOL.md
+                {evalManifest.protocolDoc}
               </code>
               .
             </p>
-            {strictData.summary && (
-              <p className="mt-3 text-sm text-ink-2">
-                Recorded {strictData.summary.recordedCount} sites. Mean Spearman: Qloo{' '}
-                {strictData.summary.meanSpearmanQloo.toFixed(3)}, chain{' '}
-                {strictData.summary.meanSpearmanChain.toFixed(3)}. Primary wins: Qloo{' '}
-                {strictData.summary.qlooPrimaryWins}, chain {strictData.summary.chainPrimaryWins},
-                ties {strictData.summary.ties}.
-                {strictData.summary.sitesWhereQlooBelowChainAdaptive.length > 0 && (
-                  <>
-                    {' '}
-                    Qloo adaptive P@10 trails chain size on{' '}
-                    {strictData.summary.sitesWhereQlooBelowChainAdaptive.join(', ')}.
-                  </>
-                )}
-              </p>
+            {evalBundle.recordingNote && (
+              <p className="mt-3 text-sm text-ink-2">{evalBundle.recordingNote}</p>
             )}
             <div className="mt-6 overflow-x-auto rounded-card border border-border">
               <table className="w-full min-w-[720px] border-collapse text-left text-sm">
-                <caption className="sr-only">Strict evaluation by site</caption>
+                <caption className="sr-only">Evaluation metrics by site (Qloo / chain)</caption>
                 <thead>
                   <tr className="border-b border-border bg-surface-2 text-label uppercase text-ink-3">
                     <th scope="col" className="px-3 py-3 font-medium">Site</th>
-                    <th scope="col" className="px-3 py-3 font-medium text-right">Legacy P@10</th>
-                    <th scope="col" className="px-3 py-3 font-medium text-right">Adaptive P@10</th>
-                    <th scope="col" className="px-3 py-3 font-medium text-right">Spearman</th>
-                    <th scope="col" className="px-3 py-3 font-medium text-right">Surprise hits</th>
-                    <th scope="col" className="px-3 py-3 font-medium">Primary</th>
+                    {evalManifest.displayMetricIds.map((metricId) => (
+                      <th key={metricId} scope="col" className="px-3 py-3 font-medium text-right">
+                        {evalMetricDefinition(metricId)?.shortLabel ?? metricId}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {strictData.rows.map((row) => (
+                  {evalBundle.rows.map((row) => (
                     <tr key={row.id} className="border-b border-border last:border-0">
                       <th scope="row" className="px-3 py-3 font-medium text-ink">
                         {row.label}
                         {row.status === 'pending_qloo' && (
                           <span className="mt-1 block text-xs font-normal text-ink-3">
-                            Needs live Qloo recording
+                            Pending recording
                           </span>
                         )}
                       </th>
-                      {row.status === 'recorded' && row.metrics ? (
-                        <>
-                          <td className="px-3 py-3 text-right tabular-nums text-ink-2">
-                            {row.metrics.legacyPresentAt10Qloo} / {row.metrics.legacyPresentAt10Chain}
+                      {row.status === 'recorded' ? (
+                        evalManifest.displayMetricIds.map((metricId) => (
+                          <td
+                            key={metricId}
+                            className={`px-3 py-3 text-right tabular-nums text-ink-2 ${
+                              evalManifest.headlineMetricId === metricId ? 'font-medium text-ink' : ''
+                            }`}
+                          >
+                            {metricCell(row, metricId)}
                           </td>
-                          <td className="px-3 py-3 text-right tabular-nums text-ink-2">
-                            {row.metrics.adaptivePresentAt10Qloo} / {row.metrics.adaptivePresentAt10Chain}{' '}
-                            <span className="text-ink-3">({row.metrics.adaptiveRadiusKm} km)</span>
-                          </td>
-                          <td className="px-3 py-3 text-right font-mono tabular-nums text-ink">
-                            {row.metrics.spearmanQloo.toFixed(3)} / {row.metrics.spearmanChain.toFixed(3)}
-                          </td>
-                          <td className="px-3 py-3 text-right tabular-nums text-ink-2">
-                            {row.metrics.surprisePresentAt10Qloo} / {row.metrics.surprisePresentAt10Chain}
-                          </td>
-                          <td className="px-3 py-3 capitalize text-ink-2">{row.metrics.primaryWinner}</td>
-                        </>
+                        ))
                       ) : (
-                        <td colSpan={5} className="px-3 py-3 text-ink-3">n/a</td>
+                        <td
+                          colSpan={evalManifest.displayMetricIds.length}
+                          className="px-3 py-3 text-ink-3"
+                        >
+                          n/a
+                        </td>
                       )}
                     </tr>
                   ))}
@@ -188,8 +193,9 @@ export function MethodologyPage() {
               </table>
             </div>
             <p className="mt-3 text-xs text-ink-3">
-              Recompute: <code className="rounded bg-surface-2 px-1">node scripts/strict-eval.mjs</code>
-              . Bleecker St needs <code className="rounded bg-surface-2 px-1">QLOO_API_KEY</code>.
+              Recompute pilot: <code className="rounded bg-surface-2 px-1">node scripts/strict-eval.mjs</code>.
+              See <code className="rounded bg-surface-2 px-1">scripts/eval/README.md</code> to swap in the
+              live 25+ address bundle.
             </p>
           </section>
 
