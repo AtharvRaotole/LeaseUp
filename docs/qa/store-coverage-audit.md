@@ -1,6 +1,6 @@
 # Store coverage audit (ATP vs OSM snapshot)
 
-Generated: 2026-10-23T21:47:34.844Z
+Generated: 2026-10-23T22:01:56.470Z
 
 Radius: **10 km** per site. Brands scanned: **227** (tracked chains).
 
@@ -14,14 +14,18 @@ Radius: **10 km** per site. Brands scanned: **227** (tracked chains).
 
 ## Summary counts
 
-| Site | Mismatches (one source in radius, other not) |
-|------|-----------------------------------------------|
-| Wicker Park demo chip | 145 |
-| Boulder demo chip | 70 |
-| Sevierville demo chip | 100 |
-| 350 Bleecker St | 153 |
-| 1600 Pearl St Boulder | 70 |
-| **Total** | **538** |
+- **Total mismatches:** 519
+- **Real disagreements** (both sources have national coverage): 519
+- **Skew from OSM zero-point brands** (no usable OSM tile coverage): 0
+- Brands with 0 OSM snapshot points: 0
+
+| Site | All mismatches | Real disagreements | OSM zero skew |
+|------|----------------|-------------------|---------------|
+| Wicker Park demo chip | 140 | 140 | 0 |
+| Boulder demo chip | 66 | 66 | 0 |
+| Sevierville demo chip | 98 | 98 | 0 |
+| 350 Bleecker St | 149 | 149 | 0 |
+| 1600 Pearl St Boulder | 66 | 66 | 0 |
 
 ## Wicker Park demo chip
 
@@ -29,12 +33,7 @@ Address: `1560 N Milwaukee Ave, Chicago, IL 60622` (41.9088, -87.6776)
 
 | Brand | Risk | ATP nearest km | OSM nearest km |
 |-------|------|----------------|----------------|
-| Abercrombie & Fitch | osm_false_absence | 0.19 | - |
-| Academy Sports + Outdoors | atp_false_absence | - | 1.85 |
-| Aldi | osm_false_absence | 0.68 | - |
-| Ann Taylor | osm_false_absence | 5.14 | - |
-| Apple | osm_false_absence | 2.38 | - |
-| Athleta | osm_false_absence | 2.12 | - |
+| American Eagle Outfitters | atp_false_absence | - | 1.99 |
 | Au Bon Pain | atp_false_absence | - | 3.87 |
 | Aveda | osm_false_absence | 3.75 | - |
 | Banana Republic | osm_false_absence | 3.73 | - |
@@ -45,8 +44,8 @@ Address: `1560 N Milwaukee Ave, Chicago, IL 60622` (41.9088, -87.6776)
 | Blue Bottle Coffee | osm_false_absence | 4.08 | - |
 | Brooks Brothers | osm_false_absence | 4.38 | - |
 | Buffalo Wild Wings | osm_false_absence | 1.79 | - |
+| Build-A-Bear Workshop | atp_false_absence | - | 4.87 |
 | Burger King | osm_false_absence | 1.58 | - |
-| Burlington | osm_false_absence | 2.39 | - |
 | Carter's | osm_false_absence | 4.67 | - |
 | Casper | osm_false_absence | 3.45 | - |
 | Cava | osm_false_absence | 0.22 | - |
@@ -181,10 +180,6 @@ Address: `1300 Pearl St, Boulder, CO 80302` (40.015, -105.2705)
 
 | Brand | Risk | ATP nearest km | OSM nearest km |
 |-------|------|----------------|----------------|
-| Academy Sports + Outdoors | atp_false_absence | - | 0.77 |
-| Apple | osm_false_absence | 1.28 | - |
-| AT&T | osm_false_absence | 1.24 | - |
-| Athleta | osm_false_absence | 0.95 | - |
 | Barnes & Noble | osm_false_absence | 1.66 | - |
 | Burger King | osm_false_absence | 1.15 | - |
 | Cava | osm_false_absence | 1.17 | - |
@@ -259,13 +254,11 @@ Address: `125 Collier Dr, Sevierville, TN 37862` (35.8681, -83.5618)
 | Brand | Risk | ATP nearest km | OSM nearest km |
 |-------|------|----------------|----------------|
 | Abercrombie & Fitch | osm_false_absence | 3.94 | - |
-| Academy Sports + Outdoors | atp_false_absence | - | 9.39 |
 | Adidas | atp_false_absence | - | 4.17 |
 | Aerie | osm_false_absence | 4.10 | - |
-| Aldi | osm_false_absence | 1.41 | - |
 | American Eagle Outfitters | osm_false_absence | 3.99 | - |
-| Ann Taylor | osm_false_absence | 4.10 | - |
 | Anytime Fitness | osm_false_absence | 6.45 | - |
+| AT&T | atp_false_absence | - | 1.10 |
 | Baskin-Robbins | osm_false_absence | 3.36 | - |
 | Bath & Body Works | osm_false_absence | 2.27 | - |
 | Big Lots | osm_false_absence | 0.75 | - |
@@ -365,14 +358,9 @@ Address: `350 Bleecker St, New York, NY 10014` (40.73352, -74.00271)
 
 | Brand | Risk | ATP nearest km | OSM nearest km |
 |-------|------|----------------|----------------|
-| Abercrombie & Fitch | osm_false_absence | 1.21 | - |
-| Academy Sports + Outdoors | atp_false_absence | - | 0.35 |
 | Aerie | osm_false_absence | 1.13 | - |
-| American Eagle Outfitters | osm_false_absence | 1.24 | - |
 | Ann Taylor | osm_false_absence | 1.29 | - |
-| Apple | osm_false_absence | 0.85 | - |
 | Ashley Furniture | osm_false_absence | 7.81 | - |
-| Athleta | osm_false_absence | 1.06 | - |
 | Banana Republic | osm_false_absence | 1.03 | - |
 | Barnes & Noble | osm_false_absence | 1.22 | - |
 | Baskin-Robbins | osm_false_absence | 1.57 | - |
@@ -381,8 +369,8 @@ Address: `350 Bleecker St, New York, NY 10014` (40.73352, -74.00271)
 | Blue Bottle Coffee | osm_false_absence | 1.42 | - |
 | Bonefish Grill | atp_false_absence | - | 7.54 |
 | Buffalo Wild Wings | osm_false_absence | 2.09 | - |
+| Build-A-Bear Workshop | atp_false_absence | - | 2.21 |
 | Burger King | osm_false_absence | 2.09 | - |
-| Burlington | osm_false_absence | 5.12 | - |
 | Carter's | osm_false_absence | 3.06 | - |
 | Casper | osm_false_absence | 0.96 | - |
 | Cava | osm_false_absence | 0.71 | - |
@@ -474,6 +462,7 @@ Address: `350 Bleecker St, New York, NY 10014` (40.73352, -74.00271)
 | Qdoba | osm_false_absence | 2.45 | - |
 | Raising Cane's | osm_false_absence | 0.98 | - |
 | Red Lobster | osm_false_absence | 6.88 | - |
+| REI | osm_false_absence | 1.15 | - |
 | Ross Dress for Less | osm_false_absence | 2.44 | - |
 | Ruth's Chris Steak House | osm_false_absence | 2.93 | - |
 | Sally Beauty | osm_false_absence | 0.89 | - |
@@ -525,10 +514,6 @@ Address: `1600 Pearl St, Boulder, CO 80302` (40.01739, -105.27727)
 
 | Brand | Risk | ATP nearest km | OSM nearest km |
 |-------|------|----------------|----------------|
-| Academy Sports + Outdoors | atp_false_absence | - | 1.34 |
-| Apple | osm_false_absence | 1.81 | - |
-| AT&T | osm_false_absence | 1.82 | - |
-| Athleta | osm_false_absence | 0.32 | - |
 | Barnes & Noble | osm_false_absence | 2.08 | - |
 | Burger King | osm_false_absence | 1.65 | - |
 | Cava | osm_false_absence | 1.73 | - |

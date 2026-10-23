@@ -91,6 +91,42 @@ describe('OSM snapshot verification', () => {
     expect(result.status).toBe('verified (2 sources)');
   });
 
+  it('treats ok snapshot brands with zero tiled points as single source', async () => {
+    const assets = makeAssets({
+      brands: {
+        brands: [{ id: BRAND_A, name: 'REI', qid: 'Q3414933', count: 0 }],
+      },
+      dp3: { gh: 'dp3', stores: [] },
+    });
+
+    const service = new AnalysisService({
+      DB: db,
+      CACHE: kv,
+      APP_MODE: 'live',
+      ASSETS: assets,
+      QLOO_API_KEY: 'x',
+    } as import('../index').Env);
+
+    const verify = (
+      service as unknown as {
+        verifyFromOsmSnapshot: (
+          id: string,
+          loc: { address: string; latitude: number; longitude: number },
+          radius: number
+        ) => Promise<{ status: string; metroCoverageNote?: string }>;
+      }
+    ).verifyFromOsmSnapshot;
+    const result = await verify.call(
+      service,
+      BRAND_A,
+      { address: 'x', latitude: 41.91, longitude: -87.68 },
+      10
+    );
+
+    expect(result.status).toBe('unverified (1 source)');
+    expect(result.metroCoverageNote).toMatch(/no store points/i);
+  });
+
   it('treats failed snapshot brands as single source', async () => {
     const service = new AnalysisService({
       DB: db,

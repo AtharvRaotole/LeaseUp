@@ -96,7 +96,7 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 **Demo mode:** recorded brand insights and shopper tag fixtures for Wicker, Boulder, and Sevierville.
 
-**Evaluation honesty (broker read, then exact):** Across 40 US addresses, ranking by raw Qloo affinity put about **5** brands in the top 10 that already had a store in the trade area on average (**P@10 0.54**). Sorting by national chain size put about **8** of those top 10 slots on brands already there (**P@10 0.76**). The legacy 0.75/0.25 blend averaged about **6** (**P@10 0.59**). The fitted logistic taste blend averaged about **8**, slightly better than size alone (**P@10 0.82**, **+6.5** percentage points vs chain, 95% CI **3.2 to 9.5** pp). Among brands of similar chain size, Qloo's score separated present vs not present about two thirds of the time (**same-size tier AUC 0.672**, 95% CI **0.650 to 0.693**).
+**Evaluation honesty (broker read, then exact):** Across 40 US addresses, ranking by raw Qloo affinity put about **5** brands in the top 10 that already had a store in the trade area on average (**P@10 0.54**). Sorting by national chain size put about **8** of those top 10 slots on brands already there (**P@10 0.76**). The legacy 0.75/0.25 blend averaged about **6** (**P@10 0.59**). The fitted logistic taste blend averaged about **8**, slightly better than size alone (**P@10 0.82**, **+6.2** percentage points vs chain, 95% CI **2.8 to 9.3** pp). Among brands of similar chain size, Qloo's score separated present vs not present about two thirds of the time (**same-size tier AUC 0.667**, 95% CI **0.646 to 0.689**). Ground truth was recomputed after fixing OSM snapshot tile coordinates; Qloo responses are unchanged.
 
 ---
 
@@ -115,7 +115,7 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 - Trade area shopper tags from Qloo location insights; brand reach lines on report and pitch pack.
 - Vacancy cost on report, share dialog, and pitch snapshot; owner update share links from pipeline.
 - Preregistered **40-address** live Qloo evaluation with committed aggregates in the repo.
-- Same-size tier AUC **0.672**; logistic blend **P@10 0.82 vs 0.76** for the "already here" top-10 check on that panel.
+- Same-size tier AUC **0.667**; logistic blend **P@10 0.82 vs 0.76** for the "already here" top-10 check on that panel (OSM-retiled ground truth).
 - Mid-size tier example: about **3** of top **5** vs about **1** of **5** (**P@5 0.53 vs 0.23** in the eval tier table).
 
 ---

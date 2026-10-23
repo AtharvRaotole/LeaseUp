@@ -9,10 +9,10 @@ describe('results_adaptive.json', () => {
   it('matches committed cohort headline metrics', () => {
     const { agg } = loadResultsAdaptive();
     expect(agg.n_sites).toBe(40);
-    expect(agg.p10_blend).toBeCloseTo(0.82, 2);
-    expect(agg.p10_chain).toBeCloseTo(0.755, 2);
-    expect(agg.p10_raw).toBeCloseTo(0.54, 2);
-    expect(agg.same_size_auc).toBeCloseTo(0.672, 3);
+    expect(agg.p10_blend).toBeCloseTo(0.8175, 3);
+    expect(agg.p10_chain).toBeCloseTo(0.755, 3);
+    expect(agg.p10_raw).toBeCloseTo(0.5375, 3);
+    expect(agg.same_size_auc).toBeCloseTo(0.676, 3);
   });
 
   it('includes Wicker dense-urban row at 1.5 km (9 vs 7 blend vs chain)', () => {
@@ -22,7 +22,7 @@ describe('results_adaptive.json', () => {
     expect(row!.adaptive_radius_km).toBe(1.5);
     expect(p10ToCountOf10(row!.p10_blend)).toBe(9);
     expect(p10ToCountOf10(row!.p10_chain)).toBe(7);
-    expect(row!.taste_percentile).toBe(64);
+    expect(row!.taste_percentile).toBe(54);
   });
 
   it('has one row per study site', () => {

@@ -27,6 +27,11 @@ export function osmSnapshotBrandStatus(entityId: string): OsmSnapshotBrandStatus
   return OSM_SNAPSHOT_BRAND_STATUS[entityId] ?? 'missing';
 }
 
+/** True when the snapshot has Wikidata fetch ok and at least one tiled store point. */
+export function osmSnapshotBrandUsable(entityId: string, nationalOsmCount: number): boolean {
+  return osmSnapshotBrandStatus(entityId) === 'ok' && nationalOsmCount > 0;
+}
+
 function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371;
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -81,6 +86,12 @@ export class OsmSnapshotCatalog {
     return data;
   }
 
+  async getNationalStoreCount(brandId: string): Promise<number> {
+    const index = await this.loadBrandsIndex();
+    if (!index) return 0;
+    return index.brands.find((b) => b.id === brandId)?.count ?? 0;
+  }
+
   async nearestStoreKm(
     brandId: string,
     lat: number,
@@ -90,6 +101,8 @@ export class OsmSnapshotCatalog {
     if (osmSnapshotBrandStatus(brandId) !== 'ok') return undefined;
     const index = await this.loadBrandsIndex();
     if (!index) return undefined;
+    const brandRow = index.brands.find((b) => b.id === brandId);
+    if (!brandRow || brandRow.count <= 0) return undefined;
     const brandIdx = index.brands.findIndex((b) => b.id === brandId);
     if (brandIdx < 0) return undefined;
 

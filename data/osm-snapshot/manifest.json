@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-10-23T04:57:36.264Z",
+  "recordedAt": "2026-10-23T22:01:53.197Z",
   "displayLabel": "OpenStreetMap snapshot, Oct 23, 2026",
   "brands": {
     "0B47F4FC-A267-4E07-85F4-F64511835C03": {
@@ -15,32 +15,32 @@
     "0E011D42-90B2-496E-B285-4EB2181EB0A9": {
       "status": "ok",
       "name": "AT&T",
-      "qid": "Q35476",
-      "wikidataSource": "exact_wbsearch",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q35476\"](area.us);out center tags;",
+      "qid": "Q298594",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q298594\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 45595,
-      "elementCount": 241
+      "latencyMs": 72997,
+      "elementCount": 2925
     },
     "5D03112C-CD2A-41C3-9ED0-D72EED8BB373": {
       "status": "ok",
       "name": "Abercrombie & Fitch",
-      "qid": "Q319618",
-      "wikidataSource": "override",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q319618\"](area.us);out center tags;",
+      "qid": "Q319344",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q319344\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 46495,
-      "elementCount": 0
+      "latencyMs": 44455,
+      "elementCount": 119
     },
     "81100467-8F5D-4796-B222-A84983379402": {
       "status": "ok",
       "name": "Academy Sports + Outdoors",
-      "qid": "Q4672981",
-      "wikidataSource": "override",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4672981\"](area.us);out center tags;",
+      "qid": "Q4671380",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4671380\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 62800,
-      "elementCount": 2778
+      "latencyMs": 47973,
+      "elementCount": 276
     },
     "FCEA7CA1-1D40-4680-B337-E74594D9BCF1": {
       "status": "ok",
@@ -55,32 +55,32 @@
     "88483819-91A9-45BE-8110-0D6CD0C9B35D": {
       "status": "ok",
       "name": "Aldi",
-      "qid": "Q125054",
-      "wikidataSource": "override",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q125054\"](area.us);out center tags;",
+      "qid": "Q41171672",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q41171672\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 29463,
-      "elementCount": 8
+      "latencyMs": 49114,
+      "elementCount": 2448
     },
     "2D890327-8794-4C5A-898F-FFF0323325CF": {
       "status": "ok",
       "name": "American Eagle Outfitters",
-      "qid": "Q463871",
-      "wikidataSource": "override",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q463871\"](area.us);out center tags;",
+      "qid": "Q2842931",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q2842931\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 49259,
-      "elementCount": 0
+      "latencyMs": 36210,
+      "elementCount": 402
     },
     "D2AB8018-EDD0-45A4-908F-A93658E5223E": {
       "status": "ok",
       "name": "Ann Taylor",
-      "qid": "Q4766705",
-      "wikidataSource": "exact_wbsearch",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4766705\"](area.us);out center tags;",
+      "qid": "Q4766699",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4766699\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 35420,
-      "elementCount": 0
+      "latencyMs": 39808,
+      "elementCount": 156
     },
     "8AB653CD-7984-4263-B4B0-F3C4C02519DC": {
       "status": "ok",
@@ -95,12 +95,12 @@
     "D5B78065-6DBB-4DDB-80DF-6495B9B1006B": {
       "status": "ok",
       "name": "Apple",
-      "qid": "Q89",
-      "wikidataSource": "exact_wbsearch",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q89\"](area.us);out center tags;",
+      "qid": "Q421253",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q421253\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 27608,
-      "elementCount": 0
+      "latencyMs": 43843,
+      "elementCount": 249
     },
     "8227A628-2D77-4EB3-8F1A-2C4238997412": {
       "status": "ok",
@@ -125,12 +125,12 @@
     "DFFF4470-F663-4742-A503-4FD0CB152498": {
       "status": "ok",
       "name": "Athleta",
-      "qid": "Q3784882",
-      "wikidataSource": "exact_wbsearch",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q3784882\"](area.us);out center tags;",
+      "qid": "Q105722424",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q105722424\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 38215,
-      "elementCount": 0
+      "latencyMs": 34908,
+      "elementCount": 138
     },
     "86AA27A6-074F-4137-8358-FA16DBD7F34E": {
       "status": "ok",
@@ -215,22 +215,22 @@
     "25FFE815-A824-4029-9BA5-10E70CD8EE26": {
       "status": "ok",
       "name": "Build-A-Bear Workshop",
-      "qid": "Q4986377",
-      "wikidataSource": "exact_wbsearch",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4986377\"](area.us);out center tags;",
+      "qid": "Q1002992",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q1002992\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 36315,
-      "elementCount": 0
+      "latencyMs": 47499,
+      "elementCount": 151
     },
     "91491729-2989-44C6-82F1-E8EB25B9FA42": {
       "status": "ok",
       "name": "Burlington",
-      "qid": "Q31058",
-      "wikidataSource": "exact_wbsearch",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q31058\"](area.us);out center tags;",
+      "qid": "Q4999220",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4999220\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 31683,
-      "elementCount": 0
+      "latencyMs": 47162,
+      "elementCount": 836
     },
     "0F6BCED5-19B1-4DFD-B55C-42708EE32A64": {
       "status": "ok",
@@ -1064,124 +1064,14 @@
       "name": "HomeGoods"
     }
   ],
-  "wikidataEnriched": [
-    {
-      "brandId": "0E011D42-90B2-496E-B285-4EB2181EB0A9",
-      "name": "AT&T",
-      "qid": "Q35476",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "D2AB8018-EDD0-45A4-908F-A93658E5223E",
-      "name": "Ann Taylor",
-      "qid": "Q4766705",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "8AB653CD-7984-4263-B4B0-F3C4C02519DC",
-      "name": "Anytime Fitness",
-      "qid": "Q4778364",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "D5B78065-6DBB-4DDB-80DF-6495B9B1006B",
-      "name": "Apple",
-      "qid": "Q89",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "8227A628-2D77-4EB3-8F1A-2C4238997412",
-      "name": "Applebee's",
-      "qid": "Q621532",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "CE2A2DDD-3F1D-49A4-8DDF-5665365587CE",
-      "name": "Arby's",
-      "qid": "Q630866",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "DFFF4470-F663-4742-A503-4FD0CB152498",
-      "name": "Athleta",
-      "qid": "Q3784882",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "86AA27A6-074F-4137-8358-FA16DBD7F34E",
-      "name": "Au Bon Pain",
-      "qid": "Q4818942",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "E00BD9FA-BE47-432E-86D1-4E0046FE73DD",
-      "name": "Aveda",
-      "qid": "Q4827965",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "0BAC80D0-90D5-46A8-A11F-7CC58DE74963",
-      "name": "Barnes & Noble",
-      "qid": "Q795454",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "2D00EBC5-9F4C-46E2-86D5-99E55B8D30D9",
-      "name": "Bass Pro Shops",
-      "qid": "Q4867953",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "BEF4E5D5-245C-49D5-8D20-7C8A1B3C80F5",
-      "name": "Best Buy",
-      "qid": "Q533415",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "495FBED3-17C4-484F-A208-73C0018E0463",
-      "name": "Blaze Pizza",
-      "qid": "Q23016666",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "9B3F03CE-3145-4ABC-A42E-C20945BF60B8",
-      "name": "Bonefish Grill",
-      "qid": "Q4941599",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "5318FE99-3ADB-4E62-BFA5-DED63001E3DD",
-      "name": "Brooks Brothers",
-      "qid": "Q929722",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "25FFE815-A824-4029-9BA5-10E70CD8EE26",
-      "name": "Build-A-Bear Workshop",
-      "qid": "Q4986377",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "91491729-2989-44C6-82F1-E8EB25B9FA42",
-      "name": "Burlington",
-      "qid": "Q31058",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "0F6BCED5-19B1-4DFD-B55C-42708EE32A64",
-      "name": "Caribou Coffee",
-      "qid": "Q5039494",
-      "source": "exact_wbsearch"
-    }
-  ],
   "tiles": {
-    "tileCount": 440,
-    "totalBytes": 545588,
-    "maxTileBytes": 17140,
-    "pointCount": 19574,
+    "tileCount": 401,
+    "totalBytes": 671385,
+    "maxTileBytes": 21687,
+    "pointCount": 24247,
     "brandCount": 25
   },
-  "totalElements": 19574,
+  "totalElements": 24247,
   "succeededBrands": 25,
   "failedCount": 0
 }

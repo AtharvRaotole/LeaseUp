@@ -178,6 +178,7 @@ function parseElements(elements) {
 async function main() {
   const args = new Set(process.argv.slice(2));
   const dryRun = args.has('--dry-run');
+  const retileOnly = args.has('--retile-only');
   const limit = Number(process.env.OSM_SNAPSHOT_LIMIT || '0');
 
   const tracked = loadTrackedIds();
@@ -228,12 +229,26 @@ async function main() {
 
     if (existsSync(rawPath) && !args.has('--force')) {
       const cached = JSON.parse(readFileSync(rawPath, 'utf8'));
-      if (cached.meta?.qid === qid && cached.meta?.status === 'ok') {
+      const cacheOk =
+        cached.meta?.status === 'ok' && (retileOnly || cached.meta?.qid === qid);
+      if (cacheOk) {
         manifest.brands[brandId] = cached.meta;
         totalElements += cached.meta.elementCount ?? 0;
         console.log(JSON.stringify({ event: 'osm_snapshot_skip', brandId, i: i + 1, total: slice.length }));
         continue;
       }
+    }
+
+    if (retileOnly) {
+      manifest.brands[brandId] = {
+        status: 'missing_raw',
+        name,
+        qid,
+        wikidataSource,
+        elementCount: 0,
+      };
+      console.log(JSON.stringify({ event: 'osm_snapshot_no_raw', brandId, i: i + 1, total: slice.length }));
+      continue;
     }
 
     if (dryRun) {
@@ -296,6 +311,7 @@ async function main() {
   }
 
   const tiles = new Map();
+  const perBrandCounts = new Map();
   let pointCount = 0;
   for (const brandId of brands.map((b) => b.id)) {
     const rawPath = join(rawDir, `${brandId}.json`);
@@ -312,8 +328,15 @@ async function main() {
       const gh = encodeGeohash(p.lat, p.lon, 3);
       if (!tiles.has(gh)) tiles.set(gh, []);
       tiles.get(gh).push([bIdx, p.lat, p.lon]);
+      perBrandCounts.set(bIdx, (perBrandCounts.get(bIdx) ?? 0) + 1);
       pointCount += 1;
     }
+  }
+
+  for (const row of brands) {
+    const idx = brandIndex.get(row.id);
+    if (idx === undefined) continue;
+    row.count = perBrandCounts.get(idx) ?? 0;
   }
 
   writeFileSync(

@@ -37,6 +37,13 @@ const supplements = JSON.parse(
 
 const osmTilesDir = join(ROOT, 'data/osm-snapshot/tiles');
 const osm = loadTileCatalog(osmTilesDir);
+const osmBrandsDoc = JSON.parse(readFileSync(join(osmTilesDir, 'brands.json'), 'utf8'));
+const osmZeroIds = new Set(
+  (osmBrandsDoc.brands ?? []).filter((b) => (b.count ?? 0) <= 0).map((b) => b.id)
+);
+const osmUsableIds = new Set(
+  (osmBrandsDoc.brands ?? []).filter((b) => (b.count ?? 0) > 0).map((b) => b.id)
+);
 
 function nearestAtpKm(brandId, lat, lon, radiusKm) {
   const row = atpExpanded[brandId];
@@ -71,6 +78,8 @@ function haversineKm(lat1, lon1, lat2, lon2) {
 
 const siteReports = [];
 let totalMismatches = 0;
+let totalRealDisagreements = 0;
+let totalOsmZeroSkew = 0;
 
 for (const site of AUDIT_SITES) {
   const mismatches = [];
@@ -81,12 +90,17 @@ for (const site of AUDIT_SITES) {
     const osmIn = osmKm !== undefined;
     if (atpIn === osmIn) continue;
     const name = atpExpanded[brandId]?.name ?? osm.brands.find((b) => b.id === brandId)?.name ?? brandId;
+    const osmZero = !osmUsableIds.has(brandId);
+    const kind = osmZero && !atpIn ? 'osm_zero_coverage' : 'real_disagreement';
+    if (kind === 'real_disagreement') totalRealDisagreements += 1;
+    else totalOsmZeroSkew += 1;
     mismatches.push({
       brandId,
       name,
       atpKm,
       osmKm,
       risk: atpIn ? 'osm_false_absence' : 'atp_false_absence',
+      kind,
     });
   }
   totalMismatches += mismatches.length;
@@ -111,14 +125,20 @@ const lines = [
   '',
   '## Summary counts',
   '',
-  '| Site | Mismatches (one source in radius, other not) |',
-  '|------|-----------------------------------------------|',
+  `- **Total mismatches:** ${totalMismatches}`,
+  `- **Real disagreements** (both sources have national coverage): ${totalRealDisagreements}`,
+  `- **Skew from OSM zero-point brands** (no usable OSM tile coverage): ${totalOsmZeroSkew}`,
+  `- Brands with 0 OSM snapshot points: ${osmZeroIds.size}`,
+  '',
+  '| Site | All mismatches | Real disagreements | OSM zero skew |',
+  '|------|----------------|-------------------|---------------|',
 ];
 
 for (const { site, mismatches } of siteReports) {
-  lines.push(`| ${site.label} | ${mismatches.length} |`);
+  const real = mismatches.filter((m) => m.kind === 'real_disagreement').length;
+  const skew = mismatches.filter((m) => m.kind === 'osm_zero_coverage').length;
+  lines.push(`| ${site.label} | ${mismatches.length} | ${real} | ${skew} |`);
 }
-lines.push(`| **Total** | **${totalMismatches}** |`);
 lines.push('');
 
 for (const { site, mismatches } of siteReports) {
