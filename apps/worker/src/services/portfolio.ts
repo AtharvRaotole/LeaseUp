@@ -11,7 +11,7 @@ import { AnalysisService } from './analysis';
 import { NominatimClient } from './nominatim';
 import { displayBrandName } from '../lib/brand-display';
 import { DemoModeRequiredError } from '../lib/demo-mode';
-import { matchDemoFixtureId } from '@leaseup/fixtures';
+import { matchDemoFixtureId } from '@leaseup/fixtures/worker';
 import { resolveGeocodeFromCandidates, candidateToLocation } from '../lib/geocode-resolve';
 
 const DEFAULT_NOMINATIM_CONTACT =
