@@ -51,7 +51,10 @@ describe('tradeAreaTaste on analyze response', () => {
       'run-shoppers',
       'iphash'
     );
-    expect(result.tradeAreaShoppers?.summary).toMatch(/Shoppers here over-index/);
+    expect(result.tradeAreaShoppers?.groups.some((g) => g.id === 'customer_identity')).toBe(true);
+    expect(
+      result.tradeAreaShoppers?.groups.find((g) => g.id === 'customer_identity')?.names
+    ).toContain('Beer Enthusiasts');
     expect(put).not.toHaveBeenCalled();
   });
 
@@ -64,12 +67,13 @@ describe('tradeAreaTaste on analyze response', () => {
     );
     const withReach = result.prospects.filter((p) => p.brandReach);
     expect(withReach.length).toBeGreaterThan(0);
-    expect(
-      withReach.some(
-        (p) =>
-          (p.brandReach?.status === 'verified' && p.brandReach.url) ||
-          (p.brandReach?.status === 'not_yet_found' && p.brandReach.searchUrl)
-      )
-    ).toBe(true);
+    for (const pack of withReach) {
+      const reach = pack.brandReach!;
+      if (reach.status === 'verified') {
+        expect(reach.url).toBeTruthy();
+      } else {
+        expect(reach.status).toBe('not_yet_found');
+      }
+    }
   });
 });
