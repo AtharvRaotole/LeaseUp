@@ -13,6 +13,15 @@ describe('primaryHouseNumber', () => {
 });
 
 describe('formatGeocodeCandidateLabel', () => {
+  it('builds street line from display_name when addressdetails omit road', () => {
+    const label = formatGeocodeCandidateLabel(
+      'Slightly Alabama, 350, Bleecker Street, West Village, Manhattan, New York, NY, USA'
+    );
+    expect(label).toContain('350');
+    expect(label).toContain('Bleecker');
+    expect(label).not.toContain('Alabama');
+  });
+
   it('formats street, neighborhood, borough without POI prefix', () => {
     const label = formatGeocodeCandidateLabel(
       'Slightly Alabama, 350, Bleecker Street, Manhattan, New York, NY, USA',
