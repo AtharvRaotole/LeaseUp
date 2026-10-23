@@ -3,7 +3,7 @@
  */
 
 import type { KVNamespace } from '@cloudflare/workers-types';
-import { matchDemoFixtureId, overpassDemoByFixture } from '@leaseup/fixtures';
+import { matchDemoFixtureId, overpassDemoByFixture } from '@leaseup/fixtures/worker';
 import { encodeGeohash } from '../lib/geohash';
 import {
   buildProspectOverpassQuery,

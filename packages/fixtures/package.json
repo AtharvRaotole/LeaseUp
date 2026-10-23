@@ -9,6 +9,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./worker": {
+      "types": "./dist/worker.d.ts",
+      "default": "./dist/worker.js"
+    },
     "./eval/results.json": "./src/eval/results.json",
     "./eval/strict-results.json": "./src/eval/strict-results.json",
     "./eval/manifest.json": "./src/eval/manifest.json",

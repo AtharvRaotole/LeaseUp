@@ -29,7 +29,9 @@ import {
   demoFixtureDensity,
   demoFixtureStratum,
   densityToDefaultStratum,
-} from '@leaseup/fixtures';
+  demoAnalyzeBacktests,
+} from '@leaseup/fixtures/worker';
+import { NearbyPresenceCache } from '../lib/nearby-presence-cache';
 import { createStoreCatalog, type StoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
 import { brandCategoryLabel } from '../lib/brand-category';
@@ -41,10 +43,9 @@ import { OSM_WIKIDATA_BY_ENTITY } from '../data/osm-wikidata-map';
 import type { QlooLocation } from '../providers/qloo';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
-  buildBaselineBacktest,
   buildBrandRankings,
-  buildDualBacktest,
   buildMapStores,
+  buildTripleBacktest,
   enrichProspectsWithNearest,
   extractQlooSignals,
 } from '../lib/analysis-enrichment';
@@ -163,38 +164,39 @@ export class AnalysisService {
         ? demoFixtureStratum(demoFixtureIdForDensity)
         : densityToDefaultStratum(siteDensity);
 
-      const { blended: backtestBlended, baseline: backtestBaseline } = await runStep(
+      const presence = new NearbyPresenceCache(this.catalog, location);
+
+      const backtestTriple = await runStep(
         emit,
         'backtest',
         'Prove it (backtest)',
         async () => {
-          const dual = await buildDualBacktest(
-            location,
-            insights,
-            request.radius,
-            this.catalog,
-            siteStratum
-          );
-          const baseline = await buildBaselineBacktest(
-            location,
-            insights,
-            request.radius,
-            this.catalog,
-            siteStratum
-          );
+          const triple =
+            this.mode === 'demo' && demoFixtureIdForDensity
+              ? demoAnalyzeBacktests(demoFixtureIdForDensity)
+              : await buildTripleBacktest(
+                  location,
+                  insights,
+                  request.radius,
+                  this.catalog,
+                  siteStratum,
+                  presence
+                );
           return {
-            summary: `Raw P@10 ${(dual.raw.precisionAt10 * 100).toFixed(0)}% · Blended P@10 ${(dual.blended.precisionAt10 * 100).toFixed(0)}%`,
+            summary: `Raw P@10 ${(triple.raw.precisionAt10 * 100).toFixed(0)}% · Blended P@10 ${(triple.blended.precisionAt10 * 100).toFixed(0)}%`,
             detail: {
-              rawPrecisionAt10: dual.raw.precisionAt10,
-              blendedPrecisionAt10: dual.blended.precisionAt10,
-              baselinePrecisionAt10: baseline.precisionAt10,
-              rawAuc: dual.raw.auc,
-              blendedAuc: dual.blended.auc,
+              rawPrecisionAt10: triple.raw.precisionAt10,
+              blendedPrecisionAt10: triple.blended.precisionAt10,
+              baselinePrecisionAt10: triple.baseline.precisionAt10,
+              rawAuc: triple.raw.auc,
+              blendedAuc: triple.blended.auc,
             },
-            result: { ...dual, baseline },
+            result: triple,
           };
         }
       );
+      const backtestBlended = backtestTriple.blended as BacktestResult;
+      const backtestBaseline = backtestTriple.baseline as BacktestResult;
 
       let formatFilteredCount = 0;
       const prospects = await runStep(
@@ -257,7 +259,8 @@ export class AnalysisService {
         insights,
         request.radius,
         this.catalog,
-        siteStratum
+        siteStratum,
+        presence
       );
       const demoFixtureId = matchDemoFixtureId(location.address);
       const strictEval = await buildStrictEvalSnapshot(
@@ -265,10 +268,23 @@ export class AnalysisService {
         insights,
         request.radius,
         demoFixtureId ? demoFixtureStratum(demoFixtureId) : densityToDefaultStratum(siteDensity),
-        this.catalog
+        this.catalog,
+        presence
       );
-      const mapStores = await buildMapStores(location, insights, request.radius, this.catalog);
-      const nearestEnriched = await enrichProspectsWithNearest(prospects, location, this.catalog);
+      const mapStores = await buildMapStores(
+        location,
+        insights,
+        request.radius,
+        this.catalog,
+        10,
+        presence
+      );
+      const nearestEnriched = await enrichProspectsWithNearest(
+        prospects,
+        location,
+        this.catalog,
+        presence
+      );
       const enrichedProspects = await Promise.all(
         nearestEnriched.map(async (pack) => {
           const insight = insights.find((i) => i.entity_id === pack.brand.entityId);

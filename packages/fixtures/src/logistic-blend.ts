@@ -12,7 +12,7 @@ export type LogisticBlendSiteContext = {
   tier: LogisticBlendSiteTier;
 };
 
-/** Recorded eval site context for demo chips (from data/qloo-eval-40 ground_truth.json). */
+/** Recorded eval site context for demo chips (preregistered study). */
 export const DEMO_LOGISTIC_SITE_CONTEXT: Record<'wicker' | 'boulder' | 'sevierville', LogisticBlendSiteContext> = {
   wicker: { radiusKm: 1.5, density3km: 232, tier: 'urban' },
   boulder: { radiusKm: 5, density3km: 97, tier: 'suburban' },

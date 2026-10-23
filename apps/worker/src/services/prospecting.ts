@@ -19,7 +19,7 @@ import {
   matchDemoFixtureId,
   seviervilleFixture,
   wickerparkFixture,
-} from '@leaseup/fixtures';
+} from '@leaseup/fixtures/worker';
 import { rankGeocodeCandidates } from '../lib/geocode-rank';
 import { displayBrandName } from '../lib/brand-display';
 
