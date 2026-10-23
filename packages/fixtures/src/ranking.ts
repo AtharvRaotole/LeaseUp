@@ -1,4 +1,4 @@
-import { getNationalStoreCount } from './store-geo.js';
+import { getNationalStoreCount, getStoreBrandIdSet } from './store-geo.js';
 
 /** Weight on national store-count prior when ordering prospects (see README). */
 export const CHAIN_PRIOR_BLEND_WEIGHT = 0.25;
@@ -15,6 +15,19 @@ export interface RankedInsight {
  * Blend raw Qloo order with a national chain-size prior (ATP store counts).
  * Returns a new list sorted by blended score; `qlooRank` preserves the original Qloo order.
  */
+/**
+ * Naive baseline: same Qloo candidate pool, ordered by national ATP store count (largest chains first).
+ */
+export function orderInsightsByNationalStoreCount<
+  T extends { entity_id: string; name: string },
+>(insights: T[]): T[] {
+  const ids = getStoreBrandIdSet();
+  const pool = insights.filter((i) => ids.has(i.entity_id));
+  return [...pool].sort(
+    (a, b) => getNationalStoreCount(b.entity_id) - getNationalStoreCount(a.entity_id)
+  );
+}
+
 export function blendWithNationalPrior<T extends { entity_id: string; name: string; query?: { affinity?: number } }>(
   insights: T[]
 ): Array<T & { qlooRank: number; blendedRank: number }> {
