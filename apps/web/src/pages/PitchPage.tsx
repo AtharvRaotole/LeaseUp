@@ -95,7 +95,7 @@ export function PitchPage() {
       <main className="mx-auto max-w-[880px] min-w-0 px-4 py-12 print:py-4">
         <section className="pitch-print-page-1">
           <p className="text-label uppercase tracking-wide text-ink-3">Tenant pitch pack</p>
-          <h1 className="mt-3 break-words font-serif text-display text-ink">{neighborhood}</h1>
+          <h1 className="mt-3 break-words font-display font-semibold text-display text-ink">{neighborhood}</h1>
           <p className="mt-2 break-words text-lg text-ink-2">{snapshot.address}</p>
           <p className="mt-1 text-sm text-ink-3">
             Snapshot {formatUserFacingDate(snapshot.createdAt)} · {snapshot.radiusKm} km radius
@@ -130,7 +130,7 @@ export function PitchPage() {
         </section>
 
         <section className="pitch-print-page-2 mt-12 print:mt-0">
-          <h2 className="font-serif text-2xl text-ink">Top brands to pitch</h2>
+          <h2 className="font-display font-semibold text-2xl text-ink">Top brands to pitch</h2>
           <ol className="mt-4 space-y-5 print:space-y-1.5">
             {snapshot.prospects.map(({ prospect, whyLine }, index) => {
               const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
@@ -139,8 +139,8 @@ export function PitchPage() {
               return (
                 <li key={prospect.brand.entityId} className="pitch-prospect-block border-b border-border pb-5 last:border-0 print:pb-2">
                   <div className="flex flex-wrap items-baseline gap-2">
-                    <span className="font-mono text-sm text-ink-3">#{index + 1}</span>
-                    <h3 className="font-serif text-xl text-ink print:text-lg">{name}</h3>
+                    <span className="text-sm text-ink-3">#{index + 1}</span>
+                    <h3 className="font-display font-semibold text-xl text-ink print:text-lg">{name}</h3>
                   </div>
                   <p className="mt-1 text-sm text-ink-2">
                     Local taste rank #{prospect.brand.affinityRank} ({rankLabel}) ·{' '}
@@ -177,7 +177,7 @@ export function PitchPage() {
           </div>
 
           <footer className="mt-10 border-t border-border pt-6 text-sm text-ink-2 pitch-methodology print:mt-2 print:pt-2">
-            <h2 className="font-serif text-lg text-ink">Methodology and data sources</h2>
+            <h2 className="font-display font-semibold text-lg text-ink">Methodology and data sources</h2>
             <ul className="mt-2 list-disc space-y-1 pl-5 print:text-xs">
               <li>Local taste rankings ({snapshot.mode ?? 'demo'} mode) for this address</li>
               <li>All The Places store locations (CC0)</li>

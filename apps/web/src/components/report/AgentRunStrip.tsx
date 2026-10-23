@@ -54,7 +54,7 @@ export function AgentRunStrip({
                   <p className="font-medium text-ink">{STEP_LABELS[id]}</p>
                   {step?.summary && <p className="text-ink-2">{step.summary}</p>}
                   {step?.durationMs !== undefined && status === 'complete' && (
-                    <p className="font-mono text-xs tabular-nums text-ink-3">
+                    <p className="text-xs tabular-nums text-ink-3">
                       {(step.durationMs / 1000).toFixed(1)} s
                     </p>
                   )}
@@ -64,7 +64,7 @@ export function AgentRunStrip({
           })}
         </ol>
         {elapsedMs !== null && (
-          <p className="mt-3 font-mono text-xs tabular-nums text-ink-3">
+          <p className="mt-3 text-xs tabular-nums text-ink-3">
             Elapsed {(elapsedMs / 1000).toFixed(1)} s
           </p>
         )}
@@ -115,7 +115,7 @@ export function AgentRunStrip({
               <span className="text-right text-ink-2">
                 {step.summary}
                 {step.durationMs !== undefined && (
-                  <span className="ml-2 font-mono text-xs tabular-nums text-ink-3">
+                  <span className="ml-2 text-xs tabular-nums text-ink-3">
                     {(step.durationMs / 1000).toFixed(1)} s
                   </span>
                 )}

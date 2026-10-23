@@ -91,7 +91,7 @@ export function ProofSection({
                 transition={{ delay: index * 0.04 }}
                 onClick={() => onBrandSelect?.(row.entityId, row.name)}
               >
-                <td className="px-4 py-3 font-mono tabular-nums text-ink-2">
+                <td className="px-4 py-3 tabular-nums text-ink-2">
                   #
                   {rankingMode === 'baseline'
                     ? row.baselineRank ?? row.qlooRank
@@ -99,7 +99,7 @@ export function ProofSection({
                 </td>
                 <td className="px-4 py-3 text-ink">{displayBrandName(row.entityId, row.name)}</td>
                 {!hideFit && rankingMode === 'qloo' && (
-                  <td className="px-4 py-3 font-mono tabular-nums text-ink-2">
+                  <td className="px-4 py-3 tabular-nums text-ink-2">
                     {fitPercentileLabel(row.qlooRank, totalScored)}
                   </td>
                 )}
@@ -119,7 +119,7 @@ export function ProofSection({
                   {row.presentInRadius && row.nearestStoreKm !== undefined ? (
                     <span className="inline-flex items-center gap-1.5 text-success">
                       <Check className="h-4 w-4 shrink-0" aria-hidden />
-                      <span className="font-mono tabular-nums">{row.nearestStoreKm.toFixed(1)} km</span>
+                      <span className="tabular-nums">{row.nearestStoreKm.toFixed(1)} km</span>
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1.5 text-ink-3">

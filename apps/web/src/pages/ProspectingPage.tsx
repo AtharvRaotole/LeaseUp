@@ -38,7 +38,7 @@ export function ProspectingPage() {
     <div className="min-h-screen bg-bg">
       <TopBar />
       <main className="mx-auto max-w-[720px] px-4 py-10" data-testid="prospecting-page">
-        <h1 className="font-serif text-display text-ink">Full prospecting run</h1>
+        <h1 className="font-display font-semibold text-display text-ink">Full prospecting run</h1>
         <p className="mt-2 text-ink-2">
           Autonomous agent: geocode, taste, store scan, verification, outreach drafts, pitch pack.
         </p>

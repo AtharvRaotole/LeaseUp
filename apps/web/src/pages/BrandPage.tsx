@@ -68,7 +68,7 @@ export function BrandPage() {
         <TopBar />
         <main className="mx-auto max-w-[1280px] px-4 py-12 md:px-6">
           <div className="mx-auto max-w-[720px] text-center">
-            <h1 className="font-serif text-display text-ink">Find sites for a brand</h1>
+            <h1 className="font-display font-semibold text-display text-ink">Find sites for a brand</h1>
             <p className="mt-4 text-lg text-ink-2">
               Pick one of 227 tracked chains. Qloo heatmaps show where taste is strongest, layered on existing stores.
             </p>
@@ -131,7 +131,7 @@ export function BrandPage() {
             <Link to="/brand" className="text-sm text-accent hover:underline">
               Change brand
             </Link>
-            <h1 className="mt-2 font-serif text-h2 text-ink">
+            <h1 className="mt-2 font-display font-semibold text-h2 text-ink">
               {data ? displayBrandName(data.brand.entityId, data.brand.displayName) : 'Brand sites'}
             </h1>
             {headlineTakeaway && (

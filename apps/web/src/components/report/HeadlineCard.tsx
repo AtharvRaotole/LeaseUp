@@ -35,7 +35,7 @@ export function HeadlineCard({
 
   return (
     <Card>
-      <h2 className="font-serif text-[28px] leading-[1.2] text-ink md:text-[32px]">
+      <h2 className="font-display font-semibold text-[28px] leading-[1.2] text-ink md:text-[32px]">
         {count > 0
           ? `${count} brand${count === 1 ? '' : 's'} fit ${area} but have no store within ${radiusKm} km.`
           : `Every top brand for ${area} already has a store within ${radiusKm} km.`}
@@ -87,7 +87,7 @@ function StatTile({
         <span className="hidden md:inline">{label}</span>
         <InfoTooltip label={tooltip} />
       </p>
-      <p className="mt-0.5 truncate font-mono text-base tabular-nums text-ink md:mt-1 md:text-h3">{value}</p>
+      <p className="mt-0.5 truncate text-base tabular-nums text-ink md:mt-1 md:text-h3">{value}</p>
       <p className="mt-1 hidden text-[12px] leading-snug text-ink-3 md:block">{subtitle}</p>
     </div>
   );

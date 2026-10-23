@@ -67,7 +67,7 @@ export function SharePitchDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 sm:items-center" role="dialog" aria-modal="true" aria-labelledby="share-pitch-title">
       <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-card border border-border bg-surface p-5 shadow-pop">
-        <h2 id="share-pitch-title" className="font-serif text-2xl text-ink">Share pitch pack</h2>
+        <h2 id="share-pitch-title" className="font-display font-semibold text-2xl text-ink">Share pitch pack</h2>
         <p className="mt-1 text-sm text-ink-2">
           Creates a frozen snapshot with today&apos;s rankings and map. The link stays read only.
         </p>

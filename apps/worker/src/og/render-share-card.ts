@@ -4,6 +4,7 @@ import { displayBrandName } from '../lib/brand-display';
 
 const W = 1200;
 const H = 630;
+const FONT = 'Schibsted Grotesk';
 
 function escapeXml(text: string): string {
   return text
@@ -29,7 +30,7 @@ function brandLinesFromPitch(snapshot: PitchPackSnapshot): string[] {
   });
 }
 
-/** Satori-style card layout rendered as SVG (converted to PNG upstream). */
+/** Share card layout as SVG (rasterized with embedded Schibsted Grotesk in the worker). */
 export function renderReportShareSvg(results: AnalysisResponse, radiusKm: number): string {
   const area =
     results.location.neighborhood?.trim() ||
@@ -56,7 +57,7 @@ function wrapCard(headline: string, sub: string, lines: string[]): string {
   const list = lines
     .map(
       (line, i) =>
-        `<text x="72" y="${300 + i * 52}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="32" fill="#0B0B0C">${escapeXml(line)}</text>`
+        `<text x="72" y="${300 + i * 52}" font-family="${FONT}" font-size="32" font-weight="500" fill="#0B0B0C">${escapeXml(line)}</text>`
     )
     .join('\n');
 
@@ -64,10 +65,10 @@ function wrapCard(headline: string, sub: string, lines: string[]): string {
 <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
   <rect width="${W}" height="${H}" fill="#FAFAF7"/>
   <rect x="0" y="0" width="${W}" height="8" fill="#0F6B4F"/>
-  <text x="72" y="120" font-family="ui-serif, Georgia, serif" font-size="52" fill="#0B0B0C">${escapeXml(headline)}</text>
-  <text x="72" y="180" font-family="ui-sans-serif, system-ui, sans-serif" font-size="28" fill="#5C5C5C">${escapeXml(sub)}</text>
+  <text x="72" y="120" font-family="${FONT}" font-size="52" font-weight="600" fill="#0B0B0C">${escapeXml(headline)}</text>
+  <text x="72" y="180" font-family="${FONT}" font-size="28" font-weight="400" fill="#5C5C5C">${escapeXml(sub)}</text>
   ${list}
-  <text x="72" y="${H - 48}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="24" fill="#0F6B4F">LeaseUp</text>
+  <text x="72" y="${H - 48}" font-family="${FONT}" font-size="24" font-weight="600" fill="#0F6B4F">LeaseUp</text>
 </svg>`;
 }
 
