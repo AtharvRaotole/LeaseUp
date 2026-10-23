@@ -10,7 +10,6 @@ import { analysisRouter } from './routes/analysis';
 import { healthRouter } from './routes/health';
 import { compareRouter } from './routes/compare';
 import { brandRouter } from './routes/brand';
-import { portfolioRouter } from './routes/portfolio';
 
 export interface Env {
   DB: D1Database;
@@ -58,7 +57,6 @@ function skipRateLimit(c: Context<{ Bindings: Env }>): boolean {
   if (c.env.APP_MODE !== 'demo') return false;
   if (path === '/api/compare/flip' || path.startsWith('/api/heatmap')) return true;
   if (path.startsWith('/api/brand') || path === '/api/brands' || path === '/api/metros') return true;
-  if (path.startsWith('/api/portfolio')) return true;
   if (path === '/api/analyze/stream' || path === '/api/analyze') return true;
   return false;
 }
@@ -75,13 +73,6 @@ app.use('/api/*', async (c, next) => {
       windowMs: 60_000,
       maxRequests: 20,
       keyPrefix: 'analyze',
-    })(c, next);
-  }
-  if (path.startsWith('/api/portfolio') && path.endsWith('/run')) {
-    return rateLimiter({
-      windowMs: 60_000,
-      maxRequests: 5,
-      keyPrefix: 'portfolio-run',
     })(c, next);
   }
   if (path.startsWith('/api/outreach')) {
@@ -101,7 +92,6 @@ app.use('/api/*', async (c, next) => {
 app.route('/api/health', healthRouter);
 app.route('/api/compare', compareRouter);
 app.route('/api', brandRouter);
-app.route('/api', portfolioRouter);
 app.route('/api', analysisRouter);
 
 app.onError(errorHandler);
