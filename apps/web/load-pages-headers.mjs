@@ -4,7 +4,12 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const WORKER_ORIGIN = 'https://leaseup-worker.issue-atharva.workers.dev';
+const DEFAULT_WORKER_ORIGIN = 'https://leaseup-worker.issue-atharva.workers.dev';
+
+function apiOriginFromEnv() {
+  const fromEnv = (process.env.VITE_API_URL ?? '').trim().replace(/\/$/, '');
+  return fromEnv || DEFAULT_WORKER_ORIGIN;
+}
 
 const LOCAL_CONNECT = [
   'http://127.0.0.1:8787',
@@ -40,16 +45,19 @@ export function loadPagesHeaders(opts = {}) {
     headers[key] = value;
   }
 
-  if (opts.localPreview) {
-    let csp = headers['Content-Security-Policy'];
-    if (csp) {
+  let csp = headers['Content-Security-Policy'];
+  if (csp) {
+    const apiOrigin = apiOriginFromEnv();
+    csp = patchCspDirective(csp, 'connect-src', [apiOrigin]);
+    csp = patchCspDirective(csp, 'img-src', [apiOrigin]);
+    if (opts.localPreview) {
       csp = patchCspDirective(csp, 'connect-src', LOCAL_CONNECT);
       csp = patchCspDirective(csp, 'img-src', LOCAL_CONNECT);
-      headers['Content-Security-Policy'] = csp;
     }
+    headers['Content-Security-Policy'] = csp;
   }
 
   return headers;
 }
 
-export { WORKER_ORIGIN };
+export { DEFAULT_WORKER_ORIGIN as WORKER_ORIGIN };
