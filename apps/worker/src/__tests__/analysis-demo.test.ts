@@ -31,7 +31,7 @@ describe('AnalysisService demo mode', () => {
     const service = new AnalysisService(demoEnv());
     await expect(
       service.analyze({ address: '100 Main St, Milwaukee, WI', radius: 10 }, 'run-1', 'iphash')
-    ).rejects.toThrow(/live mode/i);
+    ).rejects.toThrow(/demo mode only supports the three example addresses/i);
   });
 
   it('accepts exact demo chip addresses', async () => {

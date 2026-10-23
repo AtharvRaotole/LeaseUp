@@ -12,7 +12,7 @@ import { NominatimClient } from './nominatim';
 import { displayBrandName } from '../lib/brand-display';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import { matchDemoFixtureId } from '@leaseup/fixtures';
-import { rankGeocodeCandidates } from '../lib/geocode-rank';
+import { resolveGeocodeFromCandidates, candidateToLocation } from '../lib/geocode-resolve';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -105,25 +105,21 @@ export class PortfolioService {
           continue;
         }
 
-        const candidates = rankGeocodeCandidates(
+        const preview = resolveGeocodeFromCandidates(
           row.inputAddress,
           await this.nominatim.geocodeCandidates(row.inputAddress, 5)
         );
-        if (candidates.length === 0) {
-          row.status = 'error';
-          row.error = 'No match found for this address.';
+        if (preview.needsConfirmation) {
+          row.geocodeCandidates = preview.candidates;
+          row.status = 'ambiguous';
           continue;
         }
-        if (candidates.length === 1) {
-          const c0 = candidates[0]!;
-          const neighborhood = await this.resolveNeighborhood(c0.latitude, c0.longitude, c0);
-          row.location = this.candidateToLocation(row.inputAddress, c0, neighborhood);
-          row.neighborhood = neighborhood;
-          row.status = 'ready';
-        } else {
-          row.geocodeCandidates = candidates;
-          row.status = 'ambiguous';
-        }
+        const pick = preview.candidates[0]!;
+        const c0 = preview.location ?? candidateToLocation(row.inputAddress, pick);
+        const neighborhood = await this.resolveNeighborhood(c0.latitude, c0.longitude, pick);
+        row.location = this.candidateToLocation(row.inputAddress, pick, neighborhood);
+        row.neighborhood = neighborhood;
+        row.status = 'ready';
       } catch (err) {
         row.status = 'error';
         row.error = (err as Error).message;

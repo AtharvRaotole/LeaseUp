@@ -1,9 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import type { ProspectPack } from '@leaseup/contracts';
 import { TopBar } from '../components/layout/TopBar';
 import { useAnalysisRun } from '../hooks/useAnalysisRun';
-import { parseReportSearch } from '../lib/report-params';
+import { buildReportPath, parseReportSearch } from '../lib/report-params';
+import { matchDemoFixtureId } from '@leaseup/fixtures';
+import { fetchGeocodePreview } from '../lib/geocode-preview';
+const GeocodeConfirmPanel = lazy(() =>
+  import('../components/report/GeocodeConfirmPanel').then((m) => ({ default: m.GeocodeConfirmPanel }))
+);
+import type { GeocodeCandidate, Location } from '@leaseup/contracts';
 import { AgentRunStrip } from '../components/report/AgentRunStrip';
 import { HeadlineCard } from '../components/report/HeadlineCard';
 import { BrandsToPitch } from '../components/report/BrandsToPitch';
@@ -48,6 +54,8 @@ export function ReportPage() {
   const [vacancyInput, setVacancyInput] = useState<VacancyCalculatorInput>(DEFAULT_VACANCY_INPUT);
   const mapCaptureRef = useRef<ReportMapCaptureRef | null>(null);
   const ranKey = useRef('');
+  const [geocodeCandidates, setGeocodeCandidates] = useState<GeocodeCandidate[] | null>(null);
+  const [geocodeChecking, setGeocodeChecking] = useState(false);
 
   useEffect(() => {
     if (searchParams.get('screenshot') === '1') {
@@ -65,9 +73,51 @@ export function ReportPage() {
     if (simulateError) return;
     const key = JSON.stringify(request);
     if (ranKey.current === key) return;
-    ranKey.current = key;
-    void run(request);
+
+    const startAnalysis = () => {
+      ranKey.current = key;
+      void run(request);
+    };
+
+    if (request.confirmedLocation || matchDemoFixtureId(request.address)) {
+      startAnalysis();
+      return;
+    }
+
+    let cancelled = false;
+    setGeocodeChecking(true);
+    setGeocodeCandidates(null);
+    void fetchGeocodePreview(request.address)
+      .then((preview) => {
+        if (cancelled) return;
+        if (preview.needsConfirmation && preview.candidates.length > 1) {
+          setGeocodeCandidates(preview.candidates);
+          return;
+        }
+        const withLoc = preview.location
+          ? { ...request, confirmedLocation: preview.location }
+          : request;
+        ranKey.current = JSON.stringify(withLoc);
+        void run(withLoc);
+      })
+      .catch(() => {
+        if (!cancelled) startAnalysis();
+      })
+      .finally(() => {
+        if (!cancelled) setGeocodeChecking(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [request, run, simulateError, navigate]);
+
+  const confirmGeocode = (location: Location) => {
+    if (!request) return;
+    const next = { ...request, confirmedLocation: location };
+    setGeocodeCandidates(null);
+    navigate(buildReportPath(next, slug ?? 'run'), { replace: true });
+  };
 
   useEffect(() => {
     if (results?.prospects[0] && !selected) {
@@ -224,9 +274,25 @@ export function ReportPage() {
             {displayError && (
               <ReportErrorBanner error={displayError} onRetry={() => { ranKey.current = ''; retry(); }} />
             )}
+            {geocodeCandidates && (
+              <Suspense fallback={<BrandLoading label="Loading map to confirm address…" />}>
+                <GeocodeConfirmPanel
+                  address={request.address}
+                  candidates={geocodeCandidates}
+                  onConfirm={confirmGeocode}
+                  onCancel={() => navigate('/')}
+                />
+              </Suspense>
+            )}
             {reportSections}
-            {!results && loading && !simulateError && (
-              <BrandLoading label={`Running analysis for ${slug ?? 'report'}…`} />
+            {!results && (loading || geocodeChecking) && !simulateError && !geocodeCandidates && (
+              <BrandLoading
+                label={
+                  geocodeChecking
+                    ? 'Checking address on the map…'
+                    : `Running analysis for ${slug ?? 'report'}…`
+                }
+              />
             )}
           </div>
           <div

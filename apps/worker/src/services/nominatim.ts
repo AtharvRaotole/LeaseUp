@@ -3,6 +3,8 @@ import {
   dedupeGeocodeCandidatesWithinMeters,
   formatGeocodeCandidateLabel,
 } from '../lib/geocode-label';
+import { parseUsAddress } from '../lib/parse-us-address';
+import { candidateToLocation, resolveGeocodeFromCandidates } from '../lib/geocode-resolve';
 
 const NOMINATIM_BASE = 'https://nominatim.openstreetmap.org/search';
 const NOMINATIM_REVERSE = 'https://nominatim.openstreetmap.org/reverse';
@@ -41,35 +43,76 @@ export class NominatimClient {
   }
 
   async geocode(address: string): Promise<Location> {
-    const candidates = await this.geocodeCandidates(address, 1);
-    if (candidates.length === 0) {
-      throw new Error('Address not found');
-    }
-    const top = candidates[0]!;
-    return {
+    const preview = resolveGeocodeFromCandidates(
       address,
-      latitude: top.latitude,
-      longitude: top.longitude,
-      city: top.city,
-      neighborhood: top.neighborhood,
-      resolvedAddress: top.resolvedAddress,
-    };
+      await this.geocodeCandidates(address, 5)
+    );
+    if (preview.needsConfirmation || !preview.location) {
+      const top = preview.candidates[0]!;
+      return candidateToLocation(address, top);
+    }
+    return preview.location;
   }
 
   async geocodeCandidates(address: string, limit = 5): Promise<GeocodeCandidate[]> {
-    const cacheKey = `nominatim:candidates:${address.toLowerCase().trim()}:${limit}`;
+    const cacheKey = `nominatim:candidates:v2:${address.toLowerCase().trim()}:${limit}`;
     const cached = await this.cache.get(cacheKey);
     if (cached) {
       return JSON.parse(cached) as GeocodeCandidate[];
     }
 
+    const parsed = parseUsAddress(address);
+    const merged: NominatimResult[] = [];
+
+    if (parsed.street) {
+      await this.enforceRateLimit();
+      const structured = await this.fetchSearch(this.buildStructuredParams(parsed, limit));
+      merged.push(...structured);
+    }
+
     await this.enforceRateLimit();
+    const freeText = await this.fetchSearch({
+      q: address,
+      format: 'json',
+      limit: String(limit),
+      addressdetails: '1',
+      countrycodes: 'us',
+    });
+    merged.push(...freeText);
 
-    const query = encodeURIComponent(address);
-    const url =
-      `${NOMINATIM_BASE}?q=${query}&format=json&limit=${limit}` +
-      '&addressdetails=1&countrycodes=us';
+    const seen = new Set<string>();
+    const candidates: GeocodeCandidate[] = [];
+    for (const result of merged) {
+      const key = `${Number(result.lat).toFixed(5)},${Number(result.lon).toFixed(5)}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      candidates.push(this.toCandidate(address, result));
+      if (candidates.length >= limit) break;
+    }
 
+    const deduped = dedupeGeocodeCandidatesWithinMeters(candidates, 50);
+
+    await this.cache.put(cacheKey, JSON.stringify(deduped), { expirationTtl: 86400 });
+
+    return deduped;
+  }
+
+  private buildStructuredParams(parsed: ReturnType<typeof parseUsAddress>, limit: number): Record<string, string> {
+    const params: Record<string, string> = {
+      format: 'json',
+      limit: String(limit),
+      addressdetails: '1',
+      countrycodes: 'us',
+    };
+    if (parsed.street) params.street = parsed.street;
+    if (parsed.city) params.city = parsed.city;
+    if (parsed.state) params.state = parsed.state;
+    if (parsed.postalCode) params.postalcode = parsed.postalCode;
+    return params;
+  }
+
+  private async fetchSearch(params: Record<string, string>): Promise<NominatimResult[]> {
+    const url = `${NOMINATIM_BASE}?${new URLSearchParams(params).toString()}`;
     const response = await fetch(url, {
       headers: {
         'User-Agent': this.contact,
@@ -82,15 +125,7 @@ export class NominatimClient {
     }
 
     const results = (await response.json()) as NominatimResult[];
-    const filtered = results.filter((r) => !isPoiOnlyResult(r));
-    const candidates = dedupeGeocodeCandidatesWithinMeters(
-      filtered.map((result) => this.toCandidate(address, result)),
-      50
-    );
-
-    await this.cache.put(cacheKey, JSON.stringify(candidates), { expirationTtl: 86400 });
-
-    return candidates;
+    return results.filter((r) => !isPoiOnlyResult(r));
   }
 
   async reverseGeocode(latitude: number, longitude: number): Promise<string> {
@@ -146,7 +181,8 @@ export class NominatimClient {
         result.address?.neighbourhood ||
         result.address?.suburb ||
         result.address?.quarter ||
-        result.address?.city_district,
+        result.address?.city_district ||
+        result.address?.borough,
       resolvedAddress: formatGeocodeCandidateLabel(result.display_name, result.address),
     };
   }

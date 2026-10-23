@@ -35,6 +35,49 @@ describe('rankGeocodeCandidates', () => {
     expect(ranked[0]?.neighborhood).toBe('West Village');
   });
 
+  it('prefers Chicago for Milwaukee Ave when input names Chicago', () => {
+    const base = { address: '1574 N Milwaukee Ave, Chicago, IL 60622', city: 'Chicago' };
+    const ranked = rankGeocodeCandidates('1574 N Milwaukee Ave, Chicago, IL 60622', [
+      {
+        ...base,
+        latitude: 43.04,
+        longitude: -87.92,
+        neighborhood: 'Milwaukee',
+        resolvedAddress: '1574 N Milwaukee Ave, Milwaukee, Wisconsin, United States',
+      },
+      {
+        ...base,
+        latitude: 41.909,
+        longitude: -87.677,
+        neighborhood: 'Wicker Park',
+        resolvedAddress:
+          '1574, North Milwaukee Avenue, Wicker Park, West Town, Chicago, Cook County, Illinois, 60622, United States',
+      },
+    ]);
+    expect(ranked[0]?.neighborhood).toBe('Wicker Park');
+  });
+
+  it('prefers Boulder Pearl St over Denver Pearl St', () => {
+    const base = { address: '1125 Pearl St, Boulder, CO 80302', city: 'Boulder' };
+    const ranked = rankGeocodeCandidates('1125 Pearl St, Boulder, CO 80302', [
+      {
+        ...base,
+        latitude: 39.739,
+        longitude: -104.99,
+        neighborhood: 'Capitol Hill',
+        resolvedAddress: '1125 Pearl Street, Denver, Colorado, United States',
+      },
+      {
+        ...base,
+        latitude: 40.018,
+        longitude: -105.278,
+        neighborhood: 'Downtown Boulder',
+        resolvedAddress: '1125 Pearl Street, Boulder, Boulder County, Colorado, 80302, United States',
+      },
+    ]);
+    expect(ranked[0]?.neighborhood).toBe('Downtown Boulder');
+  });
+
   it('keeps Brooklyn when the input names Brooklyn', () => {
     const base = { address: '350 Bleecker St, Brooklyn, NY', city: 'New York' };
     const ranked = rankGeocodeCandidates('350 Bleecker St, Brooklyn, NY', [

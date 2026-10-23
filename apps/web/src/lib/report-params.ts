@@ -23,6 +23,15 @@ export function buildReportPath(request: AnalysisRequest, slug = 'run'): string 
   if (request.categoryTags?.length) {
     params.set('category', request.categoryTags.join(','));
   }
+  const loc = request.confirmedLocation;
+  if (loc) {
+    params.set('lat', String(loc.latitude));
+    params.set('lng', String(loc.longitude));
+    if (loc.resolvedAddress) params.set('resolved', loc.resolvedAddress);
+    if (loc.neighborhood) params.set('neighborhood', loc.neighborhood);
+    if (loc.city) params.set('city', loc.city);
+    params.set('pinConfirmed', '1');
+  }
   return `/r/${slug}?${params.toString()}`;
 }
 
@@ -31,10 +40,25 @@ export function parseReportSearch(params: URLSearchParams): AnalysisRequest | nu
   const radius = Number(params.get('radius') || '10');
   if (!address) return null;
   const category = params.get('category');
+  const lat = Number(params.get('lat'));
+  const lng = Number(params.get('lng'));
+  const pinConfirmed = params.get('pinConfirmed') === '1';
+  const confirmedLocation =
+    pinConfirmed && Number.isFinite(lat) && Number.isFinite(lng)
+      ? {
+          address,
+          latitude: lat,
+          longitude: lng,
+          resolvedAddress: params.get('resolved') ?? undefined,
+          neighborhood: params.get('neighborhood') ?? undefined,
+          city: params.get('city') ?? undefined,
+        }
+      : undefined;
   return {
     address,
     radius: Number.isFinite(radius) ? radius : 10,
     categoryTags: category ? category.split(',').filter(Boolean) : undefined,
+    confirmedLocation,
   };
 }
 

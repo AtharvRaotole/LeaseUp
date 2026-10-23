@@ -1,3 +1,5 @@
+import type { GeocodeCandidate } from '@leaseup/contracts';
+
 export class ConfigurationError extends Error {
   constructor(message: string) {
     super(message);
@@ -12,5 +14,16 @@ export class UpstreamError extends Error {
     super(message);
     this.name = 'UpstreamError';
     this.statusCode = statusCode;
+  }
+}
+
+export class GeocodeAmbiguousError extends Error {
+  readonly code = 'GEOCODE_AMBIGUOUS';
+  readonly candidates: GeocodeCandidate[];
+
+  constructor(candidates: GeocodeCandidate[]) {
+    super('Multiple possible locations for this address. Please confirm on the map.');
+    this.name = 'GeocodeAmbiguousError';
+    this.candidates = candidates;
   }
 }
