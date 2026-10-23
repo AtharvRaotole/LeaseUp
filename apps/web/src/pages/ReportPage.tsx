@@ -27,6 +27,7 @@ import { SharePitchDialog } from '../components/report/SharePitchDialog';
 import type { ReportMapCaptureRef } from '../components/report/ReportMap';
 import type { VacancyCalculatorInput } from '@leaseup/contracts';
 import { DEFAULT_VACANCY_INPUT } from '../lib/vacancy-cost';
+import { startProspectingJob } from '../lib/start-prospecting';
 
 type MobilePane = 'report' | 'map';
 
@@ -184,6 +185,9 @@ export function ReportPage() {
           chipSlug={slug}
           onRadiusChange={() => { ranKey.current = ''; }}
           onSharePitch={() => setSharePitchOpen(true)}
+          onRunProspecting={() => {
+            void startProspectingJob(request).then((jobId) => navigate(`/prospect/${jobId}`));
+          }}
         />
       )}
       {!results && (

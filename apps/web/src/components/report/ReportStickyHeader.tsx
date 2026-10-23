@@ -13,12 +13,14 @@ export function ReportStickyHeader({
   chipSlug,
   onRadiusChange,
   onSharePitch,
+  onRunProspecting,
 }: {
   request: AnalysisRequest;
   location: Location;
   chipSlug?: string | null;
   onRadiusChange: (radius: number) => void;
   onSharePitch?: () => void;
+  onRunProspecting?: () => void;
 }) {
   const navigate = useNavigate();
   const { slug } = useParams();
@@ -76,6 +78,11 @@ export function ReportStickyHeader({
         </div>
         <div className="hidden items-center gap-2 md:flex">
           <Button variant="ghost" size="sm" onClick={() => navigate('/')}>New search</Button>
+          {onRunProspecting && (
+            <Button variant="secondary" size="sm" onClick={onRunProspecting} data-testid="run-full-prospecting">
+              Run full prospecting
+            </Button>
+          )}
           {onSharePitch && (
             <Button variant="secondary" size="sm" onClick={onSharePitch} data-testid="share-pitch">
               Share pitch
@@ -96,6 +103,11 @@ export function ReportStickyHeader({
               <button type="button" className="block w-full px-3 py-2 text-left text-sm hover:bg-surface-2" onClick={() => navigate('/')}>
                 New search
               </button>
+              {onRunProspecting && (
+                <button type="button" className="block w-full px-3 py-2 text-left text-sm hover:bg-surface-2" onClick={onRunProspecting}>
+                  Run full prospecting
+                </button>
+              )}
               {onSharePitch && (
                 <button type="button" className="block w-full px-3 py-2 text-left text-sm hover:bg-surface-2" onClick={onSharePitch}>
                   Share pitch
