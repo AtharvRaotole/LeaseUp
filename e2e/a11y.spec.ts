@@ -3,6 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 
 const ROUTES = [
   { name: 'home', path: '/' },
+  { name: 'methodology', path: '/methodology' },
   {
     name: 'report',
     path: '/r/wicker?address=1574%20N%20Milwaukee%20Ave%2C%20Chicago%2C%20IL%2060622&radius=10&screenshot=1',

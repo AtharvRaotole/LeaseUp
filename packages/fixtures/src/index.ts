@@ -6,6 +6,8 @@
  * To regenerate: node scripts/build-fixtures.mjs
  */
 
+export type { EvalMetrosResults, EvalMetroRow, EvalSiteDensity } from './eval/types.js';
+
 export { wickerparkFixture } from './wicker-park.js';
 export { boulderFixture } from './boulder.js';
 export { seviervilleFixture } from './sevierville.js';
