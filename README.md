@@ -1,8 +1,8 @@
 # LeaseUp
 
-**Find the tenants your retail space is missing.**
+**Find the right stores for your empty retail space.**
 
-LeaseUp ranks brands for a storefront using Qloo taste affinity, then checks the list against real chain locations (All The Places) and OpenStreetMap before you pitch. Built for the [Qloo Agentic Hackathon 2026](https://qloo.devpost.com/).
+Type in an address. LeaseUp shows which brands people nearby love but can't find close by, and helps you pitch them. Store locations are checked against public map data before you reach out. Built for the [Qloo Agentic Hackathon 2026](https://qloo.devpost.com/).
 
 **Live demo:** [https://leaseup-59m.pages.dev](https://leaseup-59m.pages.dev)
 

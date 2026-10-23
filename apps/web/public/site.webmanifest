@@ -1,7 +1,7 @@
 {
   "name": "LeaseUp",
   "short_name": "LeaseUp",
-  "description": "Find the tenants your space is missing.",
+  "description": "Type in an address. LeaseUp shows which brands people nearby love but can't find close by, and helps you pitch them.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FAFAF7",
@@ -15,12 +15,6 @@
     },
     {
       "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

@@ -76,7 +76,7 @@ const ogSvg = `<?xml version="1.0" encoding="UTF-8"?>
     <path fill="#0f6b4f" d="M13.5 21L19.5 13 13.5 5v16z"/>
   </g>
   <text x="280" y="300" font-family="system-ui, sans-serif" font-size="72" font-weight="600" fill="#121212" letter-spacing="-1.5">LeaseUp</text>
-  <text x="280" y="370" font-family="system-ui, sans-serif" font-size="36" fill="#45443f">Find the tenants your space is missing.</text>
+  <text x="280" y="370" font-family="system-ui, sans-serif" font-size="32" fill="#45443f">Find the right stores for your empty retail space.</text>
 </svg>`;
 
 await sharp(Buffer.from(ogSvg)).png().toFile(join(publicDir, 'og-image.png'));
