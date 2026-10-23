@@ -1,12 +1,12 @@
 import type { GeocodeCandidate, Location } from '@leaseup/contracts';
 import type { ResponseCache } from '../lib/response-cache';
 import {
-  dedupeGeocodeCandidatesWithinMeters,
   formatGeocodeCandidateLabel,
   formatPoiAddressLabel,
   isPoiClass,
   isPoiOnlyResult,
 } from '../lib/geocode-label';
+import { rankGeocodeCandidates } from '../lib/geocode-rank';
 import { UpstreamError } from '../lib/errors';
 import { NOMINATIM_CANDIDATES_CACHE_TTL_OK, nominatimCandidatesCacheKey } from '../lib/nominatim-cache';
 import { parseUsAddress, streetForGeocodeSearch } from '../lib/parse-us-address';
@@ -78,9 +78,9 @@ export class NominatimClient {
       candidates = await this.legacyGeocodeCandidates(address, limit);
     }
 
-    const deduped = dedupeGeocodeCandidatesWithinMeters(candidates, 50);
-    await this.writeCandidatesCache(cacheKey, deduped);
-    return deduped;
+    const ranked = rankGeocodeCandidates(address, candidates).slice(0, limit);
+    await this.writeCandidatesCache(cacheKey, ranked);
+    return ranked;
   }
 
   /** Legacy single-query free-text search (pre-structured pipeline), used when structured search is empty. */

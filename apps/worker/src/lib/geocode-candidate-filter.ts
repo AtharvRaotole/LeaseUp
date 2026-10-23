@@ -221,7 +221,7 @@ export function filterCandidatesByInputPostalCode(
 /** Merge Nominatim duplicates within a short radius when city and state normalize the same. */
 export function dedupeGeocodeCandidatesByPlaceAndDistance<T extends GeocodeCandidate>(
   candidates: T[],
-  meters = 50
+  meters = GEOCODE_DEDUPE_RADIUS_METERS
 ): T[] {
   const kept: T[] = [];
   for (const c of candidates) {
