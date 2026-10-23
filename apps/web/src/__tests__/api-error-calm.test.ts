@@ -15,6 +15,15 @@ describe('api-error calm copy', () => {
     expect(info.code).toBe('NETWORK_ERROR');
   });
 
+  it('maps GEOCODE_NOT_FOUND to storefront guidance', () => {
+    const info = humanizeApiError(404, {
+      code: 'GEOCODE_NOT_FOUND',
+      error: 'We could not find that street address.',
+    });
+    expect(info.code).toBe('GEOCODE_NOT_FOUND');
+    expect(info.message).toContain('street address');
+  });
+
   it('maps QLOO_UNAVAILABLE to calm taste copy', () => {
     const info = humanizeApiError(503, {
       code: 'QLOO_UNAVAILABLE',

@@ -30,3 +30,12 @@ export class GeocodeAmbiguousError extends Error {
     this.candidates = candidates;
   }
 }
+
+export class GeocodeNotFoundError extends Error {
+  readonly code = 'GEOCODE_NOT_FOUND';
+
+  constructor(message = 'We could not find that street address. Use a retail storefront with city and state.') {
+    super(message);
+    this.name = 'GeocodeNotFoundError';
+  }
+}

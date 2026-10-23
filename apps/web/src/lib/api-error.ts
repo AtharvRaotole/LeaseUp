@@ -10,6 +10,14 @@ export type ApiErrorInfo = {
 
 export function humanizeApiError(status: number, body: { error?: string; code?: string; retryAfter?: number }): ApiErrorInfo {
   const code = body.code;
+  if (code === 'GEOCODE_NOT_FOUND') {
+    return {
+      message:
+        body.error?.trim() ||
+        'We could not find that street address. Use a retail storefront with city and state.',
+      code: 'GEOCODE_NOT_FOUND',
+    };
+  }
   if (code === 'QLOO_UNAVAILABLE') {
     return {
       message: body.error?.trim() || 'Taste data is slow right now. Try again in a moment.',

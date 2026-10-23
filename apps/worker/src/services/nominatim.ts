@@ -3,7 +3,8 @@ import {
   dedupeGeocodeCandidatesWithinMeters,
   formatGeocodeCandidateLabel,
 } from '../lib/geocode-label';
-import { parseUsAddress } from '../lib/parse-us-address';
+import { UpstreamError } from '../lib/errors';
+import { parseUsAddress, streetForGeocodeSearch } from '../lib/parse-us-address';
 import { candidateToLocation, resolveGeocodeFromCandidates } from '../lib/geocode-resolve';
 
 const NOMINATIM_BASE = 'https://nominatim.openstreetmap.org/search';
@@ -68,17 +69,43 @@ export class NominatimClient {
       await this.enforceRateLimit();
       const structured = await this.fetchSearch(this.buildStructuredParams(parsed, limit));
       merged.push(...structured);
+
+      const simplifiedStreet = streetForGeocodeSearch(parsed.street);
+      if (merged.length === 0 && simplifiedStreet && simplifiedStreet !== parsed.street) {
+        await this.enforceRateLimit();
+        const retry = await this.fetchSearch(
+          this.buildStructuredParams({ ...parsed, street: simplifiedStreet }, limit)
+        );
+        merged.push(...retry);
+      }
     }
+
+    const freeTextQuery =
+      parsed.street && streetForGeocodeSearch(parsed.street) !== parsed.street
+        ? address.replace(parsed.street, streetForGeocodeSearch(parsed.street))
+        : address;
 
     await this.enforceRateLimit();
     const freeText = await this.fetchSearch({
-      q: address,
+      q: freeTextQuery,
       format: 'json',
       limit: String(limit),
       addressdetails: '1',
       countrycodes: 'us',
     });
     merged.push(...freeText);
+
+    if (merged.length === 0 && freeTextQuery !== address) {
+      await this.enforceRateLimit();
+      const fallbackFree = await this.fetchSearch({
+        q: address,
+        format: 'json',
+        limit: String(limit),
+        addressdetails: '1',
+        countrycodes: 'us',
+      });
+      merged.push(...fallbackFree);
+    }
 
     const seen = new Set<string>();
     const candidates: GeocodeCandidate[] = [];
@@ -121,7 +148,10 @@ export class NominatimClient {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to geocode address (${response.status})`);
+      const err = new UpstreamError(`Nominatim geocode failed (${response.status})`, response.status);
+      err.code = 'GEOCODE_UPSTREAM_ERROR';
+      err.userMessage = 'Address lookup is slow right now. Try again in a moment.';
+      throw err;
     }
 
     const results = (await response.json()) as NominatimResult[];

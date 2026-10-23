@@ -19,6 +19,7 @@
     "record:demo": "node scripts/record-demo.mjs",
     "record:demo:local": "node scripts/run-record-demo.mjs",
     "eval:metros": "node scripts/eval-metros.mjs",
+    "qa:address-sweep": "node scripts/qa/address-sweep.mjs",
     "lighthouse:ci": "node scripts/run-lighthouse-ci.mjs",
     "test:a11y": "playwright test e2e/a11y.spec.ts",
     "test:csp": "node scripts/run-csp-e2e.mjs",
