@@ -1,79 +1,48 @@
 #!/usr/bin/env node
 /**
- * Live robustness sweep: POST /api/geocode + /api/analyze for scripted addresses.
+ * Address robustness sweep: POST /api/geocode + /api/analyze for scripted addresses.
+ *
+ * Default target is local wrangler (`http://127.0.0.1:8787`). Production requires opt-in:
+ *   ALLOW_LIVE_WORKER_QA=1 WORKER_BASE=https://leaseup-worker.issue-atharva.workers.dev ...
+ *
+ * Offline recap from a saved report (no network):
+ *   node scripts/qa/address-sweep.mjs --recap docs/qa/address-sweep.md
  *
  * Usage:
- *   node scripts/qa/address-sweep.mjs
- *   WORKER_BASE=https://leaseup-worker.issue-atharva.workers.dev DELAY_MS=3500 node scripts/qa/address-sweep.mjs
+ *   pnpm qa:address-sweep
  *   node scripts/qa/address-sweep.mjs --write docs/qa/address-sweep.md
  */
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { analyzePayload, criticalIssues, rowPass } from './address-sweep-lib.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const ADDRESSES_PATH = join(ROOT, 'scripts/qa/addresses-sweep.json');
-const WORKER_BASE = (process.env.WORKER_BASE || 'https://leaseup-worker.issue-atharva.workers.dev').replace(
-  /\/$/,
-  ''
-);
+const PRODUCTION_WORKER_HOST = 'leaseup-worker.issue-atharva.workers.dev';
+const DEFAULT_LOCAL_WORKER = 'http://127.0.0.1:8787';
+const WORKER_BASE = (process.env.WORKER_BASE || DEFAULT_LOCAL_WORKER).replace(/\/$/, '');
 const DELAY_MS = Number(process.env.DELAY_MS || 3500);
 const RADIUS = Number(process.env.SWEEP_RADIUS || 10);
 
 const writePath = process.argv.includes('--write')
   ? process.argv[process.argv.indexOf('--write') + 1]
   : null;
+const recapPath = process.argv.includes('--recap')
+  ? process.argv[process.argv.indexOf('--recap') + 1]
+  : null;
 
-/** Flags tracked for bc-8baf732b / bc-2041c19b; do not fail the row. */
-const DELEGATED_ISSUE_PREFIXES = ['verified_absent', 'suspicious_category_world_market'];
-
-function isDelegatedIssue(flag) {
-  return DELEGATED_ISSUE_PREFIXES.some((p) => flag.startsWith(p) || flag === p);
-}
-
-function criticalIssues(issues) {
-  return issues.filter((x) => !isDelegatedIssue(x));
+function assertSafeWorkerTarget() {
+  if (!WORKER_BASE.includes(PRODUCTION_WORKER_HOST)) return;
+  if (process.env.ALLOW_LIVE_WORKER_QA === '1') return;
+  console.error(
+    `Refusing production worker ${PRODUCTION_WORKER_HOST} without ALLOW_LIVE_WORKER_QA=1 (KV writes on /api/analyze).`
+  );
+  process.exit(2);
 }
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
-}
-
-function analyzePayload(body, radiusKm) {
-  const issues = [];
-  if (!body || typeof body !== 'object') {
-    issues.push('non_object_body');
-    return issues;
-  }
-  const loc = body.location;
-  if (loc) {
-    const label = [loc.neighborhood, loc.city, loc.resolvedAddress, loc.address]
-      .filter(Boolean)
-      .join(' | ');
-    if (label.includes(';')) issues.push('semicolon_in_label');
-    if (!loc.latitude || !loc.longitude) issues.push('missing_coords');
-  }
-  const prospects = body.prospects ?? [];
-  if (prospects.length === 0) issues.push('empty_prospects');
-  const brandIds = prospects.map((p) => p.brand?.entityId).filter(Boolean);
-  if (new Set(brandIds).size !== brandIds.length) issues.push('duplicate_brand_ids');
-  for (const p of prospects) {
-    const v = p.brand?.verified;
-    if (v === 'verified absent' && !p.coverageNote?.toLowerCase().includes('osm')) {
-      issues.push('verified_absent_single_source?');
-    }
-    const name = (p.brand?.name || '').toLowerCase();
-    if (name.includes('cost plus world market') || name.includes('world market')) {
-      issues.push('suspicious_category_world_market');
-    }
-    const s = JSON.stringify(p);
-    if (s.includes('NaN') || s.includes('undefined')) issues.push('nan_or_undefined_in_prospect');
-  }
-  const rankings = body.rankings ?? [];
-  if (rankings.length === 0 && (body.prospects?.length ?? 0) > 0) issues.push('empty_rankings');
-  const raw = JSON.stringify(body);
-  if (raw.includes('NaN') || raw.includes('"undefined"')) issues.push('nan_in_payload');
-  return [...new Set(issues)];
 }
 
 async function geocodePreview(address) {
@@ -162,7 +131,37 @@ function mdEscape(s) {
     .replace(/\n/g, ' ');
 }
 
+async function recapFromReport(path) {
+  const md = await readFile(join(ROOT, path), 'utf8');
+  const m = md.match(/## Raw JSON\s+```json\s+([\s\S]*?)\n```/);
+  if (!m) throw new Error('No Raw JSON block in report');
+  const { summary, results } = JSON.parse(m[1]);
+  let pass = 0;
+  for (const r of results) {
+    if (rowPass(r.geocode, r.analyze)) pass += 1;
+  }
+  const passRate = ((pass / results.length) * 100).toFixed(1);
+  console.log(
+    JSON.stringify({
+      mode: 'recap',
+      source: path,
+      originalAt: summary.at,
+      worker: summary.worker,
+      pass,
+      total: results.length,
+      passRatePct: passRate,
+    })
+  );
+}
+
 async function main() {
+  if (recapPath) {
+    await recapFromReport(recapPath);
+    return;
+  }
+
+  assertSafeWorkerTarget();
+
   const rows = JSON.parse(await readFile(ADDRESSES_PATH, 'utf8'));
   const results = [];
   let pass = 0;
@@ -176,15 +175,7 @@ async function main() {
     const confirmed = geo.confirmedLocation ?? undefined;
     const analysis = await analyze(row.input, confirmed);
 
-    const geoOk = geo.status === 200;
-    const analyzeOk =
-      analysis.status === 200 && criticalIssues(analysis.issues).length === 0;
-    const gracefulGeocodeFail =
-      !geoOk &&
-      (geo.code === 'GEOCODE_NOT_FOUND' || geo.status === 404) &&
-      analysis.status === 404 &&
-      analysis.code === 'GEOCODE_NOT_FOUND';
-    const ok = analyzeOk || (gracefulGeocodeFail && criticalIssues(analysis.issues).length === 0);
+    const ok = rowPass(geo, analysis);
     if (ok) pass += 1;
 
     results.push({
