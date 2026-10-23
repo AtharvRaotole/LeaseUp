@@ -298,6 +298,62 @@ export class QlooClient {
     return cells;
   }
 
+  /** Fallback when heatmap is empty or errors: sample affinity on a lat/lng grid. */
+  async getAffinityGrid(params: {
+    location: QlooLocation;
+    entityId: string;
+    gridSize: number;
+    runId?: string;
+  }): Promise<QlooHeatmapCell[]> {
+    if (this.mode === 'demo') {
+      return [];
+    }
+
+    const size = Math.min(8, Math.max(3, params.gridSize));
+    const center =
+      params.location.kind === 'point'
+        ? params.location
+        : { latitude: 41.8781, longitude: -87.6298, radiusKm: 25 };
+
+    const latSpan = (center.radiusKm / 111) * 0.85;
+    const lonSpan =
+      (center.radiusKm / (111 * Math.cos((center.latitude * Math.PI) / 180))) * 0.85;
+
+    const cells: QlooHeatmapCell[] = [];
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        const tLat = size === 1 ? 0.5 : row / (size - 1);
+        const tLon = size === 1 ? 0.5 : col / (size - 1);
+        const latitude = center.latitude + (tLat - 0.5) * 2 * latSpan;
+        const longitude = center.longitude + (tLon - 0.5) * 2 * lonSpan;
+
+        const insights = await this.getBrandInsights({
+          location: {
+            kind: 'point',
+            latitude,
+            longitude,
+            radiusKm: 2,
+          },
+          brandIds: [params.entityId],
+          take: 1,
+          runId: params.runId,
+        });
+
+        const hit = insights.find((i) => i.entity_id === params.entityId) ?? insights[0];
+        if (!hit) continue;
+        const affinity = hit.query?.affinity ?? 0;
+        cells.push({
+          latitude,
+          longitude,
+          affinity_rank: hit.query?.affinity_rank ?? affinity,
+          affinity,
+        });
+      }
+    }
+
+    return cells;
+  }
+
   private locationCacheKey(location: QlooLocation): string {
     if (location.kind === 'point') {
       return `${location.latitude},${location.longitude}:r${location.radiusKm}`;

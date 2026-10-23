@@ -47,3 +47,7 @@ export {
   type OverpassDemoRecording,
 } from './overpass-demo.js';
 export type { OverpassBrand } from './overpass-types.js';
+export {
+  brandReverseChicagoDemo,
+  type BrandReverseDemoFixture,
+} from './brand-reverse-chicago.js';
