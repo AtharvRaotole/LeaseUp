@@ -50,7 +50,11 @@ export function SharePitchDialog({
     setError(null);
     setCopyHint(null);
     try {
-      const mapImage = mapCaptureRef.current?.captureSnapshot() ?? undefined;
+      const capture = mapCaptureRef.current;
+      const mapImage =
+        (capture ? await capture.capturePitchSnapshot() : null) ??
+        capture?.captureSnapshot() ??
+        undefined;
       const res = await fetch(apiUrl('/api/pitch'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
