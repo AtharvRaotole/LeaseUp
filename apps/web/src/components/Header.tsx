@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
+import { apiUrl } from '../lib/api';
 
 export function Header() {
   const { data } = useQuery({
     queryKey: ['health'],
     queryFn: async () => {
-      const res = await fetch('/api/health');
+      const res = await fetch(apiUrl('/api/health'));
       if (!res.ok) throw new Error('health');
       return res.json() as Promise<{ mode: 'live' | 'demo' }>;
     },
@@ -12,7 +13,7 @@ export function Header() {
   });
 
   return (
-    <header className="border-b border-surface-border bg-surface/80 backdrop-blur sticky top-0 z-40">
+    <header className="border-b border-surface-border bg-surface/80 backdrop-blur sticky top-0 z-40 no-print">
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <div>
           <p className="font-bold text-lg">LeaseUp</p>

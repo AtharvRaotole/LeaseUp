@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
+import { apiUrl } from '../lib/api';
 
 type ComparePayload = {
   left: { name: string; top: Array<{ name: string; qlooRank: number; affinity: number }> };
@@ -17,7 +18,7 @@ export function CompareFlip() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['compare-flip'],
     queryFn: async () => {
-      const res = await fetch('/api/compare/flip');
+      const res = await fetch(apiUrl('/api/compare/flip'));
       if (!res.ok) throw new Error('Failed to load compare data');
       return res.json() as Promise<ComparePayload>;
     },
@@ -36,7 +37,7 @@ export function CompareFlip() {
   }
 
   return (
-    <section className="glass rounded-2xl p-6">
+    <section className="glass rounded-2xl p-6 no-print">
       <h3 className="text-lg font-semibold mb-1">The flip — same brands, different taste</h3>
       <p className="text-sm text-zinc-400 mb-6">
         Qloo taste ≠ demographics. {data.source}.
@@ -82,7 +83,7 @@ function RankColumn({
         {rows.map((row) => (
           <li key={row.name} className="flex justify-between gap-2">
             <span>#{row.qlooRank} {row.name}</span>
-            <span className="text-zinc-500">{(row.affinity * 100).toFixed(0)}%</span>
+            <span className="text-zinc-500">{row.affinity.toFixed(4)}</span>
           </li>
         ))}
       </ol>

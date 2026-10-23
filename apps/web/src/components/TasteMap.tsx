@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import type { FeatureCollection, Point } from 'geojson';
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
+import { apiUrl } from '../lib/api';
 
 interface TasteMapProps {
   results: AnalysisResponse;
@@ -13,6 +14,8 @@ export function TasteMap({ results, selectedProspect, onSelectProspect }: TasteM
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [showHeatmap, setShowHeatmap] = useState(false);
+  const [storesTick, setStoresTick] = useState(0);
+  const [heatmapTick, setHeatmapTick] = useState(0);
   const [heatmapCells, setHeatmapCells] = useState<
     Array<{ latitude: number; longitude: number; affinityRank: number }>
   >([]);
@@ -62,6 +65,14 @@ export function TasteMap({ results, selectedProspect, onSelectProspect }: TasteM
       })),
     };
 
+    if (!map.isStyleLoaded()) {
+      const retry = () => setStoresTick((t) => t + 1);
+      map.once('load', retry);
+      return () => {
+        map.off('load', retry);
+      };
+    }
+
     if (map.getSource('stores')) {
       (map.getSource('stores') as maplibregl.GeoJSONSource).setData(geojson);
     } else {
@@ -78,7 +89,8 @@ export function TasteMap({ results, selectedProspect, onSelectProspect }: TasteM
         },
       });
     }
-  }, [results.mapStores]);
+    return undefined;
+  }, [results.mapStores, storesTick]);
 
   useEffect(() => {
     if (!selectedProspect || !mapRef.current) return;
@@ -110,6 +122,14 @@ export function TasteMap({ results, selectedProspect, onSelectProspect }: TasteM
       })),
     };
 
+    if (!map.isStyleLoaded()) {
+      const retry = () => setHeatmapTick((t) => t + 1);
+      map.once('load', retry);
+      return () => {
+        map.off('load', retry);
+      };
+    }
+
     if (!map.getSource('heatmap')) {
       map.addSource('heatmap', { type: 'geojson', data: geojson });
       map.addLayer({
@@ -135,17 +155,19 @@ export function TasteMap({ results, selectedProspect, onSelectProspect }: TasteM
     } else {
       (map.getSource('heatmap') as maplibregl.GeoJSONSource).setData(geojson);
     }
-  }, [showHeatmap, heatmapCells]);
+    return undefined;
+  }, [showHeatmap, heatmapCells, heatmapTick]);
 
   const loadHeatmap = async (prospect: ProspectPack) => {
     if (!heatmapToggleVisible) return;
-    const location =
-      results.location.resolvedAddress || results.location.address;
     const params = new URLSearchParams({
       entityId: prospect.brand.entityId,
-      location,
+      lat: String(results.location.latitude),
+      lng: String(results.location.longitude),
+      radius: '10',
+      address: results.location.address,
     });
-    const res = await fetch(`/api/heatmap?${params.toString()}`);
+    const res = await fetch(apiUrl(`/api/heatmap?${params.toString()}`));
     const data = await res.json();
     if (data.available && data.cells?.length) {
       setHeatmapCells(data.cells);
@@ -157,7 +179,7 @@ export function TasteMap({ results, selectedProspect, onSelectProspect }: TasteM
   };
 
   return (
-    <section className="glass rounded-2xl p-4 md:p-6">
+    <section className="glass rounded-2xl p-4 md:p-6 no-print">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <h3 className="text-lg font-semibold">Taste map</h3>
         {heatmapToggleVisible && selectedProspect && (

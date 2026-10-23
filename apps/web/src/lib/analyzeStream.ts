@@ -1,4 +1,5 @@
 import type { AnalysisRequest, AnalysisResponse, AnalysisStep } from '@leaseup/contracts';
+import { apiUrl } from './api';
 
 export async function analyzeWithStream(
   request: AnalysisRequest,
@@ -8,7 +9,7 @@ export async function analyzeWithStream(
     onError: (message: string) => void;
   }
 ): Promise<void> {
-  const response = await fetch('/api/analyze/stream', {
+  const response = await fetch(apiUrl('/api/analyze/stream'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),

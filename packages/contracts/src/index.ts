@@ -138,6 +138,9 @@ export const OutreachRequestSchema = z.object({
   address: z.string().min(3),
   reasons: z.array(z.string()).default([]),
   runId: z.string().optional(),
+  affinityRank: z.number().optional(),
+  neighborhood: z.string().optional(),
+  nearestStoreKm: z.number().optional(),
 });
 
 export type OutreachRequest = z.infer<typeof OutreachRequestSchema>;

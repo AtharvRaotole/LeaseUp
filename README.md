@@ -46,24 +46,19 @@ Traditional tools rely on:
 
 ## 🎨 The Demo Moment
 
-**Try these locations:**
+**Try these exact demo chip addresses** (demo mode only serves recorded fixtures for these three; any other address returns a “live mode required” message):
 
-1. **Wicker Park, Chicago** (`1574 N Milwaukee Ave, Chicago, IL 60622`)
-   - Top prospects: Everlane, Reformation, Bluemercury
-   - Backtest: **10/10 P@10** (perfect prediction of existing stores)
-   - Why it works: Urban creative district with high affinity for DTC fashion brands
+1. **Wicker Park, Chicago** — `1574 N Milwaukee Ave, Chicago, IL 60622`
+2. **Sevierville, Tennessee** — `125 Collier Dr, Sevierville, TN 37862`
+3. **Boulder, Colorado** — `1125 Pearl St, Boulder, CO 80302`
 
-2. **Sevierville, Tennessee** (`125 Collier Dr, Sevierville, TN 37862`)
-   - Top prospects: Altar'd State, Marley Lilly, Academy Sports
-   - Backtest: **8/10 P@10**
-   - Contrast: Tourist destination near Gatlinburg, totally different brand profile
+Regenerate the metrics table from code (no hand-edited numbers):
 
-3. **Boulder, Colorado** (`1125 Pearl St, Boulder, CO 80302`)
-   - Top prospects: Allbirds, Alo Yoga, Blue Bottle Coffee
-   - Backtest: **10/10 P@10**
-   - Why it works: Active lifestyle hub with outdoor/wellness brand affinity
+```bash
+node scripts/generate-readme-metrics.mjs
+```
 
-**The flip:** Watch the brand lists change completely between Wicker Park and Sevierville—that's hyperlocal taste intelligence at work.
+**The flip:** Compare Wicker Park vs Sevierville in the UI — ranks and raw Qloo affinity scores come straight from recorded fixtures.
 
 ---
 
@@ -141,12 +136,7 @@ LeaseUp doesn't just rank brands—it **proves the rankings work**:
 3. Compute **Precision@10**: What % of the top-10 Qloo-ranked brands are actually present?
 4. Display the P@10 score prominently with a list of correctly predicted stores
 
-**Results from validation (21 neighborhoods, 10km radius):**
-- Mean AUC: **0.75** (Qloo rank) vs 0.68 (national footprint baseline)
-- **Qloo + footprint beats footprint alone in 20/21 neighborhoods**
-- Wicker Park: **10/10 P@10** (perfect)
-- Boulder: **10/10 P@10**
-- The Woodlands: **10/10 P@10**
+**Recorded validation** (`data/research/round2/neigh_test_10km.json`, 10km radius): run `node scripts/generate-readme-metrics.mjs` for current P@10/AUC on the three demo chips and aggregate AUC stats from that file.
 
 **Why this matters for judges:**
 - It's not a black box: users see proof the model works *before* trusting the "not here yet" list
@@ -157,16 +147,7 @@ LeaseUp doesn't just rank brands—it **proves the rankings work**:
 
 ## 📊 Key Metrics (From Validation Data)
 
-| Metric | Value | Source |
-|---|---|---|
-| Neighborhoods tested | 24 | `round2/neigh_test_10km.json` |
-| Mean AUC (Qloo rank) | **0.75** | Across 21 neighborhoods with data |
-| Mean AUC (national footprint) | 0.68 | Baseline |
-| Combined (Qloo + footprint) | **0.80** | Beats baseline in 20/21 |
-| Precision@10 (Wicker Park) | **1.0** | All top-10 brands present |
-| Precision@10 (Boulder) | **1.0** | All top-10 brands present |
-| Brands tested | 49 | With All The Places store data |
-| API calls (validation) | 532 | Heatmaps across 11 brands × 38 metros |
+Run `node scripts/generate-readme-metrics.mjs` to print demo-chip P@10/AUC and aggregates from `data/research/round2/neigh_test_10km.json`. Do not hand-edit those tables.
 
 **Caveats (honest):**
 - "Present" means within 10km radius; shop-in-shop and franchise formats may be missed
@@ -423,8 +404,8 @@ From `round2/neigh_test_10km.json` (21 neighborhoods, 49 brands, 10km radius):
 
 ### 1. Technological Implementation (Qloo Depth)
 ✅ Uses 6 Qloo features: brand insights, location filtering, tags, affinity rank, explainability, heatmaps  
-✅ Novel validation layer: backtest with real store data (AUC 0.75, P@10 up to 1.0)  
-✅ Blends Qloo affinity with national footprint prior (beats baseline in 20/21 neighborhoods)  
+✅ Novel validation layer: backtest with real store data (metrics from `generate-readme-metrics.mjs`)  
+✅ Blends Qloo affinity with national footprint prior for prospect ordering (backtest uses raw Qloo order)  
 ✅ Production-grade client: caching, rate limiting, retries, structured logging
 
 ### 2. Design (Complete Product, Not a PoC)

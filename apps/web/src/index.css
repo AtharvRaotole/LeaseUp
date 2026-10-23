@@ -31,11 +31,26 @@ body {
     color: black;
   }
 
-  .no-print {
-    display: none !important;
+  body * {
+    visibility: hidden;
+  }
+
+  .print-pack,
+  .print-pack * {
+    visibility: visible;
   }
 
   .print-pack {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
     padding: 24px;
+    border: none;
+    background: white;
+  }
+
+  .no-print {
+    display: none !important;
   }
 }

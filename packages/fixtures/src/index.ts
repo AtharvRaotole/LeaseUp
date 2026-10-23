@@ -30,3 +30,11 @@ export {
   type BacktestExample,
 } from './backtest.js';
 export { blendWithNationalPrior, CHAIN_PRIOR_BLEND_WEIGHT, type RankedInsight } from './ranking.js';
+export {
+  DEMO_CHIP_ADDRESSES,
+  matchDemoFixtureId,
+  normalizeAddress,
+  type DemoFixtureId,
+} from './demo-addresses.js';
+export { overpassDemoByFixture } from './overpass-demo.js';
+export type { OverpassBrand } from './overpass-types.js';

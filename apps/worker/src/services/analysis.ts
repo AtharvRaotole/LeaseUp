@@ -20,7 +20,10 @@ import {
   getStoreBrandIds,
   blendWithNationalPrior,
   CHAIN_PRIOR_BLEND_WEIGHT,
+  matchDemoFixtureId,
 } from '@leaseup/fixtures';
+import type { QlooLocation } from '../providers/qloo';
+import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
   buildBrandRankings,
   buildDualBacktest,
@@ -42,15 +45,15 @@ export class AnalysisService {
   private mode: 'live' | 'demo';
 
   constructor(env: Env) {
+    this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
     this.qloo = new QlooClient(env);
     this.openai = new OpenAIClient(env);
-    this.overpass = new OverpassClient(env.CACHE, 5000);
+    this.overpass = new OverpassClient(env.CACHE, 8000, this.mode === 'demo');
     this.nominatim = new NominatimClient(
       env.CACHE,
       env.NOMINATIM_CONTACT || DEFAULT_NOMINATIM_CONTACT
     );
     this.db = env.DB;
-    this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
   }
 
   async analyze(request: AnalysisRequest, runId: string, ipHash: string): Promise<AnalysisResponse> {
@@ -87,7 +90,7 @@ export class AnalysisService {
         };
       });
 
-      const qlooLocation = this.buildQlooLocationQuery(location, request.address);
+      const qlooLocation = this.buildQlooLocation(location, request.address, request.radius);
 
       const insights = await runStep(
         emit,
@@ -102,8 +105,8 @@ export class AnalysisService {
             runId,
           });
           return {
-            summary: `${rows.length} brands ranked for ${qlooLocation}`,
-            detail: { brandCount: rows.length, query: qlooLocation },
+            summary: `${rows.length} brands ranked for ${this.qlooLocationLabel(qlooLocation)}`,
+            detail: { brandCount: rows.length, query: this.qlooLocationLabel(qlooLocation) },
             result: rows,
           };
         }
@@ -220,51 +223,48 @@ export class AnalysisService {
   }
 
   async fetchHeatmapForBrand(
-    locationQuery: string,
+    location: Location,
+    radiusKm: number,
     entityId: string,
     runId?: string
   ): Promise<{ cells: Array<{ latitude: number; longitude: number; affinity_rank: number; affinity?: number }> }> {
+    const qlooLocation = this.buildQlooLocation(location, location.address, radiusKm);
     const cells = await this.qloo.getHeatmap({
-      location: locationQuery,
+      location: qlooLocation,
       entityId,
       runId,
     });
     return { cells };
   }
 
-  private buildQlooLocationQuery(location: Location, address: string): string {
-    const fixtureName = this.matchFixtureName(address);
-    if (fixtureName) {
-      return fixtureName;
+  private qlooLocationLabel(location: QlooLocation): string {
+    if (location.kind === 'point') {
+      return `${location.latitude},${location.longitude} (${location.radiusKm}km)`;
     }
-
-    if (location.neighborhood && location.city) {
-      return `${location.neighborhood}, ${location.city}`;
-    }
-    if (location.city) {
-      return location.city;
-    }
-    if (location.resolvedAddress) {
-      const parts = location.resolvedAddress.split(',').map((p) => p.trim());
-      if (parts.length >= 2) {
-        return `${parts[0]}, ${parts[1]}`;
-      }
-    }
-    return address;
+    return location.query;
   }
 
-  private matchFixtureName(address: string): string | null {
-    const lower = address.toLowerCase();
-    if (lower.includes('wicker') || lower.includes('milwaukee')) {
-      return wickerparkFixture.location.name;
+  private buildQlooLocation(location: Location, address: string, radiusKm: number): QlooLocation {
+    if (this.mode === 'demo') {
+      const fixtureId = matchDemoFixtureId(address);
+      if (!fixtureId) {
+        throw new DemoModeRequiredError();
+      }
+      const fixture =
+        fixtureId === 'wicker'
+          ? wickerparkFixture
+          : fixtureId === 'boulder'
+            ? boulderFixture
+            : seviervilleFixture;
+      return { kind: 'query', query: fixture.location.name };
     }
-    if (lower.includes('sevierville') || lower.includes('collier')) {
-      return seviervilleFixture.location.name;
-    }
-    if (lower.includes('boulder') || lower.includes('pearl')) {
-      return boulderFixture.location.name;
-    }
-    return null;
+
+    return {
+      kind: 'point',
+      latitude: location.latitude,
+      longitude: location.longitude,
+      radiusKm,
+    };
   }
 
   private async resolveLocation(address: string): Promise<Location> {
@@ -276,34 +276,22 @@ export class AnalysisService {
   }
 
   private resolveDemoLocation(address: string): Location {
-    const lowerAddress = address.toLowerCase();
+    const fixtureId = matchDemoFixtureId(address);
+    if (!fixtureId) {
+      throw new DemoModeRequiredError();
+    }
 
-    if (lowerAddress.includes('wicker') || lowerAddress.includes('milwaukee')) {
-      return {
-        address,
-        ...wickerparkFixture.location,
-        resolvedAddress: wickerparkFixture.location.name,
-      };
-    }
-    if (lowerAddress.includes('boulder') || lowerAddress.includes('pearl')) {
-      return {
-        address,
-        ...boulderFixture.location,
-        resolvedAddress: boulderFixture.location.name,
-      };
-    }
-    if (lowerAddress.includes('sevierville') || lowerAddress.includes('collier')) {
-      return {
-        address,
-        ...seviervilleFixture.location,
-        resolvedAddress: seviervilleFixture.location.name,
-      };
-    }
+    const fixture =
+      fixtureId === 'wicker'
+        ? wickerparkFixture
+        : fixtureId === 'boulder'
+          ? boulderFixture
+          : seviervilleFixture;
 
     return {
       address,
-      ...wickerparkFixture.location,
-      resolvedAddress: wickerparkFixture.location.name,
+      ...fixture.location,
+      resolvedAddress: fixture.location.name,
     };
   }
 
@@ -314,6 +302,12 @@ export class AnalysisService {
     _runId: string
   ): Promise<ProspectPack[]> {
     const prospectPacks: ProspectPack[] = [];
+    const osmSnapshot = await this.overpass.queryBrands(
+      location.latitude,
+      location.longitude,
+      radius,
+      location.address
+    );
     const blended = blendWithNationalPrior(insights);
     const affinities = insights.map((i) => i.query?.affinity ?? 0).filter((a) => a > 0);
     const affinityThreshold = affinityThresholdAtPercentile(affinities, 0.75);
@@ -339,12 +333,7 @@ export class AnalysisService {
         continue;
       }
 
-      const verification = await this.verifyAbsence(
-        location.latitude,
-        location.longitude,
-        radius,
-        candidate.name
-      );
+      const verification = this.verifyAbsence(osmSnapshot, candidate.name);
 
       const reasons = this.generateReasons(candidate, location, nationalCount, radius);
 
@@ -374,18 +363,14 @@ export class AnalysisService {
     return prospectPacks;
   }
 
-  private async verifyAbsence(
-    lat: number,
-    lng: number,
-    radiusKm: number,
+  private verifyAbsence(
+    osmResult: { brands: Array<{ name: string; brand?: string }>; error?: string },
     brandName: string
-  ): Promise<{
+  ): {
     status: 'verified (2 sources)' | 'conflict' | 'unverified (1 source)' | 'unverified';
     sources: string[];
-  }> {
+  } {
     const sources: string[] = ['All The Places (CC0)'];
-
-    const osmResult = await this.overpass.queryBrands(lat, lng, radiusKm);
 
     if (osmResult.error) {
       console.warn(`Overpass fallback (${osmResult.error}): single-source verification`);
@@ -510,13 +495,21 @@ export class AnalysisService {
     brandName: string,
     address: string,
     reasons: string[],
-    runId: string
+    runId: string,
+    context?: {
+      affinityRank?: number;
+      neighborhood?: string;
+      nearestStoreKm?: number;
+    }
   ): Promise<string> {
     const draft = await this.openai.generateOutreach({
       brandName,
       address,
       reasons,
       runId,
+      affinityRank: context?.affinityRank,
+      neighborhood: context?.neighborhood,
+      nearestStoreKm: context?.nearestStoreKm,
     });
 
     return `${draft.subject}\n\n${draft.body}`;

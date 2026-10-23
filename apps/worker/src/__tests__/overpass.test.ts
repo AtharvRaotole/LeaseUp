@@ -81,7 +81,7 @@ describe('OverpassClient', () => {
       const result = await client.queryBrands(40.0, -105.0, 10);
 
       expect(result.brands).toHaveLength(0);
-      expect(result.error).toBe('429 Too Many Requests');
+      expect(result.error).toBe('overpass_unavailable');
       expect(result.cached).toBe(false);
     });
 
@@ -102,7 +102,7 @@ describe('OverpassClient', () => {
       const result = await client.queryBrands(40.0, -105.0, 10);
 
       expect(result.brands).toHaveLength(0);
-      expect(result.error).toBe('Network failure');
+      expect(result.error).toBe('overpass_unavailable');
     });
 
     it('caches successful responses with 24h TTL', async () => {

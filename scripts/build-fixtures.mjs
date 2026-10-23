@@ -9,6 +9,7 @@
 
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import { execSync } from 'child_process';
 
 function parseArgs(argv) {
   const args = {
@@ -36,6 +37,7 @@ function parseArgs(argv) {
 }
 
 const paths = parseArgs(process.argv);
+execSync('pnpm --filter @leaseup/fixtures build', { stdio: 'inherit', cwd: process.cwd() });
 const { computeBacktest } = await import('../packages/fixtures/dist/backtest.js');
 
 const neighTest = JSON.parse(readFileSync(paths.neighTest, 'utf8'));

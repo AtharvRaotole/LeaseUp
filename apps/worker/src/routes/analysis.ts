@@ -73,13 +73,28 @@ analysisRouter.post('/analyze/stream', async (c) => {
 
 analysisRouter.get('/heatmap', async (c) => {
   const entityId = c.req.query('entityId');
-  const location = c.req.query('location');
-  if (!entityId || !location) {
-    return c.json({ error: 'entityId and location are required', code: 'VALIDATION_ERROR' }, 400);
+  const lat = c.req.query('lat');
+  const lng = c.req.query('lng');
+  const radius = c.req.query('radius');
+  const address = c.req.query('address') || '';
+  if (!entityId || !lat || !lng || !radius) {
+    return c.json(
+      { error: 'entityId, lat, lng, and radius are required', code: 'VALIDATION_ERROR' },
+      400
+    );
   }
 
   const service = new AnalysisService(c.env);
-  const data = await service.fetchHeatmapForBrand(location, entityId, 'heatmap');
+  const data = await service.fetchHeatmapForBrand(
+    {
+      address,
+      latitude: Number(lat),
+      longitude: Number(lng),
+    },
+    Number(radius),
+    entityId,
+    'heatmap'
+  );
   if (data.cells.length === 0) {
     return c.json({ cells: [], available: false });
   }
@@ -104,7 +119,12 @@ analysisRouter.post('/outreach', async (c) => {
     request.brandName,
     request.address,
     request.reasons,
-    request.runId || 'outreach'
+    request.runId || 'outreach',
+    {
+      affinityRank: request.affinityRank,
+      neighborhood: request.neighborhood,
+      nearestStoreKm: request.nearestStoreKm,
+    }
   );
 
   return c.json({ draft });

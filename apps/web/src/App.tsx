@@ -9,6 +9,8 @@ import { CompareFlip } from './components/CompareFlip';
 import { ProspectPacks } from './components/ProspectPacks';
 import { HowWeKnowDrawer } from './components/HowWeKnowDrawer';
 import { analyzeWithStream } from './lib/analyzeStream';
+import { apiUrl } from './lib/api';
+import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +57,7 @@ function App() {
     if (completed) return;
 
     try {
-      const response = await fetch('/api/analyze', {
+      const response = await fetch(apiUrl('/api/analyze'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(request),
@@ -80,12 +82,10 @@ function App() {
     const demo = params.get('demo');
     if (!demo || startedDemo.current) return;
     startedDemo.current = true;
-    const addresses: Record<string, string> = {
-      wicker: '1574 N Milwaukee Ave, Chicago, IL 60622',
-      boulder: '1125 Pearl St, Boulder, CO 80302',
-      sevierville: '125 Collier Dr, Sevierville, TN 37862',
-    };
-    const address = addresses[demo];
+    const address =
+      demo === 'wicker' || demo === 'boulder' || demo === 'sevierville'
+        ? DEMO_CHIP_ADDRESSES[demo]
+        : undefined;
     if (address) void runAnalysis({ address, radius: 10 });
   }, [runAnalysis]);
 
@@ -102,7 +102,7 @@ function App() {
         )}
 
         {(isLoading || steps.length > 0) && (
-          <section>
+          <section className="no-print">
             <h2 className="text-sm uppercase tracking-wide text-zinc-500 mb-3">Agent timeline</h2>
             <AgentTimeline steps={steps} />
           </section>
@@ -113,7 +113,9 @@ function App() {
             {elapsedMs !== null && (
               <p className="text-xs text-zinc-500">Completed in {elapsedMs}ms</p>
             )}
-            <BacktestReveal results={results} />
+            <div className="no-print">
+              <BacktestReveal results={results} />
+            </div>
             <div className="grid lg:grid-cols-2 gap-6">
               <TasteMap
                 results={results}

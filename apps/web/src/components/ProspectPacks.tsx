@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
+import { apiUrl } from '../lib/api';
 
 interface ProspectPacksProps {
   results: AnalysisResponse;
@@ -11,7 +12,7 @@ interface ProspectPacksProps {
 export function ProspectPacks({ results, selectedId, onSelect }: ProspectPacksProps) {
   const outreach = useMutation({
     mutationFn: async (prospect: ProspectPack) => {
-      const res = await fetch('/api/outreach', {
+      const res = await fetch(apiUrl('/api/outreach'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -19,6 +20,9 @@ export function ProspectPacks({ results, selectedId, onSelect }: ProspectPacksPr
           address: results.location.resolvedAddress || results.location.address,
           reasons: prospect.reasons,
           runId: results.runId,
+          affinityRank: prospect.brand.affinityRank,
+          neighborhood: results.location.neighborhood || results.location.city,
+          nearestStoreKm: prospect.nearestExistingStoreKm,
         }),
       });
       if (!res.ok) {
