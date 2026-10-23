@@ -6,6 +6,29 @@ LeaseUp uses Qloo's Taste AI to find the perfect retail tenants for vacant store
 
 > Built for the [Qloo Agentic Hackathon 2026](https://qloo.devpost.com/)
 
+### 30-second pitch
+
+Enter a vacant storefront address. LeaseUp’s agent **locates** the site, **reads neighborhood taste** from Qloo (restricted to brands we can verify in All The Places), **proves** the signal with a backtest, **finds who’s missing**, **double-checks absence** with ATP + OSM, and **drafts outreach** only when you click. Demo chips load recorded Qloo responses in under a second.
+
+![Hero landing](docs/hero-landing.png)
+
+```mermaid
+flowchart LR
+  A[Storefront address] --> B[Nominatim + KV]
+  B --> C[Qloo insights]
+  C --> D[Backtest vs ATP]
+  C --> E[Prospects + verify]
+  E --> F[Outreach on demand]
+  D --> G[Map + Compare flip UI]
+```
+
+### Honest limitations
+
+- Backtests and absence checks cover **~47 major chains** in the ATP snapshot (not every retailer).
+- **Demo mode** uses recorded Qloo responses; **live mode** needs `QLOO_API_KEY`.
+- **Heatmap overlay** appears only when Qloo returns heatmap cells (live mode); no fabricated heatmaps in demo.
+- SSE streaming may fall back to `POST /api/analyze` behind some proxies; timings still real.
+
 ---
 
 ## 🎯 The Problem

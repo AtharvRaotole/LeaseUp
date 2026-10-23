@@ -66,6 +66,8 @@ export const ProspectPackSchema = z.object({
   }).optional(),
   outreachDraft: z.string(),
   reasons: z.array(z.string()),
+  nearestExistingStoreKm: z.number().optional(),
+  qlooSignals: z.array(z.string()).optional(),
 });
 
 export type ProspectPack = z.infer<typeof ProspectPackSchema>;
@@ -77,6 +79,59 @@ export const AnalysisRequestSchema = z.object({
 });
 
 export type AnalysisRequest = z.infer<typeof AnalysisRequestSchema>;
+
+export const AnalysisStepIdSchema = z.enum([
+  'locate',
+  'taste',
+  'backtest',
+  'prospects',
+  'verify',
+  'outreach_ready',
+]);
+
+export type AnalysisStepId = z.infer<typeof AnalysisStepIdSchema>;
+
+export const AnalysisStepSchema = z.object({
+  id: AnalysisStepIdSchema,
+  label: z.string(),
+  status: z.enum(['pending', 'running', 'complete', 'error']),
+  durationMs: z.number().optional(),
+  summary: z.string().optional(),
+  detail: z.record(z.unknown()).optional(),
+});
+
+export type AnalysisStep = z.infer<typeof AnalysisStepSchema>;
+
+export const BrandRankingRowSchema = z.object({
+  entityId: z.string(),
+  name: z.string(),
+  affinity: z.number(),
+  qlooRank: z.number(),
+  blendedRank: z.number(),
+  presentInRadius: z.boolean(),
+  nearestStoreKm: z.number().optional(),
+});
+
+export type BrandRankingRow = z.infer<typeof BrandRankingRowSchema>;
+
+export const HeatmapCellSchema = z.object({
+  latitude: z.number(),
+  longitude: z.number(),
+  affinity: z.number().optional(),
+  affinityRank: z.number(),
+});
+
+export type HeatmapCell = z.infer<typeof HeatmapCellSchema>;
+
+export const MapStorePointSchema = z.object({
+  entityId: z.string(),
+  brandName: z.string(),
+  latitude: z.number(),
+  longitude: z.number(),
+  distanceKm: z.number(),
+});
+
+export type MapStorePoint = z.infer<typeof MapStorePointSchema>;
 
 export const OutreachRequestSchema = z.object({
   brandName: z.string().min(1),
@@ -90,11 +145,17 @@ export type OutreachRequest = z.infer<typeof OutreachRequestSchema>;
 export const AnalysisResponseSchema = z.object({
   location: LocationSchema,
   backtest: BacktestResultSchema,
+  backtestBlended: BacktestResultSchema.optional(),
+  rankings: z.array(BrandRankingRowSchema).optional(),
+  mapStores: z.array(MapStorePointSchema).optional(),
+  heatmapAvailable: z.boolean().optional(),
   prospects: z.array(ProspectPackSchema),
   dataQuality: z.enum(['high', 'medium', 'low', 'insufficient']),
   warnings: z.array(z.string()),
   runId: z.string(),
   timestamp: z.string(),
+  mode: z.enum(['live', 'demo']).optional(),
+  chainPriorWeight: z.number().optional(),
 });
 
 export type AnalysisResponse = z.infer<typeof AnalysisResponseSchema>;

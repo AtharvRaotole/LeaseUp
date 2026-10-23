@@ -18,10 +18,17 @@ import {
   findStoresNearby,
   getNationalStoreCount,
   getStoreBrandIds,
-  computeBacktest,
   blendWithNationalPrior,
   CHAIN_PRIOR_BLEND_WEIGHT,
 } from '@leaseup/fixtures';
+import {
+  buildBrandRankings,
+  buildDualBacktest,
+  buildMapStores,
+  enrichProspectsWithNearest,
+  extractQlooSignals,
+} from '../lib/analysis-enrichment';
+import { runStep, type StepEmitter } from '../lib/analysis-steps';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -47,6 +54,17 @@ export class AnalysisService {
   }
 
   async analyze(request: AnalysisRequest, runId: string, ipHash: string): Promise<AnalysisResponse> {
+    return this.analyzeWithSteps(request, runId, ipHash);
+  }
+
+  async analyzeWithSteps(
+    request: AnalysisRequest,
+    runId: string,
+    ipHash: string,
+    onStep?: StepEmitter
+  ): Promise<AnalysisResponse> {
+    const emit: StepEmitter = onStep ?? (() => undefined);
+
     await this.db
       .prepare(
         'INSERT INTO analysis_runs (run_id, address, status, ip_address, created_at) VALUES (?, ?, ?, ?, ?)'
@@ -55,23 +73,108 @@ export class AnalysisService {
       .run();
 
     try {
-      const location = await this.resolveLocation(request.address);
-      const qlooLocation = this.buildQlooLocationQuery(location, request.address);
-
-      const insights = await this.qloo.getBrandInsights({
-        location: qlooLocation,
-        brandIds: getStoreBrandIds(),
-        tags: request.categoryTags,
-        take: 50,
-        runId,
+      const location = await runStep(emit, 'locate', 'Locate storefront', async () => {
+        const resolved = await this.resolveLocation(request.address);
+        return {
+          summary: resolved.resolvedAddress || resolved.address,
+          detail: {
+            latitude: resolved.latitude,
+            longitude: resolved.longitude,
+            city: resolved.city,
+            neighborhood: resolved.neighborhood,
+          },
+          result: resolved,
+        };
       });
 
+      const qlooLocation = this.buildQlooLocationQuery(location, request.address);
+
+      const insights = await runStep(
+        emit,
+        'taste',
+        "Read the neighborhood's taste (Qloo)",
+        async () => {
+          const rows = await this.qloo.getBrandInsights({
+            location: qlooLocation,
+            brandIds: getStoreBrandIds(),
+            tags: request.categoryTags,
+            take: 50,
+            runId,
+          });
+          return {
+            summary: `${rows.length} brands ranked for ${qlooLocation}`,
+            detail: { brandCount: rows.length, query: qlooLocation },
+            result: rows,
+          };
+        }
+      );
+
       if (insights.length === 0) {
-        return this.insufficientDataResponse(location, runId);
+        const empty = this.insufficientDataResponse(location, runId);
+        await this.persistRun(runId, location, empty, 'completed');
+        return empty;
       }
 
-      const backtest = this.runBacktest(location, insights, request.radius);
-      const prospects = await this.generateProspects(location, insights, request.radius, runId);
+      const { raw: backtest, blended: backtestBlended } = await runStep(
+        emit,
+        'backtest',
+        'Prove it (backtest)',
+        async () => {
+          const dual = buildDualBacktest(location, insights, request.radius);
+          return {
+            summary: `Raw P@10 ${(dual.raw.precisionAt10 * 100).toFixed(0)}% · Blended P@10 ${(dual.blended.precisionAt10 * 100).toFixed(0)}%`,
+            detail: {
+              rawPrecisionAt10: dual.raw.precisionAt10,
+              blendedPrecisionAt10: dual.blended.precisionAt10,
+              rawAuc: dual.raw.auc,
+              blendedAuc: dual.blended.auc,
+            },
+            result: dual,
+          };
+        }
+      );
+
+      const prospects = await runStep(
+        emit,
+        'prospects',
+        "Find who's missing",
+        async () => {
+          const packs = await this.generateProspects(location, insights, request.radius, runId);
+          return {
+            summary: `${packs.length} high-affinity brands absent in radius`,
+            detail: { count: packs.length },
+            result: packs,
+          };
+        }
+      );
+
+      await runStep(emit, 'verify', 'Double-check absence (ATP + OSM)', async () => {
+        const verified = prospects.filter((p) => p.brand.verified === 'verified (2 sources)').length;
+        return {
+          summary: `${verified} prospects verified by ATP + OpenStreetMap`,
+          detail: {
+            verified,
+            conflicts: prospects.filter((p) => p.brand.verified === 'conflict').length,
+          },
+          result: true,
+        };
+      });
+
+      await runStep(emit, 'outreach_ready', 'Draft outreach (on demand)', async () => ({
+        summary: 'Outreach drafts generate on click (never auto-sent)',
+        result: true,
+      }));
+
+      const rankings = buildBrandRankings(location, insights, request.radius);
+      const mapStores = buildMapStores(location, insights, request.radius);
+      const enrichedProspects = enrichProspectsWithNearest(prospects, location).map((pack) => {
+        const insight = insights.find((i) => i.entity_id === pack.brand.entityId);
+        const signals = insight ? extractQlooSignals(insight) : [];
+        return {
+          ...pack,
+          qlooSignals: signals.length > 0 ? signals : undefined,
+        };
+      });
 
       const dataQuality = this.assessDataQuality(insights.length, backtest);
       const warnings = this.generateWarnings(insights.length, backtest, location);
@@ -79,18 +182,20 @@ export class AnalysisService {
       const response: AnalysisResponse = {
         location,
         backtest,
-        prospects,
+        backtestBlended,
+        rankings,
+        mapStores,
+        heatmapAvailable: this.mode === 'live',
+        prospects: enrichedProspects,
         dataQuality,
         warnings,
         runId,
         timestamp: new Date().toISOString(),
+        mode: this.mode,
+        chainPriorWeight: CHAIN_PRIOR_BLEND_WEIGHT,
       };
 
-      await this.db
-        .prepare('UPDATE analysis_runs SET status = ?, result = ?, latitude = ?, longitude = ? WHERE run_id = ?')
-        .bind('completed', JSON.stringify(response), location.latitude, location.longitude, runId)
-        .run();
-
+      await this.persistRun(runId, location, response, 'completed');
       return response;
     } catch (error) {
       await this.db
@@ -100,6 +205,31 @@ export class AnalysisService {
 
       throw error;
     }
+  }
+
+  private async persistRun(
+    runId: string,
+    location: Location,
+    response: AnalysisResponse,
+    status: string
+  ): Promise<void> {
+    await this.db
+      .prepare('UPDATE analysis_runs SET status = ?, result = ?, latitude = ?, longitude = ? WHERE run_id = ?')
+      .bind(status, JSON.stringify(response), location.latitude, location.longitude, runId)
+      .run();
+  }
+
+  async fetchHeatmapForBrand(
+    locationQuery: string,
+    entityId: string,
+    runId?: string
+  ): Promise<{ cells: Array<{ latitude: number; longitude: number; affinity_rank: number; affinity?: number }> }> {
+    const cells = await this.qloo.getHeatmap({
+      location: locationQuery,
+      entityId,
+      runId,
+    });
+    return { cells };
   }
 
   private buildQlooLocationQuery(location: Location, address: string): string {
@@ -174,23 +304,6 @@ export class AnalysisService {
       address,
       ...wickerparkFixture.location,
       resolvedAddress: wickerparkFixture.location.name,
-    };
-  }
-
-  private runBacktest(
-    location: Location,
-    insights: Array<{ entity_id: string; name: string; query?: { affinity_rank?: number } }>,
-    radius: number
-  ): BacktestResult {
-    const computed = computeBacktest(insights, location.latitude, location.longitude, radius);
-    return {
-      totalStores: computed.totalStores,
-      predictedStores: computed.predictedStores,
-      accuracy: computed.accuracy,
-      precisionAt10: computed.precisionAt10,
-      presentInTop10: computed.presentInTop10,
-      auc: computed.auc,
-      examples: computed.examples,
     };
   }
 

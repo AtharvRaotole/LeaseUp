@@ -1,44 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background: #0a0a0b;
+  color: #fafafa;
 }
 
 .maplibregl-map {
   font-family: inherit;
+  border-radius: 12px;
 }
 
 .maplibregl-ctrl-attrib {
   font-size: 10px;
 }
 
-.backtest-badge {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+.glass {
+  @apply bg-surface-raised/80 backdrop-blur border border-surface-border;
 }
 
-.backtest-badge.high {
-  @apply bg-green-100 text-green-800;
-}
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
 
-.backtest-badge.medium {
-  @apply bg-yellow-100 text-yellow-800;
-}
+  .no-print {
+    display: none !important;
+  }
 
-.backtest-badge.low {
-  @apply bg-red-100 text-red-800;
-}
-
-.prospect-card {
-  @apply bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow;
-}
-
-.metric-card {
-  @apply bg-gradient-to-br from-brand-50 to-brand-100 rounded-lg p-6;
+  .print-pack {
+    padding: 24px;
+  }
 }
