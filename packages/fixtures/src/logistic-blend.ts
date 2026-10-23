@@ -1,5 +1,5 @@
 import type { EvalSiteDensity } from './eval/types.js';
-import coefficients from './eval/live-qloo-lift/logistic-coefficients.json' with { type: 'json' };
+import { logisticBlendCoefficients as coefficients } from './eval/live-qloo-lift/logistic-coefficients-data.js';
 import { getNationalStoreCount } from './store-geo.js';
 
 export type LogisticBlendCoefficients = typeof coefficients;
