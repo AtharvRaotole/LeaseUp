@@ -293,7 +293,7 @@ export function ReportPage() {
           testId="report-section-vacancy-costs"
           sectionId="report-vacancy-costs"
           title="What it costs you"
-          description="Vacancy math and storefront size for format fit."
+          description="Monthly vacancy cost and how big the space is."
           defaultOpen={expandDeepSections}
         >
           <div className="no-print print-pitch-block">
@@ -324,7 +324,7 @@ export function ReportPage() {
           testId="report-section-how-we-know"
           sectionId="report-how-we-know"
           title="How we know"
-          description="Evaluation metrics, rankings, charts, and methodology."
+          description="How we ranked brands, charts, and methodology."
           defaultOpen={expandDeepSections}
         >
           <ProductExplainer className="no-print rounded-card border border-border bg-surface-2/80 px-4 py-4 text-body" />

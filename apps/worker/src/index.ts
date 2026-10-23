@@ -18,6 +18,7 @@ import { geocodeRouter } from './routes/geocode';
 import { pipelineRouter } from './routes/pipeline';
 import { ownerUpdateRouter } from './routes/owner-update';
 import { shareRouter } from './routes/share';
+import { allowedOrigins } from './lib/cors-allowed-origins';
 
 export interface Env {
   DB: D1Database;
@@ -32,6 +33,7 @@ export interface Env {
   NOMINATIM_CONTACT?: string;
   GIT_SHA?: string;
   BUILD_TIME?: string;
+  CI?: string;
 }
 
 const app = new Hono<{ Bindings: Env }>();
@@ -42,15 +44,7 @@ app.use(
   '*',
   cors({
     origin: (origin, c) => {
-      const allowed = c.env.ALLOWED_ORIGINS?.split(',') || [
-        'http://localhost:5173',
-        'http://localhost:3000',
-        'http://localhost:4173',
-        'http://localhost:4178',
-        'http://127.0.0.1:4173',
-        'http://127.0.0.1:4178',
-        'http://127.0.0.1:5173',
-      ];
+      const allowed = allowedOrigins(c.env);
       return allowed.includes(origin) ? origin : allowed[0]!;
     },
     credentials: true,
