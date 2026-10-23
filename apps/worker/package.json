@@ -15,6 +15,7 @@
   "dependencies": {
     "@leaseup/contracts": "workspace:*",
     "@leaseup/fixtures": "workspace:*",
+    "@resvg/resvg-wasm": "^2.6.2",
     "hono": "^4.7.9",
     "zod": "^3.24.1"
   },
