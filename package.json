@@ -10,9 +10,11 @@
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "verify:ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "screenshots": "node scripts/capture-screenshots.mjs",
     "deploy": "pnpm --filter @leaseup/worker deploy"
   },
   "devDependencies": {
+    "playwright": "^1.49.1",
     "@eslint/js": "^10.0.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.1.0",

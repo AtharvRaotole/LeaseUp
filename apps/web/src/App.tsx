@@ -1,102 +1,136 @@
-import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import type { AnalysisRequest, AnalysisResponse } from '@leaseup/contracts';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { AnalysisRequest, AnalysisResponse, AnalysisStep, ProspectPack } from '@leaseup/contracts';
 import { Header } from './components/Header';
-import { SearchForm } from './components/SearchForm';
-import { ResultsView } from './components/ResultsView';
-import { DemoLocations } from './components/DemoLocations';
+import { HeroSearch } from './components/HeroSearch';
+import { AgentTimeline } from './components/AgentTimeline';
+import { BacktestReveal } from './components/BacktestReveal';
+import { TasteMap } from './components/TasteMap';
+import { CompareFlip } from './components/CompareFlip';
+import { ProspectPacks } from './components/ProspectPacks';
+import { HowWeKnowDrawer } from './components/HowWeKnowDrawer';
+import { analyzeWithStream } from './lib/analyzeStream';
 
 function App() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [steps, setSteps] = useState<AnalysisStep[]>([]);
   const [results, setResults] = useState<AnalysisResponse | null>(null);
+  const [selectedProspect, setSelectedProspect] = useState<ProspectPack | null>(null);
+  const [elapsedMs, setElapsedMs] = useState<number | null>(null);
 
-  const analyzeMutation = useMutation({
-    mutationFn: async (request: AnalysisRequest) => {
+  const startedDemo = useRef(false);
+
+  const runAnalysis = useCallback(async (request: AnalysisRequest) => {
+    setIsLoading(true);
+    setError(null);
+    setResults(null);
+    setSteps([]);
+    setSelectedProspect(null);
+    const started = performance.now();
+
+    let completed = false;
+
+    const streamPromise = analyzeWithStream(request, {
+      onStep: (step) => {
+        setSteps((prev) => {
+          const next = prev.filter((s) => s.id !== step.id);
+          return [...next, step];
+        });
+      },
+      onComplete: (payload) => {
+        completed = true;
+        setResults(payload);
+        setElapsedMs(Math.round(performance.now() - started));
+        setIsLoading(false);
+        if (payload.prospects[0]) setSelectedProspect(payload.prospects[0]);
+      },
+      onError: () => undefined,
+    });
+
+    await Promise.race([
+      streamPromise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('stream-timeout')), 4000)),
+    ]).catch(() => undefined);
+
+    if (completed) return;
+
+    try {
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(request),
       });
-
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Analysis failed');
+        const err = await response.json();
+        throw new Error(err.error || 'Analysis failed');
       }
+      const payload = (await response.json()) as AnalysisResponse;
+      setResults(payload);
+      setElapsedMs(Math.round(performance.now() - started));
+      if (payload.prospects[0]) setSelectedProspect(payload.prospects[0]);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
-      return response.json() as Promise<AnalysisResponse>;
-    },
-    onSuccess: (data) => {
-      setResults(data);
-    },
-  });
-
-  const handleAnalyze = (request: AnalysisRequest) => {
-    analyzeMutation.mutate(request);
-  };
-
-  const handleDemoSelect = (address: string) => {
-    handleAnalyze({ address, radius: 10 });
-  };
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const demo = params.get('demo');
+    if (!demo || startedDemo.current) return;
+    startedDemo.current = true;
+    const addresses: Record<string, string> = {
+      wicker: '1574 N Milwaukee Ave, Chicago, IL 60622',
+      boulder: '1125 Pearl St, Boulder, CO 80302',
+      sevierville: '125 Collier Dr, Sevierville, TN 37862',
+    };
+    const address = addresses[demo];
+    if (address) void runAnalysis({ address, radius: 10 });
+  }, [runAnalysis]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-surface text-zinc-100">
       <Header />
-      
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Find Your Perfect Tenant
-          </h2>
-          <p className="text-lg text-gray-600 mb-6">
-            Drop a pin or enter an address for a vacant storefront. LeaseUp will show you which brands
-            have high local affinity but aren't there yet—backed by data and proven with backtests.
-          </p>
+      <main className="max-w-6xl mx-auto px-4 py-10 space-y-10">
+        <HeroSearch onSubmit={runAnalysis} isLoading={isLoading} />
 
-          <SearchForm
-            onSubmit={handleAnalyze}
-            isLoading={analyzeMutation.isPending}
-          />
+        {error && (
+          <div className="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-200 text-sm">
+            {error}
+          </div>
+        )}
 
-          {analyzeMutation.error && (
-            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-800">
-                {(analyzeMutation.error as Error).message}
-              </p>
-            </div>
-          )}
-        </div>
-
-        {!results && !analyzeMutation.isPending && (
-          <DemoLocations onSelect={handleDemoSelect} />
+        {(isLoading || steps.length > 0) && (
+          <section>
+            <h2 className="text-sm uppercase tracking-wide text-zinc-500 mb-3">Agent timeline</h2>
+            <AgentTimeline steps={steps} />
+          </section>
         )}
 
         {results && (
-          <ResultsView results={results} />
-        )}
-
-        {analyzeMutation.isPending && (
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg shadow-lg p-8">
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div>
-                <p className="ml-4 text-lg text-gray-600">
-                  Analyzing location with Qloo Taste AI...
-                </p>
-              </div>
+          <div className="space-y-10">
+            {elapsedMs !== null && (
+              <p className="text-xs text-zinc-500">Completed in {elapsedMs}ms</p>
+            )}
+            <BacktestReveal results={results} />
+            <div className="grid lg:grid-cols-2 gap-6">
+              <TasteMap
+                results={results}
+                selectedProspect={selectedProspect}
+                onSelectProspect={setSelectedProspect}
+              />
+              <CompareFlip />
             </div>
+            <ProspectPacks
+              results={results}
+              selectedId={selectedProspect?.brand.entityId ?? null}
+              onSelect={setSelectedProspect}
+            />
           </div>
         )}
       </main>
-
-      <footer className="bg-gray-900 text-white py-8 mt-16">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-400">
-            Powered by Qloo Taste AI | Built for Qloo Agentic Hackathon 2026
-          </p>
-          <p className="text-gray-500 text-sm mt-2">
-            Aggregate data only • No personal information • Privacy-first
-          </p>
-        </div>
-      </footer>
+      <HowWeKnowDrawer results={results} />
     </div>
   );
 }

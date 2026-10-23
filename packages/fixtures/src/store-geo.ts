@@ -1,4 +1,4 @@
-import storeLocations from './store-locations.json' with { type: 'json' };
+import storeLocations from './store-locations.json';
 
 interface BrandData {
   name: string;
@@ -56,4 +56,62 @@ export function getStoreBrandIds(): string[] {
 
 export function getStoreBrandIdSet(): Set<string> {
   return new Set(getStoreBrandIds());
+}
+
+/** Nearest ATP store for a brand to a point (any distance). */
+export function nearestStoreDistanceKm(
+  brandId: string,
+  lat: number,
+  lon: number
+): number | undefined {
+  const brand = storeData[brandId];
+  if (!brand) return undefined;
+
+  let min = Infinity;
+  for (const location of brand.locations) {
+    const [storeLat, storeLon] = location;
+    if (storeLat === undefined || storeLon === undefined) continue;
+    const distance = haversineDistance(lat, lon, storeLat, storeLon);
+    if (distance < min) min = distance;
+  }
+
+  return min === Infinity ? undefined : min;
+}
+
+export function mapStoresForTopBrands(
+  brandIds: string[],
+  brandNames: Record<string, string>,
+  centerLat: number,
+  centerLon: number,
+  radiusKm: number,
+  maxPerBrand = 3
+): Array<{
+  entityId: string;
+  brandName: string;
+  latitude: number;
+  longitude: number;
+  distanceKm: number;
+}> {
+  const points: Array<{
+    entityId: string;
+    brandName: string;
+    latitude: number;
+    longitude: number;
+    distanceKm: number;
+  }> = [];
+
+  for (const entityId of brandIds) {
+    const nearby = findStoresNearby(entityId, centerLat, centerLon, radiusKm).slice(0, maxPerBrand);
+    for (const store of nearby) {
+      points.push({
+        entityId,
+        brandName: brandNames[entityId] || entityId,
+        latitude: store.lat,
+        longitude: store.lon,
+        distanceKm: store.distance,
+      });
+    }
+  }
+
+  return points;
 }

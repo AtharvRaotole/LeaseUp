@@ -7,6 +7,7 @@ import { errorHandler } from './middleware/error-handler';
 import { metricsMiddleware } from './middleware/metrics';
 import { analysisRouter } from './routes/analysis';
 import { healthRouter } from './routes/health';
+import { compareRouter } from './routes/compare';
 
 export interface Env {
   DB: D1Database;
@@ -53,6 +54,7 @@ app.use('/api/analyze', rateLimiter({
 }));
 
 app.route('/api/health', healthRouter);
+app.route('/api/compare', compareRouter);
 app.route('/api', analysisRouter);
 
 app.onError(errorHandler);

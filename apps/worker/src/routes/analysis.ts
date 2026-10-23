@@ -31,6 +31,70 @@ analysisRouter.post('/analyze', async (c) => {
   return c.json(result);
 });
 
+analysisRouter.post('/analyze/stream', async (c) => {
+  const body = await c.req.json();
+  const request = AnalysisRequestSchema.parse(body);
+
+  const runId = randomUUID();
+  const ip = c.req.header('cf-connecting-ip') || 'unknown';
+  const ipHash = await hashIP(ip);
+
+  const { readable, writable } = new TransformStream();
+  const writer = writable.getWriter();
+  const encoder = new TextEncoder();
+
+  const send = async (event: string, data: unknown) => {
+    await writer.write(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+  };
+
+  const service = new AnalysisService(c.env);
+
+  void (async () => {
+    try {
+      const result = await service.analyzeWithSteps(request, runId, ipHash, async (step) => {
+        await send('step', step);
+      });
+      await send('complete', result);
+    } catch (error) {
+      await send('error', { message: (error as Error).message });
+    } finally {
+      await writer.close();
+    }
+  })();
+
+  return new Response(readable, {
+    headers: {
+      'Content-Type': 'text/event-stream; charset=utf-8',
+      'Cache-Control': 'no-cache, no-transform',
+      Connection: 'keep-alive',
+    },
+  });
+});
+
+analysisRouter.get('/heatmap', async (c) => {
+  const entityId = c.req.query('entityId');
+  const location = c.req.query('location');
+  if (!entityId || !location) {
+    return c.json({ error: 'entityId and location are required', code: 'VALIDATION_ERROR' }, 400);
+  }
+
+  const service = new AnalysisService(c.env);
+  const data = await service.fetchHeatmapForBrand(location, entityId, 'heatmap');
+  if (data.cells.length === 0) {
+    return c.json({ cells: [], available: false });
+  }
+
+  return c.json({
+    available: true,
+    cells: data.cells.map((cell) => ({
+      latitude: cell.latitude,
+      longitude: cell.longitude,
+      affinity: cell.affinity,
+      affinityRank: cell.affinity_rank,
+    })),
+  });
+});
+
 analysisRouter.post('/outreach', async (c) => {
   const body = await c.req.json();
   const request = OutreachRequestSchema.parse(body);
