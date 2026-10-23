@@ -7,6 +7,11 @@ import {
   parseQlooExplainabilityRows,
 } from '@leaseup/fixtures/worker';
 import { ConfigurationError, UpstreamError } from '../lib/errors';
+import {
+  fetchQlooWithRetry,
+  qlooUnavailableError,
+  QLOO_UNAVAILABLE_USER_MESSAGE,
+} from './qloo-fetch.js';
 import { sha256Short } from '../lib/cache-key';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
@@ -201,7 +206,7 @@ export class QlooClient {
     url.searchParams.set('feature.explainability', 'true');
 
     const start = Date.now();
-    const response = await this.fetchWithRetry(url.toString());
+    const response = await fetchQlooWithRetry(url.toString(), this.apiKey);
     const latency = Date.now() - start;
 
     if (!response.ok) {
@@ -285,7 +290,7 @@ export class QlooClient {
     url.searchParams.set('feature.explainability', 'true');
 
     const start = Date.now();
-    const response = await this.fetchWithRetry(url.toString());
+    const response = await fetchQlooWithRetry(url.toString(), this.apiKey);
     const latency = Date.now() - start;
 
     if (!response.ok) {
@@ -348,7 +353,7 @@ export class QlooClient {
     }
 
     const start = Date.now();
-    const response = await this.fetchWithRetry(url.toString());
+    const response = await fetchQlooWithRetry(url.toString(), this.apiKey);
     const latency = Date.now() - start;
 
     if (!response.ok) {
@@ -446,64 +451,23 @@ export class QlooClient {
     return `q:${location.query}`;
   }
 
-  private mapQlooHttpError(statusCode: number, statusText: string, kind = 'insights'): UpstreamError {
+  private mapQlooHttpError(statusCode: number, _statusText: string, kind = 'insights'): UpstreamError {
     if (statusCode === 401) {
-      return new UpstreamError(
+      const err = new UpstreamError(
         'Upstream auth failed: Qloo API rejected the API key (401). Check QLOO_API_KEY.',
         502
       );
+      err.code = 'QLOO_AUTH_FAILED';
+      err.userMessage =
+        'Taste data is unavailable right now. Check API configuration or try again later.';
+      return err;
     }
-    if (statusCode === 429) {
-      return new UpstreamError(
-        'Qloo API rate limit exceeded (429). Please try again in a few moments.',
-        503
-      );
+    if (statusCode === 429 || statusCode >= 500) {
+      return qlooUnavailableError(`Qloo ${kind} HTTP ${statusCode} after retries`);
     }
-    if (statusCode >= 500) {
-      return new UpstreamError(`Qloo API service unavailable (${statusCode}).`, 502);
-    }
-    return new UpstreamError(`Qloo ${kind} API error (${statusCode}): ${statusText}`, 502);
-  }
-
-  private async fetchWithRetry(url: string, maxRetries = 3): Promise<Response> {
-    let lastResponse: Response | undefined;
-
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
-      const response = await this.fetch(url);
-      if (response.status !== 429) {
-        return response;
-      }
-      lastResponse = response;
-      if (attempt < maxRetries) {
-        const delayMs = Math.min(1000 * 2 ** attempt, 8000);
-        await new Promise((resolve) => setTimeout(resolve, delayMs));
-      }
-    }
-
-    return lastResponse!;
-  }
-
-  private async fetch(url: string): Promise<Response> {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30000);
-
-    try {
-      return await fetch(url, {
-        headers: {
-          'X-Api-Key': this.apiKey,
-          Accept: 'application/json',
-          'User-Agent': 'LeaseUp/1.0',
-        },
-        signal: controller.signal,
-      });
-    } catch (err) {
-      if ((err as Error).name === 'AbortError') {
-        throw new UpstreamError('Qloo API timeout', 502);
-      }
-      throw new UpstreamError('Qloo API fetch error', 502);
-    } finally {
-      clearTimeout(timeout);
-    }
+    const err = qlooUnavailableError(`Qloo ${kind} HTTP ${statusCode}`);
+    err.userMessage = QLOO_UNAVAILABLE_USER_MESSAGE;
+    return err;
   }
 
   private getDemoInsights(fixtureName: string): QlooInsight[] {

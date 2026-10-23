@@ -9,6 +9,9 @@ export class ConfigurationError extends Error {
 
 export class UpstreamError extends Error {
   statusCode: number;
+  code?: string;
+  /** Broker-safe copy for API responses (never raw upstream text). */
+  userMessage?: string;
 
   constructor(message: string, statusCode: number) {
     super(message);
