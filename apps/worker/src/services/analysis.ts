@@ -21,6 +21,9 @@ import {
 } from '@leaseup/fixtures';
 import { createStoreCatalog, type StoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
+import { toOverpassSearchBrand } from '../lib/osm-brand-hints';
+import { OSM_WIKIDATA_BY_ENTITY } from '../data/osm-wikidata-map';
+import type { OverpassSearchBrand } from '../lib/overpass-query';
 import type { QlooLocation } from '../providers/qloo';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
@@ -313,6 +316,12 @@ export class AnalysisService {
       isProspectCandidate(candidate, insights.length, affinityThreshold)
     );
 
+    type Eligible = {
+      candidate: (typeof candidates)[number];
+      nationalCount: number;
+    };
+    const eligible: Eligible[] = [];
+
     for (const candidate of candidates) {
       const nearbyStores = await this.catalog.findStoresNearby(
         candidate.entity_id,
@@ -330,17 +339,36 @@ export class AnalysisService {
         continue;
       }
 
+      eligible.push({ candidate, nationalCount });
+      if (eligible.length >= 10) {
+        break;
+      }
+    }
+
+    const searchBrands: OverpassSearchBrand[] = eligible.map(({ candidate }) =>
+      toOverpassSearchBrand(
+        candidate.entity_id,
+        candidate.name,
+        [displayBrandName(candidate.entity_id, candidate.name)]
+      )
+    );
+
+    const osmBatch =
+      this.mode === 'demo' && eligible.length > 0
+        ? await this.overpass.queryProspectBrands(
+            location.latitude,
+            location.longitude,
+            radius,
+            searchBrands,
+            location.address
+          )
+        : null;
+
+    for (const { candidate, nationalCount } of eligible) {
+      const displayName = displayBrandName(candidate.entity_id, candidate.name);
       const verification =
-        this.mode === 'demo'
-          ? this.verifyAbsence(
-              await this.overpass.queryBrands(
-                location.latitude,
-                location.longitude,
-                radius,
-                location.address
-              ),
-              candidate.name
-            )
+        this.mode === 'demo' && osmBatch
+          ? this.verifyAbsence(osmBatch, displayName, candidate.entity_id, candidate.name)
           : { status: 'verifying...' as const, sources: ['All The Places (CC0)'] };
 
       if (verification.status === 'conflict - likely present') {
@@ -361,7 +389,7 @@ export class AnalysisService {
         coverageNote,
         brand: {
           entityId: candidate.entity_id,
-          name: displayBrandName(candidate.entity_id, candidate.name),
+          name: displayName,
           affinity: candidate.query?.affinity || 0,
           affinityRank: candidate.qlooRank,
           popularity: undefined,
@@ -375,10 +403,6 @@ export class AnalysisService {
         outreachDraft: '',
         reasons,
       });
-
-      if (prospectPacks.length >= 10) {
-        break;
-      }
     }
 
     return prospectPacks;
@@ -388,20 +412,52 @@ export class AnalysisService {
     location: Location,
     radiusKm: number,
     prospects: ProspectPack[]
-  ): Promise<ProspectPack[]> {
-    const cached = await this.overpass.queryBrands(
+  ): Promise<{
+    prospects: ProspectPack[];
+    summary: {
+      verifiedTwoSource: number;
+      singleSource: number;
+      conflicts: number;
+      unavailable: boolean;
+    };
+  }> {
+    const pending = prospects.filter((p) => p.brand.verified === 'verifying...');
+    if (pending.length === 0) {
+      return {
+        prospects,
+        summary: { verifiedTwoSource: 0, singleSource: 0, conflicts: 0, unavailable: false },
+      };
+    }
+
+    const searchBrands = pending.map((pack) =>
+      toOverpassSearchBrand(pack.brand.entityId, pack.brand.name)
+    );
+
+    const osmResult = await this.overpass.queryProspectBrands(
       location.latitude,
       location.longitude,
       radiusKm,
+      searchBrands,
       location.address
     );
 
-    return prospects
+    let verifiedTwoSource = 0;
+    let singleSource = 0;
+    let conflicts = 0;
+
+    const updated = prospects
       .map((pack) => {
         if (pack.brand.verified !== 'verifying...') {
           return pack;
         }
-        const verification = this.verifyAbsence(cached, pack.brand.name);
+        const verification = this.verifyAbsence(
+          osmResult,
+          pack.brand.name,
+          pack.brand.entityId
+        );
+        if (verification.status === 'verified (2 sources)') verifiedTwoSource += 1;
+        if (verification.status === 'unverified (1 source)') singleSource += 1;
+        if (verification.status === 'conflict - likely present') conflicts += 1;
         return {
           ...pack,
           brand: {
@@ -412,11 +468,26 @@ export class AnalysisService {
         };
       })
       .filter((pack) => pack.brand.verified !== 'conflict - likely present');
+
+    return {
+      prospects: updated,
+      summary: {
+        verifiedTwoSource,
+        singleSource,
+        conflicts,
+        unavailable: !!osmResult.error,
+      },
+    };
   }
 
   private verifyAbsence(
-    osmResult: { brands: Array<{ name: string; brand?: string }>; error?: string },
-    brandName: string
+    osmResult: {
+      brands: Array<{ name: string; brand?: string; brandWikidata?: string }>;
+      error?: string;
+    },
+    brandName: string,
+    entityId?: string,
+    qlooName?: string
   ): {
     status:
       | 'verified (2 sources)'
@@ -437,11 +508,22 @@ export class AnalysisService {
       };
     }
 
-    const osmHasBrand = osmResult.brands.some(
-      (b) =>
-        b.brand?.toLowerCase().includes(brandName.toLowerCase()) ||
-        b.name.toLowerCase().includes(brandName.toLowerCase())
-    );
+    const needles = [brandName, qlooName].filter(Boolean).map((s) => s!.toLowerCase());
+    const wikidata = entityId ? OSM_WIKIDATA_BY_ENTITY[entityId] : undefined;
+
+    const osmHasBrand = osmResult.brands.some((b) => {
+      if (wikidata && b.brandWikidata === wikidata) return true;
+      const brandLower = b.brand?.toLowerCase() ?? '';
+      const nameLower = b.name.toLowerCase();
+      return needles.some(
+        (n) =>
+          n.length > 0 &&
+          (brandLower.includes(n) ||
+            n.includes(brandLower) ||
+            nameLower.includes(n) ||
+            n.includes(nameLower))
+      );
+    });
 
     if (osmHasBrand) {
       return {

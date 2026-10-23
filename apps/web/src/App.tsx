@@ -45,12 +45,49 @@ function App() {
         setElapsedMs(Math.round(performance.now() - started));
         setIsLoading(false);
         if (payload.prospects[0]) setSelectedProspect(payload.prospects[0]);
+        const pending = payload.prospects.filter((p) => p.brand.verified === 'verifying...').length;
+        if (pending > 0) {
+          setSteps((prev) =>
+            prev.map((s) =>
+              s.id === 'verify'
+                ? {
+                    ...s,
+                    summary: `${pending} queued for OpenStreetMap verification (non-blocking)`,
+                  }
+                : s
+            )
+          );
+        }
       },
       onVerification: (payload) => {
         setResults((prev) =>
           prev
             ? { ...prev, prospects: payload.prospects }
             : prev
+        );
+        const summary = payload.osmSummary;
+        let verifySummary = 'OpenStreetMap verification complete';
+        if (summary?.unavailable) {
+          verifySummary = 'OSM unavailable — showing 1-source results';
+        } else if (summary) {
+          const parts: string[] = [];
+          if (summary.verifiedTwoSource > 0) {
+            parts.push(`${summary.verifiedTwoSource} verified (ATP + OSM)`);
+          }
+          if (summary.conflicts > 0) {
+            parts.push(`${summary.conflicts} conflict${summary.conflicts === 1 ? '' : 's'} removed`);
+          }
+          if (summary.singleSource > 0) {
+            parts.push(`${summary.singleSource} single-source only`);
+          }
+          if (parts.length > 0) verifySummary = parts.join(' · ');
+        }
+        setSteps((prev) =>
+          prev.map((s) =>
+            s.id === 'verify'
+              ? { ...s, status: 'complete' as const, summary: verifySummary }
+              : s
+          )
         );
       },
       onError: () => undefined,

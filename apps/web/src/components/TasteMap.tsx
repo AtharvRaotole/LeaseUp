@@ -3,6 +3,7 @@ import maplibregl from 'maplibre-gl';
 import type { FeatureCollection, Point } from 'geojson';
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 import { apiUrl } from '../lib/api';
+import { heatmapWeightsFromAffinity } from '../lib/heatmap-scale';
 
 interface TasteMapProps {
   results: AnalysisResponse;
@@ -17,7 +18,7 @@ export function TasteMap({ results, selectedProspect, onSelectProspect }: TasteM
   const [storesTick, setStoresTick] = useState(0);
   const [heatmapTick, setHeatmapTick] = useState(0);
   const [heatmapCells, setHeatmapCells] = useState<
-    Array<{ latitude: number; longitude: number; affinityRank: number }>
+    Array<{ latitude: number; longitude: number; weight: number }>
   >([]);
 
   const heatmapToggleVisible = results.heatmapAvailable === true;
@@ -114,7 +115,7 @@ export function TasteMap({ results, selectedProspect, onSelectProspect }: TasteM
       type: 'FeatureCollection',
       features: heatmapCells.map((cell) => ({
         type: 'Feature',
-        properties: { weight: cell.affinityRank },
+        properties: { weight: cell.weight },
         geometry: {
           type: 'Point',
           coordinates: [cell.longitude, cell.latitude],
@@ -170,7 +171,23 @@ export function TasteMap({ results, selectedProspect, onSelectProspect }: TasteM
     const res = await fetch(apiUrl(`/api/heatmap?${params.toString()}`));
     const data = await res.json();
     if (data.available && data.cells?.length) {
-      setHeatmapCells(data.cells);
+      const affinities = data.cells.map(
+        (c: { affinity?: number; affinityRank?: number }) =>
+          c.affinity ?? c.affinityRank ?? 0
+      );
+      const weights = heatmapWeightsFromAffinity(affinities);
+      setHeatmapCells(
+        data.cells.map(
+          (
+            c: { latitude: number; longitude: number },
+            i: number
+          ) => ({
+            latitude: c.latitude,
+            longitude: c.longitude,
+            weight: weights[i] ?? 0,
+          })
+        )
+      );
       setShowHeatmap(true);
     } else {
       setHeatmapCells([]);

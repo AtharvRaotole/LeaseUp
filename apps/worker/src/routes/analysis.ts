@@ -55,13 +55,14 @@ analysisRouter.post('/analyze/stream', async (c) => {
         await send('step', step);
       });
       await send('complete', result);
-      if (c.env.APP_MODE === 'live' && result.prospects.some((p) => p.brand.verified === 'verifying...')) {
-        const verified = await service.applyOsmVerification(
+      const needsOsm = result.prospects.some((p) => p.brand.verified === 'verifying...');
+      if (needsOsm) {
+        const { prospects: verified, summary } = await service.applyOsmVerification(
           result.location,
           request.radius,
           result.prospects
         );
-        await send('verification', { runId, prospects: verified });
+        await send('verification', { runId, prospects: verified, osmSummary: summary });
       }
     } catch (error) {
       await send('error', { message: (error as Error).message });
@@ -128,8 +129,12 @@ analysisRouter.post('/verify', async (c) => {
   }
 
   const service = new AnalysisService(c.env);
-  const updated = await service.applyOsmVerification(location, radius, prospects);
-  return c.json({ prospects: updated });
+  const { prospects: updated, summary } = await service.applyOsmVerification(
+    location,
+    radius,
+    prospects
+  );
+  return c.json({ prospects: updated, osmSummary: summary });
 });
 
 analysisRouter.post('/outreach', async (c) => {
