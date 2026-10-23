@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import type { Context } from 'hono';
 import { cors } from 'hono/cors';
 import { secureHeaders } from 'hono/secure-headers';
 import { logger } from 'hono/logger';
@@ -44,29 +45,47 @@ app.use(
 
 app.use('*', metricsMiddleware());
 
-app.use('/api/*', rateLimiter({
-  windowMs: 60_000,
-  maxRequests: 60,
-  keyPrefix: 'global',
-}));
+function requestPath(c: Context<{ Bindings: Env }>): string {
+  return new URL(c.req.url).pathname;
+}
 
-app.use('/api/analyze/stream', rateLimiter({
-  windowMs: 60_000,
-  maxRequests: 10,
-  keyPrefix: 'analyze-stream',
-}));
+/** Demo fixture/KV reads and health should not consume the analysis budget. */
+function skipRateLimit(c: Context<{ Bindings: Env }>): boolean {
+  const path = requestPath(c);
+  if (path === '/api/health') return true;
+  if (c.env.APP_MODE !== 'demo') return false;
+  if (path === '/api/compare/flip' || path.startsWith('/api/heatmap')) return true;
+  if (path === '/api/analyze/stream' || path === '/api/analyze') return true;
+  return false;
+}
 
-app.use('/api/analyze', rateLimiter({
-  windowMs: 60_000,
-  maxRequests: 10,
-  keyPrefix: 'analyze',
-}));
+function isAnalysisPath(path: string): boolean {
+  return path === '/api/analyze/stream' || path === '/api/analyze';
+}
 
-app.use('/api/outreach', rateLimiter({
-  windowMs: 60_000,
-  maxRequests: 5,
-  keyPrefix: 'outreach',
-}));
+app.use('/api/*', async (c, next) => {
+  if (skipRateLimit(c)) return next();
+  const path = requestPath(c);
+  if (isAnalysisPath(path)) {
+    return rateLimiter({
+      windowMs: 60_000,
+      maxRequests: 20,
+      keyPrefix: 'analyze',
+    })(c, next);
+  }
+  if (path.startsWith('/api/outreach')) {
+    return rateLimiter({
+      windowMs: 60_000,
+      maxRequests: 5,
+      keyPrefix: 'outreach',
+    })(c, next);
+  }
+  return rateLimiter({
+    windowMs: 60_000,
+    maxRequests: 120,
+    keyPrefix: 'global',
+  })(c, next);
+});
 
 app.route('/api/health', healthRouter);
 app.route('/api/compare', compareRouter);

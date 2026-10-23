@@ -20,6 +20,8 @@ await mkdir(OUT, { recursive: true });
 
 const browser = await chromium.launch();
 
+const pause = (ms) => new Promise((r) => setTimeout(r, ms));
+
 async function shot(page, name, opts = {}) {
   const path = join(OUT, name);
   await page.screenshot({ path, fullPage: opts.fullPage ?? false });
@@ -42,11 +44,13 @@ for (const demo of demos) {
   for (const width of [1440, 390]) {
     const height = width === 390 ? 844 : 900;
     const page = await browser.newPage({ viewport: { width, height } });
+    await pause(2500);
     await page.goto(reportUrl(demo), { waitUntil: 'networkidle' });
     await page.waitForSelector('text=Data confidence', { timeout: 90000 });
-    await page.waitForTimeout(800);
+    await page.waitForTimeout(1200);
     await shot(page, `report-${demo.slug}-${width}.png`, { fullPage: false });
     await page.close();
+    await pause(2500);
   }
 }
 
@@ -54,6 +58,7 @@ const sevierville = demos.find((d) => d.slug === 'sevierville');
 const wicker = demos[0];
 
 const pageExpand = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+await pause(2500);
 await pageExpand.goto(reportUrl(sevierville), { waitUntil: 'networkidle' });
 await pageExpand.waitForSelector('[data-testid="brands-to-pitch"]', { timeout: 90000 });
 const firstPitch = pageExpand.locator('section:has([data-testid="brands-to-pitch"]) button').first();

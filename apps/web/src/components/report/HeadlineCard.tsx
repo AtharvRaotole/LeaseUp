@@ -25,7 +25,7 @@ export function HeadlineCard({
           ? `${count} brand${count === 1 ? '' : 's'} fit ${area} but have no store within ${radiusKm} km.`
           : `Every top brand for ${area} already has a store within ${radiusKm} km.`}
       </h2>
-      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="mt-6 flex gap-2 overflow-x-auto pb-1 md:grid md:grid-cols-3 md:gap-3 md:overflow-visible md:pb-0">
         <StatTile
           label="Hit rate"
           value={hitLabel}
@@ -44,10 +44,10 @@ export function HeadlineCard({
 
 function StatTile({ label, value, subtitle }: { label: string; value: string; subtitle: string }) {
   return (
-    <div className="rounded-control border border-border bg-surface-2 px-4 py-3">
-      <p className="text-label uppercase text-ink-3">{label}</p>
-      <p className="mt-1 font-mono text-h3 tabular-nums text-ink">{value}</p>
-      <p className="mt-1 text-[12px] leading-snug text-ink-3">{subtitle}</p>
+    <div className="min-w-[7.5rem] shrink-0 flex-1 rounded-control border border-border bg-surface-2 px-3 py-2 md:min-w-0 md:px-4 md:py-3">
+      <p className="text-[10px] font-medium uppercase tracking-wide text-ink-3 md:text-label">{label}</p>
+      <p className="mt-0.5 font-mono text-lg tabular-nums text-ink md:mt-1 md:text-h3">{value}</p>
+      <p className="mt-1 hidden text-[12px] leading-snug text-ink-3 md:block">{subtitle}</p>
     </div>
   );
 }

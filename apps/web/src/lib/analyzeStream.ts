@@ -1,5 +1,6 @@
 import type { AnalysisRequest, AnalysisResponse, AnalysisStep } from '@leaseup/contracts';
 import { apiUrl } from './api';
+import { parseApiErrorResponse, type ApiErrorInfo } from './api-error';
 
 export async function analyzeWithStream(
   request: AnalysisRequest,
@@ -16,7 +17,7 @@ export async function analyzeWithStream(
         unavailable: boolean;
       };
     }) => void;
-    onError: (message: string) => void;
+    onError: (error: ApiErrorInfo) => void;
   }
 ): Promise<void> {
   const response = await fetch(apiUrl('/api/analyze/stream'), {
@@ -26,8 +27,7 @@ export async function analyzeWithStream(
   });
 
   if (!response.ok || !response.body) {
-    const error = await response.json().catch(() => ({ error: 'Analysis failed' }));
-    handlers.onError(error.error || 'Analysis failed');
+    handlers.onError(await parseApiErrorResponse(response));
     return;
   }
 
@@ -70,7 +70,16 @@ export async function analyzeWithStream(
           }
         );
       }
-      if (event === 'error') handlers.onError((payload as { message: string }).message);
+      if (event === 'error') {
+        const msg = (payload as { message: string }).message;
+        handlers.onError({
+          message: msg.includes('rate limit') || /too many/i.test(msg)
+            ? 'Lots of searches right now. Try again in a minute.'
+            : msg || 'Analysis failed. Try again.',
+          code: /too many/i.test(msg) ? 'RATE_LIMIT_EXCEEDED' : undefined,
+          retryAfterSec: /too many/i.test(msg) ? 60 : undefined,
+        });
+      }
     }
   }
 }

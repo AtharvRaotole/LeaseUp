@@ -1,5 +1,45 @@
 import type { Location, ProspectPack } from '@leaseup/contracts';
 
+export function verificationShortLabel(verified: ProspectPack['brand']['verified']): string {
+  switch (verified) {
+    case 'verified (2 sources)':
+      return 'Verified';
+    case 'verifying...':
+      return 'Checking';
+    case 'unverified (1 source)':
+      return '1 source';
+    case 'conflict - likely present':
+      return 'Likely present';
+    case 'conflict':
+      return 'Conflict';
+    case 'unverified':
+      return 'Unverified';
+    default:
+      return 'Unverified';
+  }
+}
+
+export function verificationTooltip(
+  verified: ProspectPack['brand']['verified'],
+  radiusKm: number
+): string {
+  switch (verified) {
+    case 'verified (2 sources)':
+      return `Found in All The Places and OpenStreetMap within ${radiusKm} km`;
+    case 'verifying...':
+      return 'Checking OpenStreetMap for a second source';
+    case 'unverified (1 source)':
+      return `Found in only one source within ${radiusKm} km`;
+    case 'conflict - likely present':
+    case 'conflict':
+      return `Sources disagree about a store within ${radiusKm} km`;
+    case 'unverified':
+      return `Found in neither All The Places nor OpenStreetMap within ${radiusKm} km`;
+    default:
+      return `Store check within ${radiusKm} km`;
+  }
+}
+
 export function verificationLabel(verified: ProspectPack['brand']['verified']): string {
   switch (verified) {
     case 'verified (2 sources)':

@@ -34,11 +34,13 @@ export function rateLimiter(options: RateLimitOptions): MiddlewareHandler<{ Bind
       .first<{ count: number }>();
 
     if (existing && existing.count >= options.maxRequests) {
+      const retrySec = Math.max(1, Math.ceil((windowStart + options.windowMs - now) / 1000));
+      c.header('Retry-After', String(retrySec));
       return c.json(
-        { 
-          error: 'Too Many Requests', 
+        {
+          error: 'Too Many Requests',
           code: 'RATE_LIMIT_EXCEEDED',
-          retryAfter: options.windowMs / 1000,
+          retryAfter: retrySec,
         },
         429
       );

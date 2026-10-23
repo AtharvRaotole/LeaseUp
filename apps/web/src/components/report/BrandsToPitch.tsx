@@ -1,17 +1,39 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Store } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { AnalysisRequest, AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
-import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { brandMonogram, brandTint } from '../../lib/brand-monogram';
-import { verificationLabel } from '../../lib/copy';
 import { apiUrl } from '../../lib/api';
 import { fitPercentileLabel } from '../../lib/fit-display';
 import { buildReportPath } from '../../lib/report-params';
 import { displayBrandName } from '../../lib/brand-display';
+import { verificationShortLabel, verificationTooltip } from '../../lib/copy';
+import { pitchExpandedLines } from '../../lib/pitch-detail-copy';
 import { cn } from '../../lib/cn';
+
+function PitchPill({
+  children,
+  tone,
+  title,
+}: {
+  children: ReactNode;
+  tone: 'accent' | 'neutral';
+  title?: string;
+}) {
+  return (
+    <span
+      title={title}
+      className={cn(
+        'inline-flex h-[22px] max-w-[8.5rem] items-center truncate rounded-pill px-2 text-[11px] font-medium leading-none',
+        tone === 'accent' ? 'bg-accent-soft text-accent' : 'border border-border bg-surface text-ink-2'
+      )}
+    >
+      {children}
+    </span>
+  );
+}
 
 export function BrandsToPitch({
   results,
@@ -93,6 +115,10 @@ export function BrandsToPitch({
             const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
             const fitLabel = fitPercentileLabel(prospect.brand.affinityRank, totalScored);
             const category = prospect.tenantMixScore?.categoryFit;
+            const distanceLine = prospect.nearestExistingStoreKm !== undefined
+              ? `Closest store ${prospect.nearestExistingStoreKm.toFixed(1)} km`
+              : `No store within ${radiusKm} km`;
+            const subline = category ? `${category} · ${distanceLine}` : distanceLine;
 
             return (
               <li key={prospect.brand.entityId}>
@@ -114,52 +140,28 @@ export function BrandsToPitch({
                     {brandMonogram(name)}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline gap-2 truncate">
-                      <span className="truncate font-medium text-ink">{name}</span>
-                      {category && <span className="shrink-0 text-xs text-ink-3">{category}</span>}
-                    </div>
-                    <p className="mt-0.5 text-xs text-ink-3">
-                      {prospect.nearestExistingStoreKm !== undefined
-                        ? `Closest store ${prospect.nearestExistingStoreKm.toFixed(1)} km away`
-                        : `No store within ${radiusKm} km`}
-                    </p>
+                    <p className="truncate font-medium text-ink">{name}</p>
+                    <p className="mt-0.5 truncate text-xs text-ink-3">{subline}</p>
                   </div>
-                  <div className="hidden shrink-0 flex-col items-end gap-1 sm:flex">
-                    <Badge tone="accent">{fitLabel}</Badge>
-                    <Badge tone="neutral">{verificationLabel(prospect.brand.verified)}</Badge>
-                  </div>
-                  <div className="flex shrink-0 flex-col items-end gap-1 sm:hidden">
-                    <span className="font-mono text-[11px] tabular-nums text-accent">{fitLabel}</span>
+                  <div className="flex shrink-0 items-center gap-1.5">
+                    <PitchPill tone="accent">{fitLabel}</PitchPill>
+                    <PitchPill tone="neutral" title={verificationTooltip(prospect.brand.verified, radiusKm)}>
+                      {verificationShortLabel(prospect.brand.verified)}
+                    </PitchPill>
                   </div>
                 </button>
                 {open && (
                   <div className="border-t border-border bg-surface-2/40 px-4 py-3 text-sm text-ink-2">
-                    <dl className="grid gap-2 text-xs sm:grid-cols-2">
-                      <div>
-                        <dt className="text-ink-3">Taste rank</dt>
-                        <dd className="font-mono tabular-nums text-ink">#{prospect.brand.affinityRank}</dd>
-                      </div>
-                      <div>
-                        <dt className="text-ink-3">Nearest store</dt>
-                        <dd className="text-ink">
-                          {prospect.nearestExistingStoreKm !== undefined
-                            ? `${prospect.nearestExistingStoreKm.toFixed(1)} km (ATP catalog)`
-                            : `None within ${radiusKm} km`}
-                        </dd>
-                      </div>
-                      <div className="sm:col-span-2">
-                        <dt className="text-ink-3">Store check</dt>
-                        <dd>{verificationLabel(prospect.brand.verified)}</dd>
-                      </div>
-                    </dl>
-                    {prospect.coverageNote && <p className="mt-2 text-warn">{prospect.coverageNote}</p>}
-                    <ul className="mt-2 list-disc pl-5 space-y-1">
-                      {prospect.reasons.slice(0, 3).map((r) => (
-                        <li key={r}>{r}</li>
+                    <ul className="space-y-2">
+                      {pitchExpandedLines(prospect, results, radiusKm).map((line) => (
+                        <li key={line}>{line}</li>
                       ))}
                     </ul>
-                    <div className="mt-3">
-                      <Button size="sm" variant="secondary" onClick={() => onDraft(prospect)}>
+                    {prospect.coverageNote && (
+                      <p className="mt-2 text-xs text-warn">{prospect.coverageNote}</p>
+                    )}
+                    <div className="mt-4">
+                      <Button size="sm" variant="primary" onClick={() => onDraft(prospect)}>
                         Draft outreach email
                       </Button>
                     </div>

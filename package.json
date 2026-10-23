@@ -9,7 +9,7 @@
     "test": "turbo test",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
-    "verify:ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "verify:ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && node scripts/check-bundle-dashes.mjs",
     "screenshots": "node scripts/ui-snapshots.mjs",
     "deploy": "pnpm --filter @leaseup/worker deploy"
   },
