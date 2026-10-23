@@ -50,6 +50,17 @@ export {
   type LandingTasteRow,
 } from './landing-taste-snippet.js';
 export {
+  neighborhoodRankContrast,
+  wickerSeviervilleRankContrast,
+  type LandingRankContrastRow,
+  type NeighborhoodRankLabel,
+} from './landing-rank-contrast.js';
+export {
+  expectedRandomPresentInTop10,
+  demoChipsRandomBaselineSummary,
+  type DemoRandomBaselineSummary,
+} from './landing-random-baseline.js';
+export {
   overpassDemoByFixture,
   DEMO_OSM_UNRECORDED_NOTE,
   type OverpassDemoRecording,

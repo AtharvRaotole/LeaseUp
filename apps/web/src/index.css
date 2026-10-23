@@ -25,6 +25,26 @@
   }
 }
 
+@keyframes landing-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.landing-reveal {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+}
+
+.landing-reveal.landing-reveal-visible {
+  animation: landing-fade-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -32,6 +52,17 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .landing-reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .landing-reveal.landing-reveal-visible {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
 
