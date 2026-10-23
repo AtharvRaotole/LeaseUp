@@ -4,11 +4,11 @@ type Tone = 'neutral' | 'success' | 'warn' | 'danger' | 'info' | 'accent';
 
 const tones: Record<Tone, string> = {
   neutral: 'bg-surface-2 text-ink-2 border-border',
-  success: 'bg-accent-soft text-success border-transparent',
-  warn: 'bg-[#FEF3C7] text-[#7a4206] border-transparent dark:bg-[#422006] dark:text-[#fcd34d]',
-  danger: 'bg-[#FEE2E2] text-danger border-transparent dark:bg-[#431407]',
-  info: 'bg-[#DBEAFE] text-info border-transparent dark:bg-[#1e3a5f]',
-  accent: 'bg-accent-soft text-accent border-transparent',
+  success: 'bg-accent-soft text-[#0b5e44] border-transparent dark:bg-accent-soft dark:text-[#6ee7b7]',
+  warn: 'bg-[#FEF3C7] text-[#6b3805] border-transparent dark:bg-[#422006] dark:text-[#fcd34d]',
+  danger: 'bg-[#FEE2E2] text-[#9a3412] border-transparent dark:bg-[#431407] dark:text-[#fdba74]',
+  info: 'bg-[#DBEAFE] text-[#1e40af] border-transparent dark:bg-[#1e3a5f] dark:text-[#93c5fd]',
+  accent: 'bg-accent-soft text-[#0b5e44] border-transparent dark:bg-accent-soft dark:text-accent',
 };
 
 export function Badge({
