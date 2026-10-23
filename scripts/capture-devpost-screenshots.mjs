@@ -9,7 +9,9 @@
 import { chromium } from 'playwright';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { assertLocalMediaCapture } from './media-capture-guard.mjs';
+import { assertLocalMediaCapture, assertOwnerAuthorizedRecording } from './media-capture-guard.mjs';
+
+assertOwnerAuthorizedRecording();
 
 const BASE = (process.env.SCREENSHOT_BASE || 'http://127.0.0.1:4173').replace(/\/$/, '');
 const API = (process.env.SCREENSHOT_API || 'http://127.0.0.1:8787').replace(/\/$/, '');
