@@ -18,17 +18,18 @@ export function Switch({
     <label
       className={cn(
         'grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-0 text-sm text-ink-2',
-        disabled && 'opacity-50 cursor-not-allowed'
+        disabled && 'cursor-not-allowed'
       )}
       title={title}
     >
-      <span>{label}</span>
+      <span className={disabled ? 'text-ink-3' : undefined}>{label}</span>
       <SwitchPrimitive.Root
         checked={checked}
         onCheckedChange={onCheckedChange}
         disabled={disabled}
         className={cn(
-          'relative h-5 w-9 rounded-pill border border-border bg-surface-2 data-[state=checked]:bg-accent data-[state=checked]:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50'
+          'relative h-5 w-9 shrink-0 rounded-pill border border-border bg-surface-2 data-[state=checked]:bg-accent data-[state=checked]:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+          disabled && 'opacity-40'
         )}
       >
         <SwitchPrimitive.Thumb

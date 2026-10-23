@@ -1,11 +1,19 @@
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
-import { dataConfidenceLabel } from '../../lib/copy';
+import { dataConfidenceLabel, dataConfidenceSubtitle } from '../../lib/copy';
 import { placeHeadlineLabel } from '../../lib/location-label';
 
-export function HeadlineCard({ results, radiusKm }: { results: AnalysisResponse; radiusKm: number }) {
+export function HeadlineCard({
+  results,
+  radiusKm,
+  chipSlug,
+}: {
+  results: AnalysisResponse;
+  radiusKm: number;
+  chipSlug?: string | null;
+}) {
   const count = results.prospects.length;
-  const area = placeHeadlineLabel(results.location);
+  const area = placeHeadlineLabel(results.location, chipSlug);
   const present = results.backtest.presentInTop10 ?? Math.round(results.backtest.precisionAt10 * 10);
   const hitLabel = `${present} of 10`;
   const analyzed = results.rankings?.length ?? 0;
@@ -27,7 +35,7 @@ export function HeadlineCard({ results, radiusKm }: { results: AnalysisResponse;
         <StatTile
           label="Data confidence"
           value={dataConfidenceLabel(results.dataQuality)}
-          subtitle={results.warnings[0] || 'Based on ranking depth and backtest match'}
+          subtitle={dataConfidenceSubtitle(results.dataQuality, results.location)}
         />
       </div>
     </Card>

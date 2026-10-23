@@ -28,7 +28,7 @@ export function CompareSection() {
   if (!data) return null;
 
   const swings = data.flipExamples
-    .slice(0, 10)
+    .slice(0, 8)
     .map((row) => ({
       entityId: row.entityId,
       name: row.name,

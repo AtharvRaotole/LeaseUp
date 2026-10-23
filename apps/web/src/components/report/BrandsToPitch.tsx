@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { MapPin, Store } from 'lucide-react';
+import { Store } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { AnalysisRequest, AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
@@ -11,6 +10,7 @@ import { verificationLabel } from '../../lib/copy';
 import { apiUrl } from '../../lib/api';
 import { fitPercentileLabel } from '../../lib/fit-display';
 import { buildReportPath } from '../../lib/report-params';
+import { displayBrandName } from '../../lib/brand-display';
 import { cn } from '../../lib/cn';
 
 export function BrandsToPitch({
@@ -34,7 +34,7 @@ export function BrandsToPitch({
 }) {
   const navigate = useNavigate();
   const [prospects, setProspects] = useState(results.prospects);
-  const [expanded, setExpanded] = useState<string | null>(selectedId);
+  const [expanded, setExpanded] = useState<string | null>(null);
   const totalScored = results.rankings?.length ?? 100;
 
   useEffect(() => setProspects(results.prospects), [results.prospects]);
@@ -84,83 +84,92 @@ export function BrandsToPitch({
 
   return (
     <section>
-      <h3 className="mb-4 text-h3 font-semibold text-ink" data-testid="brands-to-pitch">Brands to pitch</h3>
-      <div className="space-y-3">
-        {prospects.map((prospect, i) => {
-          const open = expanded === prospect.brand.entityId;
-          const selected = selectedId === prospect.brand.entityId;
-          const fitLabel = fitPercentileLabel(prospect.brand.affinityRank, totalScored);
-          const category = prospect.tenantMixScore?.categoryFit;
+      <h3 className="mb-3 text-h3 font-semibold text-ink" data-testid="brands-to-pitch">Brands to pitch</h3>
+      <Card className="overflow-hidden p-0">
+        <ul className="divide-y divide-border">
+          {prospects.map((prospect) => {
+            const open = expanded === prospect.brand.entityId;
+            const selected = selectedId === prospect.brand.entityId;
+            const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
+            const fitLabel = fitPercentileLabel(prospect.brand.affinityRank, totalScored);
+            const category = prospect.tenantMixScore?.categoryFit;
 
-          return (
-            <motion.div
-              key={prospect.brand.entityId}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.04 }}
-            >
-              <Card
-                className={cn(
-                  'overflow-hidden p-0 ring-1 transition-shadow',
-                  selected ? 'ring-accent shadow-sm' : 'ring-transparent'
-                )}
-              >
+            return (
+              <li key={prospect.brand.entityId}>
                 <button
                   type="button"
-                  className="flex w-full gap-4 p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
+                  className={cn(
+                    'flex min-h-[56px] w-full items-center gap-3 px-3 py-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent',
+                    selected ? 'bg-surface-2 border-l-2 border-l-accent pl-[10px]' : 'border-l-2 border-l-transparent'
+                  )}
                   onClick={() => {
                     onSelect(prospect);
                     setExpanded(open ? null : prospect.brand.entityId);
                   }}
                 >
                   <div
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-control text-sm font-semibold text-ink"
-                    style={{ background: brandTint(prospect.brand.name) }}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-xs font-semibold text-ink"
+                    style={{ background: brandTint(name) }}
                   >
-                    {brandMonogram(prospect.brand.name)}
+                    {brandMonogram(name)}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-medium text-ink">{prospect.brand.name}</span>
-                      {category && (
-                        <span className="text-xs text-ink-3">{category}</span>
-                      )}
+                    <div className="flex items-baseline gap-2 truncate">
+                      <span className="truncate font-medium text-ink">{name}</span>
+                      {category && <span className="shrink-0 text-xs text-ink-3">{category}</span>}
                     </div>
-                    <div className="mt-1.5 flex flex-wrap items-center gap-2">
-                      <Badge tone="accent">{fitLabel}</Badge>
-                      <Badge tone="neutral">{verificationLabel(prospect.brand.verified)}</Badge>
-                    </div>
-                    <p className="mt-2 flex items-center gap-1.5 text-sm text-ink-2">
-                      <MapPin className="h-3.5 w-3.5 shrink-0 text-ink-3" aria-hidden />
+                    <p className="mt-0.5 text-xs text-ink-3">
                       {prospect.nearestExistingStoreKm !== undefined
                         ? `Closest store ${prospect.nearestExistingStoreKm.toFixed(1)} km away`
                         : `No store within ${radiusKm} km`}
                     </p>
                   </div>
+                  <div className="hidden shrink-0 flex-col items-end gap-1 sm:flex">
+                    <Badge tone="accent">{fitLabel}</Badge>
+                    <Badge tone="neutral">{verificationLabel(prospect.brand.verified)}</Badge>
+                  </div>
+                  <div className="flex shrink-0 flex-col items-end gap-1 sm:hidden">
+                    <span className="font-mono text-[11px] tabular-nums text-accent">{fitLabel}</span>
+                  </div>
                 </button>
                 {open && (
-                  <div className="border-t border-border px-4 pb-4 pt-2 text-sm text-ink-2">
-                    {prospect.coverageNote && <p className="mb-2 text-warn">{prospect.coverageNote}</p>}
-                    {prospect.qlooSignals?.length && (
-                      <p className="mb-2">Signals: {prospect.qlooSignals.join(', ')}</p>
-                    )}
-                    <ul className="list-disc pl-5 space-y-1">
-                      {prospect.reasons.slice(0, 4).map((r) => (
+                  <div className="border-t border-border bg-surface-2/40 px-4 py-3 text-sm text-ink-2">
+                    <dl className="grid gap-2 text-xs sm:grid-cols-2">
+                      <div>
+                        <dt className="text-ink-3">Taste rank</dt>
+                        <dd className="font-mono tabular-nums text-ink">#{prospect.brand.affinityRank}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-ink-3">Nearest store</dt>
+                        <dd className="text-ink">
+                          {prospect.nearestExistingStoreKm !== undefined
+                            ? `${prospect.nearestExistingStoreKm.toFixed(1)} km (ATP catalog)`
+                            : `None within ${radiusKm} km`}
+                        </dd>
+                      </div>
+                      <div className="sm:col-span-2">
+                        <dt className="text-ink-3">Store check</dt>
+                        <dd>{verificationLabel(prospect.brand.verified)}</dd>
+                      </div>
+                    </dl>
+                    {prospect.coverageNote && <p className="mt-2 text-warn">{prospect.coverageNote}</p>}
+                    <ul className="mt-2 list-disc pl-5 space-y-1">
+                      {prospect.reasons.slice(0, 3).map((r) => (
                         <li key={r}>{r}</li>
                       ))}
                     </ul>
-                    <div className="mt-4 flex flex-wrap gap-2">
+                    <div className="mt-3">
                       <Button size="sm" variant="secondary" onClick={() => onDraft(prospect)}>
                         Draft outreach email
                       </Button>
                     </div>
                   </div>
                 )}
-              </Card>
-            </motion.div>
-          );
-        })}
-      </div>
+              </li>
+            );
+          })}
+        </ul>
+      </Card>
     </section>
   );
 }

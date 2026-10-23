@@ -9,16 +9,18 @@ import { useNavigate, useParams } from 'react-router-dom';
 export function ReportStickyHeader({
   request,
   location,
+  chipSlug,
   onRadiusChange,
 }: {
   request: AnalysisRequest;
   location: Location;
+  chipSlug?: string | null;
   onRadiusChange: (radius: number) => void;
 }) {
   const navigate = useNavigate();
   const { slug } = useParams();
   const [radiusOpen, setRadiusOpen] = useState(false);
-  const neighborhood = placeNeighborhoodBold(location);
+  const neighborhood = placeNeighborhoodBold(location, chipSlug ?? slug);
   const radiusKey = String(request.radius) as '2' | '5' | '10';
 
   const share = () => void navigator.clipboard.writeText(window.location.href);

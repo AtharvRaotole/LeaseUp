@@ -31,9 +31,10 @@ for (const [key, value] of Object.entries(aliases)) {
   }
 }
 
-const out = join(root, 'apps/worker/src/data/brand-display-map.ts');
-writeFileSync(
-  out,
-  `/** Auto-generated */\nexport const BRAND_DISPLAY_BY_ID: Record<string, string> = ${JSON.stringify(byId, null, 2)};\nexport const BRAND_DISPLAY_BY_QLOO_NAME: Record<string, string> = ${JSON.stringify(byQlooName, null, 2)};\n`
-);
-console.log('Wrote', out);
+const body = `/** Auto-generated */\nexport const BRAND_DISPLAY_BY_ID: Record<string, string> = ${JSON.stringify(byId, null, 2)};\nexport const BRAND_DISPLAY_BY_QLOO_NAME: Record<string, string> = ${JSON.stringify(byQlooName, null, 2)};\n`;
+const workerOut = join(root, 'apps/worker/src/data/brand-display-map.ts');
+const webOut = join(root, 'apps/web/src/data/brand-display-map.ts');
+writeFileSync(workerOut, body);
+writeFileSync(webOut, body);
+console.log('Wrote', workerOut);
+console.log('Wrote', webOut);

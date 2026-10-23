@@ -1,4 +1,4 @@
-import type { ProspectPack } from '@leaseup/contracts';
+import type { Location, ProspectPack } from '@leaseup/contracts';
 
 export function verificationLabel(verified: ProspectPack['brand']['verified']): string {
   switch (verified) {
@@ -16,6 +16,24 @@ export function verificationLabel(verified: ProspectPack['brand']['verified']): 
       return 'Unverified';
     default:
       return String(verified);
+  }
+}
+
+export function dataConfidenceSubtitle(
+  level: 'high' | 'medium' | 'low' | 'insufficient',
+  location: Location
+): string {
+  switch (level) {
+    case 'high':
+      return location.neighborhood ? 'Exact address match' : 'Strong taste signal for this pin';
+    case 'medium':
+      return 'Matched to street, not building';
+    case 'low':
+      return 'Limited ranking depth or weaker backtest fit';
+    case 'insufficient':
+      return 'Not enough brands scored for this pin';
+    default:
+      return 'Based on ranking depth and backtest match';
   }
 }
 

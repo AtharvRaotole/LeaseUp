@@ -14,6 +14,9 @@ import { ReportMap, type MapBrandSelection } from '../components/report/ReportMa
 import { OutreachSheet } from '../components/report/OutreachSheet';
 import { DemoBanner } from '../components/report/DemoBanner';
 import { ReportStickyHeader } from '../components/report/ReportStickyHeader';
+import { SegmentedControl } from '../components/ui/SegmentedControl';
+
+type MobilePane = 'report' | 'map';
 
 export function ReportPage() {
   const navigate = useNavigate();
@@ -26,7 +29,16 @@ export function ReportPage() {
   const [selected, setSelected] = useState<ProspectPack | null>(null);
   const [mapBrand, setMapBrand] = useState<MapBrandSelection | null>(null);
   const [outreach, setOutreach] = useState<ProspectPack | null>(null);
+  const [mobilePane, setMobilePane] = useState<MobilePane>('report');
   const ranKey = useRef('');
+
+  useEffect(() => {
+    if (searchParams.get('screenshot') === '1') {
+      document.documentElement.classList.add('screenshot-capture');
+      return () => document.documentElement.classList.remove('screenshot-capture');
+    }
+    return undefined;
+  }, [searchParams]);
 
   useEffect(() => {
     if (!request) {
@@ -66,12 +78,45 @@ export function ReportPage() {
       ? 'We could not load this report. Check your connection and try again.'
       : error;
 
+  const reportSections = results && (
+    <>
+      <HeadlineCard results={results} radiusKm={request.radius} chipSlug={slug} />
+      <BrandsToPitch
+        results={results}
+        request={request}
+        slug={slug ?? 'run'}
+        selectedId={selected?.brand.entityId ?? null}
+        onSelect={selectProspect}
+        onDraft={(p) => setOutreach(p)}
+        radiusKm={request.radius}
+        forceEmpty={emptyPitch}
+      />
+      {(loading || steps.length > 0) && (
+        <AgentRunStrip
+          steps={steps}
+          loading={loading}
+          elapsedMs={elapsedMs}
+          demoMode={results?.mode === 'demo'}
+          recordedAt={results?.timestamp}
+        />
+      )}
+      <ProofSection results={results} radiusKm={request.radius} onBrandSelect={selectMapBrand} />
+      <CompareSection />
+      <HowWeKnowSection results={results} />
+    </>
+  );
+
   return (
     <div className="min-h-screen bg-bg print-pack">
       <TopBar />
       {results?.mode === 'demo' && <DemoBanner />}
       {results && (
-        <ReportStickyHeader request={request} location={results.location} onRadiusChange={() => { ranKey.current = ''; }} />
+        <ReportStickyHeader
+          request={request}
+          location={results.location}
+          chipSlug={slug}
+          onRadiusChange={() => { ranKey.current = ''; }}
+        />
       )}
       {!results && (
         <div className="sticky top-16 z-20 border-b border-border bg-surface/90 backdrop-blur-md px-4 py-3">
@@ -79,18 +124,28 @@ export function ReportPage() {
         </div>
       )}
 
+      {results && (
+        <div className="sticky top-[7.25rem] z-20 border-b border-border bg-bg/95 px-4 py-2 md:hidden">
+          <div className="mx-auto max-w-[1280px]">
+            <SegmentedControl
+              value={mobilePane}
+              onChange={setMobilePane}
+              options={[
+                { value: 'report', label: 'Report' },
+                { value: 'map', label: 'Map' },
+              ]}
+            />
+          </div>
+        </div>
+      )}
+
       <div className="mx-auto max-w-[1280px] px-4 py-8">
         <div className="grid grid-cols-12 gap-8">
-          <div className="col-span-12 min-w-0 space-y-10 xl:col-span-7">
-            {(loading || steps.length > 0) && (
-              <AgentRunStrip
-                steps={steps}
-                loading={loading}
-                elapsedMs={elapsedMs}
-                demoMode={results?.mode === 'demo'}
-                recordedAt={results?.timestamp}
-              />
-            )}
+          <div
+            className={`col-span-12 min-w-0 space-y-10 xl:col-span-7 ${
+              mobilePane === 'map' ? 'hidden md:block' : ''
+            }`}
+          >
             {slowHint && loading && (
               <p className="text-sm text-ink-2">Still working. Large cities take a few extra seconds.</p>
             )}
@@ -102,35 +157,22 @@ export function ReportPage() {
                 {displayError}
               </div>
             )}
-            {results && (
-              <>
-                <HeadlineCard results={results} radiusKm={request.radius} />
-                <BrandsToPitch
-                  results={results}
-                  request={request}
-                  slug={slug ?? 'run'}
-                  selectedId={selected?.brand.entityId ?? null}
-                  onSelect={selectProspect}
-                  onDraft={(p) => setOutreach(p)}
-                  radiusKm={request.radius}
-                  forceEmpty={emptyPitch}
-                />
-                <ProofSection results={results} radiusKm={request.radius} onBrandSelect={selectMapBrand} />
-                <CompareSection />
-                <HowWeKnowSection results={results} />
-              </>
-            )}
+            {reportSections}
             {!results && loading && !simulateError && (
               <p className="text-ink-2">Running analysis for {slug ?? 'report'}...</p>
             )}
           </div>
-          <div className="col-span-12 xl:col-span-5">
+          <div
+            className={`col-span-12 xl:col-span-5 ${
+              mobilePane === 'report' ? 'hidden md:block' : ''
+            }`}
+          >
             {results && (
               <ReportMap
                 results={results}
                 selectedBrand={mapBrand}
                 radiusKm={request.radius}
-                className="xl:sticky xl:top-[7.5rem] h-[max(520px,calc(100vh-8rem))] w-full"
+                className="h-[max(400px,calc(100vh-11rem))] w-full md:sticky md:top-[7.5rem] md:h-[max(520px,calc(100vh-8rem))]"
               />
             )}
           </div>

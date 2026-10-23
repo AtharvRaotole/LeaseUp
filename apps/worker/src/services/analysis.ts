@@ -310,9 +310,16 @@ export class AnalysisService {
           ? boulderFixture
           : seviervilleFixture;
 
+    const placeParts = fixture.location.name.split(',').map((p) => p.trim()).filter(Boolean);
+    const neighborhood = placeParts[0] ?? fixture.location.name;
+    const city = placeParts.length > 1 ? placeParts.slice(1).join(', ') : undefined;
+
     return {
       address,
-      ...fixture.location,
+      latitude: fixture.location.latitude,
+      longitude: fixture.location.longitude,
+      neighborhood,
+      city,
       resolvedAddress: fixture.location.name,
     };
   }
@@ -656,7 +663,7 @@ export class AnalysisService {
       warnings.push('Lower prediction confidence - treat as preliminary analysis');
     }
 
-    if (!location.neighborhood && !location.city) {
+    if (!location.neighborhood) {
       warnings.push('Location resolution is approximate');
     }
 
