@@ -63,4 +63,37 @@ Legacy expectation (pre-#45): cold ~25–55 gets and puts per call (see table ab
 | Portfolio / prospecting jobs | D1 | **0 / 0** |
 | `GET /api/share/report`, OG PNG | Cache API or static meta | **0 / 0** |
 
-`PersistentKv` is wired for future durable KV use (skip unchanged, log on error); no production route calls it yet.
+`PersistentKv` is wired for future durable KV use (skip unchanged, log on error); no production route calls `env.CACHE` today.
+
+## Integration build audit (≥ `7bc837c`)
+
+Static review: **no production code path calls `env.CACHE.get` / `put` directly.** Ephemeral data uses `ResponseCache` (Workers Cache API). Durable product data uses **D1** (`analysis_runs`, `pitch_packs`, `portfolios`, `prospecting_jobs`, `pipeline_boards`, `watch_spaces` / `watch_snapshots`, `owner_updates`, `rate_limits`).
+
+| Request / surface | Storage | KV gets | KV puts |
+| --- | --- | ---: | ---: |
+| `POST /api/analyze` (cold / warm) | Cache API + D1 run row | **0** | **0** |
+| `POST /api/geocode` (demo) | Cache API | **0** | **0** |
+| `POST /api/pitch` | D1 | **0** | **0** |
+| Portfolio / prospecting create | D1 | **0** | **0** |
+| Pipeline board bootstrap | D1 | **0** | **0** |
+| `POST /api/watchlist` (save snapshot) | D1 | **0** | **0** |
+| `POST /api/watchlist/:id/recheck` | D1 + analyze (0 KV) | **0** | **0** |
+| Owner update share / `GET` | D1 | **0** | **0** |
+| `GET /api/share/report` | Query meta only | **0** | **0** |
+| `GET /api/og/report.png` (cold / warm) | Cache API PNG | **0** | **0** |
+| `GET /api/og/pitch/:id.png` | D1 + Cache API PNG | **0** | **0** |
+| Rate limit + watch recheck cooldown | D1 `rate_limits` | **0** | **0** |
+
+Enforced in CI: `apps/worker/src/__tests__/kv-route-budget.test.ts` (budgets in `apps/worker/src/lib/kv-route-budget.ts`).
+
+### Projected KV writes (heavy demo day, offline model)
+
+Traffic: **500** analyzes, **50** pitch shares, **50** watch rechecks (each recheck runs one analyze), **50** OG report PNG cold renders.
+
+| Metric | Value |
+| --- | ---: |
+| Projected KV **puts** / day | **0** |
+| Projected KV **gets** / day | **0** |
+| Budget ceiling (test) | **≤ 200** puts |
+
+All ephemeral cache writes hit the **Cache API** (not counted against KV daily write limits).
