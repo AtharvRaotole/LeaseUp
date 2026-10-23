@@ -17,6 +17,12 @@ import { startProspectingJob } from '../lib/start-prospecting';
 import { LANDING_HEADLINE, LANDING_PLAIN_SUMMARY } from '../lib/broker-copy';
 import { LANDING_DEMO_CHIPS } from '../data/landing-demo-chips';
 
+const LandingHeroProductPreview = lazy(() =>
+  import('../components/landing/LandingHeroProductPreview').then((m) => ({
+    default: m.LandingHeroProductPreview,
+  }))
+);
+
 const LandingBelowFold = lazy(() =>
   import('../components/landing/LandingBelowFold').then((m) => ({ default: m.LandingBelowFold }))
 );
@@ -65,8 +71,10 @@ export function LandingPage() {
       <TopBar />
       <main id="main-content" className="outline-none">
         <section className="relative overflow-hidden border-b border-border bg-[radial-gradient(ellipse_at_top,_var(--surface-2)_0%,_var(--bg)_58%)]">
-          <div className="mx-auto max-w-[880px] px-4 pb-16 pt-[14vh] md:px-6 md:pb-20 md:pt-[16vh]">
-            <div className="mx-auto max-w-[640px] text-center">
+          <div className="mx-auto max-w-[1120px] px-4 pb-16 pt-[12vh] md:px-6 md:pb-20 md:pt-[14vh]">
+            <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(280px,420px)] lg:items-start lg:gap-10 xl:gap-14">
+              <div className="min-w-0">
+            <div className="mx-auto max-w-[640px] text-center lg:mx-0 lg:text-left">
               <h1 className="font-display font-semibold text-[clamp(2rem,5vw,3.25rem)] leading-[1.12] tracking-tight text-ink">
                 {LANDING_HEADLINE}
               </h1>
@@ -76,7 +84,7 @@ export function LandingPage() {
             </div>
 
             <form
-              className="mx-auto mt-10 max-w-[640px] rounded-card border border-border bg-surface p-5 shadow-sm md:p-6"
+              className="mx-auto mt-10 max-w-[640px] rounded-card border border-border bg-surface p-5 shadow-sm md:p-6 lg:mx-0"
               onSubmit={(e) => {
                 e.preventDefault();
                 submit(address);
@@ -140,7 +148,7 @@ export function LandingPage() {
               </div>
             </form>
 
-            <div className="mx-auto mt-8 flex max-w-[640px] flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-center">
+            <div className="mx-auto mt-8 flex max-w-[640px] flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-center lg:mx-0 lg:justify-start">
               {LANDING_DEMO_CHIPS.map((chip) => (
                 <button
                   key={chip.id}
@@ -158,19 +166,27 @@ export function LandingPage() {
                       )
                     )
                   }
-                  className="rounded-pill border border-border bg-surface px-4 py-2.5 text-small font-medium text-ink transition-colors hover:border-border-strong hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  className="inline-flex min-h-11 items-center justify-center rounded-pill border border-border bg-surface px-4 text-small font-medium text-ink transition-colors hover:border-border-strong hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
                 >
                   {chip.label}
                 </button>
               ))}
             </div>
 
-            <p className="mx-auto mt-8 max-w-[640px] text-center text-meta text-ink-3">
+            <p className="mx-auto mt-8 max-w-[640px] text-center text-meta text-ink-3 lg:mx-0 lg:text-left">
               Need the reverse question?{' '}
               <Link to="/brand" className="text-accent hover:underline">
                 Find sites for a brand
               </Link>
             </p>
+              </div>
+
+              <div className="mt-12 lg:mt-4 lg:pt-2">
+                <Suspense fallback={null}>
+                  <LandingHeroProductPreview />
+                </Suspense>
+              </div>
+            </div>
           </div>
         </section>
 

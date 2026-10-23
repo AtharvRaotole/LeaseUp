@@ -40,6 +40,15 @@ const ADDRESSES = [
   '125 Collier Dr, Sevierville, TN 37862',
 ];
 
+const seed = spawn(
+  'pnpm',
+  ['--filter', '@leaseup/worker', 'exec', 'wrangler', 'd1', 'execute', 'leaseup_db', '--local', '--file=schema.sql'],
+  { cwd: ROOT, stdio: 'inherit' }
+);
+await new Promise((resolve, reject) => {
+  seed.on('exit', (code) => (code === 0 ? resolve() : reject(new Error(`D1 seed failed: ${code}`))));
+});
+
 const port = await freePort();
 const worker = spawn(
   'pnpm',

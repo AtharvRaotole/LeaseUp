@@ -1,5 +1,6 @@
 import type { GeocodeCandidate } from '@leaseup/contracts';
 import {
+  GEOCODE_DEDUPE_RADIUS_METERS,
   dedupeGeocodeCandidatesByPlaceAndDistance,
   filterCandidatesByInputPostalCode,
 } from './geocode-candidate-filter';
@@ -64,6 +65,6 @@ export function rankGeocodeCandidates(
     return true;
   });
 
-  list = dedupeGeocodeCandidatesByPlaceAndDistance(list, 50);
+  list = dedupeGeocodeCandidatesByPlaceAndDistance(list, GEOCODE_DEDUPE_RADIUS_METERS);
   return list.sort((a, b) => score(b) - score(a));
 }

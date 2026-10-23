@@ -63,10 +63,12 @@ export function ProofSection({
       <ShowMethod>
         <p>
           We compare taste-ordered (or chain-size-ordered) rankings with All The Places store
-          locations inside your radius. Precision at 10: {(backtest.precisionAt10 * 100).toFixed(0)}%.
-          {backtest.auc !== undefined && ` Separation score (AUC): ${backtest.auc.toFixed(3)}.`}
+          locations inside your radius. {(backtest.precisionAt10 * 100).toFixed(0)}% of the top 10
+          already have a store nearby.
+          {backtest.auc !== undefined &&
+            ` Separation score ${backtest.auc.toFixed(2)}: how often a brand with a nearby store ranks above one without (1.0 is a perfect match).`}
           {' '}
-          When legacy P@10 saturates, the evaluation card uses adaptive radius scoring.
+          When the top-10 match rate maxes out, we also score at an adaptive radius.
         </p>
       </ShowMethod>
       <Card className="mt-4 overflow-hidden p-0">

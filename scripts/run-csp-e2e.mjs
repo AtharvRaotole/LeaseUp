@@ -12,12 +12,17 @@ run('pnpm --filter @leaseup/worker build');
 run(
   'pnpm --filter @leaseup/worker exec wrangler d1 execute leaseup_db --local --file=schema.sql'
 );
-run('pnpm --filter @leaseup/web build', {
-  env: { ...process.env, VITE_API_URL: process.env.VITE_API_URL || 'https://ci.leaseup.invalid' },
-});
-
 const WORKER_PORT = process.env.CSP_E2E_WORKER_PORT || '8790';
 const PREVIEW_PORT = process.env.CSP_E2E_PREVIEW_PORT || '4178';
+const localPreviewOrigin = `http://127.0.0.1:${PREVIEW_PORT}`;
+
+run('pnpm --filter @leaseup/web build', {
+  env: {
+    ...process.env,
+    // Same origin as vite preview so /api hits the proxy under connect-src 'self' (production CSP).
+    VITE_API_URL: process.env.VITE_API_URL || localPreviewOrigin,
+  },
+});
 
 const worker = spawn(
   'pnpm',

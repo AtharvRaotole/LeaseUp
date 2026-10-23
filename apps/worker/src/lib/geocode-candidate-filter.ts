@@ -2,6 +2,8 @@ import type { GeocodeCandidate } from '@leaseup/contracts';
 import { haversineMeters } from './geocode-label';
 import { parseUsAddress } from './parse-us-address';
 
+export const GEOCODE_DEDUPE_RADIUS_METERS = 150;
+
 const ZIP_RE = /\b(\d{5})(?:-\d{4})?\b/;
 
 const STATE_ALIASES: Record<string, string> = {
@@ -137,10 +139,69 @@ function normalizeCityToken(city: string): string {
   return city.trim().toLowerCase().replace(/\s+county$/i, '');
 }
 
+function cityTokenFromCandidate(c: GeocodeCandidate): string {
+  if (c.city?.trim()) return normalizeCityToken(c.city);
+  const parsed = parseUsAddress(c.resolvedAddress);
+  if (parsed.city) return normalizeCityToken(parsed.city);
+  const zipMatch = c.resolvedAddress.match(ZIP_RE);
+  if (zipMatch?.index !== undefined) {
+    const beforeZip = c.resolvedAddress.slice(0, zipMatch.index);
+    const parts = beforeZip.split(',').map((p) => p.trim()).filter(Boolean);
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const token = normalizeCityToken(parts[i] ?? '');
+      if (token && !/^(manhattan|brooklyn|queens|bronx|staten island)$/i.test(parts[i] ?? '')) {
+        return token;
+      }
+    }
+  }
+  return '';
+}
+
 export function normalizedCityStateKey(c: GeocodeCandidate): string {
-  const city = normalizeCityToken(c.city ?? '');
+  const city = cityTokenFromCandidate(c);
   const state = stateFromResolved(c.resolvedAddress) ?? '';
   return `${city}|${state}`;
+}
+
+function normalizedLabelDedupeKey(c: GeocodeCandidate): string {
+  const blob = c.resolvedAddress.toLowerCase();
+  const streetMatch = blob.match(
+    /\b(\d+[a-z]?)\s*,?\s*([a-z0-9 .'-]+(?:street|st|avenue|ave|road|rd|boulevard|blvd|drive|dr|lane|ln|way|place|pl))\b/
+  );
+  const street = streetMatch ? `${streetMatch[1]} ${streetMatch[2]}`.replace(/\./g, '').trim() : '';
+  const hood = (c.neighborhood ?? '').trim().toLowerCase();
+  const borough =
+    /\bmanhattan\b/.test(blob) ? 'manhattan' : /\bbrooklyn\b/.test(blob) ? 'brooklyn' : '';
+  const city = cityTokenFromCandidate(c);
+  return [street, hood, borough, city].filter(Boolean).join('|');
+}
+
+/** House number + street token for merging Nominatim label variants at the same pin. */
+export function streetPlaceKey(c: GeocodeCandidate): string | null {
+  const blob = c.resolvedAddress.toLowerCase();
+  const match = blob.match(
+    /\b(\d+[a-z]?)\s*,?\s*([a-z0-9 .'-]+(?:street|st|avenue|ave|road|rd|boulevard|blvd|drive|dr|lane|ln|way|place|pl))\b/
+  );
+  if (!match) return null;
+  const hood = (c.neighborhood ?? '').trim().toLowerCase();
+  const street = (match[2] ?? '').replace(/\./g, '');
+  return `${match[1]}|${street}|${hood}`;
+}
+
+function isNearDuplicatePlace(a: GeocodeCandidate, b: GeocodeCandidate, meters: number): boolean {
+  if (haversineMeters(a.latitude, a.longitude, b.latitude, b.longitude) >= meters) {
+    return false;
+  }
+  if (normalizedCityStateKey(a) === normalizedCityStateKey(b) && normalizedCityStateKey(a) !== '|') {
+    return true;
+  }
+  const sa = streetPlaceKey(a);
+  const sb = streetPlaceKey(b);
+  if (sa && sb && sa === sb) return true;
+  const la = normalizedLabelDedupeKey(a);
+  const lb = normalizedLabelDedupeKey(b);
+  if (la && lb && la === lb) return true;
+  return false;
 }
 
 /** When the broker typed a ZIP, drop candidates whose ZIP does not match. */
@@ -160,15 +221,11 @@ export function filterCandidatesByInputPostalCode(
 /** Merge Nominatim duplicates within a short radius when city and state normalize the same. */
 export function dedupeGeocodeCandidatesByPlaceAndDistance<T extends GeocodeCandidate>(
   candidates: T[],
-  meters = 50
+  meters = GEOCODE_DEDUPE_RADIUS_METERS
 ): T[] {
   const kept: T[] = [];
   for (const c of candidates) {
-    const key = normalizedCityStateKey(c);
-    const nearDuplicate = kept.some((k) => {
-      if (normalizedCityStateKey(k) !== key) return false;
-      return haversineMeters(k.latitude, k.longitude, c.latitude, c.longitude) < meters;
-    });
+    const nearDuplicate = kept.some((k) => isNearDuplicatePlace(k, c, meters));
     if (!nearDuplicate) kept.push(c);
   }
   return kept;

@@ -56,6 +56,15 @@ CREATE TABLE IF NOT EXISTS pitch_packs (
 
 CREATE INDEX IF NOT EXISTS idx_pitch_packs_created ON pitch_packs(created_at);
 
+-- Immutable shareable owner pipeline updates (per property)
+CREATE TABLE IF NOT EXISTS owner_updates (
+  update_id TEXT PRIMARY KEY,
+  payload TEXT NOT NULL,
+  created_at INTEGER NOT NULL DEFAULT (unixepoch())
+);
+
+CREATE INDEX IF NOT EXISTS idx_owner_updates_created ON owner_updates(created_at);
+
 -- Autonomous full prospecting agent runs
 CREATE TABLE IF NOT EXISTS prospecting_jobs (
   job_id TEXT PRIMARY KEY,

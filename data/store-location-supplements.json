@@ -1,0 +1,13 @@
+{
+  "description": "Curated store points missing from ATP geotiles or OSM snapshot Overpass extracts. Each entry must cite a primary source URL.",
+  "stores": [
+    {
+      "brandId": "205AF33F-118E-4C49-9721-6BDBAF981DA0",
+      "name": "REI SoHo",
+      "lat": 40.72483,
+      "lon": -73.99522,
+      "source": "https://www.openstreetmap.org/node/2483671757",
+      "note": "OpenStreetMap node 2483671757 (303 Lafayette St) was absent from our Oct 2026 brand:wikidata Overpass extract despite brand:wikidata=Q3414933 on the node."
+    }
+  ]
+}

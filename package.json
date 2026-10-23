@@ -9,7 +9,7 @@
     "test": "turbo test",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
-    "verify:ci": "pnpm lint && pnpm typecheck && pnpm test && VITE_API_URL=https://ci.leaseup.invalid pnpm build && node scripts/check-bundle-dashes.mjs && node scripts/check-worker-bundle.mjs && node scripts/worker-analyze-smoke.mjs",
+    "verify:ci": "pnpm lint && pnpm typecheck && pnpm test && VITE_API_URL=https://ci.leaseup.invalid pnpm build && node scripts/check-box-hotfix-p0.mjs && node scripts/check-brand-real-estate-urls.mjs && node scripts/check-bundle-dashes.mjs && node scripts/check-worker-bundle.mjs && node scripts/worker-analyze-smoke.mjs",
     "screenshots": "node scripts/ui-snapshots.mjs",
     "screenshots:features": "node scripts/feature-screenshots.mjs",
     "test:e2e": "pnpm --filter @leaseup/worker exec wrangler d1 execute leaseup_db --local --file=schema.sql && playwright test",

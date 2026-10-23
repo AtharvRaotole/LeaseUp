@@ -1,10 +1,14 @@
 import type { GeocodeCandidate, Location } from '@leaseup/contracts';
 import type { ResponseCache } from '../lib/response-cache';
 import {
-  dedupeGeocodeCandidatesWithinMeters,
   formatGeocodeCandidateLabel,
+  formatPoiAddressLabel,
+  isPoiClass,
+  isPoiOnlyResult,
 } from '../lib/geocode-label';
+import { rankGeocodeCandidates } from '../lib/geocode-rank';
 import { UpstreamError } from '../lib/errors';
+import { NOMINATIM_CANDIDATES_CACHE_TTL_OK, nominatimCandidatesCacheKey } from '../lib/nominatim-cache';
 import { parseUsAddress, streetForGeocodeSearch } from '../lib/parse-us-address';
 import { candidateToLocation, resolveGeocodeFromCandidates } from '../lib/geocode-resolve';
 
@@ -57,27 +61,56 @@ export class NominatimClient {
   }
 
   async geocodeCandidates(address: string, limit = 5): Promise<GeocodeCandidate[]> {
-    const cacheKey = `nominatim:candidates:v3:${address.toLowerCase().trim()}:${limit}`;
+    const cacheKey = nominatimCandidatesCacheKey(address, limit);
     const cached = await this.cache.get(cacheKey, 'text');
     if (typeof cached === 'string') {
-      return JSON.parse(cached) as GeocodeCandidate[];
+      try {
+        const parsed = JSON.parse(cached) as GeocodeCandidate[];
+        if (parsed.length > 0) return parsed;
+      } catch {
+        /* treat corrupt cache as miss */
+      }
+      // Never serve a cached empty list for the full 24h window — refetch.
     }
 
+    let candidates = await this.collectCandidates(address, limit);
+    if (candidates.length === 0) {
+      candidates = await this.legacyGeocodeCandidates(address, limit);
+    }
+
+    const ranked = rankGeocodeCandidates(address, candidates).slice(0, limit);
+    await this.writeCandidatesCache(cacheKey, ranked);
+    return ranked;
+  }
+
+  /** Legacy single-query free-text search (pre-structured pipeline), used when structured search is empty. */
+  async legacyGeocodeCandidates(address: string, limit = 5): Promise<GeocodeCandidate[]> {
+    await this.enforceRateLimit();
+    const results = await this.fetchSearchSafe({
+      q: address.trim(),
+      format: 'json',
+      limit: String(limit),
+      addressdetails: '1',
+    });
+    return this.resultsToCandidates(address, results, limit);
+  }
+
+  private async collectCandidates(address: string, limit: number): Promise<GeocodeCandidate[]> {
     const parsed = parseUsAddress(address);
     const merged: NominatimResult[] = [];
 
     if (parsed.street) {
       await this.enforceRateLimit();
-      const structured = await this.fetchSearch(this.buildStructuredParams(parsed, limit));
-      merged.push(...structured);
+      merged.push(...(await this.fetchSearchSafe(this.buildStructuredParams(parsed, limit))));
 
       const simplifiedStreet = streetForGeocodeSearch(parsed.street);
       if (merged.length === 0 && simplifiedStreet && simplifiedStreet !== parsed.street) {
         await this.enforceRateLimit();
-        const retry = await this.fetchSearch(
-          this.buildStructuredParams({ ...parsed, street: simplifiedStreet }, limit)
+        merged.push(
+          ...(await this.fetchSearchSafe(
+            this.buildStructuredParams({ ...parsed, street: simplifiedStreet }, limit)
+          ))
         );
-        merged.push(...retry);
       }
     }
 
@@ -87,42 +120,52 @@ export class NominatimClient {
         : address;
 
     await this.enforceRateLimit();
-    const freeText = await this.fetchSearch({
-      q: freeTextQuery,
-      format: 'json',
-      limit: String(limit),
-      addressdetails: '1',
-      countrycodes: 'us',
-    });
-    merged.push(...freeText);
-
-    if (merged.length === 0 && freeTextQuery !== address) {
-      await this.enforceRateLimit();
-      const fallbackFree = await this.fetchSearch({
-        q: address,
+    merged.push(
+      ...(await this.fetchSearchSafe({
+        q: freeTextQuery,
         format: 'json',
         limit: String(limit),
         addressdetails: '1',
         countrycodes: 'us',
-      });
-      merged.push(...fallbackFree);
+      }))
+    );
+
+    if (merged.length === 0 && freeTextQuery !== address) {
+      await this.enforceRateLimit();
+      merged.push(
+        ...(await this.fetchSearchSafe({
+          q: address,
+          format: 'json',
+          limit: String(limit),
+          addressdetails: '1',
+          countrycodes: 'us',
+        }))
+      );
     }
 
+    return this.resultsToCandidates(address, merged, limit);
+  }
+
+  private resultsToCandidates(
+    inputAddress: string,
+    merged: NominatimResult[],
+    limit: number
+  ): GeocodeCandidate[] {
     const seen = new Set<string>();
     const candidates: GeocodeCandidate[] = [];
     for (const result of merged) {
       const key = `${Number(result.lat).toFixed(5)},${Number(result.lon).toFixed(5)}`;
       if (seen.has(key)) continue;
       seen.add(key);
-      candidates.push(this.toCandidate(address, result));
+      candidates.push(this.toCandidate(inputAddress, result));
       if (candidates.length >= limit) break;
     }
+    return candidates;
+  }
 
-    const deduped = dedupeGeocodeCandidatesWithinMeters(candidates, 50);
-
-    await this.cache.putJsonIfChanged(cacheKey, deduped, 86400);
-
-    return deduped;
+  private async writeCandidatesCache(cacheKey: string, deduped: GeocodeCandidate[]): Promise<void> {
+    if (deduped.length === 0) return;
+    await this.cache.putJsonIfChanged(cacheKey, deduped, NOMINATIM_CANDIDATES_CACHE_TTL_OK);
   }
 
   private buildStructuredParams(parsed: ReturnType<typeof parseUsAddress>, limit: number): Record<string, string> {
@@ -137,6 +180,14 @@ export class NominatimClient {
     if (parsed.state) params.state = parsed.state;
     if (parsed.postalCode) params.postalcode = parsed.postalCode;
     return params;
+  }
+
+  private async fetchSearchSafe(params: Record<string, string>): Promise<NominatimResult[]> {
+    try {
+      return await this.fetchSearch(params);
+    } catch {
+      return [];
+    }
   }
 
   private async fetchSearch(params: Record<string, string>): Promise<NominatimResult[]> {
@@ -214,7 +265,10 @@ export class NominatimClient {
         result.address?.quarter ||
         result.address?.city_district ||
         result.address?.borough,
-      resolvedAddress: formatGeocodeCandidateLabel(result.display_name, result.address),
+      resolvedAddress:
+        isPoiClass(result.class) && result.address
+          ? formatPoiAddressLabel(result.address)
+          : formatGeocodeCandidateLabel(result.display_name, result.address),
     };
   }
 
@@ -228,14 +282,3 @@ export class NominatimClient {
   }
 }
 
-function isPoiOnlyResult(result: NominatimResult): boolean {
-  const cls = result.class?.toLowerCase();
-  const typ = result.type?.toLowerCase();
-  if (!cls) return false;
-  if (cls === 'shop' || cls === 'amenity' || cls === 'tourism') return true;
-  if (typ === 'house' || typ === 'building' || typ === 'address' || typ === 'residential') {
-    return false;
-  }
-  if (cls === 'building' || cls === 'place') return false;
-  return cls === 'poi';
-}

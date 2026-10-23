@@ -61,6 +61,31 @@ export default function ReportMapInner({
       .setLngLat([results.location.longitude, results.location.latitude])
       .addTo(map);
     map.on('load', () => {
+      const pin: FeatureCollection<Point> = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'Point',
+              coordinates: [results.location.longitude, results.location.latitude],
+            },
+          },
+        ],
+      };
+      map.addSource('site-pin', { type: 'geojson', data: pin });
+      map.addLayer({
+        id: 'site-pin',
+        type: 'circle',
+        source: 'site-pin',
+        paint: {
+          'circle-radius': 8,
+          'circle-color': '#0f6b4f',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+        },
+      });
       map.resize();
       setMapReady(true);
     });
@@ -143,10 +168,21 @@ export default function ReportMapInner({
     () => ({
       captureSnapshot: readCanvasSnapshot,
       capturePitchSnapshot: async () => {
+        const map = mapRef.current;
+        setShowStores(true);
+        setShowHeatmap(true);
         const entityId = selectedBrand?.entityId ?? pitchBrandIds[0];
-        if (entityId) {
-          setShowHeatmap(true);
+        if (entityId && results.heatmapAvailable === true) {
           await loadHeatmapForEntity(entityId);
+          if (map?.getLayer('heatmap')) {
+            map.setLayoutProperty('heatmap', 'visibility', 'visible');
+          }
+        }
+        if (map) {
+          await new Promise<void>((resolve) => {
+            map.once('idle', () => resolve());
+            window.setTimeout(() => resolve(), 1500);
+          });
         }
         await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
         return readCanvasSnapshot();
@@ -298,7 +334,7 @@ export default function ReportMapInner({
       </div>
       <div
         ref={containerRef}
-        className="h-full min-h-[520px] w-full rounded-card border border-border overflow-hidden"
+        className="!absolute inset-0 w-full rounded-card border border-border overflow-hidden"
       />
     </div>
   );

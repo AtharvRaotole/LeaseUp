@@ -1,7 +1,37 @@
-import type { AnalysisResponse, Location, ProspectPack } from '@leaseup/contracts';
+import type { AnalysisResponse, Location, PitchPackSnapshot, ProspectPack } from '@leaseup/contracts';
 import { DEMO_OSM_UNRECORDED_NOTE } from '@leaseup/fixtures';
 
 /** Plain label for pitch packs: how many store datasets we checked for this brand. */
+export function pitchPackVerificationSummary(
+  snapshot: Pick<PitchPackSnapshot, 'prospects'>
+): string {
+  let twoSource = 0;
+  let oneSource = 0;
+  let checking = 0;
+  for (const row of snapshot.prospects) {
+    const v = row.prospect.brand.verified;
+    if (v === 'verified (2 sources)') twoSource += 1;
+    else if (v === 'unverified (1 source)' || v === 'unverified') oneSource += 1;
+    else if (v === 'verifying...') checking += 1;
+  }
+  const parts: string[] = [];
+  if (twoSource > 0) {
+    parts.push(
+      `${twoSource} brand${twoSource === 1 ? '' : 's'} checked in All The Places and OpenStreetMap`
+    );
+  }
+  if (oneSource > 0) {
+    parts.push(`${oneSource} brand${oneSource === 1 ? '' : 's'} checked in one source only`);
+  }
+  if (checking > 0) {
+    parts.push(`${checking} still waiting on a second source`);
+  }
+  if (parts.length === 0) {
+    return 'Store checks vary by brand on this list.';
+  }
+  return parts.join('; ') + '.';
+}
+
 export function pitchCheckedSourcesLabel(prospect: ProspectPack): string {
   const sources = prospect.brand.verificationSources ?? [];
   const atp = sources.some((s) => /all the places/i.test(s));

@@ -17,11 +17,19 @@ const ProspectingPage = lazy(() =>
 const PipelinePage = lazy(() =>
   import('./pages/PipelinePage').then((m) => ({ default: m.PipelinePage }))
 );
+const OwnerUpdatePage = lazy(() =>
+  import('./pages/OwnerUpdatePage').then((m) => ({ default: m.OwnerUpdatePage }))
+);
 const NotFoundPage = lazy(() =>
   import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage }))
 );
 const MethodologyPage = lazy(() =>
   import('./pages/MethodologyPage').then((m) => ({ default: m.MethodologyPage }))
+);
+const LandingHeroPreviewCapturePage = lazy(() =>
+  import('./pages/LandingHeroPreviewCapturePage').then((m) => ({
+    default: m.LandingHeroPreviewCapturePage,
+  }))
 );
 
 export default function App() {
@@ -32,6 +40,7 @@ export default function App() {
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/__preview/landing-hero" element={<LandingHeroPreviewCapturePage />} />
           <Route path="/methodology" element={<MethodologyPage />} />
           <Route path="/brand" element={<BrandPage />} />
           <Route path="/brand/:id" element={<BrandPage />} />
@@ -43,6 +52,7 @@ export default function App() {
           <Route path="/prospect/:id" element={<ProspectingPage />} />
           <Route path="/pipeline" element={<PipelinePage />} />
           <Route path="/pipeline/view/:shareId" element={<PipelinePage />} />
+          <Route path="/owner-update/:id" element={<OwnerUpdatePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>

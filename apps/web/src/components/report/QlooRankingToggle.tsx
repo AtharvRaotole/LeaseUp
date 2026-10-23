@@ -19,7 +19,7 @@ export function QlooRankingToggle({
     <div className={className}>
       <div className="flex items-center gap-1.5">
         <SegmentedControl
-          label="Ranking proof"
+          label="Compare ranking"
           value={mode}
           onChange={(v) => onChange(v as QlooRankingMode)}
           options={[
