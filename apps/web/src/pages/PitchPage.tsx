@@ -122,7 +122,7 @@ export function PitchPage() {
 
         <section className="pitch-print-page-2 mt-12 print:mt-0">
           <h2 className="font-serif text-2xl text-ink">Top brands to pitch</h2>
-          <ol className="mt-4 space-y-5 print:space-y-3">
+          <ol className="mt-4 space-y-5 print:space-y-1.5">
             {snapshot.prospects.map(({ prospect, whyLine }, index) => {
               const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
               const rankLabel = fitPercentileLabel(prospect.brand.affinityRank, totalScored);
@@ -139,7 +139,7 @@ export function PitchPage() {
                   </p>
                   <p className="mt-2 text-ink print:text-sm">{fact}</p>
                   {shouldShowStoredWhyLine(whyLine) && (
-                    <p className="mt-1 text-sm text-ink-2">{whyLine}</p>
+                    <p className="mt-1 text-sm text-ink-2 no-print">{whyLine}</p>
                   )}
                   <div className="mt-3 no-print">
                     <AddToPipelineButton
@@ -157,15 +157,17 @@ export function PitchPage() {
             })}
           </ol>
 
-          <div className="mt-8 print-pitch-block print:mt-4">
+          <div className="mt-8 print-pitch-block print:mt-2">
             <VacancyCostCalculator
               key={snapshot.id}
+              className="pitch-vacancy"
+              compact
               initial={snapshot.vacancy ?? vacancy}
               onChange={setVacancy}
             />
           </div>
 
-          <footer className="mt-10 border-t border-border pt-6 text-sm text-ink-2 pitch-methodology print:mt-4 print:pt-3">
+          <footer className="mt-10 border-t border-border pt-6 text-sm text-ink-2 pitch-methodology print:mt-2 print:pt-2">
             <h2 className="font-serif text-lg text-ink">Methodology and data sources</h2>
             <ul className="mt-2 list-disc space-y-1 pl-5 print:text-xs">
               <li>Qloo Taste AI rankings ({snapshot.mode ?? 'demo'}) for affinity at this pin</li>

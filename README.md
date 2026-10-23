@@ -38,7 +38,8 @@ Mobile landing:
 | **Pitch pack** (`/pitch/:id`) | Shareable read-only snapshot from a site report, map image, top 5 prospects, print/PDF |
 | **Qloo proof** (report) | Toggle Qloo vs national chain-size baseline with computed backtest comparison |
 | **Full prospecting** (`/prospect/:id`) | Agent timeline over SSE: geocode through pitch pack and draft outreach |
-| **Leasing pipeline** (`/pipeline`) | Kanban board (D1 + workspace cookie): drag stages, notes, follow-ups, grounded outreach drafts, CSV export, read-only share link |
+| **Leasing pipeline** (`/pipeline`) | Kanban board (D1 + workspace cookie): drag stages, notes, follow-ups, user-set outreach status, grounded outreach drafts, CSV export, read-only share link |
+| **Format fit** (report) | Storefront sq ft filter hides big-box prospects (e.g. IKEA); co-tenancy mix by category |
 
 Brand reverse (recorded Chicago heatmap, light 1440px):
 
