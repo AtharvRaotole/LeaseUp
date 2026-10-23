@@ -67,11 +67,11 @@ export function LandingHeroVideo() {
           loop
           playsInline
           preload="metadata"
-          poster="/demo/poster.jpg"
+          poster="/media/hero-poster.jpg"
           onCanPlay={() => setVideoReady(true)}
         >
-          <source src="/demo/demo.webm" type="video/webm" />
-          <source src="/demo/demo.mp4" type="video/mp4" />
+          <source src="/media/hero-loop.webm" type="video/webm" />
+          <source src="/media/hero-loop.mp4" type="video/mp4" />
         </video>
       )}
     </div>
