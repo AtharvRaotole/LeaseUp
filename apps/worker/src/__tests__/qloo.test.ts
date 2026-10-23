@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { QlooClient, normalizeHeatmapCells, clampQlooTake, QLOO_MAX_TAKE } from '../providers/qloo';
-import { ConfigurationError } from '../lib/errors';
+import { ConfigurationError, UpstreamError } from '../lib/errors';
 import { getStoreBrandIds } from '@leaseup/fixtures';
 import { sha256Short } from '../lib/cache-key';
 import { ResponseCache } from '../lib/response-cache';
@@ -50,6 +50,37 @@ describe('QlooClient', () => {
     expect(() => new QlooClient(makeEnv({ APP_MODE: 'live', QLOO_API_KEY: '' }))).toThrow(
       ConfigurationError
     );
+  });
+
+  it('serves demo taste insights when FORCE_QLOO_DOWN is unset (default worker env)', async () => {
+    const client = new QlooClient(makeEnv());
+    const rows = await client.getBrandInsights({
+      location: { kind: 'query', query: 'Wicker Park, Chicago' },
+    });
+    expect(rows.length).toBeGreaterThan(0);
+    expect(rows.some((r) => (r.query?.affinity ?? 0) > 0)).toBe(true);
+  });
+
+  it('only treats FORCE_QLOO_DOWN exactly "1" as forcing Qloo down', async () => {
+    for (const value of ['0', 'true', 'yes', '']) {
+      const client = new QlooClient(makeEnv({ FORCE_QLOO_DOWN: value }));
+      const rows = await client.getBrandInsights({
+        location: { kind: 'query', query: 'Wicker Park, Chicago' },
+      });
+      expect(rows.length).toBeGreaterThan(0);
+    }
+
+    const forced = new QlooClient(makeEnv({ FORCE_QLOO_DOWN: '1' }));
+    await expect(
+      forced.getBrandInsights({
+        location: { kind: 'query', query: 'Wicker Park, Chicago' },
+      })
+    ).rejects.toBeInstanceOf(UpstreamError);
+    await expect(
+      forced.getBrandInsights({
+        location: { kind: 'query', query: 'Wicker Park, Chicago' },
+      })
+    ).rejects.toMatchObject({ code: 'QLOO_UNAVAILABLE' });
   });
 
   it('uses hashed brand list in cache key under 512 bytes', async () => {

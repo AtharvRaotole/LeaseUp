@@ -178,6 +178,25 @@ jobs:
       - name: Axe serious/critical (production preview + demo worker)
         run: node scripts/run-a11y-e2e.mjs
 
+  qloo-down-e2e:
+    name: Qloo down e2e
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.0'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium
+      - name: Chain-size fallback when Qloo is down
+        run: node scripts/run-qloo-down-e2e.mjs
+
   watchlist-e2e:
     name: Watchlist e2e
     runs-on: ubuntu-latest
