@@ -28,7 +28,8 @@ for (const site of SITES) {
       const page = await context.newPage();
       const path = `/r/${site.slug}?address=${encodeURIComponent(site.address)}&radius=10&screenshot=1`;
       await page.goto(`${BASE}${path}`, { waitUntil: 'networkidle' });
-      await page.getByTestId('report-summary').waitFor({ timeout: 120_000 });
+      const readyId = sub === 'before' ? 'brands-to-pitch' : 'report-summary';
+      await page.getByTestId(readyId).waitFor({ timeout: 120_000 });
       await page.evaluate(() => window.scrollTo(0, 0));
       const file = `${site.slug}-${width}-${theme}.png`;
       await page.screenshot({ path: join(OUT, file), fullPage: false });
