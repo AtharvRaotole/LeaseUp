@@ -119,13 +119,11 @@ export function PipelineKanban({
     const overStatus = findStatusForId(cards, String(over.id));
     if (!overStatus) return;
 
-    let sortOrder = 0;
     const overCard = cards.find((c) => c.id === over.id);
-    if (overCard && overCard.prospectStatus === overStatus) {
-      sortOrder = overCard.sortOrder;
-    } else {
-      sortOrder = (byStatus.get(overStatus)?.length ?? 0);
-    }
+    const sortOrder =
+      overCard && overCard.prospectStatus === overStatus
+        ? overCard.sortOrder
+        : (byStatus.get(overStatus)?.length ?? 0);
 
     if (card.prospectStatus === overStatus && card.sortOrder === sortOrder) return;
 
