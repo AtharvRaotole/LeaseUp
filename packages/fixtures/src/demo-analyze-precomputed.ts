@@ -116,7 +116,7 @@ export function demoAnalyzeStrictEval(
       },
     ],
     notes: [
-      `Recorded 40-site adaptive eval: logistic blend P@10 ${(row.p10_blend * 100).toFixed(0)}% vs chain ${(row.p10_chain * 100).toFixed(0)}% at this pin.`,
+      `Recorded 40-site adaptive eval: taste blend top-10 hit rate ${(row.p10_blend * 100).toFixed(0)}% vs chain size ${(row.p10_chain * 100).toFixed(0)}% at this pin.`,
     ],
   };
 }

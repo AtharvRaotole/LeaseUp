@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { findBrokerJargonViolations } from '../lib/broker-visible-jargon';
 import {
+  brokerEvalNote,
+  brokerMetricCatalogShortLabel,
   evalHeadlineLabel,
   formatPanelValues,
 } from '../lib/eval-display';
@@ -21,6 +23,20 @@ describe('broker-visible jargon guards', () => {
   it('verification broker labels avoid Verified/Unverified', () => {
     expect(findBrokerJargonViolations(verificationBrokerLabel('verified (2 sources)'))).toEqual([]);
     expect(findBrokerJargonViolations(verificationBrokerLabel('unverified (1 source)'))).toEqual([]);
+  });
+
+  it('brokerEvalNote strips P@10 and AUC from fixture notes', () => {
+    expect(findBrokerJargonViolations(brokerEvalNote('logistic blend P@10 90%'))).toEqual([]);
+    expect(findBrokerJargonViolations(brokerEvalNote('same-size AUC 0.71'))).toEqual([]);
+  });
+
+  it('methodology catalog short labels avoid raw metric jargon', () => {
+    expect(findBrokerJargonViolations(brokerMetricCatalogShortLabel('same_size_auc', 'Same-size AUC'))).toEqual(
+      []
+    );
+    expect(findBrokerJargonViolations(brokerMetricCatalogShortLabel('legacy_present_at10', 'Legacy P@10'))).toEqual(
+      []
+    );
   });
 
   it('eval headline and panel strings avoid AUC and P@10', () => {

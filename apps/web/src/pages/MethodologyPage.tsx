@@ -15,10 +15,12 @@ import { InfoTooltip } from '../components/ui/InfoTooltip';
 import {
   methodologyDensityRadiusTooltip,
   methodologyLikelyRangeTooltip,
+  methodologyCatalogMetricTooltip,
   methodologyRankMatchTooltip,
   methodologyTop10HitTooltip,
   methodologyTasteRankTooltip,
 } from '../lib/broker-copy';
+import { brokerMetricCatalogShortLabel } from '../lib/eval-display';
 
 const evalBundle = loadEvalRunBundle();
 const evalManifest = getEvalManifest();
@@ -134,11 +136,17 @@ export function MethodologyPage() {
                 <thead>
                   <tr className="border-b border-border bg-surface-2 text-label uppercase text-ink-3">
                     <th scope="col" className="px-3 py-3 font-medium">Site</th>
-                    {evalManifest.displayMetricIds.map((metricId) => (
-                      <th key={metricId} scope="col" className="px-3 py-3 font-medium text-right">
-                        {evalMetricDefinition(metricId)?.shortLabel ?? metricId}
-                      </th>
-                    ))}
+                    {evalManifest.displayMetricIds.map((metricId) => {
+                      const def = evalMetricDefinition(metricId);
+                      return (
+                        <th key={metricId} scope="col" className="px-3 py-3 font-medium text-right">
+                          <TableMetricLabel
+                            label={brokerMetricCatalogShortLabel(metricId, def?.shortLabel ?? metricId)}
+                            tip={methodologyCatalogMetricTooltip(metricId, def?.description)}
+                          />
+                        </th>
+                      );
+                    })}
                   </tr>
                 </thead>
                 <tbody>

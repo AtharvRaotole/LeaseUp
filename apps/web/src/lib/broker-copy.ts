@@ -74,6 +74,25 @@ export function methodologyLikelyRangeTooltip(): string {
   return 'The range we expect this score to fall in if we repeated the study on similar addresses.';
 }
 
+export function methodologyCatalogMetricTooltip(metricId: string, description?: string): string {
+  switch (metricId) {
+    case 'same_size_auc':
+      return methodologyRankMatchTooltip();
+    case 'legacy_present_at10':
+      return `${methodologyTop10HitTooltip()} Uses your full search radius.`;
+    case 'adaptive_present_at10':
+      return `${methodologyTop10HitTooltip()} Uses a tighter circle in busy trade areas.`;
+    case 'spearman_presence':
+      return 'How closely rank order lines up with which brands already have a store in the circle.';
+    case 'surprise_present_at10':
+      return 'Present brands ranked high by taste but not by national chain size alone.';
+    case 'random_monte_carlo':
+      return 'Average top-10 hits if we shuffled the brand list at random.';
+    default:
+      return description ?? 'How this metric is scored on the recorded site list.';
+  }
+}
+
 export function verificationBrokerLabel(verified: ProspectPack['brand']['verified']): string {
   switch (verified) {
     case 'verified (2 sources)':

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import {
   brokerPanelTitle,
   evalHeadlineLabel,
+  brokerEvalNote,
   formatPanelValues,
   isHeadlinePanel,
 } from '../../lib/eval-display';
@@ -81,7 +82,7 @@ export function StrictEvalCard({ results }: { results: AnalysisResponse }) {
       {snapshot.notes.length > 0 && (
         <ul className="mt-4 list-disc space-y-1 pl-5 text-sm text-ink-2">
           {snapshot.notes.map((note) => (
-            <li key={note}>{note}</li>
+            <li key={note}>{brokerEvalNote(note)}</li>
           ))}
         </ul>
       )}
