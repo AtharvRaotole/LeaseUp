@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { LandingReveal } from './LandingReveal';
-import { LandingHeroVideo } from './LandingHeroVideo';
-import { landingWickerReportPath } from './LandingReportPreview';
+import { LandingReportPreview, landingWickerReportPath } from './LandingReportPreview';
 
 export function LandingProductVisual() {
   return (
@@ -29,7 +28,7 @@ export function LandingProductVisual() {
                 leaseup.app{landingWickerReportPath}
               </div>
             </div>
-            <LandingHeroVideo />
+            <LandingReportPreview />
           </div>
           <p className="mt-6 text-center text-sm text-ink-2">
             Recorded Wicker Park demo: ranked pitch list and map from fixture data.{' '}
