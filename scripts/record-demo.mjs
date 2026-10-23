@@ -21,7 +21,8 @@ const IS_TEST = process.env.RECORD_DEMO_TEST === '1';
 const BUILD_HERO = process.env.RECORD_DEMO_HERO === '1';
 const MEDIA_DIR = join(process.cwd(), 'docs/media');
 const PUBLIC_MEDIA = join(process.cwd(), 'apps/web/public/media');
-const ADDRESS = process.env.RECORD_DEMO_ADDRESS || '1560 N Milwaukee Ave Chicago';
+const ADDRESS =
+  process.env.RECORD_DEMO_ADDRESS || '1560 N Milwaukee Ave, Chicago, IL 60622';
 const pause = (ms) => new Promise((r) => setTimeout(r, ms));
 
 function gitSha() {
