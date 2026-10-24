@@ -30,19 +30,19 @@ Measured on **GitHub Actions `ubuntu-latest`** (Axe a11y e2e job, production pre
 
 **Source:** **GitHub Actions LHCI median of 3 mobile runs** on `ubuntu-latest` (production preview port 4173 + demo worker, `lighthouserc.cjs`). Raw arrays and medians are printed as `LHCI_MEDIANS:` in the job log after each run.
 
-**Pinned from green CI** ([workflow run 40058723762](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40058723762); re-measure on branch head and update when scores change):
+**Pinned from green CI** ([workflow run 40074283024](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40074283024); `LHCI_MEDIANS` on branch `cursor/report-lh-remeasure-ca63` after merge **ecf55c0**):
 
 | URL | Raw performance (3 runs) | Median (perf / a11y / best practices) |
 |-----|--------------------------|----------------------------------------|
-| `/` | 92, 93, 93 | **93** / 100 / 93 |
-| `/r/wicker?…&radius=10` | 90, 92, 90 | **90** / 96 / 93 |
+| `/` | 91, 93, 93 | **93** / 100 / 93 |
+| `/r/wicker?…&radius=10` | 91, 89, 89 | **89** / 96 / 93 |
 
 | URL | Before | After (same CI environment as above) |
 |-----|--------|--------------------------------------|
 | `/` | 83 / 100 / 100 | **93** / 100 / 93 |
-| `/r/wicker?…&radius=10` | 63 / 95 / 100 | **90** / 96 / 93 |
+| `/r/wicker?…&radius=10` | 63 / 95 / 100 | **89** / 96 / 93 |
 
-Landing performance is enforced ≥ 90 in CI. Report performance is **warn-only** below 90 (median 90 in the run above). Report accessibility median **96** in that run (axe e2e still enforces 0 serious/critical on the report with `?screenshot=1`).
+Landing performance is enforced ≥ 90 in CI. Report performance is **warn-only** below 90 (median **89** in the run above). Report accessibility median **96** in that run (axe e2e still enforces 0 serious/critical on the report with `?screenshot=1`).
 
 Report mobile work (#93+): demo-chip analyze **prefetch at app entry**, single-shot demo `/api/analyze`, lazy map column on mobile until Map tab, font preload, no mobile report enter animation, above-fold `brands-to-pitch`, post-paint deferral for all users (`requestAnimationFrame` ×2, then `requestIdleCallback`: mobile brand detail rows ~400ms idle, headline stats / sticky header / tour / demo banner 2.5s cap, deep sections 12s cap unless `?screenshot=1`)—no Lighthouse, headless, or audit detection.
 
