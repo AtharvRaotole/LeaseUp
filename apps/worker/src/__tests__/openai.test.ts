@@ -1,11 +1,34 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { isAcceptableOutreachDraft } from '@leaseup/contracts';
-import { OpenAIClient, buildOutreachPrompt } from '../providers/openai';
+import { OpenAIClient, buildOutreachPrompt, buildWhyBrandTastePrompt } from '../providers/openai';
+import { sanitizeWhyBrandTasteSummary } from '@leaseup/fixtures/worker';
 import type { Env } from '../index';
 import {
   OUTREACH_TEMPLATE_DEMO_LABEL,
   OUTREACH_TEMPLATE_FALLBACK_LABEL,
 } from '../lib/outreach-model-labels';
+
+describe('buildWhyBrandTastePrompt', () => {
+  it('asks for one sentence without affinity decimals in the output', () => {
+    const prompt = buildWhyBrandTastePrompt({
+      brandName: 'Ulta',
+      signals: [{ kind: 'audience', name: 'Health & Beauty', affinity: 0.74, affinityRank: 27 }],
+    });
+    expect(prompt).toContain('exactly one short sentence');
+    expect(prompt).toContain('Health & Beauty');
+    expect(prompt).toMatch(/local audience rank #27/);
+    expect(prompt).not.toContain('0.74');
+    expect(prompt).toMatch(/resonates well/i);
+  });
+});
+
+describe('sanitizeWhyBrandTasteSummary (worker)', () => {
+  it('cleans model output before storing on prospects', () => {
+    const cleaned = sanitizeWhyBrandTasteSummary('Yoga overlap at 0.80 resonates well.');
+    expect(cleaned).not.toMatch(/\b0\.\d+\b/);
+    expect(cleaned.toLowerCase()).not.toContain('resonates well');
+  });
+});
 
 describe('buildOutreachPrompt', () => {
   it('includes only supplied facts and forbids invented statistics', () => {

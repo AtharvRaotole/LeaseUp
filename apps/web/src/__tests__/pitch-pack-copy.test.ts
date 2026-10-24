@@ -87,10 +87,45 @@ describe('pitch pack copy', () => {
     const joined = lines.join('\n');
     expect(joined).not.toMatch(/#26 of 224 brands we scored/);
     expect(joined).not.toMatch(/ATP catalog/i);
+    expect(joined).not.toMatch(/Audience:\s/i);
+    expect(joined).not.toMatch(/\b0\.\d{2}\b/);
     expect(lines.some((l) => l.includes('All The Places store data') && l.includes('11.3'))).toBe(
       true
     );
     expect(pitchNearestStoreBriefLine(ultaPack.prospect)).toContain('All The Places store data');
+  });
+
+  it('uses one taste sentence instead of summary plus audience bullets', () => {
+    const snapshot = {
+      radiusKm: 10,
+      rankingsTotal: 40,
+      prospects: [],
+    } as unknown as PitchPackSnapshot;
+    const lines = pitchBrandFitLines(
+      {
+        brand: {
+          entityId: 'ulta',
+          name: 'Ulta',
+          affinity: 1,
+          affinityRank: 3,
+          verified: 'verified (2 sources)',
+        },
+        outreachDraft: '',
+        reasons: ['Beauty: category gap vs. nearby tenants'],
+        whyBrandTaste: {
+          summary: 'Ulta resonates well with Yoga at 0.80.',
+          signals: [
+            { kind: 'audience', name: 'Yoga', affinity: 0.8, affinityRank: 10 },
+            { kind: 'audience', name: 'Health & Beauty', affinity: 0.74, affinityRank: 27 },
+          ],
+        },
+      },
+      snapshot
+    );
+    const tasteLines = lines.filter((l) => l.includes('Ulta') || l.includes('Yoga') || l.includes('Health'));
+    expect(tasteLines).toHaveLength(1);
+    expect(lines.join(' ')).not.toMatch(/Audience:/);
+    expect(lines.join(' ')).not.toMatch(/\b0\.\d+\b/);
   });
 
   it('hides rank-only and duplicate nearest-store why lines', () => {
