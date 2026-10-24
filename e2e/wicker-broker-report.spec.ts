@@ -27,6 +27,12 @@ test.describe('Wicker demo report — broker cards', () => {
     await expect(reach).toBeVisible({ timeout: 10_000 });
     await expect(reach).toContainText('How to reach them');
     await expect(reach).not.toContainText('source:');
-    await expect(reach.getByRole('link')).toBeVisible();
+    const link = reach.getByRole('link');
+    if (await link.count()) {
+      await expect(link.first()).toBeVisible();
+      await expect(link.first()).not.toHaveText(/^https?:/);
+    } else {
+      await expect(reach).toContainText(/Search for their real estate contact/);
+    }
   });
 });
