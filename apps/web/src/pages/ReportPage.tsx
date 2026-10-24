@@ -181,6 +181,10 @@ export function ReportPage() {
       return;
     }
 
+    if (needsHealthForGeocode && !health) {
+      return;
+    }
+
     let cancelled = false;
 
     const runLiveGeocode = () => {
@@ -220,6 +224,7 @@ export function ReportPage() {
         const demoPreview = demoGeocodePreviewForAddress(request.address);
         if (demoPreview?.needsConfirmation && demoPreview.candidates.length > 1) {
           setGeocodeCandidates(demoPreview.candidates);
+          setGeocodeChecking(false);
           return;
         }
         runLiveGeocode();
@@ -231,7 +236,7 @@ export function ReportPage() {
     return () => {
       cancelled = true;
     };
-  }, [request, run, simulateError, navigate, health?.mode]);
+  }, [request, run, simulateError, navigate, health, needsHealthForGeocode]);
 
   const confirmGeocode = (location: Location) => {
     if (!request) return;
