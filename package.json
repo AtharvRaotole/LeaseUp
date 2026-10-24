@@ -33,6 +33,7 @@
     "test:landing-hero": "node scripts/run-landing-hero-preview-e2e.mjs",
     "visual-qa:pass": "node scripts/full-visual-qa-pass.mjs",
     "visual-qa:pipeline": "VQA_ONLY=pipeline,pipeline-empty VQA_OUT=docs/screenshots/pipeline-crm-pass node scripts/full-visual-qa-pass.mjs",
+    "visual-qa:report-summary": "node scripts/report-summary-design-screenshots.mjs --phase after",
     "deploy": "pnpm --filter @leaseup/worker deploy"
   },
   "devDependencies": {

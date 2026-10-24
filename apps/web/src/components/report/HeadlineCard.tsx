@@ -46,29 +46,32 @@ export function HeadlineCard({
           : `Every top brand for ${area} already has a store within ${radiusKm} km.`}
       </h2>
       {showStats && (
-      <div className="mt-8 grid grid-cols-3 gap-3 md:gap-4">
-        <StatTile
-          label="Nearby match"
-          mobileLabel="Nearby"
-          value={hitLabel}
-          subtitle={hitTieSubtitle ?? 'Top picks that already have a store in your radius'}
-          tooltip={alreadyNearbyStatTooltip(radiusKm)}
-        />
-        <StatTile
-          label="Brands scored"
-          mobileLabel="Scored"
-          value={String(analyzed)}
-          subtitle="Chains ranked for this address"
-          tooltip={brandsScoredStatTooltip()}
-        />
-        <StatTile
-          label="Pin confidence"
-          mobileLabel="Pin"
-          value={dataConfidenceLabel(results.dataQuality)}
-          subtitle={dataConfidenceSubtitle(results.dataQuality, results.location)}
-          tooltip={dataConfidenceStatTooltip()}
-        />
-      </div>
+        <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 md:mt-7 md:gap-4">
+          <StatTile
+            label="Nearby match"
+            mobileLabel="Nearby"
+            value={hitLabel}
+            subtitle={hitTieSubtitle ?? 'Top picks with a store in your radius'}
+            mobileSubtitle="Stores already in radius"
+            tooltip={alreadyNearbyStatTooltip(radiusKm)}
+          />
+          <StatTile
+            label="Brands scored"
+            mobileLabel="Scored"
+            value={String(analyzed)}
+            subtitle="Chains ranked for this address"
+            mobileSubtitle="Ranked for this pin"
+            tooltip={brandsScoredStatTooltip()}
+          />
+          <StatTile
+            label="Pin confidence"
+            mobileLabel="Pin"
+            value={dataConfidenceLabel(results.dataQuality)}
+            subtitle={dataConfidenceSubtitle(results.dataQuality, results.location)}
+            mobileSubtitle="Address and trade area data"
+            tooltip={dataConfidenceStatTooltip()}
+          />
+        </div>
       )}
     </Card>
   );
@@ -79,23 +82,30 @@ function StatTile({
   mobileLabel,
   value,
   subtitle,
+  mobileSubtitle,
   tooltip,
 }: {
   label: string;
   mobileLabel: string;
   value: string;
   subtitle: string;
+  mobileSubtitle: string;
   tooltip: string;
 }) {
   return (
-    <div className="min-w-0 rounded-control border border-border bg-surface-2 px-3 py-3 transition-colors duration-150 md:px-4 md:py-4">
-      <p className="flex items-center gap-0.5 truncate text-meta font-medium uppercase tracking-wide text-ink-3 md:text-label">
-        <span className="md:hidden">{mobileLabel}</span>
-        <span className="hidden md:inline">{label}</span>
+    <div className="flex min-w-0 flex-col rounded-control border border-border bg-surface-2 px-2.5 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-3.5">
+      <p className="flex min-h-[1.25rem] items-center gap-0.5 text-[10px] font-medium uppercase leading-tight tracking-wide text-ink-3 sm:text-meta md:text-label">
+        <span className="truncate md:hidden">{mobileLabel}</span>
+        <span className="hidden truncate md:inline">{label}</span>
         <InfoTooltip label={tooltip} />
       </p>
-      <p className="mt-1 truncate text-body-lg font-semibold tabular-nums text-ink md:text-h3">{value}</p>
-      <p className="mt-1 hidden text-small leading-snug text-ink-3 md:block">{subtitle}</p>
+      <p className="mt-0.5 truncate text-body font-semibold tabular-nums text-ink sm:mt-1 sm:text-body-lg md:text-h3">
+        {value}
+      </p>
+      <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-ink-3 sm:text-small md:mt-1 md:line-clamp-none md:text-small">
+        <span className="md:hidden">{mobileSubtitle}</span>
+        <span className="hidden md:inline">{subtitle}</span>
+      </p>
     </div>
   );
 }

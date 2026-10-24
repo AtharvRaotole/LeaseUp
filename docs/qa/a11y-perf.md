@@ -28,9 +28,9 @@ Measured on **GitHub Actions `ubuntu-latest`** (Axe a11y e2e job, production pre
 
 ## Lighthouse mobile (Performance / Accessibility / Best practices)
 
-**Source:** GitHub Actions **`ubuntu-latest` Lighthouse CI** job (production preview port 4173 + demo worker), **median of three** mobile runs per URL (`lighthouserc.cjs`). Raw arrays and medians are printed as `LHCI_MEDIANS:` in the job log after each run.
+**Source:** **GitHub Actions LHCI median of 3 mobile runs** on `ubuntu-latest` (production preview port 4173 + demo worker, `lighthouserc.cjs`). Raw arrays and medians are printed as `LHCI_MEDIANS:` in the job log after each run.
 
-**Latest green CI on `cursor/report-lh-remeasure-ca63` ([workflow run 40058723762](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40058723762); re-measure on the branch head and update this table when scores change):**
+**Pinned from green CI** ([workflow run 40058723762](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40058723762); re-measure on branch head and update when scores change):
 
 | URL | Raw performance (3 runs) | Median (perf / a11y / best practices) |
 |-----|--------------------------|----------------------------------------|

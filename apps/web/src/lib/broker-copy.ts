@@ -1,6 +1,11 @@
 import type { ProspectPack } from '@leaseup/contracts';
 import type { BacktestResult } from '@leaseup/contracts';
+import { DEMO_ADAPTIVE_PROOF_AGG } from '@leaseup/fixtures';
 import { presentInTop10Count } from './hit-rate';
+
+const RANKING_EVAL_BLEND_PCT = Math.round(DEMO_ADAPTIVE_PROOF_AGG.p10_blend * 100);
+const RANKING_EVAL_CHAIN_PCT = Math.round(DEMO_ADAPTIVE_PROOF_AGG.p10_chain * 100);
+const RANKING_EVAL_SITE_COUNT = DEMO_ADAPTIVE_PROOF_AGG.n_sites;
 
 /** Plain-English line shown on landing and at the top of every report. */
 export const REPORT_PLAIN_SUMMARY =
@@ -144,10 +149,15 @@ export function proofSectionLead(present: number, radiusKm: number): string {
   return `${present} of the top 10 taste picks already have a store within ${radiusKm} km.`;
 }
 
+export function rankingModeExplainerSentence(mode: 'qloo' | 'baseline'): string {
+  if (mode === 'baseline') {
+    return `Ranked by national chain size only, without the local taste blend. In our ${RANKING_EVAL_SITE_COUNT}-neighborhood test, ${RANKING_EVAL_CHAIN_PCT}% of top-10 picks already had a store in similar areas.`;
+  }
+  return `Ranked by local taste plus chain size. In our ${RANKING_EVAL_SITE_COUNT}-neighborhood test, ${RANKING_EVAL_BLEND_PCT}% of top-10 picks already had a store in similar areas, vs ${RANKING_EVAL_CHAIN_PCT}% using chain size alone.`;
+}
+
 export function rankingModeTooltip(mode: 'qloo' | 'baseline'): string {
-  return mode === 'qloo'
-    ? 'Ranked by what local shoppers love (shopper taste data from Qloo).'
-    : 'Same brands, ranked only by national chain size without local taste.';
+  return rankingModeExplainerSentence(mode);
 }
 
 export function tasteHeatMapTooltip(): string {

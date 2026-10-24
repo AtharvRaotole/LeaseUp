@@ -41,13 +41,13 @@ describe('qlooProofSentence', () => {
     expect(qlooProofWinner(bt(3), bt(6))).toBe('baseline');
   });
 
-  it('explains tie with row movement', () => {
+  it('explains tie with row movement using production blend rank', () => {
     const detail = qlooProofTieDetail([
       {
         entityId: 'a',
         name: 'REI',
         affinity: 1,
-        qlooRank: 1,
+        qlooRank: 5,
         blendedRank: 1,
         baselineRank: 42,
         nationalStoreCount: 1,
@@ -57,7 +57,7 @@ describe('qlooProofSentence', () => {
         entityId: 'b',
         name: 'Chick-fil-A',
         affinity: 0.5,
-        qlooRank: 15,
+        qlooRank: 1,
         blendedRank: 15,
         baselineRank: 1,
         nationalStoreCount: 99,
@@ -66,5 +66,6 @@ describe('qlooProofSentence', () => {
     ]);
     expect(detail).toMatch(/Same nearby-store count/);
     expect(detail).toMatch(/REI/);
+    expect(detail).toMatch(/LeaseUp #1/);
   });
 });

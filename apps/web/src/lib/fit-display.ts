@@ -1,5 +1,5 @@
 import type { BrandRankingRow } from '@leaseup/contracts';
-import { rankTopPercentFromOrder } from '@leaseup/fixtures';
+import { rankTopPercentFromOrder, tasteMatchHerePhrase, fitPercentileShortLabel } from '@leaseup/fixtures';
 
 export function affinitiesAllIdentical(rows: BrandRankingRow[]): boolean {
   if (rows.length < 2) return false;
@@ -13,15 +13,11 @@ export function fitTopPercent(rank: number, totalScored: number): number {
 }
 
 export function tasteFitMatchHerePhrase(rank: number, totalScored: number): string {
-  if (totalScored > 0 && rank > 0) {
-    return `Top ${fitTopPercent(rank, totalScored)}% local match here`;
-  }
-  return '';
+  return tasteMatchHerePhrase(rank, totalScored);
 }
 
 export function fitPercentileLabel(rank: number, totalScored: number): string {
-  if (totalScored <= 0 || rank <= 0) return '';
-  return `Top ${fitTopPercent(rank, totalScored)}% local match`;
+  return fitPercentileShortLabel(rank, totalScored);
 }
 
 export function fitTopPercentPhrase(rank: number, totalScored: number): string {

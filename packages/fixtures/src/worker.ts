@@ -22,6 +22,14 @@ export {
 export { expectedRandomPresentInTop10 } from './landing-random-baseline.js';
 export { rankTopPercentFromOrder } from './rank-top-percent.js';
 export {
+  whyBrandRankSummaryLine,
+  tasteMatchHerePhrase,
+  fitPercentileShortLabel,
+  leaseUpRankReasonHead,
+  brandRankSurfaceStrings,
+  assertTopPercentCopyMatchesRank,
+} from './rank-broker-lines.js';
+export {
   computeBacktest,
   calculateAUC,
   filterInsightsToStoreBrands,
