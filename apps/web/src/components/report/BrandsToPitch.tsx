@@ -165,7 +165,7 @@ export function BrandsToPitch({
 
   if (forceEmpty || prospects.length === 0) {
     return (
-      <Card className="text-center" data-testid="brands-to-pitch">
+      <Card className="text-center" data-testid="brands-to-pitch-full-list">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-surface-2 text-ink-2">
           <Store className="h-6 w-6" aria-hidden />
         </div>
@@ -192,7 +192,7 @@ export function BrandsToPitch({
   }
 
   return (
-    <section data-testid="brands-to-pitch">
+    <section data-testid="brands-to-pitch-full-list" aria-label="Full brands to pitch list">
       <div className="mb-3 flex items-center gap-2">
         <h3 className="text-h3 font-semibold text-ink">Brands to pitch</h3>
         <InfoTooltip label="Brands local shoppers love that we did not find in your trade area." />

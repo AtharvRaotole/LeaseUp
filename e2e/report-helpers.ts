@@ -10,5 +10,5 @@ export async function openReportSection(page: Page, testId: string) {
 }
 
 export async function waitForReportReady(page: Page) {
-  await page.getByTestId('report-top-brands').waitFor({ timeout: 120_000 });
+  await page.getByTestId('brands-to-pitch').waitFor({ state: 'visible', timeout: 120_000 });
 }

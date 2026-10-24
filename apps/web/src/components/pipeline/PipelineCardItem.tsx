@@ -6,7 +6,6 @@ import { GripVertical } from 'lucide-react';
 import { cn } from '../../lib/cn';
 import { brandMonogram, brandTint } from '../../lib/brand-monogram';
 import { formatUserFacingDate } from '../../lib/format-date';
-import { prospectStatusLabel } from '../../lib/pipeline-status';
 
 function isOverdue(followUpAt?: string): boolean {
   if (!followUpAt) return false;
@@ -93,9 +92,6 @@ export function PipelineCardItem({
           <span className="rounded-pill border border-border px-2 py-0.5 text-ink-2">
             {card.verification}
           </span>
-          <span className="rounded-pill border border-border px-2 py-0.5 text-ink-2">
-            {prospectStatusLabel(card.prospectStatus)}
-          </span>
           {card.tradeAreaAlert && (
             <span
               className="rounded-pill bg-warn/15 px-2 py-0.5 font-medium text-warn"
@@ -113,9 +109,9 @@ export function PipelineCardItem({
             </span>
           )}
         </div>
-        <p className="mt-2 text-[11px] text-ink-3">
-          Touched {formatUserFacingDate(card.lastTouchedAt)}
-          {card.followUpAt ? ` · Reminder ${formatUserFacingDate(card.followUpAt)}` : ''}
+        <p className="mt-2 text-[11px] leading-snug text-ink-3">
+          Updated {formatUserFacingDate(card.lastTouchedAt)}
+          {card.followUpAt ? `. Reminder ${formatUserFacingDate(card.followUpAt)}` : ''}
         </p>
       </button>
       </div>

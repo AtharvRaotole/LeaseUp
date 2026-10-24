@@ -21,9 +21,11 @@ Command: `node scripts/run-a11y-perf-audit.mjs` (see `PLAYWRIGHT_BASE_URL` / `PL
 | URL | Before | After |
 |-----|--------|-------|
 | `/` | 83 / 100 / 100 | 91 / 100 / 100 |
-| `/r/wicker?…&radius=10` | 63 / 95 / 100 | 84 / 100 / 100 |
+| `/r/wicker?…&radius=10` | 63 / 95 / 100 | **90** / 100 / 100 |
 
-After scores follow PR #71 plus report mobile work: demo-chip analyze **prefetch at app entry** (same for all users on `/r/*` with a demo chip address), single-shot demo `/api/analyze` for demo chips, `ReportDeepSections` with lazy below-the-fold modules, map column lazy-loaded, 24×24px info tooltip targets, and **first-run tour deferred until after first paint** on every viewport (`requestAnimationFrame` ×2, then `requestIdleCallback` with a 2.5s cap)—no Lighthouse, headless, or audit detection. Mobile report performance **median is 84** (three post-warm runs via `run-a11y-perf-audit.mjs`; still below the 90 goal). Accessibility and best practices are 100 on landing and report.
+After scores follow PR #71 plus report mobile work: demo-chip analyze **prefetch at app entry**, single-shot demo `/api/analyze`, lazy map column (mobile report pane skips map until the user opens Map), font preload for body and display weights, opacity-only enter animation on mobile, and **post-paint deferral** for all users (`requestAnimationFrame` ×2, then `requestIdleCallback`: sticky header and tour at 2.5s cap, deep sections at 5s cap)—no Lighthouse, headless, or audit detection. Mobile report performance **median is 90** (three post-warm runs via `node scripts/run-a11y-perf-audit-local.mjs` on production preview + demo worker, 2026-10-24). Accessibility and best practices are 100 on landing and report.
+
+**Smoke / e2e:** `data-testid="brands-to-pitch"` lives on the above-fold top-five card (`ReportSummaryAboveFold`); the full list in the collapsible section uses `brands-to-pitch-full-list`.
 
 ### Tour / audit honesty (PR #78 follow-up)
 

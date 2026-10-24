@@ -38,9 +38,10 @@ describe('prospect reasons copy', () => {
     const firstLines = result.prospects.map((p) => p.reasons[0]).filter(Boolean);
     expect(firstLines.length).toBe(result.prospects.length);
     expect(new Set(firstLines).size).toBe(firstLines.length);
-    for (const line of firstLines) {
-      expect(line).not.toMatch(/fitted taste-aware blend/i);
-      expect(line).toMatch(/Qloo rank #\d+/);
+    for (const pack of result.prospects) {
+      expect(pack.reasons[0]).toContain(`LeaseUp rank #${pack.brand.affinityRank}`);
+      expect(pack.reasons[0]).not.toMatch(/fitted taste-aware blend/i);
+      expect(pack.reasons[0]).not.toMatch(/[\u2013\u2014]/);
     }
   });
 });

@@ -9,23 +9,33 @@ const BOULDER = '1600 Pearl St, Boulder, CO 80302';
 
 await mkdir(OUT, { recursive: true });
 
+async function captureBleeckerPicker(page, name) {
+  await page.goto(`${BASE}/r/run?address=${encodeURIComponent(BLEECKER)}&radius=10`, {
+    waitUntil: 'networkidle',
+  });
+  const picker = page.getByTestId('geocode-confirm');
+  await picker.waitFor({ timeout: 120_000 });
+  await page.getByTestId('geocode-confirm-map').waitFor({ state: 'visible' });
+  await page.waitForTimeout(600);
+  await page.screenshot({ path: join(OUT, name), fullPage: true });
+}
+
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 
-await page.goto(
-  `${BASE}/r/run?address=${encodeURIComponent(BLEECKER)}&radius=10`
-);
-await page.waitForTimeout(4000);
-const bleeckerPicker = page.getByTestId('geocode-confirm');
-if (await bleeckerPicker.isVisible().catch(() => false)) {
-  await page.screenshot({ path: join(OUT, 'bleecker-picker-1440.png'), fullPage: false });
-} else {
+try {
+  await captureBleeckerPicker(page, 'bleecker-picker-1440.png');
+} catch {
   await page
     .getByTestId('brands-to-pitch')
     .waitFor({ timeout: 120_000 })
     .catch(() => undefined);
   await page.screenshot({ path: join(OUT, 'bleecker-report-1440.png'), fullPage: false });
 }
+
+const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } });
+await captureBleeckerPicker(mobile, 'bleecker-picker-390.png');
+await mobile.close();
 
 await page.goto(`${BASE}/r/run?address=${encodeURIComponent(BOULDER)}&radius=10`);
 await page.waitForTimeout(4000);

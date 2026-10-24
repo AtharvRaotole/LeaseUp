@@ -20,7 +20,7 @@ test.describe('Wicker demo report — broker cards', () => {
     await page.goto(WICKER);
     await waitForReportReady(page);
     await openReportSection(page, 'report-section-why-brands');
-    const pitch = page.getByTestId('brands-to-pitch');
+    const pitch = page.getByTestId('brands-to-pitch-full-list');
     await expect(pitch).toBeVisible({ timeout: 30_000 });
     await pitch.locator('li').first().locator('button').first().click();
     const reach = page.getByTestId('brand-reach-line');
