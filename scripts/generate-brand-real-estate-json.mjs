@@ -6,6 +6,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { assertParentPortalAllowed } from './brand-real-estate-parent-map.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const resolved = JSON.parse(readFileSync(join(root, 'data/brands/resolved_brand_ids.json'), 'utf8'));
@@ -30,7 +31,6 @@ const VERIFIED = [
   ['Old Navy', GAP_INC_RE],
   ['Orangetheory Fitness', 'https://www.orangetheory.com/real-estate'],
   ['Sprouts Farmers Market', 'https://www.sprouts.com/real-estate'],
-  ["Victoria's Secret", GAP_INC_RE],
   ['Wendy\'s', 'https://www.wendys.com/real-estate'],
   ['Whole Foods Market', 'https://www.wholefoodsmarket.com/company-info/real-estate'],
 ];
@@ -44,6 +44,11 @@ const entries = [];
 const seen = new Set();
 
 for (const [name, url] of VERIFIED) {
+  const portal = assertParentPortalAllowed(name, url);
+  if (!portal.ok) {
+    console.error(portal.reason);
+    process.exit(1);
+  }
   const row = byName.get(name.toLowerCase());
   if (!row) {
     console.warn('skip unknown brand', name);

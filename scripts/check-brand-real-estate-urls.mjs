@@ -7,6 +7,7 @@ import { readFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { fetchRealEstatePage } from './brand-real-estate-page-verify.mjs';
+import { collectParentPortalViolations } from './brand-real-estate-parent-map.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const data = JSON.parse(
@@ -20,6 +21,14 @@ if (data.entries.length < 60) {
 }
 if (verified.length < 1) {
   console.error('No verified entries in brand-real-estate.json');
+  process.exit(1);
+}
+
+const portalViolations = collectParentPortalViolations(data.entries);
+if (portalViolations.length > 0) {
+  for (const msg of portalViolations) {
+    console.error(`FAIL parent portal: ${msg}`);
+  }
   process.exit(1);
 }
 

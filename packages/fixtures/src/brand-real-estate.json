@@ -1293,10 +1293,8 @@
     {
       "entityId": "D3310425-7161-41FC-8C2C-5435AF0F0A5B",
       "name": "Victoria's Secret",
-      "status": "verified",
-      "url": "https://www.gapinc.com/en-us/investors/real-estate",
-      "source": "https://www.gapinc.com/en-us/investors/real-estate",
-      "verifiedAt": "2026-10-24"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Victoria's%20Secret%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "D619A0B2-F0ED-4DD3-97D9-00BDC4F32E7C",
