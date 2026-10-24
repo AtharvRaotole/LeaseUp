@@ -71,6 +71,10 @@ export function pitchBrandFitLines(
   return lines;
 }
 
+export function pitchListOrderLabel(listIndex: number): string {
+  return `Your list #${listIndex + 1}`;
+}
+
 export function pitchNextStepLine(brandName: string): string {
   return `Next step: share this brief with ${brandName} real estate and schedule a site walk at the pin.`;
 }

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   pitchBriefKindLabel,
+  pitchListOrderLabel,
   pitchDateMetaLine,
   pitchExecutiveSummaryLines,
   isNearestStoreDistanceLine,
@@ -11,6 +12,11 @@ import { DEMO_PITCH_BOULDER_ULTA_ID } from '@leaseup/contracts';
 import type { PitchPackSnapshot } from '@leaseup/contracts';
 
 describe('pitch pack copy', () => {
+  it('labels pitch list order without priority wording', () => {
+    expect(pitchListOrderLabel(0)).toBe('Your list #1');
+    expect(pitchListOrderLabel(2)).toBe('Your list #3');
+  });
+
   it('labels demo pitches as samples with snapshot date', () => {
     const snapshot = {
       id: DEMO_PITCH_BOULDER_ULTA_ID,

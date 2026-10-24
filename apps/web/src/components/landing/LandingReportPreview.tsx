@@ -5,6 +5,7 @@ import { BrandsToPitch } from '../report/BrandsToPitch';
 import { QlooProofBanner } from '../report/QlooProofBanner';
 import { QlooRankingToggle, type QlooRankingMode } from '../report/QlooRankingToggle';
 import { WhyThisBrandCard } from '../report/WhyThisBrandCard';
+import { LANDING_WICKER_DEMO_ADDRESS } from '../../data/landing-wicker-demo-address';
 import {
   LANDING_WICKER_PREVIEW,
   LANDING_WICKER_RADIUS_KM,
@@ -14,7 +15,7 @@ import { buildReportPath } from '../../lib/report-params';
 import { activeBacktestForRankingMode } from '../../lib/ranking-production';
 
 const previewRequest: AnalysisRequest = {
-  address: LANDING_WICKER_PREVIEW.location.address,
+  address: LANDING_WICKER_DEMO_ADDRESS,
   radius: LANDING_WICKER_RADIUS_KM,
   storefrontSqFt: 2500,
 };
