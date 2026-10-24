@@ -9,7 +9,6 @@ import { PitchPackLoadingSkeleton } from '../components/pitch/PitchPackLoadingSk
 import { shareLinkExpiredLine } from '../lib/empty-state-copy';
 import { loadDemoPitchSnapshot } from '../lib/demo-pitch-snapshot';
 import { apiUrl } from '../lib/api';
-import { formatUserFacingDate } from '../lib/format-date';
 import {
   EMPTY_VACANCY_DRAFT,
   pitchVacancyToDraft,
@@ -31,8 +30,13 @@ export function PitchPage() {
   useEffect(() => {
     if (!id) return;
     void (async () => {
+      let serverFailed = false;
       try {
         const res = await fetch(apiUrl(`/api/pitch/${id}`));
+        if (res.status === 404) {
+          setError(shareLinkExpiredLine);
+          return;
+        }
         if (res.ok) {
           const data = (await res.json()) as PitchPackSnapshot;
           setSnapshot(data);
@@ -43,8 +47,9 @@ export function PitchPage() {
           }
           return;
         }
+        serverFailed = true;
       } catch {
-        /* try offline demo snapshot */
+        serverFailed = true;
       }
       const demoSnapshot = loadDemoPitchSnapshot(id);
       if (demoSnapshot) {
@@ -56,7 +61,11 @@ export function PitchPage() {
         }
         return;
       }
-      setError(shareLinkExpiredLine);
+      setError(
+        serverFailed
+          ? 'This pitch could not load. Check the link or try again in a moment.'
+          : shareLinkExpiredLine
+      );
     })();
   }, [id]);
 
@@ -146,18 +155,8 @@ export function PitchPage() {
         </div>
 
         <footer className="pitch-methodology mt-10 border-t border-border pt-6 text-sm text-ink-2 print:mt-4 print:pt-3">
-          <h2 className="font-display font-semibold text-lg text-ink print:text-base">Data sources</h2>
-          <ul className="mt-2 list-disc space-y-1 pl-5 print:text-xs">
-            <li>Local shopper taste from Qloo ({snapshot.mode ?? 'demo'} mode) for this address</li>
-            <li>{pitchPackVerificationSummary(snapshot)}</li>
-            <li>All The Places store locations (CC0)</li>
-            <li>
-              {snapshot.osmSnapshotLabel ?? 'OpenStreetMap'} snapshot
-              {snapshot.osmSnapshotRecordedAt
-                ? ` (${formatUserFacingDate(snapshot.osmSnapshotRecordedAt)})`
-                : ''}
-            </li>
-          </ul>
+          <h2 className="font-display font-semibold text-lg text-ink print:text-base">About this brief</h2>
+          <p className="mt-2 print:text-xs">{pitchPackVerificationSummary(snapshot)}</p>
           <p className="mt-3 text-ink-3 print:text-xs">
             Vacancy cost figures come from your inputs only and are not verified by LeaseUp.
           </p>

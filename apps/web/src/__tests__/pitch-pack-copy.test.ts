@@ -32,9 +32,7 @@ describe('pitch pack copy', () => {
       runId: 'demo',
     } as PitchPackSnapshot;
     expect(pitchBriefKindLabel(snapshot)).toBe('Sample leasing brief');
-    expect(pitchDateMetaLine(snapshot)).toMatch(/Data snapshot of Oct 23, 2026/);
-    expect(pitchDateMetaLine(snapshot)).not.toMatch(/Sample pitch from/);
-    expect(pitchDateMetaLine(snapshot)).not.toMatch(/^Prepared /);
+    expect(pitchDateMetaLine(snapshot)).toBe('10 km trade area');
   });
 
   it('builds executive summary from snapshot data', () => {

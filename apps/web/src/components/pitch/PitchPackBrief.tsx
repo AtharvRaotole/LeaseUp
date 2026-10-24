@@ -10,6 +10,7 @@ import {
   pitchPropertyHeadline,
   pitchTradeAreaFacts,
 } from '../../lib/pitch-pack-copy';
+import { pitchFreshnessHonestyLine } from '../../lib/store-distance-copy';
 import { fitPercentileLabel } from '../../lib/fit-display';
 import { BrandReachLine } from '../report/BrandReachLine';
 import { brandReachForProspect } from '../../lib/brand-reach';
@@ -26,6 +27,9 @@ export function PitchPackBrief({ snapshot }: { snapshot: PitchPackSnapshot }) {
         <p className="mt-2 break-words text-lg text-ink-2">{snapshot.address}</p>
         <p className="mt-1 text-sm text-ink-3" data-testid="pitch-date-meta">
           {pitchDateMetaLine(snapshot)}
+        </p>
+        <p className="mt-1 text-sm text-ink-2" data-testid="pitch-freshness-label">
+          {pitchFreshnessHonestyLine(snapshot)}
         </p>
         {(snapshot.landlord?.name || snapshot.landlord?.contact) && (
           <p className="mt-3 text-sm text-ink-2">

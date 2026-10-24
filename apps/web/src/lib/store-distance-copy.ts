@@ -1,5 +1,5 @@
 import type { AnalysisResponse, PitchPackSnapshot } from '@leaseup/contracts';
-import { formatUserFacingDate } from './format-date';
+import { formatUserFacingDate, isSameUserFacingCalendarDay } from './format-date';
 
 export function storeDistanceDataAsOf(
   payload: Pick<
@@ -46,4 +46,30 @@ export function nearestStoreDistanceAttribution(
     return `tracked chain store data, store index as of ${formatUserFacingDate(dataAsOf)}`;
   }
   return 'tracked chain store data';
+}
+
+/** Honest saved-pitch label for reconcile-on-read (#144). */
+export function pitchFreshnessHonestyLine(
+  snapshot: PitchPackSnapshot,
+  now: Date = new Date()
+): string {
+  const savedIso = snapshot.createdAt ?? snapshot.analysisTimestamp;
+  const saved = formatUserFacingDate(savedIso);
+
+  if (storeDistancesSnapshotOnly(snapshot)) {
+    const asOf = storeDistanceDataAsOf(snapshot);
+    if (asOf) {
+      return `Saved ${saved}. Store distances from snapshot ${formatUserFacingDate(asOf)}.`;
+    }
+    return `Saved ${saved}. Store distances from saved snapshot.`;
+  }
+
+  const refreshedIso = storeDistanceDataAsOf(snapshot);
+  if (refreshedIso && isSameUserFacingCalendarDay(refreshedIso, now)) {
+    return `Saved ${saved}. Store distances refreshed today.`;
+  }
+  if (refreshedIso) {
+    return `Saved ${saved}. Store distances refreshed ${formatUserFacingDate(refreshedIso)}.`;
+  }
+  return `Saved ${saved}. Store distances refreshed on open.`;
 }
