@@ -1,0 +1,111 @@
+{
+  "chip": "wicker",
+  "brandEntityId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
+  "brandName": "TJ Maxx",
+  "location": {
+    "latitude": 41.9099418,
+    "longitude": -87.6772824
+  },
+  "radiusKm": 10,
+  "tags": [
+    {
+      "entityId": "tag-organic-food",
+      "name": "Organic Food",
+      "affinity": 0.93,
+      "affinityRank": 0.9
+    },
+    {
+      "entityId": "tag-farm-to-table",
+      "name": "Farm to Table",
+      "affinity": 0.88,
+      "affinityRank": 0.86
+    },
+    {
+      "entityId": "tag-plant-based",
+      "name": "Plant-Based",
+      "affinity": 0.84,
+      "affinityRank": 0.81
+    }
+  ],
+  "audiences": [
+    {
+      "entityId": "aud-health-conscious",
+      "name": "Health-Conscious Urbanites",
+      "affinity": 0.91,
+      "affinityRank": 0.89
+    },
+    {
+      "entityId": "aud-premium-grocery",
+      "name": "Premium Grocery Shoppers",
+      "affinity": 0.87,
+      "affinityRank": 0.85
+    }
+  ],
+  "raw": {
+    "tag": {
+      "results": {
+        "tags": [
+          {
+            "entity_id": "tag-organic-food",
+            "name": "Organic Food",
+            "query": {
+              "affinity": 0.93,
+              "affinity_rank": 0.9
+            }
+          },
+          {
+            "entity_id": "tag-farm-to-table",
+            "name": "Farm to Table",
+            "query": {
+              "affinity": 0.88,
+              "affinity_rank": 0.86
+            }
+          },
+          {
+            "entity_id": "tag-plant-based",
+            "name": "Plant-Based",
+            "query": {
+              "affinity": 0.84,
+              "affinity_rank": 0.81
+            }
+          }
+        ]
+      }
+    },
+    "audience": {
+      "results": {
+        "audiences": [
+          {
+            "audience_id": "aud-health-conscious",
+            "name": "Health-Conscious Urbanites",
+            "query": {
+              "affinity": 0.91,
+              "affinity_rank": 0.89
+            }
+          },
+          {
+            "audience_id": "aud-premium-grocery",
+            "name": "Premium Grocery Shoppers",
+            "query": {
+              "affinity": 0.87,
+              "affinity_rank": 0.85
+            }
+          }
+        ]
+      }
+    }
+  },
+  "provenance": {
+    "recordedAt": "2026-10-24T06:31:08.611Z",
+    "host": "https://hackathon.api.qloo.com",
+    "note": "API key stripped. Raw bodies stored under raw.*; normalized rows under tags/audiences.",
+    "tag": {
+      "filterType": "urn:tag",
+      "url": "mock:captures/wicker-A94FC7B6-34D3-4970-9EA5-2D17C49E84B6-tag.json"
+    },
+    "audience": {
+      "filterType": "urn:audience",
+      "url": "mock:captures/wicker-A94FC7B6-34D3-4970-9EA5-2D17C49E84B6-audience.json"
+    }
+  }
+}

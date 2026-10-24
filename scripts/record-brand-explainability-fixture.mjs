@@ -23,16 +23,31 @@ const baseUrl = process.env.QLOO_BASE_URL || 'https://hackathon.api.qloo.com';
 /** Demo chip pins; brands are top-ranked prospects (no store in radius) as of Oct 2026 fixtures. */
 const TARGETS = {
   boulder: {
+    chip: 'boulder',
     fixture: boulderFixture,
-    brandEntityId: 'C70CE2B8-0AD1-4150-BF18-5A6347F2E860',
-    brandName: 'Nike',
+    brandEntityId: '205AF33F-118E-4C49-9721-6BDBAF981DA0',
+    brandName: 'REI',
+  },
+  boulder_ulta: {
+    chip: 'boulder',
+    fixture: boulderFixture,
+    brandEntityId: '0F77E9A4-121C-4941-ACE1-28502DBF1865',
+    brandName: 'Ulta',
   },
   wicker: {
+    chip: 'wicker',
     fixture: wickerparkFixture,
-    brandEntityId: 'AC8F9047-F23D-4A54-BBAA-A3CBD2991C02',
-    brandName: 'Vans',
+    brandEntityId: '1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23',
+    brandName: 'Whole Foods Market',
+  },
+  wicker_tjmaxx: {
+    chip: 'wicker',
+    fixture: wickerparkFixture,
+    brandEntityId: 'A94FC7B6-34D3-4970-9EA5-2D17C49E84B6',
+    brandName: 'TJ Maxx',
   },
   sevierville: {
+    chip: 'sevierville',
     fixture: seviervilleFixture,
     brandEntityId: '2C5054E1-8691-4F52-83CD-310D029BA6A3',
     brandName: 'Sephora',
@@ -100,7 +115,8 @@ async function fetchInsights(filterType, site, brandEntityId) {
   return { json: JSON.parse(text), url: url.toString() };
 }
 
-function loadMockRaw(chip, brandEntityId, kind) {
+function loadMockRaw(chipKey, brandEntityId, kind) {
+  const chip = TARGETS[chipKey]?.chip ?? chipKey;
   const path = join(
     process.cwd(),
     'packages/fixtures/src/brand-explainability/captures',
@@ -124,12 +140,13 @@ async function main() {
   const outDir = join(process.cwd(), 'packages/fixtures/src/brand-explainability');
   mkdirSync(outDir, { recursive: true });
 
-  for (const chip of chips) {
-    const meta = TARGETS[chip];
-    if (!meta) throw new Error(`Unknown chip ${chip}`);
+  for (const chipKey of chips) {
+    const meta = TARGETS[chipKey];
+    if (!meta) throw new Error(`Unknown chip ${chipKey}`);
     const { latitude, longitude } = meta.fixture.location;
     const site = { latitude, longitude, radiusKm: 10 };
     const recordedAt = new Date().toISOString();
+    const chip = meta.chip ?? chipKey;
     const payload = {
       chip,
       brandEntityId: meta.brandEntityId,
@@ -150,7 +167,7 @@ async function main() {
       let json;
       let url;
       if (useMock) {
-        json = loadMockRaw(chip, meta.brandEntityId, kind);
+        json = loadMockRaw(chipKey, meta.brandEntityId, kind);
         url = `mock:captures/${chip}-${meta.brandEntityId}-${kind}.json`;
       } else {
         const fetched = await fetchInsights(filterType, site, meta.brandEntityId);
@@ -160,7 +177,7 @@ async function main() {
       payload.raw[kind] = json;
       payload[kind === 'tag' ? 'tags' : 'audiences'] = normalizeRows(json, kind);
       payload.provenance[kind] = { filterType, url };
-      console.log(chip, kind, payload[kind === 'tag' ? 'tags' : 'audiences'].length);
+      console.log(chipKey, kind, payload[kind === 'tag' ? 'tags' : 'audiences'].length);
     }
 
     const file = join(outDir, `${chip}-${meta.brandEntityId}.json`);

@@ -1,0 +1,18 @@
+{
+  "body": {
+    "results": {
+      "audiences": [
+        {
+          "audience_id": "aud-health-conscious",
+          "name": "Health-Conscious Urbanites",
+          "query": { "affinity": 0.91, "affinity_rank": 0.89 }
+        },
+        {
+          "audience_id": "aud-premium-grocery",
+          "name": "Premium Grocery Shoppers",
+          "query": { "affinity": 0.87, "affinity_rank": 0.85 }
+        }
+      ]
+    }
+  }
+}

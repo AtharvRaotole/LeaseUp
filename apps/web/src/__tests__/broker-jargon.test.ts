@@ -33,9 +33,9 @@ describe('broker-facing copy avoids jargon', () => {
       },
       outreachDraft: '',
       reasons: [],
-      tradeAreaTaste: {
-        tags: [{ entityId: 't1', name: 'Running', affinity: 0.8, affinityRank: 1 }],
-        audiences: [],
+      whyBrandTaste: {
+        signals: [{ kind: 'tag', name: 'Running', affinity: 0.8, affinityRank: 1 }],
+        summary: 'Qloo ties Nike to Running near this pin.',
       },
     } as ProspectPack;
     const results = { rankings: Array.from({ length: 40 }, () => ({})) } as AnalysisResponse;

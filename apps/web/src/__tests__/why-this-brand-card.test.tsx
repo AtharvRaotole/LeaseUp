@@ -15,8 +15,15 @@ const prospect: ProspectPack = {
     nationalStoreCount: 100,
     nearbyStoreCount: 0,
   },
-  reasons: ['Strong local affinity in Qloo rankings'],
+  reasons: [],
   outreachDraft: '',
+  whyBrandTaste: {
+    signals: [
+      { kind: 'tag', name: 'Hiking', affinity: 0.89, affinityRank: 0.87 },
+      { kind: 'audience', name: 'Outdoor Enthusiasts', affinity: 0.92, affinityRank: 0.9 },
+    ],
+    summary: 'Qloo ties REI to Hiking and Outdoor Enthusiasts near this pin.',
+  },
 };
 
 const results = {
@@ -43,6 +50,8 @@ describe('WhyThisBrandCard', () => {
       <WhyThisBrandCard prospect={prospect} results={results} radiusKm={10} />
     );
     expect(html).toContain('Why REI?');
+    expect(html).toContain('Qloo taste overlap');
+    expect(html).toContain('Hiking');
     expect(html).toContain('All The Places');
   });
 

@@ -101,6 +101,12 @@ export {
   type TradeAreaTasteRow,
 } from './qloo-explainability.js';
 export {
+  topBrandTasteOverlapSignals,
+  formatBrandTasteOverlapLine,
+  deterministicWhyBrandTasteSummary,
+  type BrandTasteOverlapSignal,
+} from './qloo-brand-taste-overlap.js';
+export {
   brandExplainabilityForDemo,
   listDemoExplainabilityRecordings,
 } from './brand-explainability-loader.js';

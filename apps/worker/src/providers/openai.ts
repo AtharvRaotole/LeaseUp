@@ -16,6 +16,29 @@ export interface OutreachDraft {
   model: string;
 }
 
+export interface WhyBrandTasteFacts {
+  brandName: string;
+  signals: Array<{ kind: 'tag' | 'audience'; name: string; affinity: number; affinityRank: number }>;
+  runId?: string;
+}
+
+export function buildWhyBrandTastePrompt(facts: WhyBrandTasteFacts): string {
+  const lines = facts.signals.map(
+    (s, i) =>
+      `${i + 1}. ${s.kind === 'tag' ? 'Taste tag' : 'Audience'}: ${s.name} (affinity ${s.affinity}, rank ${s.affinityRank})`
+  );
+  return [
+    `Brand: ${facts.brandName}`,
+    '',
+    'Qloo local overlap signals (use only these names, do not add new interests or stats):',
+    ...lines,
+    '',
+    'Write 1 or 2 short sentences for a broker explaining why this brand fits local taste.',
+    'Rules: only restate the signals above; no em dashes; no invented demographics or foot traffic.',
+    'Return JSON: {"summary":"..."}',
+  ].join('\n');
+}
+
 export interface OutreachFacts {
   brandName: string;
   address: string;
@@ -158,6 +181,61 @@ export class OpenAIClient {
 
   getModelName(): string {
     return this.model;
+  }
+
+  async summarizeWhyBrandTaste(facts: WhyBrandTasteFacts): Promise<string | undefined> {
+    if (this.mode === 'demo') {
+      return undefined;
+    }
+    if (facts.signals.length === 0) return undefined;
+
+    const prompt = buildWhyBrandTastePrompt(facts);
+    const start = Date.now();
+
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: this.model,
+          messages: [
+            {
+              role: 'system',
+              content:
+                'You summarize Qloo taste overlap in plain English. Never invent signals or statistics.',
+            },
+            { role: 'user', content: prompt },
+          ],
+          temperature: 0.2,
+          max_tokens: 120,
+          response_format: { type: 'json_object' },
+        }),
+      });
+
+      await recordApiMetric(this.db, {
+        runId: facts.runId,
+        provider: 'openai',
+        endpoint: '/chat/completions',
+        statusCode: response.status,
+        latencyMs: Date.now() - start,
+        cached: false,
+      });
+
+      if (!response.ok) return undefined;
+
+      const data = (await response.json()) as {
+        choices: Array<{ message: { content: string } }>;
+      };
+      const content = data.choices[0]?.message.content || '{}';
+      const parsed = JSON.parse(content) as { summary?: string };
+      const summary = parsed.summary?.trim();
+      return summary || undefined;
+    } catch {
+      return undefined;
+    }
   }
 
   private getDemoOutreach(params: OutreachFacts): OutreachDraft {

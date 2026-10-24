@@ -27,6 +27,31 @@ function demoEnv() {
 }
 
 describe('tradeAreaTaste on analyze response', () => {
+  it('attaches whyBrandTaste for Boulder Ulta and Wicker TJ Maxx', async () => {
+    const service = new AnalysisService(demoEnv());
+    const boulder = await service.analyze(
+      { address: DEMO_CHIP_ADDRESSES.boulder, radius: 10 },
+      'run-ulta-taste',
+      'iphash'
+    );
+    const ulta = boulder.prospects.find(
+      (p) => p.brand.entityId === '0F77E9A4-121C-4941-ACE1-28502DBF1865'
+    );
+    expect(ulta?.whyBrandTaste?.signals.length).toBeGreaterThanOrEqual(3);
+    expect(ulta?.whyBrandTaste?.summary).toContain('Ulta');
+
+    const wicker = await service.analyze(
+      { address: DEMO_CHIP_ADDRESSES.wicker, radius: 10 },
+      'run-tj-taste',
+      'iphash'
+    );
+    const tj = wicker.prospects.find(
+      (p) => p.brand.entityId === 'A94FC7B6-34D3-4970-9EA5-2D17C49E84B6'
+    );
+    expect(tj?.whyBrandTaste?.signals.length).toBeGreaterThanOrEqual(2);
+    expect(tj?.whyBrandTaste?.summary).toMatch(/TJ Maxx/i);
+  });
+
   it('attaches recorded taste for top Sevierville prospect (Sephora)', async () => {
     const service = new AnalysisService(demoEnv());
     const result = await service.analyze(
