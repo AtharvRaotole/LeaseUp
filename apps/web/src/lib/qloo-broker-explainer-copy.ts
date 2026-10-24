@@ -10,9 +10,14 @@ export const QLOO_BROKER_EXPLAINER = {
         'For your pin, LeaseUp calls Qloo brand insights: up to 227 tracked chains in batches, with the same radius you pick on the form (2, 5, or 10 km). Demo chips use recorded answers so judges can try the product without an API key.',
     },
     {
+      heading: 'What P@10 means on our backtests',
+      body:
+        'P@10 is the share of the top 10 that already had a store in the trade area per ATP and OSM in the study. It is not a signed lease and it is not a guarantee of open whitespace.',
+    },
+    {
       heading: 'How brands get ranked',
       body:
-        'Raw Qloo scores alone repeat similar lifestyle brands in every city. LeaseUp re-ranks with a taste blend that also uses national chain size and local density, fitted on our 40-address study. On that panel, raw Qloo top-10 presence was 54%, chain size alone 76%, and the blend 82%.',
+        'Raw Qloo scores alone repeat similar lifestyle brands in every city and do not beat sorting by chain size on mean P@10 (54% vs 76% on 40 US addresses). LeaseUp ships a fitted taste blend (82% vs 76%) and highlights lift when you order within a chain-size tier (for example mid-size P@5 53% vs 23%).',
     },
     {
       heading: 'What we show on the report',
@@ -22,7 +27,7 @@ export const QLOO_BROKER_EXPLAINER = {
     {
       heading: 'What we do not claim',
       body:
-        'We do not say raw Qloo beats sorting by chain size on mean top-10 presence (54% vs 76% on the study). Qloo adds lift when you compare brands of similar size (same-size tier AUC 0.667 on 40 US addresses) and when blended with chain size. Presence in map data is not a signed lease.',
+        'We do not say raw Qloo beats chain size on mean P@10. Lift comes from the blend and from mid-size tier ordering, plus the same-size tier AUC 0.667 study metric. Store checks can miss locations absent from both ATP and OSM; after the PR #89 false-positive audit we removed all 4 known false positives across 13 test sites, but we never say zero false positives because OSM covers only 25 of 227 tracked chains on demo chips.',
     },
     {
       heading: 'Where the numbers live',
