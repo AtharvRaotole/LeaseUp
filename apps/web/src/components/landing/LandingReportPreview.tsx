@@ -10,12 +10,11 @@ import {
   LANDING_WICKER_RADIUS_KM,
   LANDING_WICKER_SLUG,
 } from '../../data/landing-wicker-preview';
-import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 import { buildReportPath } from '../../lib/report-params';
 import { activeBacktestForRankingMode } from '../../lib/ranking-production';
 
 const previewRequest: AnalysisRequest = {
-  address: DEMO_CHIP_ADDRESSES.wicker,
+  address: LANDING_WICKER_PREVIEW.location.address,
   radius: LANDING_WICKER_RADIUS_KM,
   storefrontSqFt: 2500,
 };

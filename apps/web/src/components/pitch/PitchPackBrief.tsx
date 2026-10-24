@@ -52,7 +52,14 @@ export function PitchPackBrief({ snapshot }: { snapshot: PitchPackSnapshot }) {
                     {propertyTitle} × {brandName}
                   </h2>
                 </div>
-                <p className="text-sm font-medium text-ink-2">#{index + 1} on this list</p>
+                <div className="text-right">
+                  <p className="text-sm font-medium text-ink-2">Pitch priority #{index + 1}</p>
+                  {prospect.brand.affinityRank > 0 && totalScored > 0 && (
+                    <p className="mt-0.5 text-xs text-ink-3">
+                      Taste rank #{prospect.brand.affinityRank} of {totalScored}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <p className="mt-4 text-sm font-medium text-ink-2">{rankLabel}</p>
