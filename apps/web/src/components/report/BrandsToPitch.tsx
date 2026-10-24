@@ -9,7 +9,8 @@ import { apiUrl } from '../../lib/api';
 import { fitPercentileLabel } from '../../lib/fit-display';
 import { buildReportPath } from '../../lib/report-params';
 import { displayBrandName } from '../../lib/brand-display';
-import { brandCategoryLabel } from '../../lib/brand-category';
+import { prospectBrandCategoryLabel } from '../../lib/prospect-brand-category';
+import { ProspectCategoryChip } from './ProspectCategoryChip';
 import {
   localShopperMatchTooltip,
   verificationBrokerLabel,
@@ -219,15 +220,11 @@ export function BrandsToPitch({
             const selected = selectedId === prospect.brand.entityId;
             const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
             const fitLabel = fitPercentileLabel(prospect.brand.affinityRank, totalScored);
-            const category =
-              prospect.tenantMixScore?.categoryFit ?? brandCategoryLabel(prospect.brand.entityId);
+            const categoryTag = prospect.coTenancyLine?.trim()
+              ? undefined
+              : prospectBrandCategoryLabel(prospect);
             const distanceLine = brandsToPitchDistanceLine(prospect, results, radiusKm);
             const pairing = prospect.coTenancyLine?.trim();
-            const subline = pairing
-              ? `${pairing} · ${distanceLine}`
-              : category
-                ? `${category} · ${distanceLine}`
-                : distanceLine;
 
             const pill = verificationPillCopy(
               prospect,
@@ -261,7 +258,17 @@ export function BrandsToPitch({
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="font-medium leading-snug text-ink">{name}</p>
-                      <p className="mt-0.5 text-meta leading-snug text-ink-3">{subline}</p>
+                      <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-meta leading-snug text-ink-3">
+                        {pairing ? <span>{pairing}</span> : null}
+                        {pairing && (categoryTag || distanceLine) ? (
+                          <span className="text-ink-4" aria-hidden>·</span>
+                        ) : null}
+                        {!pairing && categoryTag ? <ProspectCategoryChip label={categoryTag} /> : null}
+                        {!pairing && categoryTag && distanceLine ? (
+                          <span className="text-ink-4" aria-hidden>·</span>
+                        ) : null}
+                        <span>{distanceLine}</span>
+                      </p>
                     </div>
                   </button>
                   <div className="flex flex-wrap items-center justify-end gap-1.5 sm:shrink-0">

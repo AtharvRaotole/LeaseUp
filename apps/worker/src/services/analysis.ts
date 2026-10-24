@@ -672,6 +672,7 @@ export class AnalysisService {
           minStorefrontSqFt: formatSpec.minSqFt,
         },
         tenantMixScore: (() => {
+          // categoryFit is the brand retail taxonomy label only (not a site gap score).
           const categoryFit = brandCategoryLabel(candidate.entity_id);
           if (!categoryFit) return undefined;
           return {
