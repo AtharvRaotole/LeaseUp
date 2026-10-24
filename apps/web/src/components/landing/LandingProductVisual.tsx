@@ -41,7 +41,7 @@ export function LandingProductVisual() {
               to={landingWickerReportPath}
               className="mt-1 inline-flex min-h-11 items-center font-medium text-ink underline decoration-accent underline-offset-2 hover:decoration-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
             >
-              Open the live report
+              Open the recorded report
             </Link>
           </div>
         </div>

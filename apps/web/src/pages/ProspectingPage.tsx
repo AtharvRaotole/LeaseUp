@@ -7,7 +7,6 @@ import { ProspectingTimeline } from '../components/prospecting/ProspectingTimeli
 import { useProspectingRun } from '../hooks/useProspectingRun';
 import { apiUrl } from '../lib/api';
 import { CalmErrorPanel } from '../components/ui/CalmErrorPanel';
-import type { ApiErrorInfo } from '../lib/api-error';
 
 export function ProspectingPage() {
   const { id } = useParams();
@@ -52,7 +51,7 @@ export function ProspectingPage() {
         {error && (
           <div className="mt-4" data-testid="prospecting-error">
             <CalmErrorPanel
-              error={{ message: error, code: 'SERVER_BUSY' } satisfies ApiErrorInfo}
+              error={error}
               onRetry={() => id && void startRun(id)}
               testId="prospecting-error"
             />

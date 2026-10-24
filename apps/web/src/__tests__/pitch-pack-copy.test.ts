@@ -35,6 +35,21 @@ describe('pitch pack copy', () => {
     expect(pitchDateMetaLine(snapshot)).toBe('10 km trade area');
   });
 
+  it('labels pitch packs saved from recorded demo reports as samples', () => {
+    const base = {
+      id: '7255de71-5f7b-4ffe-8eed-08075d80ce22',
+      createdAt: '2026-10-24T00:00:00.000Z',
+      analysisTimestamp: '2026-10-24T04:32:32.498Z',
+      radiusKm: 10,
+      address: '1300 Pearl St, Boulder, CO 80302',
+      location: { address: '1300 Pearl St, Boulder, CO 80302', latitude: 0, longitude: 0 },
+      prospects: [],
+      runId: 'recorded',
+    } as PitchPackSnapshot;
+    expect(pitchBriefKindLabel({ ...base, mode: 'demo' })).toBe('Sample leasing brief');
+    expect(pitchBriefKindLabel({ ...base, mode: 'live' })).toBe('Leasing brief');
+  });
+
   it('builds executive summary from snapshot data', () => {
     const snapshot = {
       prospects: [

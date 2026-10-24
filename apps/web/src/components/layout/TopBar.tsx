@@ -5,6 +5,7 @@ import { Logo } from '../brand/Logo';
 import { Badge } from '../ui/Badge';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { useHealth } from '../../hooks/useHealth';
+import { dataModeBadge } from '../../lib/data-mode-badge';
 
 const NAV_LINKS = [
   { to: '/brand', label: 'Brand sites' },
@@ -14,9 +15,9 @@ const NAV_LINKS = [
   { to: '/methodology', label: 'How it works' },
 ];
 
-export function TopBar() {
+export function TopBar({ pageData }: { pageData?: 'recorded' | 'live' } = {}) {
   const { data } = useHealth();
-  const isLive = data?.mode === 'live';
+  const badge = dataModeBadge(data?.mode, pageData);
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -48,16 +49,16 @@ export function TopBar() {
             GitHub
           </a>
           <ThemeToggle />
-          <Badge tone={isLive ? 'success' : 'warn'}>
+          <Badge tone={badge.tone} data-testid="data-mode-badge">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-current opacity-80" aria-hidden />
-            {isLive ? 'Live data' : 'Demo data'}
+            {badge.label}
           </Badge>
         </nav>
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
-          <Badge tone={isLive ? 'success' : 'warn'}>
+          <Badge tone={badge.tone} data-testid="data-mode-badge-short">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-current opacity-80" aria-hidden />
-            {isLive ? 'Live' : 'Demo'}
+            {badge.shortLabel}
           </Badge>
           <button
             type="button"

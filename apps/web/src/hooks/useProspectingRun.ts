@@ -1,18 +1,13 @@
 import { useCallback, useState } from 'react';
 import type { ProspectingJob } from '@leaseup/contracts';
 import { apiUrl } from '../lib/api';
-import { DAILY_LIMIT_HEADLINE, dailyLimitMessage } from '../lib/calm-error-copy';
-
-async function isDailyLimitResponse(res: Response): Promise<boolean> {
-  if (res.status !== 429) return false;
-  const body = (await res.json().catch(() => ({}))) as { code?: string };
-  return body.code === 'LIVE_QLOO_JUDGE_QUOTA_EXCEEDED';
-}
+import type { ApiErrorInfo } from '../lib/api-error';
+import { prospectingRunError } from '../lib/prospecting-run-error';
 
 export function useProspectingRun() {
   const [job, setJob] = useState<ProspectingJob | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ApiErrorInfo | null>(null);
 
   const load = useCallback(async (id: string) => {
     const res = await fetch(apiUrl(`/api/prospecting/${id}`));
@@ -29,11 +24,8 @@ export function useProspectingRun() {
       const res = await fetch(apiUrl(`/api/prospecting/${id}/run`), { method: 'POST' });
       if (!res.ok || !res.body) {
         setLoading(false);
-        if (await isDailyLimitResponse(res)) {
-          setError(`${DAILY_LIMIT_HEADLINE}. ${dailyLimitMessage()}`);
-          return;
-        }
-        setError('We could not start this agent run. Try again in a moment.');
+        const body = (await res.json().catch(() => null)) as { code?: string } | null;
+        setError(prospectingRunError(body, 'start'));
         return;
       }
       const reader = res.body.getReader();
@@ -55,15 +47,12 @@ export function useProspectingRun() {
               if (line.startsWith('data:')) data = line.slice(5).trim();
             }
             if (!data) continue;
-            const parsed = JSON.parse(data) as ProspectingJob | { message?: string };
+            const parsed = JSON.parse(data) as ProspectingJob | { message?: string; code?: string };
             if (event === 'step' || event === 'complete') {
               setJob(parsed as ProspectingJob);
             }
             if (event === 'error') {
-              setError(
-                (parsed as { message?: string }).message ??
-                  'This prospecting run stopped early. Try again in a moment.'
-              );
+              setError(prospectingRunError(parsed as { message?: string; code?: string }, 'stream'));
             }
           }
         }

@@ -19,7 +19,7 @@ export function HowWeKnowSection({ results }: { results: AnalysisResponse }) {
             title: 'Data sources',
             content: (
               <ul className="list-disc pl-5 space-y-1">
-                <li>Local shopper taste (Qloo, {results.mode ?? 'demo'} mode)</li>
+                <li>Local shopper taste (Qloo, {results.mode === 'live' ? 'live' : 'recorded demo'} data)</li>
                 <li>All The Places store locations (CC0)</li>
                 <li>
                   {results.osmSnapshotLabel
