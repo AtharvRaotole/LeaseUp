@@ -23,6 +23,7 @@ export function HeadlineCard({
   backtestOverride,
   showStats = true,
   headlineActions,
+  headingLevel = 'h2',
 }: {
   results: AnalysisResponse;
   radiusKm: number;
@@ -31,7 +32,10 @@ export function HeadlineCard({
   /** When false, only the headline renders (stats deferred for faster LCP). */
   showStats?: boolean;
   headlineActions?: ReactNode;
+  /** The report page passes h1 so the page has one top-level heading. */
+  headingLevel?: 'h1' | 'h2';
 }) {
+  const Heading = headingLevel;
   const area = placeHeadlineLabel(results.location, chipSlug);
   const searchKm = results.prospectFunnel?.searchRadiusKm ?? radiusKm;
   const absenceKm = absenceRadiusKm(results, radiusKm);
@@ -50,9 +54,9 @@ export function HeadlineCard({
   return (
     <Card>
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-2">
-        <h2 className="min-w-0 flex-1 font-display font-semibold text-h2 leading-snug text-ink md:text-title">
+        <Heading className="min-w-0 flex-1 font-display font-semibold text-h2 leading-snug text-ink md:text-title">
           {reportHeadlineLine(results, area, radiusKm)}
-        </h2>
+        </Heading>
         {headlineActions ? <div className="shrink-0 self-start md:self-auto">{headlineActions}</div> : null}
       </div>
       <p

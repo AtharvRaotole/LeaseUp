@@ -24,4 +24,29 @@ test.describe('Report, pipeline, and watchlist loop', () => {
     await expect(page.getByRole('link', { name: 'Site report' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Watched space' })).toBeVisible();
   });
+
+  test('pipeline card persists when the browser drops cross-site cookies', async ({ page }) => {
+    test.setTimeout(180_000);
+    // Production web (pages.dev) and worker (workers.dev) are cross-site, so the browser
+    // rejects the SameSite=Lax workspace cookie. Simulate that: strip Cookie on the way out
+    // for every API call, and clear the jar before each navigation.
+    await page.route('**/api/**', async (route) => {
+      const headers = { ...route.request().headers() };
+      delete headers.cookie;
+      await route.continue({ headers });
+    });
+
+    await page.goto(`${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`);
+    await waitForReportReady(page);
+    await page.getByTestId('add-pipeline-top-0').getByTestId('add-to-pipeline').click();
+    await expect(page.getByText('Added to pipeline')).toBeVisible({ timeout: 30_000 });
+
+    await page.context().clearCookies();
+    await page.goto(`${BASE}/pipeline`);
+    await expect(page.getByTestId('pipeline-card').first()).toBeVisible({ timeout: 30_000 });
+    await page.context().clearCookies();
+    await page.reload();
+    await expect(page.getByTestId('pipeline-card').first()).toBeVisible({ timeout: 30_000 });
+    await page.unrouteAll({ behavior: 'ignoreErrors' });
+  });
 });

@@ -1,5 +1,6 @@
 import type { AnalysisResponse, WatchSaveResponse, WatchSpaceDetail, WatchlistResponse } from '@leaseup/contracts';
 import { apiUrl } from './api';
+import { browserWorkspaceHeaders } from './browser-workspace-id';
 
 export class WatchlistApiError extends Error {
   readonly code?: string;
@@ -13,13 +14,13 @@ export class WatchlistApiError extends Error {
 }
 
 export async function fetchWatchlist(): Promise<WatchlistResponse> {
-  const res = await fetch(apiUrl('/api/watchlist'), { credentials: 'include' });
+  const res = await fetch(apiUrl('/api/watchlist'), { credentials: 'include', headers: browserWorkspaceHeaders() });
   if (!res.ok) throw new WatchlistApiError('Could not load your watchlist.', res.status);
   return (await res.json()) as WatchlistResponse;
 }
 
 export async function fetchWatchDetail(watchId: string): Promise<WatchSpaceDetail> {
-  const res = await fetch(apiUrl(`/api/watchlist/${watchId}`), { credentials: 'include' });
+  const res = await fetch(apiUrl(`/api/watchlist/${watchId}`), { credentials: 'include', headers: browserWorkspaceHeaders() });
   if (!res.ok) throw new WatchlistApiError('Watch not found', res.status, 'NOT_FOUND');
   return (await res.json()) as WatchSpaceDetail;
 }
@@ -32,7 +33,7 @@ export async function saveWatchSpace(params: {
   const res = await fetch(apiUrl('/api/watchlist'), {
     method: 'POST',
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...browserWorkspaceHeaders() },
     body: JSON.stringify(params),
   });
   if (!res.ok) throw new WatchlistApiError('Could not save to watchlist', res.status);
@@ -43,6 +44,7 @@ export async function recheckWatchSpace(watchId: string): Promise<WatchSpaceDeta
   const res = await fetch(apiUrl(`/api/watchlist/${watchId}/recheck`), {
     method: 'POST',
     credentials: 'include',
+    headers: browserWorkspaceHeaders(),
   });
   if (!res.ok) {
     const body = (await res.json().catch(() => ({}))) as { error?: string; code?: string };
@@ -59,6 +61,7 @@ export async function removeWatchSpace(watchId: string): Promise<void> {
   const res = await fetch(apiUrl(`/api/watchlist/${watchId}`), {
     method: 'DELETE',
     credentials: 'include',
+    headers: browserWorkspaceHeaders(),
   });
   if (!res.ok) {
     const body = (await res.json().catch(() => ({}))) as { error?: string; code?: string };

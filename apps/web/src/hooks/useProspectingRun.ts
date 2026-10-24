@@ -1,6 +1,13 @@
 import { useCallback, useState } from 'react';
 import type { ProspectingJob } from '@leaseup/contracts';
 import { apiUrl } from '../lib/api';
+import { DAILY_LIMIT_HEADLINE, dailyLimitMessage } from '../lib/calm-error-copy';
+
+async function isDailyLimitResponse(res: Response): Promise<boolean> {
+  if (res.status !== 429) return false;
+  const body = (await res.json().catch(() => ({}))) as { code?: string };
+  return body.code === 'LIVE_QLOO_JUDGE_QUOTA_EXCEEDED';
+}
 
 export function useProspectingRun() {
   const [job, setJob] = useState<ProspectingJob | null>(null);
@@ -22,6 +29,10 @@ export function useProspectingRun() {
       const res = await fetch(apiUrl(`/api/prospecting/${id}/run`), { method: 'POST' });
       if (!res.ok || !res.body) {
         setLoading(false);
+        if (await isDailyLimitResponse(res)) {
+          setError(`${DAILY_LIMIT_HEADLINE}. ${dailyLimitMessage()}`);
+          return;
+        }
         setError('We could not start this agent run. Try again in a moment.');
         return;
       }

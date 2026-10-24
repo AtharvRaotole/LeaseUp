@@ -66,6 +66,8 @@ function requestPath(c: Context<{ Bindings: Env }>): string {
 function skipRateLimit(c: Context<{ Bindings: Env }>): boolean {
   const path = requestPath(c);
   if (path === '/api/health') return true;
+  // Recorded demo chip reports are read-only replays: no Qloo, no quota, no D1 writes.
+  if (path.startsWith('/api/demo-report/') && c.req.method === 'GET') return true;
   if (c.env.APP_MODE !== 'demo') return false;
   if (path === '/api/compare/flip' || path.startsWith('/api/heatmap')) return true;
   if (path.startsWith('/api/brand') || path === '/api/brands' || path === '/api/metros') return true;
