@@ -1,13 +1,32 @@
 import { describe, it, expect } from 'vitest';
 import {
+  pitchBriefKindLabel,
+  pitchDateMetaLine,
   pitchExecutiveSummaryLines,
   isNearestStoreDistanceLine,
   pitchProspectFact,
   shouldShowStoredWhyLine,
 } from '../lib/pitch-pack-copy';
+import { DEMO_PITCH_BOULDER_ULTA_ID } from '@leaseup/contracts';
 import type { PitchPackSnapshot } from '@leaseup/contracts';
 
 describe('pitch pack copy', () => {
+  it('labels demo pitches as samples with snapshot date', () => {
+    const snapshot = {
+      id: DEMO_PITCH_BOULDER_ULTA_ID,
+      createdAt: '2026-10-24T00:00:00.000Z',
+      analysisTimestamp: '2026-10-23T03:36:00.000Z',
+      radiusKm: 10,
+      address: '1300 Pearl St, Boulder, CO 80302',
+      location: { address: '1300 Pearl St, Boulder, CO 80302', latitude: 0, longitude: 0 },
+      prospects: [],
+      runId: 'demo',
+    } as PitchPackSnapshot;
+    expect(pitchBriefKindLabel(snapshot)).toBe('Sample leasing brief');
+    expect(pitchDateMetaLine(snapshot)).toMatch(/Sample pitch from data snapshot of Oct 23, 2026/);
+    expect(pitchDateMetaLine(snapshot)).not.toMatch(/^Prepared /);
+  });
+
   it('builds executive summary from snapshot data', () => {
     const snapshot = {
       prospects: [

@@ -1,3 +1,4 @@
+/** Per-watch cooldown: caps D1 rate_limits upserts (no KV writes) well under free-tier daily limits. */
 export const WATCH_RECHECK_COOLDOWN_SEC = 600;
 
 export class RecheckCooldownError extends Error {

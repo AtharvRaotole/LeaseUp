@@ -21,6 +21,11 @@ test('demo pitch page renders with clean console and plain copy', async ({ page 
   await page.goto(`/pitch/${DEMO_PITCH_BOULDER_ULTA_ID}`, { waitUntil: 'networkidle' });
   await expect(page.getByTestId('pitch-page')).toBeVisible({ timeout: 30_000 });
   await expect(page.getByTestId('pitch-pack-brief')).toBeVisible();
+  await expect(page.getByText('Sample leasing brief')).toBeVisible();
+  await expect(page.getByTestId('pitch-date-meta')).toContainText(
+    /Sample pitch from data snapshot of Oct 23, 2026/
+  );
+  await expect(page.getByTestId('pitch-date-meta')).not.toContainText(/^Prepared /);
   await expect(page.getByTestId('pitch-brand-brief').first()).toContainText(/Ulta/i);
 
   const visibleText = await page.locator('body').innerText();
