@@ -61,7 +61,7 @@ describe('pitchCheckedSourcesLabel', () => {
 });
 
 describe('pitchBrandFitLines', () => {
-  it('includes rank, nearest store, and reasons', () => {
+  it('includes nearest store line and reasons without duplicating rank bullets', () => {
     const snapshot = {
       radiusKm: 10,
       rankingsTotal: 40,
