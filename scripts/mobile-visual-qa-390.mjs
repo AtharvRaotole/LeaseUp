@@ -250,10 +250,13 @@ for (const theme of ['light', 'dark']) {
       colorScheme: theme,
     });
     await context.addInitScript(
-      ({ key, colorScheme }) => {
-        if (colorScheme === 'light') localStorage.removeItem(key);
+      ({ tourKey, themeKey, theme }) => {
+        localStorage.setItem(themeKey, theme);
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+        if (theme === 'light') localStorage.removeItem(tourKey);
       },
-      { key: TOUR_KEY, colorScheme: theme }
+      { tourKey: TOUR_KEY, themeKey: 'leaseup-theme', theme }
     );
     const page = await context.newPage();
     const label = `${def.id}-${theme}-${WIDTH}`;

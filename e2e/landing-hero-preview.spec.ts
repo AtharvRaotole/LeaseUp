@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { setAppTheme } from './theme-helpers';
 
 test.describe('Landing hero product preview', () => {
   test('hero preview shows live fixture copy in light mode', async ({ page }) => {
-    await page.emulateMedia({ colorScheme: 'light' });
+    await setAppTheme(page, 'light');
     await page.goto('/');
     const preview = page.getByTestId('landing-hero-product-preview');
     await preview.waitFor({ timeout: 30_000 });
@@ -14,7 +15,7 @@ test.describe('Landing hero product preview', () => {
   });
 
   test('hero preview shows local match copy in dark mode', async ({ page }) => {
-    await page.emulateMedia({ colorScheme: 'dark' });
+    await setAppTheme(page, 'dark');
     await page.goto('/');
     const preview = page.getByTestId('landing-hero-product-preview');
     await preview.waitFor({ timeout: 30_000 });

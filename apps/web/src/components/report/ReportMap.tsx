@@ -19,6 +19,7 @@ export function ReportMap({
   radiusKm,
   className,
   captureRef,
+  embed = false,
 }: {
   results: AnalysisResponse;
   selectedBrand: MapBrandSelection | null;
@@ -26,16 +27,19 @@ export function ReportMap({
   radiusKm: number;
   className?: string;
   captureRef?: RefObject<ReportMapCaptureRef | null>;
+  embed?: boolean;
 }) {
+  const minH = embed ? 'min-h-[140px]' : 'min-h-[520px]';
   return (
-    <div className={className ?? 'h-full min-h-[520px] w-full'}>
-      <Suspense fallback={<Skeleton className="h-full min-h-[520px] w-full rounded-card" />}>
+    <div className={className ?? `h-full ${minH} w-full`}>
+      <Suspense fallback={<Skeleton className={`h-full ${minH} w-full rounded-card`} />}>
         <MapInner
           results={results}
           selectedBrand={selectedBrand}
           pitchBrandIds={pitchBrandIds}
           radiusKm={radiusKm}
           captureRef={captureRef}
+          embed={embed}
         />
       </Suspense>
     </div>

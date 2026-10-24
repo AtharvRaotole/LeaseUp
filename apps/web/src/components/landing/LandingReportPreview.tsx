@@ -33,7 +33,8 @@ export function LandingReportPreview() {
     [rankingMode, results]
   );
 
-  const mapPoster = '/demo/map-poster.jpg';
+  const mapPosterLight = '/demo/map-poster.jpg';
+  const mapPosterDark = '/demo/map-poster-dark.jpg';
 
   return (
     <div
@@ -73,15 +74,18 @@ export function LandingReportPreview() {
             role="img"
             aria-label="Map preview from product demo"
           >
-            <img
-              src={mapPoster}
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover object-top"
-              width={720}
-              height={480}
-              loading="lazy"
-              decoding="async"
-            />
+            <picture>
+              <source srcSet={mapPosterDark} media="(prefers-color-scheme: dark)" />
+              <img
+                src={mapPosterLight}
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover object-top"
+                width={720}
+                height={480}
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
             <div className="absolute inset-0 bg-gradient-to-t from-bg/30 to-transparent" />
           </div>
           <WhyThisBrandCard

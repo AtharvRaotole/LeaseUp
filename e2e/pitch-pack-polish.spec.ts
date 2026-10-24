@@ -42,7 +42,11 @@ test.describe('Pitch pack polish', () => {
   test('dark mode readable', async ({ page, baseURL }) => {
     test.setTimeout(180_000);
     await openPitchPage(page, baseURL!);
-    await page.emulateMedia({ colorScheme: 'dark' });
+    await page.addInitScript(() => {
+      localStorage.setItem('leaseup-theme', 'dark');
+      document.documentElement.dataset.theme = 'dark';
+      document.documentElement.style.colorScheme = 'dark';
+    });
     await expect(page.getByTestId('pitch-brand-brief').first()).toBeVisible();
     const color = await page.getByTestId('pitch-pack-brief').evaluate((el) => getComputedStyle(el).color);
     expect(color).not.toBe('rgb(0, 0, 0)');

@@ -9,16 +9,11 @@ import { heatmapWeightsFromAffinity } from '../../lib/heatmap-scale';
 import { HEATMAP_COLOR_EXPRESSION } from '../../lib/heatmap-map-paint';
 import { Switch } from '../ui/Switch';
 import { cn } from '../../lib/cn';
+import { mapMarkerColor } from '../../lib/map-accent';
+import { mapBasemapStyleUrl } from '../../lib/theme';
 import type { MapBrandSelection, ReportMapCaptureRef } from './ReportMap';
 
 const MAP_LEGEND_OPEN_MIN_WIDTH_PX = 1600;
-
-function mapStyle() {
-  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
-  }
-  return 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
-}
 
 export default function ReportMapInner({
   results,
@@ -26,16 +21,19 @@ export default function ReportMapInner({
   pitchBrandIds,
   radiusKm,
   captureRef,
+  embed = false,
 }: {
   results: AnalysisResponse;
   selectedBrand: MapBrandSelection | null;
   pitchBrandIds: string[];
   radiusKm: number;
   captureRef?: RefObject<ReportMapCaptureRef | null>;
+  /** Chromeless map for landing hero embed (heatmap on, no controls). */
+  embed?: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
-  const [showHeatmap, setShowHeatmap] = useState(false);
+  const [showHeatmap, setShowHeatmap] = useState(embed);
   const [showStores, setShowStores] = useState(true);
   const [showRadius, setShowRadius] = useState(true);
   const [mapReady, setMapReady] = useState(false);
@@ -55,13 +53,17 @@ export default function ReportMapInner({
     if (!containerRef.current || mapRef.current) return;
     const map = new maplibregl.Map({
       container: containerRef.current,
-      style: mapStyle(),
+      style: mapBasemapStyleUrl(),
       center: [results.location.longitude, results.location.latitude],
-      zoom: 12,
+      zoom: embed ? 11.8 : 12,
       preserveDrawingBuffer: true,
+      interactive: !embed,
+      attributionControl: embed ? false : undefined,
     });
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
-    new maplibregl.Marker({ color: '#0f6b4f' })
+    if (!embed) {
+      map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+    }
+    new maplibregl.Marker({ color: mapMarkerColor() })
       .setLngLat([results.location.longitude, results.location.latitude])
       .addTo(map);
     map.on('load', () => {
@@ -85,7 +87,7 @@ export default function ReportMapInner({
         source: 'site-pin',
         paint: {
           'circle-radius': 8,
-          'circle-color': '#0f6b4f',
+          'circle-color': mapMarkerColor(),
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff',
         },
@@ -99,7 +101,17 @@ export default function ReportMapInner({
       mapRef.current = null;
       setMapReady(false);
     };
-  }, [results.location.latitude, results.location.longitude]);
+  }, [embed, results.location.latitude, results.location.longitude]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const onTheme = () => {
+      void map.setStyle(mapBasemapStyleUrl());
+    };
+    window.addEventListener('leaseup-theme-change', onTheme);
+    return () => window.removeEventListener('leaseup-theme-change', onTheme);
+  }, [mapReady]);
 
   const loadHeatmapForEntity = useCallback(
     async (entityId: string): Promise<boolean> => {
@@ -253,7 +265,7 @@ export default function ReportMapInner({
       }
     };
 
-    upsert('stores-pitch', { type: 'FeatureCollection', features: pitchFeatures }, '#0f6b4f');
+    upsert('stores-pitch', { type: 'FeatureCollection', features: pitchFeatures }, mapMarkerColor());
     upsert('stores-other', { type: 'FeatureCollection', features: otherFeatures }, '#8fa3c4');
     resizeMap();
   }, [results.mapStores, mapReady, resizeMap, pitchIdSet]);
@@ -266,12 +278,19 @@ export default function ReportMapInner({
     }
   }, [selectedBrand, results.mapStores]);
 
-  const heatmapAllowed = results.heatmapAvailable === true && !!selectedBrand;
+  const heatmapAllowed = embed
+    ? results.heatmapAvailable === true && !!pitchBrandIds[0]
+    : results.heatmapAvailable === true && !!selectedBrand;
 
   useEffect(() => {
-    if (!heatmapAllowed || !showHeatmap || !selectedBrand) return;
+    if (!embed || !mapReady || !showHeatmap || !pitchBrandIds[0]) return;
+    void loadHeatmapForEntity(pitchBrandIds[0]);
+  }, [embed, mapReady, pitchBrandIds, showHeatmap, loadHeatmapForEntity]);
+
+  useEffect(() => {
+    if (embed || !heatmapAllowed || !showHeatmap || !selectedBrand) return;
     void loadHeatmapForEntity(selectedBrand.entityId);
-  }, [selectedBrand, showHeatmap, heatmapAllowed, loadHeatmapForEntity]);
+  }, [embed, selectedBrand, showHeatmap, heatmapAllowed, loadHeatmapForEntity]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -286,7 +305,11 @@ export default function ReportMapInner({
   }, [selectedBrand?.entityId, results.heatmapAvailable]);
 
   return (
-    <div className="relative h-full min-h-[520px] w-full">
+    <div
+      className={cn('relative h-full w-full', embed ? 'min-h-[140px]' : 'min-h-[520px]')}
+      data-testid="report-map"
+    >
+      {!embed && (
       <div className="absolute right-3 top-3 z-10 w-[min(100%,260px)] rounded-card border border-border bg-surface p-3.5 shadow-sm">
         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-3">Map</p>
         <div className="grid grid-cols-1 gap-y-2">
@@ -341,9 +364,13 @@ export default function ReportMapInner({
             </ul>
         </div>
       </div>
+      )}
       <div
         ref={containerRef}
-        className="!absolute inset-0 w-full rounded-card border border-border overflow-hidden"
+        className={cn(
+          '!absolute inset-0 w-full overflow-hidden',
+          embed ? 'rounded-control border-0' : 'rounded-card border border-border'
+        )}
       />
     </div>
   );
