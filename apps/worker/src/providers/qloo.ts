@@ -6,7 +6,7 @@ import {
   seviervilleFixture,
   parseQlooAudienceRows,
   computeBrandLocalAudienceOverlap,
-  PITCH_AUDIENCE_CANDIDATE_MAX,
+  BRAND_AUDIENCE_MAX_SHOWN,
   TRADE_AREA_SHOPPER_TAG_SUBTYPES,
   type TradeAreaTasteRow,
 } from '@leaseup/fixtures/worker';
@@ -291,7 +291,7 @@ export class QlooClient {
         parseQlooAudienceRows(localJson),
         {
           panelBaseline: params.panelBaseline,
-          maxAudiences: PITCH_AUDIENCE_CANDIDATE_MAX,
+          maxAudiences: BRAND_AUDIENCE_MAX_SHOWN,
         }
       );
       if (audiences.length === 0) return null;
