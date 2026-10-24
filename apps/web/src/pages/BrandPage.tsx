@@ -90,7 +90,7 @@ export function BrandPage() {
                 data-testid="brand-search"
               />
             </div>
-            <ul className="mt-4 max-h-[360px] overflow-y-auto divide-y divide-border" role="listbox">
+            <ul className="mt-4 max-h-[360px] overflow-y-auto divide-y divide-border" aria-label="Brands">
               {brandsLoading && (
                 <li className="py-3">
                   <Skeleton className="h-10 w-full" />

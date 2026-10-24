@@ -4,6 +4,7 @@ import { OwnerUpdateShareRequestSchema } from '@leaseup/contracts';
 import { PipelineService } from '../services/pipeline';
 import { buildOwnerUpdateSnapshot, listOwnerUpdateProperties } from '../lib/owner-update';
 import { OwnerUpdateShareService } from '../services/owner-update-share';
+import { browserIdFromHeader } from '../lib/anonymous-browser-id';
 
 const WORKSPACE_COOKIE = 'leaseup_pipeline_ws';
 
@@ -16,7 +17,7 @@ function workspaceIdFromCookie(cookieHeader: string | undefined): string | null 
 }
 
 ownerUpdateRouter.get('/owner-update/properties', async (c) => {
-  const workspaceId = workspaceIdFromCookie(c.req.header('Cookie'));
+  const workspaceId = browserIdFromHeader(c) ?? workspaceIdFromCookie(c.req.header('Cookie'));
   if (!workspaceId) {
     return c.json({ properties: [] });
   }
@@ -27,7 +28,7 @@ ownerUpdateRouter.get('/owner-update/properties', async (c) => {
 });
 
 ownerUpdateRouter.get('/owner-update/preview', async (c) => {
-  const workspaceId = workspaceIdFromCookie(c.req.header('Cookie'));
+  const workspaceId = browserIdFromHeader(c) ?? workspaceIdFromCookie(c.req.header('Cookie'));
   const propertyAddress = c.req.query('propertyAddress')?.trim();
   if (!workspaceId || !propertyAddress) {
     return c.json({ error: 'propertyAddress required', code: 'BAD_REQUEST' }, 400);
@@ -42,7 +43,7 @@ ownerUpdateRouter.get('/owner-update/preview', async (c) => {
 });
 
 ownerUpdateRouter.post('/owner-update/share', async (c) => {
-  const workspaceId = workspaceIdFromCookie(c.req.header('Cookie'));
+  const workspaceId = browserIdFromHeader(c) ?? workspaceIdFromCookie(c.req.header('Cookie'));
   if (!workspaceId) {
     return c.json({ error: 'Pipeline workspace required', code: 'UNAUTHORIZED' }, 401);
   }

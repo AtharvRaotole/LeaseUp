@@ -8,6 +8,7 @@ import { PageEmptyState } from '../components/ui/PageEmptyState';
 import { PipelineKanban } from '../components/pipeline/PipelineKanban';
 import { OwnerUpdatePanel } from '../components/pipeline/OwnerUpdatePanel';
 import { fetchPipelineBoard, fetchPublicPipeline, pipelineExportUrl } from '../lib/pipeline-api';
+import { browserWorkspaceHeaders } from '../lib/browser-workspace-id';
 import { PipelineLoadingSkeleton } from '../components/pipeline/PipelineLoadingSkeleton';
 import { pipelineEmptyAction, pipelineEmptyLine, shareLinkExpiredLine } from '../lib/empty-state-copy';
 
@@ -63,7 +64,7 @@ export function PipelinePage() {
                 size="sm"
                 data-testid="pipeline-export"
                 onClick={() => {
-                  void fetch(pipelineExportUrl(), { credentials: 'include' })
+                  void fetch(pipelineExportUrl(), { credentials: 'include', headers: browserWorkspaceHeaders() })
                     .then((r) => r.blob())
                     .then((blob) => {
                       const url = URL.createObjectURL(blob);

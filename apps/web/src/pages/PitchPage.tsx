@@ -8,7 +8,7 @@ import { PitchPackBrief } from '../components/pitch/PitchPackBrief';
 import { PitchPackLoadingSkeleton } from '../components/pitch/PitchPackLoadingSkeleton';
 import { shareLinkExpiredLine } from '../lib/empty-state-copy';
 import { loadDemoPitchSnapshot } from '../lib/demo-pitch-snapshot';
-import { apiUrl } from '../lib/api';
+import { fetchPitchSnapshot } from '../lib/pitch-fetch';
 import {
   EMPTY_VACANCY_DRAFT,
   pitchVacancyToDraft,
@@ -27,29 +27,28 @@ export function PitchPage() {
   const [error, setError] = useState<string | null>(null);
   const [vacancy, setVacancy] = useState<VacancyCalculatorDraft>(EMPTY_VACANCY_DRAFT);
 
+  const [attempt, setAttempt] = useState(0);
+  const [retryable, setRetryable] = useState(false);
+
   useEffect(() => {
     if (!id) return;
+    let cancelled = false;
     void (async () => {
-      let serverFailed: boolean | undefined;
-      try {
-        const res = await fetch(apiUrl(`/api/pitch/${id}`));
-        if (res.status === 404) {
-          setError(shareLinkExpiredLine);
-          return;
+      const result = await fetchPitchSnapshot(id);
+      if (cancelled) return;
+      if (result.kind === 'ok') {
+        const data = result.snapshot;
+        setSnapshot(data);
+        if (data.vacancy) {
+          setVacancy(pitchVacancyToDraft(data.vacancy));
+        } else {
+          setVacancy(loadVacancyDraft(data.address));
         }
-        if (res.ok) {
-          const data = (await res.json()) as PitchPackSnapshot;
-          setSnapshot(data);
-          if (data.vacancy) {
-            setVacancy(pitchVacancyToDraft(data.vacancy));
-          } else {
-            setVacancy(loadVacancyDraft(data.address));
-          }
-          return;
-        }
-        serverFailed = true;
-      } catch {
-        serverFailed = true;
+        return;
+      }
+      if (result.kind === 'not-found') {
+        setError(shareLinkExpiredLine);
+        return;
       }
       const demoSnapshot = loadDemoPitchSnapshot(id);
       if (demoSnapshot) {
@@ -61,13 +60,13 @@ export function PitchPage() {
         }
         return;
       }
-      setError(
-        serverFailed
-          ? 'This pitch could not load. Check the link or try again in a moment.'
-          : shareLinkExpiredLine
-      );
+      setRetryable(true);
+      setError('This pitch could not load. Check the link or try again in a moment.');
     })();
-  }, [id]);
+    return () => {
+      cancelled = true;
+    };
+  }, [id, attempt]);
 
   const shareHead = useMemo(() => {
     if (!snapshot) return null;
@@ -80,9 +79,25 @@ export function PitchPage() {
       <div className="min-h-screen bg-bg px-4 py-24 text-center" data-testid="pitch-error">
         <h1 className="font-display font-semibold text-h2 text-ink">Pitch unavailable</h1>
         <p className="mt-3 max-w-md mx-auto text-ink-2">{error}</p>
-        <Link to="/" className="mt-6 inline-block">
-          <Button size="lg">Back to home</Button>
-        </Link>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          {retryable && (
+            <Button
+              size="lg"
+              variant="secondary"
+              data-testid="pitch-retry"
+              onClick={() => {
+                setError(null);
+                setRetryable(false);
+                setAttempt((n) => n + 1);
+              }}
+            >
+              Try again
+            </Button>
+          )}
+          <Link to="/" className="inline-block">
+            <Button size="lg">Back to home</Button>
+          </Link>
+        </div>
       </div>
     );
   }
