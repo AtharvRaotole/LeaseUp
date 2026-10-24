@@ -86,7 +86,7 @@ export function PipelineCardItem({
           </div>
         </div>
         <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px]">
-          <span className="rounded-pill bg-accent-soft px-2 py-0.5 font-medium text-accent">
+          <span className="rounded-pill bg-accent-soft px-2 py-0.5 font-medium text-accent-muted">
             Rank #{card.affinityRank}
           </span>
           <span className="rounded-pill border border-border px-2 py-0.5 text-ink-2">
