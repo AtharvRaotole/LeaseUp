@@ -7,7 +7,7 @@ export const QLOO_BROKER_EXPLAINER = {
     {
       heading: 'What we ask Qloo for',
       body:
-        'For your pin, LeaseUp calls Qloo brand insights: up to 227 tracked chains in batches, with the same radius you pick on the form (2, 5, or 10 km). Demo chips use recorded answers so judges can try the product without an API key.',
+        'For your pin, LeaseUp calls Qloo brand insights: up to 227 tracked chains in batches, with the same radius you pick on the form (2, 5, or 10 km). The three demo addresses on the landing page use recorded answers so you can run a report without an API key.',
     },
     {
       heading: 'What P@10 means on our backtests',
@@ -25,9 +25,14 @@ export const QLOO_BROKER_EXPLAINER = {
         'Trade area shoppers lists Qloo location tags as plain names (who shops here). The pitch list uses the blend ranking. Each row is checked against All The Places and, on demo chips, OpenStreetMap, so you see who may already lease nearby.',
     },
     {
-      heading: 'What we do not claim',
+      heading: 'Limits you should know',
       body:
-        'We do not say raw Qloo beats chain size on mean P@10. Lift comes from the blend and from mid-size tier ordering, plus the same-size tier AUC 0.667 study metric. Store checks can miss locations absent from both ATP and OSM; after the PR #89 false-positive audit we removed all 4 known false positives across 13 test sites, but we never say zero false positives because OSM covers only 25 of 227 tracked chains on demo chips.',
+        'Raw Qloo order alone is weaker than sorting by national chain size on our 40-address backtest (about 54% vs 76% top-10 presence per ATP/OSM). The product leans on the taste blend (about 82% vs 76%) and on ranking within similar chain sizes. Map checks are helpful but not perfect: we corrected four mistaken absence labels found across 13 audited sites, yet a store can still be missing if it is not in All The Places or our OpenStreetMap snapshot (OSM covers 25 of 227 chains on demo chips).',
+    },
+    {
+      heading: 'If Qloo is temporarily down',
+      body:
+        'Live mode can still return a report ranked by national chain size, with a clear banner that taste data was unavailable. Demo chips keep using recorded taste scores.',
     },
     {
       heading: 'Where the numbers live',
