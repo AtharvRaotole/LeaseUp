@@ -109,6 +109,15 @@ const checks = [
   ['aggregates blend 0.825', submission.includes('0.825')],
   ['integration branch name', submission.includes(INTEGRATION_BRANCH)],
   ['integration-head.txt pointer', submission.includes('integration-head.txt')],
+  ['Run full prospecting judge step', submission.includes('Run full prospecting')],
+  [
+    'live Qloo judge path',
+    submission.includes('240 Bedford Ave') && submission.includes('LIVE_QLOO_JUDGE_DAILY_CAP'),
+  ],
+  [
+    'walkthrough pending re-record',
+    submission.includes('pending re-record') || submission.includes('Walkthrough video pending re-record'),
+  ],
 ];
 
 let failed = 0;

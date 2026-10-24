@@ -3,7 +3,7 @@ import {
   assertRecheckAllowed,
   markRecheckCompleted,
   RecheckCooldownError,
-  WATCH_RECHECK_COOLDOWN_SEC,
+  watchRecheckCooldownSec,
 } from '../lib/watch-recheck-cooldown';
 
 const store = new Map<string, { window_start: number }>();
@@ -48,7 +48,7 @@ describe('watch recheck cooldown', () => {
     try {
       await assertRecheckAllowed(db, 'watch-2', 5100);
     } catch (err) {
-      expect((err as RecheckCooldownError).retryAfterSec).toBe(WATCH_RECHECK_COOLDOWN_SEC - 100);
+      expect((err as RecheckCooldownError).retryAfterSec).toBe(watchRecheckCooldownSec() - 100);
     }
   });
 });

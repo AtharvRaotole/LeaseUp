@@ -10,8 +10,9 @@ Tonight’s release adds **owner update shares**, **broker watchlist** (D1 snaps
 ## Pre-flight (offline)
 
 - [ ] Confirm integration CI: **Watchlist e2e** (`e2e/watchlist.spec.ts`) and **Wicker broker e2e** (`e2e/wicker-broker-report.spec.ts`) are green.
-- [ ] Watchlist **per-visitor scoping** merged: `leaseup_pipeline_ws` httpOnly cookie → `workspace_id` on all `watch_spaces` / `watch_snapshots` reads and writes (`apps/worker/src/lib/workspace-cookie.ts`, `apps/worker/src/routes/watchlist.ts`).
+- [ ] Watchlist **per-visitor scoping** merged: `leaseup_visitor_id` httpOnly cookie → `workspace_id` on all `watch_spaces` / `watch_snapshots` reads and writes (`apps/worker/src/lib/visitor-cookie.ts`, `apps/worker/src/routes/watchlist.ts`).
 - [ ] Watchlist **recheck cooldown** merged: 1 recheck per watch space per 10 minutes via D1 `rate_limits` key `watch-recheck:{watchId}` (`apps/worker/src/lib/watch-recheck-cooldown.ts`), 429 before `analyze()`.
+- [ ] Watchlist **recheck KV budget** merged: 1 KV put per successful recheck on `watch-recheck:{visitorId}:{utc-day}` (`apps/worker/src/lib/watch-recheck-kv-limit.ts`), 12 rechecks per visitor per day max.
 - [ ] Pages build uses production `VITE_API_URL` pointing at the production worker.
 - [ ] Do not flip live Qloo until after deploy window policy (demo fixtures OK on box).
 

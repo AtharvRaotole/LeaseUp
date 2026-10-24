@@ -7,6 +7,7 @@ import { execSync } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
+import { viteEnvWithPreviewRoutes } from './preview-routes-vite-env.mjs';
 
 function run(cmd, opts = {}) {
   execSync(cmd, { stdio: 'inherit', ...opts });
@@ -27,7 +28,7 @@ const PREVIEW_PORT = process.env.WATCHLIST_SHOT_PREVIEW_PORT || '4181';
 const base = `http://127.0.0.1:${PREVIEW_PORT}`;
 
 run('pnpm --filter @leaseup/web build', {
-  env: { ...process.env, VITE_API_URL: base },
+  env: viteEnvWithPreviewRoutes(base),
 });
 
 const worker = spawn(

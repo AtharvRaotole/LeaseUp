@@ -1,5 +1,12 @@
 /** Per-watch cooldown: caps D1 rate_limits upserts (no KV writes) well under free-tier daily limits. */
-export const WATCH_RECHECK_COOLDOWN_SEC = 600;
+export function watchRecheckCooldownSec(): number {
+  const raw =
+    typeof process !== 'undefined' && process.env.WATCH_RECHECK_COOLDOWN_SEC
+      ? Number.parseInt(process.env.WATCH_RECHECK_COOLDOWN_SEC, 10)
+      : NaN;
+  if (Number.isFinite(raw) && raw >= 0) return raw;
+  return 600;
+}
 
 export class RecheckCooldownError extends Error {
   readonly retryAfterSec: number;
@@ -25,8 +32,9 @@ export async function assertRecheckAllowed(
     .first<{ window_start: number }>();
   if (!row) return;
   const elapsed = nowSec - row.window_start;
-  if (elapsed < WATCH_RECHECK_COOLDOWN_SEC) {
-    throw new RecheckCooldownError(WATCH_RECHECK_COOLDOWN_SEC - elapsed);
+  const cooldown = watchRecheckCooldownSec();
+  if (elapsed < cooldown) {
+    throw new RecheckCooldownError(cooldown - elapsed);
   }
 }
 

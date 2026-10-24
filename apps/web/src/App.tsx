@@ -4,6 +4,9 @@ import { LandingPage } from './pages/LandingPage';
 import { MapRouteStyles } from './components/layout/MapRouteStyles';
 import { RouteFallback } from './components/layout/RouteFallback';
 import { SkipToContent } from './components/layout/SkipToContent';
+import { previewRoutesEnabled } from './lib/preview-routes';
+
+const previewRoutesOn = previewRoutesEnabled();
 const ReportPage = lazy(() => import('./pages/ReportPage').then((m) => ({ default: m.ReportPage })));
 const BrandPage = lazy(() => import('./pages/BrandPage').then((m) => ({ default: m.BrandPage })));
 const PortfolioPage = lazy(() =>
@@ -46,6 +49,21 @@ const WickerWhyCardCapturePage = lazy(() =>
     default: m.WickerWhyCardCapturePage,
   }))
 );
+const WatchlistEmptyPreviewPage = lazy(() =>
+  import('./pages/WatchlistEmptyPreviewPage').then((m) => ({
+    default: m.WatchlistEmptyPreviewPage,
+  }))
+);
+const PitchErrorPreviewPage = lazy(() =>
+  import('./pages/PitchErrorPreviewPage').then((m) => ({
+    default: m.PitchErrorPreviewPage,
+  }))
+);
+const ProspectingReceiptPreviewPage = lazy(() =>
+  import('./pages/ProspectingReceiptPreviewPage').then((m) => ({
+    default: m.ProspectingReceiptPreviewPage,
+  }))
+);
 
 export default function App() {
   return (
@@ -55,9 +73,21 @@ export default function App() {
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/__preview/landing-hero" element={<LandingHeroPreviewCapturePage />} />
-          <Route path="/__preview/watchlist-diff" element={<WatchlistDiffPreviewPage />} />
-          <Route path="/__preview/wicker-why-card" element={<WickerWhyCardCapturePage />} />
+          {previewRoutesOn ? (
+            <>
+              <Route path="/__preview/landing-hero" element={<LandingHeroPreviewCapturePage />} />
+              <Route path="/__preview/watchlist-diff" element={<WatchlistDiffPreviewPage />} />
+              <Route path="/__preview/wicker-why-card" element={<WickerWhyCardCapturePage />} />
+              <Route path="/__preview/watchlist-empty" element={<WatchlistEmptyPreviewPage />} />
+              <Route path="/__preview/pitch-unavailable" element={<PitchErrorPreviewPage />} />
+              <Route
+                path="/__preview/prospecting-receipt"
+                element={<ProspectingReceiptPreviewPage />}
+              />
+            </>
+          ) : (
+            <Route path="/__preview/*" element={<NotFoundPage />} />
+          )}
           <Route path="/methodology" element={<MethodologyPage />} />
           <Route path="/methodology/qloo" element={<HowLeaseUpUsesQlooPage />} />
           <Route path="/brand" element={<BrandPage />} />

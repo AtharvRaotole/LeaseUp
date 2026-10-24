@@ -53,6 +53,19 @@ test.describe('Broker journey (demo)', () => {
     await expect(page.getByRole('button', { name: 'Create public link' })).toBeVisible();
   });
 
+  test('full prospecting timeline reaches pitch pack on demo chip', async ({ page }) => {
+    test.setTimeout(300_000);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`${BASE}/`);
+    await page.getByPlaceholder(/Street address/i).fill(WICKER);
+    await page.getByTestId('landing-run-prospecting').click();
+    await expect(page.getByTestId('prospecting-page')).toBeVisible({ timeout: 30_000 });
+    await expect(page.getByTestId('prospecting-timeline')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Open pitch pack' })).toBeVisible({
+      timeout: 240_000,
+    });
+  });
+
   test('loading panel shows skeleton while analyze is delayed', async ({ page }) => {
     test.setTimeout(120_000);
     await page.route('**/api/analyze**', async (route) => {

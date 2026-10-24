@@ -8,12 +8,13 @@ import {
   GeocodeNotFoundError,
   UpstreamError,
 } from '../lib/errors';
+import { LiveQlooJudgeQuotaError } from '../lib/live-qloo-judge-quota';
 import { corsHeadersForRequest } from './cors-headers';
 
 function jsonError(
   c: Context<{ Bindings: Env }>,
   body: Record<string, unknown>,
-  status: 400 | 404 | 409 | 500 | 502 | 503
+  status: 400 | 404 | 409 | 429 | 500 | 502 | 503
 ) {
   return c.json(body, status, corsHeadersForRequest(c));
 }
@@ -41,6 +42,19 @@ export const errorHandler: ErrorHandler<{ Bindings: Env }> = (err: Error, c: Con
         code: 'CONFIGURATION_ERROR',
       },
       503
+    );
+  }
+
+  if (err instanceof LiveQlooJudgeQuotaError) {
+    c.header('Retry-After', String(err.retryAfterSec));
+    return jsonError(
+      c,
+      {
+        error: err.message,
+        code: err.code,
+        retryAfter: err.retryAfterSec,
+      },
+      429
     );
   }
 

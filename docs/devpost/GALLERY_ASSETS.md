@@ -1,30 +1,27 @@
-# Devpost gallery (existing screenshots only)
+# Devpost gallery (deploy33 production screenshots)
 
-Use these committed PNGs for the Devpost image gallery. Do **not** record new video or run `capture:devpost:local` until recording is authorized. Resize or crop to Devpost's 1600x1000 guidance in the upload UI if needed; paths below are the repo sources.
+Captured from **https://leaseup-59m.pages.dev** (integration head **81a0b49**, deploy33). PNGs live in `docs/devpost/gallery/`. Regenerate with `node scripts/capture-devpost-gallery-prod.mjs`. No video; upload stills only.
 
-Production reference: integration branch `cursor/leaseup-v1-c429`, head `docs/devpost/integration-head.txt` (deploy32 on Cloudflare Pages tracks this branch).
+| Image | Caption |
+| --- | --- |
+| `report-wicker-1440.png` | Wicker Park, Chicago: the report headline counts eight brands that match local taste with no chain store within three kilometers, with stat tiles and a ranked pitch list beside the map. |
+| `report-wicker-390.png` | Same Wicker report on a phone-width layout: headline, three stat cards, and the start of the top brands list without horizontal scroll. |
+| `report-bleecker-1440.png` | West Village, New York (350 Bleecker): seven pitch brands with no store within three kilometers; HomeGoods leads the list with nearest-store distances on each row. |
+| `report-boulder-1440.png` | Pearl Street, Boulder: nine pitch brands; Ulta is ranked first with a shared local audience line for Health and Beauty and an eleven kilometer nearest-store note. |
+| `report-sevierville-1440.png` | Sevierville, Tennessee: ten pitch brands with no store within four kilometers; Michaels is first with Arts and Crafts called out on the row. |
+| `pitch-boulder-1440.png` | Sample leasing brief for Ulta at Pearl Street: match summary, fit bullets, trade area facts, and a link to reach the brand. |
+| `brand-1440.png` | Brand sites view for Bath and Body Works in Chicago: a taste heatmap and numbered gap opportunities, with the Loop site listed first. |
+| `portfolio-1440.png` | Portfolio mode: paste up to ten storefront addresses or upload a CSV, then geocode and analyze them in sequence. |
+| `methodology-1440.png` | Methodology page opening: how LeaseUp ranks tenants, with a link to the plain-language Qloo explainer. |
 
-| # | Feature | File | Caption (plain) |
-| --- | --- | --- | --- |
-| 1 | Landing + demo path | `docs/screenshots/landing-wicker-hero/light/1440/landing-hero-wicker.png` | Landing page with the Wicker Park demo preview beside the address form. Judges can open the same chip without an API key. |
-| 2 | Summary-first report | `docs/screenshots/judge-1440/after/light/report-wicker.png` | Wicker report summary: headline stats, prospect funnel, and top brands to pitch on one screen. |
-| 3 | Shared local audience | `docs/screenshots/co-tenancy-fallback/pitch-fallback-wicker-1440.png` | Pitch rows use `Shared local audience` only when the audience passes the brand top-5 affinity and local overlap gates (`qloo-brand-taste-overlap.ts`). |
-| 4 | Official real-estate links | `docs/screenshots/judge-1440/after/light/demo-pitch.png` | Demo pitch pack with per-brand reach lines when `brand-real-estate.json` has a verified URL (13 brands today); otherwise a search fallback. |
-| 5 | Nearest store honesty | `docs/screenshots/local-match-copy/light/report-wicker-pitch-rows-1440.png` | Pitch rows show reconciled nearest-store distance from All The Places and OpenStreetMap snapshot data, with broker-readable rank copy. |
-| 6 | Address validation | `docs/screenshots/analyze-robustness/gibberish-1440.png` | Clear errors for bad addresses (gibberish, PO box, non-US, ambiguous text) before analyze runs (`address-input-validation.ts`). |
-| 7 | Qloo-down fallback | `docs/screenshots/analyze-robustness/qloo-timeout-1440.png` | When taste insights fail, the report still ranks by chain size and shows the taste-unavailable banner (no fabricated Qloo scores). |
+## Suggested Devpost order (6 to 7 images)
 
-## Optional alternates
+1. `report-wicker-1440.png` (hero: full product)
+2. `report-boulder-1440.png` (audience lines on pitch rows)
+3. `pitch-boulder-1440.png` (shareable brief)
+4. `report-bleecker-1440.png` (second city pin)
+5. `brand-1440.png` (brand-side exploration)
+6. `report-wicker-390.png` (mobile)
+7. `methodology-1440.png` (trust and definitions)
 
-| Feature | File | Caption |
-| --- | --- | --- |
-| Boulder shared-audience row | `docs/screenshots/co-tenancy-fallback/pitch-fallback-boulder-1440.png` | Same audience fallback on the Pearl Street demo chip. |
-| Mobile report | `docs/screenshots/mobile-polish/after/light/report-wicker.png` | Wicker report at phone width after the mobile polish pass. |
-| Pipeline loop | `docs/screenshots/judge-1440/after/light/pipeline.png` | Pipeline board with saved evidence links back to the site report. |
-| Methodology / eval | `docs/screenshots/methodology-eval-copy/light/1440/methodology-page.png` | Methodology page with eval-backed cohort numbers and definitions. |
-| Qloo ranking proof | `docs/screenshots/features/report-qloo-proof-light-1440.png` | Compare ranking toggle and proof strip (83% vs 76% on the 40-address eval). |
-
-## CI proof (no screenshot)
-
-- **13** verified brand real-estate URLs: `scripts/check-brand-real-estate-urls.mjs`, `packages/fixtures/src/brand-real-estate.json`.
-- **No false absences on four demo pins:** `apps/worker/src/__tests__/demo-chip-osm-absence-audit.test.ts`, `docs/DEMO_NEAREST_OSM_AUDIT.md`.
+Optional eighth: `report-sevierville-1440.png` or `portfolio-1440.png`.

@@ -127,7 +127,9 @@ export function methodologyCatalogMetricTooltip(metricId: string, description?: 
     case 'random_monte_carlo':
       return 'Average top-10 hits if we shuffled the brand list at random.';
     default:
-      return description ?? 'How this metric is scored on the recorded site list.';
+      return description
+        ? description.replace(/\bAUC\b/g, 'rank match').replace(/P@10/g, 'top-10 hit rate')
+        : 'How this metric is scored on the recorded site list.';
   }
 }
 

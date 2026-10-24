@@ -44,6 +44,17 @@ export function createWatchlistTestDb(): D1Database {
             const row = watchStore.get(watchId);
             if (row) row.updated_at = updated;
           }
+          if (sql.includes('DELETE FROM watch_snapshots')) {
+            const watchId = String(this.binds[0]);
+            snapshotStore.delete(watchId);
+          }
+          if (sql.includes('DELETE FROM watch_spaces')) {
+            const [watchId, workspaceId] = this.binds as [string, string];
+            const row = watchStore.get(watchId);
+            if (row && row.workspace_id === workspaceId) {
+              watchStore.delete(watchId);
+            }
+          }
           if (sql.includes('UPDATE pipeline_cards')) {
             return { meta: { changes: 0 } };
           }

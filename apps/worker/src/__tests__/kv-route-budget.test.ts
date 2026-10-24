@@ -92,7 +92,9 @@ describe('KV route budgets (integration build, fixture-backed)', () => {
   it('projected heavy demo day stays under KV write ceiling', () => {
     const projected = projectedDailyKvWrites(HEAVY_DEMO_TRAFFIC);
     expect(projected.puts).toBeLessThanOrEqual(KV_DAILY_WRITE_CEILING);
-    expect(projected.puts).toBe(0);
+    expect(projected.puts).toBe(
+      HEAVY_DEMO_TRAFFIC.watchRechecks * KV_ROUTE_BUDGET.watchlistRecheck.puts
+    );
   });
 
   it('POST /api/analyze cold and warm', async () => {
@@ -176,7 +178,7 @@ describe('KV route budgets (integration build, fixture-backed)', () => {
     assertKvWithinBudget('pipeline board', KV_ROUTE_BUDGET.pipelineBoardCreate, kv.gets, kv.puts);
   });
 
-  it('watchlist save and recheck (D1 snapshots only)', async () => {
+  it('watchlist save uses no KV; HTTP recheck uses one get and one put', async () => {
     const kv = createCountingKvNamespace();
     const env = demoEnv(kv, watchlistTestDb());
     const service = new WatchlistService(env);
@@ -193,7 +195,19 @@ describe('KV route budgets (integration build, fixture-backed)', () => {
     await service.recheck(detail.watchId, 'ws-1', minimalResults());
     const recheckGets = kv.gets.length - saveGets;
     const recheckPuts = kv.puts.length - savePuts;
-    expect({ gets: recheckGets, puts: recheckPuts }).toEqual(KV_ROUTE_BUDGET.watchlistRecheck);
+    expect({ gets: recheckGets, puts: recheckPuts }).toEqual({ gets: 0, puts: 0 });
+
+    const { recordVisitorRecheckKv, assertVisitorRecheckKvAllowed } = await import(
+      '../lib/watch-recheck-kv-limit'
+    );
+    const beforeGets = kv.gets.length;
+    const beforePuts = kv.puts.length;
+    const now = Date.UTC(2026, 9, 24, 12, 0, 0);
+    await assertVisitorRecheckKvAllowed(kv.CACHE, 'visitor-budget', now);
+    await recordVisitorRecheckKv(kv.CACHE, 'visitor-budget', now);
+    expect({ gets: kv.gets.length - beforeGets, puts: kv.puts.length - beforePuts }).toEqual(
+      KV_ROUTE_BUDGET.watchlistRecheck
+    );
   });
 
   it('owner update share + load', async () => {

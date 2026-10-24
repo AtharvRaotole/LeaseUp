@@ -18,12 +18,7 @@ export function pitchBriefKindLabel(snapshot: PitchPackSnapshot): string {
 }
 
 export function pitchDateMetaLine(snapshot: PitchPackSnapshot): string {
-  const radius = `${snapshot.radiusKm} km trade area`;
-  if (isDemoPitchId(snapshot.id)) {
-    const snapDate = formatUserFacingDate(snapshot.analysisTimestamp);
-    return `Data snapshot of ${snapDate} · ${radius}`;
-  }
-  return `Prepared ${formatUserFacingDate(snapshot.createdAt)} · ${radius}`;
+  return `${snapshot.radiusKm} km trade area`;
 }
 
 export function pitchPropertyHeadline(snapshot: PitchPackSnapshot): string {
