@@ -118,12 +118,13 @@ export {
   type BrandTasteOverlapSignal,
   type QlooAudienceRow,
 } from './qloo-brand-taste-overlap.js';
+// Live audience recordings are not bundled into the worker: it fetches
+// live-audiences.compact.json from ASSETS and binds it with this factory.
 export {
-  brandExplainabilityForDemo,
-  listDemoExplainabilityRecordings,
-  audiencePanelBaseline,
-  audiencePanelSize,
-} from './brand-explainability-loader.js';
+  createBrandExplainabilityStore,
+  type BrandExplainabilityStore,
+  type LiveAudiencesCompact,
+} from './brand-explainability-store.js';
 export { overpassDemoByFixture, DEMO_OSM_UNRECORDED_NOTE } from './overpass-demo.js';
 export {
   BLEECKER_NYC,

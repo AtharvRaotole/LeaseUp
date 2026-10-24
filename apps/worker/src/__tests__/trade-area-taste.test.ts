@@ -2,6 +2,20 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { loadTradeAreaTasteForProspect } from '../lib/trade-area-taste';
 import { QlooClient } from '../providers/qloo';
 import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+/** Serves apps/worker/public like the ASSETS binding (live audiences are not bundled). */
+const assets = {
+  fetch: async (input: RequestInfo | URL) => {
+    const path = new URL(String(input)).pathname;
+    try {
+      return new Response(readFileSync(join(__dirname, '../../public', path)));
+    } catch {
+      return new Response('not found', { status: 404 });
+    }
+  },
+} as unknown as Fetcher;
 
 const db = {
   prepare: () => {
@@ -49,7 +63,9 @@ describe('loadTradeAreaTasteForProspect', () => {
       client('demo'),
       { address: DEMO_CHIP_ADDRESSES.boulder, latitude: 40.0179234, longitude: -105.2805434 },
       ULTA,
-      10
+      10,
+      undefined,
+      assets
     );
     expect(taste?.tags).toEqual([]);
     expect(taste?.audiences.map((a) => a.name)).toContain('Health & Beauty');
@@ -60,7 +76,9 @@ describe('loadTradeAreaTasteForProspect', () => {
       client('demo'),
       { address: DEMO_CHIP_ADDRESSES.boulder, latitude: 40.0179234, longitude: -105.2805434 },
       '00000000-0000-0000-0000-000000000000',
-      10
+      10,
+      undefined,
+      assets
     );
     expect(taste).toBeUndefined();
   });
@@ -88,7 +106,9 @@ describe('loadTradeAreaTasteForProspect', () => {
       client('live'),
       { address: '1 Main St, Somewhere, US', latitude: 40, longitude: -105 },
       'BRAND-X',
-      10
+      10,
+      undefined,
+      assets
     );
     expect(calls).toHaveLength(2);
     expect(calls.some((u) => u.includes('signal.location') && !u.includes('signal.interests'))).toBe(true);
@@ -112,6 +132,18 @@ describe('loadTradeAreaTasteForProspect', () => {
       client('live'),
       { address: '1 Main St, Somewhere, US', latitude: 40, longitude: -105 },
       'BRAND-X',
+      10,
+      undefined,
+      assets
+    );
+    expect(taste).toBeUndefined();
+  });
+
+  it('no taste section when the live audience asset cannot be loaded', async () => {
+    const taste = await loadTradeAreaTasteForProspect(
+      client('demo'),
+      { address: DEMO_CHIP_ADDRESSES.boulder, latitude: 40.0179234, longitude: -105.2805434 },
+      ULTA,
       10
     );
     expect(taste).toBeUndefined();

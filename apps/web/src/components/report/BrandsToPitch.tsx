@@ -222,7 +222,12 @@ export function BrandsToPitch({
             const category =
               prospect.tenantMixScore?.categoryFit ?? brandCategoryLabel(prospect.brand.entityId);
             const distanceLine = brandsToPitchDistanceLine(prospect, results, radiusKm);
-            const subline = category ? `${category} · ${distanceLine}` : distanceLine;
+            const pairing = prospect.coTenancyLine?.trim();
+            const subline = pairing
+              ? `${pairing} · ${distanceLine}`
+              : category
+                ? `${category} · ${distanceLine}`
+                : distanceLine;
 
             const pill = verificationPillCopy(
               prospect,

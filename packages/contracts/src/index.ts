@@ -72,6 +72,14 @@ export const TenantMixScoreSchema = z.object({
 
 export type TenantMixScore = z.infer<typeof TenantMixScoreSchema>;
 
+export const NearbyTenantSchema = z.object({
+  entityId: z.string(),
+  name: z.string(),
+  distanceKm: z.number(),
+});
+
+export type NearbyTenant = z.infer<typeof NearbyTenantSchema>;
+
 export const TradeAreaTasteRowSchema = z.object({
   entityId: z.string(),
   name: z.string(),
@@ -143,6 +151,8 @@ export const ProspectPackSchema = z.object({
   tradeAreaTaste: TradeAreaTasteContextSchema.optional(),
   whyBrandTaste: WhyBrandTasteSchema.optional(),
   brandReach: BrandReachContactSchema.optional(),
+  /** Qloo co-affinity with OSM incumbents; omitted when unknown. */
+  coTenancyLine: z.string().max(200).optional(),
 });
 
 export type ProspectPack = z.infer<typeof ProspectPackSchema>;
@@ -299,6 +309,8 @@ export const AnalysisResponseSchema = z.object({
   /** Plain-language ranking disclaimer when tasteDataStatus is unavailable. */
   rankingNotice: z.string().optional(),
   prospectFunnel: ProspectFunnelSchema.optional(),
+  /** Retail chains with an OSM snapshot store inside the search radius. */
+  nearbyTenants: z.array(NearbyTenantSchema).max(32).optional(),
 });
 
 export type AnalysisResponse = z.infer<typeof AnalysisResponseSchema>;

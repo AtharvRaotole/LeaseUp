@@ -108,8 +108,10 @@ QLOO_API_KEY=... node scripts/record-brand-explainability-fixture.mjs boulder_ul
 Writes `packages/fixtures/src/brand-explainability/{brand-audiences,local-audiences}/*.json` (normalized rows)
 plus untouched API bodies under `brand-explainability/raw/`. Then run
 `node scripts/compact-brand-explainability.mjs`, which packs the normalized rows verbatim into
-`brand-explainability/live-audiences.compact.json`, the only file the app imports, so the worker bundle stays
-under the `check-worker-bundle` size cap.
+`brand-explainability/live-audiences.compact.json` (the only file the web app imports) and writes the same
+bytes to `apps/worker/public/brand-explainability/live-audiences.compact.json`. The worker does not bundle
+it: it fetches that copy through the ASSETS binding once per isolate (`apps/worker/src/lib/live-audiences.ts`),
+which keeps the worker bundle under the `check-worker-bundle` size cap. A worker test asserts the two copies match.
 
 ## Recording fixtures
 

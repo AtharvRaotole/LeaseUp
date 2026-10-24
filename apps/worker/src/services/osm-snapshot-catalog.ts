@@ -1,3 +1,4 @@
+import type { NearbyTenant } from '@leaseup/contracts';
 import { coveringGeohash3 } from '../lib/geohash';
 import type { ResponseCache } from '../lib/response-cache';
 import {
@@ -136,5 +137,34 @@ export class OsmSnapshotCatalog {
   ): Promise<boolean> {
     const nearest = await this.nearestStoreKm(brandId, lat, lon, radiusKm);
     return nearest !== undefined;
+  }
+
+  /** Distinct tracked brands with a snapshot store within radius (closest point per brand). */
+  async listNearbyTenants(
+    lat: number,
+    lon: number,
+    radiusKm: number,
+    limit = 24
+  ): Promise<NearbyTenant[]> {
+    const index = await this.loadBrandsIndex();
+    if (!index) return [];
+
+    const best = new Map<string, NearbyTenant>();
+    for (const gh of coveringGeohash3(lat, lon, radiusKm)) {
+      const tile = await this.loadTile(gh);
+      for (const [bIdx, tLat, tLon] of tile?.stores ?? []) {
+        const brand = index.brands[bIdx];
+        if (!brand || osmSnapshotBrandStatus(brand.id) !== 'ok') continue;
+        const distanceKm = Math.round(haversineKm(lat, lon, tLat, tLon) * 100) / 100;
+        const prev = best.get(brand.id);
+        if (distanceKm <= radiusKm && !(prev && prev.distanceKm <= distanceKm)) {
+          best.set(brand.id, { entityId: brand.id, name: brand.name, distanceKm });
+        }
+      }
+    }
+
+    return [...best.values()]
+      .sort((a, b) => a.distanceKm - b.distanceKm)
+      .slice(0, limit);
   }
 }

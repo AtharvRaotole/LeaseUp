@@ -193,7 +193,7 @@ async function main() {
   for (const brand of brands) await recordBrand(brand, outDir);
   console.log(`Qloo calls this run: ${calls}`);
   console.log(
-    'Next: node scripts/compact-brand-explainability.mjs (packs recordings for the worker bundle)',
+    'Next: node scripts/compact-brand-explainability.mjs (packs recordings for the web app and the worker ASSETS copy)',
   );
 }
 
