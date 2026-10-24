@@ -28,6 +28,9 @@ const NotFoundPage = lazy(() =>
 const MethodologyPage = lazy(() =>
   import('./pages/MethodologyPage').then((m) => ({ default: m.MethodologyPage }))
 );
+const HowLeaseUpUsesQlooPage = lazy(() =>
+  import('./pages/HowLeaseUpUsesQlooPage').then((m) => ({ default: m.HowLeaseUpUsesQlooPage }))
+);
 const LandingHeroPreviewCapturePage = lazy(() =>
   import('./pages/LandingHeroPreviewCapturePage').then((m) => ({
     default: m.LandingHeroPreviewCapturePage,
@@ -50,6 +53,7 @@ export default function App() {
           <Route path="/__preview/landing-hero" element={<LandingHeroPreviewCapturePage />} />
           <Route path="/__preview/watchlist-diff" element={<WatchlistDiffPreviewPage />} />
           <Route path="/methodology" element={<MethodologyPage />} />
+          <Route path="/methodology/qloo" element={<HowLeaseUpUsesQlooPage />} />
           <Route path="/brand" element={<BrandPage />} />
           <Route path="/brand/:id" element={<BrandPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />

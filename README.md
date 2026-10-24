@@ -8,15 +8,17 @@ Type in an address. LeaseUp shows which brands people nearby love but can't find
 
 ![LeaseUp landing (light, 1440px)](docs/screenshots/landing-light-1440.png)
 
-## One-minute demo
+## Try it in 60 seconds (judge path, demo mode)
 
-1. Open the live site and enter `1574 N Milwaukee Ave, Chicago, IL 60622` (or click **Wicker Park**).
-2. Leave radius at **10 km** and run **Analyze**.
-3. Scan **Brands to pitch** for high-fit chains with no nearby store.
-4. Open **Compare** to flip Wicker vs Sevierville on recorded fixtures.
-5. Click **Draft outreach** on a prospect to see gpt-4o-mini copy (on demand only).
+Three recorded addresses (no API key): **`1560 N Milwaukee Ave, Chicago, IL 60622`** (Wicker Park chip), **`1300 Pearl St, Boulder, CO 80302`**, **`125 Collier Dr, Sevierville, TN 37862`**. Source: `packages/fixtures/src/demo-addresses.ts`.
 
-Report UI (demo chip):
+| Goal | Minimal path from `/` |
+| --- | --- |
+| **Finished report** | 1 click: **Wicker Park, Chicago** demo chip |
+| **Pitch pack** | On report: **Share pitch pack** → **Create public link** → open pitch URL |
+| **Pipeline board** | On report: **Add to pipeline** → **Pipeline** in the header |
+
+Stills for reviewers (no video): [report](docs/screenshots/report-light-1440.png), [pitch](docs/screenshots/features/pitch-pack-light-1440.png), [pipeline](docs/screenshots/features/pipeline-light-1440.png). Full feature-to-criteria map with eval file links: [docs/devpost/SUBMISSION.md](docs/devpost/SUBMISSION.md#judge-path-try-the-product--where-to-verify). Broker Qloo explainer in the app: `/methodology/qloo` (linked from [methodology](https://leaseup-59m.pages.dev/methodology)).
 
 ![Report (light, 1440px)](docs/screenshots/report-light-1440.png)
 
