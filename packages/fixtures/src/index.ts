@@ -254,3 +254,7 @@ export {
   brandRealEstateContactLine,
   type BrandRealEstateEntry,
 } from './brand-real-estate.js';
+export {
+  nearestStoreDistanceUnconfirmedLine,
+  nearestChainStoreDistanceUnconfirmedLine,
+} from './nearest-store-display-copy.js';

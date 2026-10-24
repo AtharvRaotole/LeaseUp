@@ -2,7 +2,10 @@ import type { AnalysisResponse, PitchPackSnapshot, ProspectPack } from '@leaseup
 import { isDemoPitchId } from '@leaseup/contracts';
 import { displayBrandName } from './brand-display';
 import { formatUserFacingDate } from './format-date';
-import { pitchBrandTasteFitSentence } from '@leaseup/fixtures';
+import {
+  nearestStoreDistanceUnconfirmedLine,
+  pitchBrandTasteFitSentence,
+} from '@leaseup/fixtures';
 import { absenceRadiusKm, pitchPackAbsenceRadiusKm } from './absence-radius';
 
 export function pitchBriefKindLabel(snapshot: PitchPackSnapshot): string {
@@ -43,7 +46,7 @@ export function pitchTradeAreaFacts(snapshot: PitchPackSnapshot): string[] {
 export function pitchNearestStoreBriefLine(prospect: ProspectPack): string | null {
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   if (prospect.nearestExistingStoreUnconfirmed) {
-    return `Nearest ${name} distance is unconfirmed (ATP and OSM snapshot disagree).`;
+    return nearestStoreDistanceUnconfirmedLine(name);
   }
   const km = prospect.nearestExistingStoreKm;
   if (km === undefined) return null;
@@ -115,7 +118,7 @@ export function pitchProspectFact(
   const absenceKm = results ? absenceRadiusKm(results, searchRadiusKm) : searchRadiusKm;
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   if (prospect.nearestExistingStoreUnconfirmed) {
-    return `Nearest ${name} distance is unconfirmed (ATP and OSM snapshot disagree).`;
+    return nearestStoreDistanceUnconfirmedLine(name);
   }
   const km = prospect.nearestExistingStoreKm;
   if (km !== undefined) {
@@ -134,7 +137,7 @@ export function pitchProspectFactFromSnapshot(
   const absenceKm = pitchPackAbsenceRadiusKm(snapshot);
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   if (prospect.nearestExistingStoreUnconfirmed) {
-    return `Nearest ${name} distance is unconfirmed (ATP and OSM snapshot disagree).`;
+    return nearestStoreDistanceUnconfirmedLine(name);
   }
   const km = prospect.nearestExistingStoreKm;
   if (km !== undefined) {

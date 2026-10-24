@@ -1,6 +1,7 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 import { tasteFitMatchHerePhrase } from './fit-display';
 import { isNonRetailTasteName } from '@leaseup/fixtures';
+import { nearestChainStoreDistanceUnconfirmedLine } from '@leaseup/fixtures';
 import { localAudiencePitchHighlight } from './broker-copy';
 
 /** Broker-facing one-line summary built only from fields on the prospect payload. */
@@ -17,7 +18,7 @@ export function prospectOneLineReason(
   if (tasteLine) parts.push(tasteLine);
 
   if (prospect.nearestExistingStoreUnconfirmed) {
-    parts.push('Nearest chain store distance is unconfirmed (ATP and OSM disagree)');
+    parts.push(nearestChainStoreDistanceUnconfirmedLine());
   } else if (prospect.nearestExistingStoreKm !== undefined) {
     const km = prospect.nearestExistingStoreKm;
     const label = km < 10 ? km.toFixed(1) : String(Math.round(km));
