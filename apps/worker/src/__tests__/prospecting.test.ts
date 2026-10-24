@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { ProspectingService } from '../services/prospecting';
+import type { ProspectingStep } from '@leaseup/contracts';
+import { ProspectingService, syncProspectingStepDefs } from '../services/prospecting';
 import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 
 const store = new Map<string, string>();
@@ -38,6 +39,25 @@ const kv = {
 function demoEnv() {
   return { DB: db, CACHE: kv, APP_MODE: 'demo' } as import('../index').Env;
 }
+
+describe('syncProspectingStepDefs', () => {
+  it('inserts agent_plan for legacy eight-step jobs', () => {
+    const legacy: ProspectingStep[] = [
+      { id: 'geocode', label: 'Geocode', status: 'complete' },
+      { id: 'taste', label: 'Taste', status: 'pending' },
+      { id: 'scan_stores', label: 'Scan', status: 'pending' },
+      { id: 'verify_osm', label: 'Verify', status: 'pending' },
+      { id: 'rank_backtest', label: 'Rank', status: 'pending' },
+      { id: 'explain_top5', label: 'Explain', status: 'pending' },
+      { id: 'draft_outreach', label: 'Draft', status: 'pending' },
+      { id: 'pitch_pack', label: 'Pitch', status: 'pending' },
+    ];
+    const synced = syncProspectingStepDefs(legacy);
+    expect(synced).toHaveLength(9);
+    expect(synced[1]?.id).toBe('agent_plan');
+    expect(synced[1]?.status).toBe('pending');
+  });
+});
 
 describe('ProspectingService', () => {
   beforeEach(() => store.clear());

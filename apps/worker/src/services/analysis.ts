@@ -379,6 +379,8 @@ export class AnalysisService {
             mode: this.mode,
           });
 
+      const absenceRadiusKmForNearest = prospectFunnel?.absenceRadiusKm ?? request.radius;
+
       const [rankings, strictEval, mapStores, nearestEnriched] = await Promise.all([
         buildBrandRankings(
           location,
@@ -405,11 +407,12 @@ export class AnalysisService {
           location,
           this.catalog,
           presence,
-          this.osmSnapshot ?? undefined
+          this.osmSnapshot ?? undefined,
+          absenceRadiusKmForNearest
         ),
       ]);
 
-      const absenceRadiusKm = prospectFunnel?.absenceRadiusKm ?? request.radius;
+      const absenceRadiusKm = absenceRadiusKmForNearest;
       let enrichedProspects = nearestEnriched.map((pack) =>
         stripFalseAbsenceReasons(pack, absenceRadiusKm)
       );

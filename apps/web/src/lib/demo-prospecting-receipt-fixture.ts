@@ -1,6 +1,6 @@
 import type { ProspectingJob } from '@leaseup/contracts';
 
-/** Static completed job for receipt screenshots (no API). */
+/** Static completed job for receipt screenshots (no API). Mirrors a Wicker demo run. */
 export const DEMO_PROSPECTING_RECEIPT_JOB: ProspectingJob = {
   id: '00000000-0000-4000-8000-00000000a001',
   status: 'complete',
@@ -13,9 +13,9 @@ export const DEMO_PROSPECTING_RECEIPT_JOB: ProspectingJob = {
   },
   confirmedLocation: {
     address: '1574 N Milwaukee Ave, Chicago, IL 60622',
-    latitude: 41.9097,
-    longitude: -87.6774,
-    resolvedAddress: 'Chicago, Illinois',
+    latitude: 41.9099418,
+    longitude: -87.6772824,
+    resolvedAddress: '1574 North Milwaukee Avenue, West Town, Chicago',
     neighborhood: 'Wicker Park',
     city: 'Chicago',
   },
@@ -24,12 +24,10 @@ export const DEMO_PROSPECTING_RECEIPT_JOB: ProspectingJob = {
   steps: [
     {
       id: 'geocode',
-      label: 'Geocode and confirm',
+      label: 'Locate storefront',
       status: 'complete',
-      durationMs: 420,
-      summary: 'Resolved Wicker Park',
-      reason: 'Demo chip address maps to a fixed storefront pin.',
-      detail: { location: { neighborhood: 'Wicker Park' } },
+      durationMs: 100,
+      summary: '1574 North Milwaukee Avenue, West Town, Chicago',
     },
     {
       id: 'agent_plan',
@@ -38,6 +36,7 @@ export const DEMO_PROSPECTING_RECEIPT_JOB: ProspectingJob = {
       durationMs: 18,
       summary: 'Agent ran 2 tool step(s); 1 taste data call(s); results feed analysis.',
       detail: {
+        mode: 'agent',
         agentSteps: [
           {
             stepIndex: 0,
@@ -60,38 +59,44 @@ export const DEMO_PROSPECTING_RECEIPT_JOB: ProspectingJob = {
     },
     {
       id: 'taste',
-      label: 'Read neighborhood taste',
+      label: "Read the neighborhood's taste (Qloo)",
       status: 'complete',
-      durationMs: 1800,
-      summary: 'Loaded taste profile for Wicker Park',
+      durationMs: 400,
+      summary: '224 brands ranked for 41.9099418,-87.6772824 (10km)',
     },
     {
       id: 'scan_stores',
-      label: 'Scan existing stores',
+      label: "Find who's missing",
       status: 'complete',
-      durationMs: 2400,
-      summary: 'Found 42 brands with no store in 10 km',
+      durationMs: 400,
+      summary: 'Found 72 brands with no store in 10 km',
     },
     {
       id: 'verify_osm',
-      label: 'Verify against OpenStreetMap',
+      label: 'Double-check absence (ATP + OSM)',
       status: 'complete',
-      durationMs: 3100,
-      summary: '18 verified (2 sources), 24 single source',
+      durationMs: 100,
+      summary: '1 verified (2 sources), 5 single source',
     },
     {
       id: 'rank_backtest',
-      label: 'Rank and backtest',
+      label: 'Prove it (backtest)',
       status: 'complete',
-      durationMs: 5200,
-      summary: 'Ranked prospects and ran backtest',
+      durationMs: 300,
+      summary: 'Raw P@10 100% · Blended P@10 100%',
+      detail: {
+        adaptiveRadiusKm: 3,
+        rawPresentInTop10: 10,
+        blendedPresentInTop10: 10,
+        randomExpectedPresentAt10: 0.8,
+      },
     },
     {
       id: 'explain_top5',
       label: 'Explain top 5 prospects',
       status: 'complete',
       durationMs: 900,
-      summary: 'Ulta, Sephora, Lululemon, Warby Parker, Sweetgreen',
+      summary: 'Vans, Michael Kors, Under Armour, IKEA, Aerie',
     },
     {
       id: 'draft_outreach',

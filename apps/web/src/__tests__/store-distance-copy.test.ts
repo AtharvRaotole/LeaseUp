@@ -24,6 +24,22 @@ describe('store distance copy', () => {
     expect(line).toBe('Saved Oct 20, 2026. Store distances refreshed today.');
   });
 
+  it('shows refreshed today when serve meta uses reconcile time not OSM snapshot date', () => {
+    const now = new Date('2026-10-24T15:00:00.000Z');
+    const line = pitchFreshnessHonestyLine(
+      {
+        createdAt: '2026-10-20T00:00:00.000Z',
+        analysisTimestamp: '2026-10-20T00:00:00.000Z',
+        osmSnapshotRecordedAt: '2026-10-23T00:00:00.000Z',
+        storeDistanceDataAsOf: '2026-10-24T15:00:00.000Z',
+        storeDistancesSnapshotOnly: false,
+      } as PitchPackSnapshot,
+      now
+    );
+    expect(line).toBe('Saved Oct 20, 2026. Store distances refreshed today.');
+    expect(line).not.toContain('Oct 23');
+  });
+
   it('states snapshot-only distances with snapshot date', () => {
     const line = pitchFreshnessHonestyLine({
       createdAt: '2026-10-20T00:00:00.000Z',

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { join } from 'node:path';
 import type { PitchPackSnapshot, ProspectPack } from '@leaseup/contracts';
 import {
@@ -104,6 +104,10 @@ describe('refreshProspectPacksNearest prospect cap', () => {
 });
 
 describe('refreshPitchPackNearestStores (Wicker stale pitch)', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('reconciles pre-#140 American Eagle km on read without persisting', async () => {
     installWorkersCacheApiStub();
     const repoRoot = join(__dirname, '../../../../');
@@ -118,11 +122,17 @@ describe('refreshPitchPackNearestStores (Wicker stale pitch)', () => {
     const stale = pitchFromProspect(
       prospect(AMERICAN_EAGLE, 'American Eagle Outfitters', 17.35370955548852)
     );
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-10-24T15:00:00.000Z'));
+
     const refreshed = await refreshPitchPackNearestStores(env, stale);
-    const km = refreshed.prospects[0]!.prospect.nearestExistingStoreKm;
+    const aeProspect = refreshed.prospects[0]!.prospect;
+    const km = aeProspect.nearestExistingStoreKm;
     expect(km).toBeDefined();
     expect(km!).toBeLessThan(5);
     expect(km!).not.toBeCloseTo(17.35, 0);
+    expect(aeProspect.nearestExistingStoreUnconfirmed).not.toBe(true);
     expect(refreshed.storeDistancesSnapshotOnly).not.toBe(true);
+    expect(refreshed.storeDistanceDataAsOf).toBe('2026-10-24T15:00:00.000Z');
   });
 });
