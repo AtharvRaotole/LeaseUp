@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { pitchCheckedSourcesLabel } from '../lib/copy';
+import {
+  pitchCheckedSourcesLabel,
+  PITCH_CHECKED_ATP_OSM_STORE_DATA_LABEL,
+  PITCH_CHECKED_ATP_STORE_DATA_LABEL,
+} from '../lib/copy';
 import type { ProspectPack } from '@leaseup/contracts';
 import { pitchBrandFitLines } from '../lib/pitch-pack-copy';
 
@@ -25,12 +29,12 @@ describe('pitchCheckedSourcesLabel', () => {
       pitchCheckedSourcesLabel(
         prospect({ entityId: 'a', name: 'A', verified: 'verified (2 sources)' })
       )
-    ).toBe('Checked in 2 sources');
+    ).toBe(PITCH_CHECKED_ATP_OSM_STORE_DATA_LABEL);
     expect(
       pitchCheckedSourcesLabel(
         prospect({ entityId: 'b', name: 'B', verified: 'unverified (1 source)' })
       )
-    ).toBe('Checked against All The Places');
+    ).toBe(PITCH_CHECKED_ATP_STORE_DATA_LABEL);
   });
 
   it('counts All The Places and OpenStreetMap rows', () => {
@@ -43,7 +47,7 @@ describe('pitchCheckedSourcesLabel', () => {
           verificationSources: ['All The Places: no store within 10 km'],
         })
       )
-    ).toBe('Checked against All The Places');
+    ).toBe(PITCH_CHECKED_ATP_STORE_DATA_LABEL);
     expect(
       pitchCheckedSourcesLabel(
         prospect({
@@ -56,7 +60,7 @@ describe('pitchCheckedSourcesLabel', () => {
           ],
         })
       )
-    ).toBe('Checked in 2 sources');
+    ).toBe(PITCH_CHECKED_ATP_OSM_STORE_DATA_LABEL);
   });
 });
 
