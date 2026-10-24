@@ -26,7 +26,11 @@ Enter a US storefront address and trade-area radius. LeaseUp returns a **ranked 
 
 ## Screenshots
 
-Production stills from `docs/devpost/gallery/` (swap paths below when post-redesign captures land).
+Production stills from `docs/devpost/gallery/`, captured from https://leaseup-59m.pages.dev in the dark theme.
+
+**Landing page**
+
+![LeaseUp landing page](docs/devpost/gallery/landing-1440.png)
 
 **Site report (Wicker Park, desktop)**
 
@@ -35,6 +39,10 @@ Production stills from `docs/devpost/gallery/` (swap paths below when post-redes
 **Site report (mobile width)**
 
 ![Wicker Park report mobile](docs/devpost/gallery/report-wicker-390.png)
+
+**Full prospecting run and Agent receipt**
+
+![Full prospecting run with Agent receipt and planner decisions](docs/devpost/gallery/prospecting-receipt-1440.png)
 
 **Pitch pack (Boulder sample)**
 
@@ -48,27 +56,13 @@ Production stills from `docs/devpost/gallery/` (swap paths below when post-redes
 
 ![Portfolio paste and analyze](docs/devpost/gallery/portfolio-1440.png)
 
+**Leasing pipeline**
+
+![Leasing pipeline](docs/devpost/gallery/pipeline-1440.png)
+
 **Methodology**
 
 ![Methodology overview](docs/devpost/gallery/methodology-1440.png)
-
-**SCREENSHOT_SWAP:** Landing hero (post-redesign). Replace this block with a new image, for example `docs/devpost/gallery/landing-1440.png`.
-
-```
-[ Add landing screenshot here after redesign ]
-```
-
-**SCREENSHOT_SWAP:** Pipeline board (post-redesign). Replace with for example `docs/devpost/gallery/pipeline-1440.png`.
-
-```
-[ Add pipeline screenshot here after redesign ]
-```
-
-**SCREENSHOT_SWAP:** Full prospecting timeline and Agent receipt (post-redesign, plain-language receipt copy). Replace with for example `docs/devpost/gallery/prospecting-receipt-1440.png`.
-
-```
-[ Add prospecting + Agent receipt screenshot here after redesign ]
-```
 
 ## How LeaseUp uses Qloo and the agent planner
 
