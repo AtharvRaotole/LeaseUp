@@ -1,6 +1,10 @@
 import type { AnalysisResponse, Location, PitchPackSnapshot, ProspectPack } from '@leaseup/contracts';
 const DEMO_OSM_UNRECORDED_NOTE = 'OSM check not recorded for demo';
 
+export const PITCH_CHECKED_ATP_STORE_DATA_LABEL = 'Checked against All The Places store data';
+export const PITCH_CHECKED_ATP_OSM_STORE_DATA_LABEL =
+  'Checked against All The Places and OpenStreetMap store data';
+
 /** Plain label for pitch packs: how many store datasets we checked for this brand. */
 export function pitchPackVerificationSummary(
   snapshot: Pick<PitchPackSnapshot, 'prospects'>
@@ -42,22 +46,24 @@ export function pitchCheckedSourcesLabel(prospect: ProspectPack): string {
   );
   const checked = (atp ? 1 : 0) + (osm ? 1 : 0);
   if (prospect.brand.verified === 'verified (2 sources)' || checked >= 2) {
-    return 'Checked in 2 sources';
+    return PITCH_CHECKED_ATP_OSM_STORE_DATA_LABEL;
   }
-  if (prospect.brand.verified === 'unverified (1 source)') {
-    return 'Checked against All The Places';
+  if (
+    prospect.brand.verified === 'unverified (1 source)' ||
+    (checked === 1 && atp && !osm)
+  ) {
+    return PITCH_CHECKED_ATP_STORE_DATA_LABEL;
   }
   if (checked === 1) {
-    if (atp && !osm) return 'Checked against All The Places';
-    return 'Checked in 1 source';
+    return PITCH_CHECKED_ATP_STORE_DATA_LABEL;
   }
   if (prospect.brand.verified === 'verifying...') {
-    return 'Checking second source';
+    return 'Checking OpenStreetMap store data';
   }
   if (checked === 0) {
     return 'Store check in progress';
   }
-  return `Checked in ${checked} source${checked === 1 ? '' : 's'}`;
+  return PITCH_CHECKED_ATP_OSM_STORE_DATA_LABEL;
 }
 
 export function verificationShortLabel(verified: ProspectPack['brand']['verified']): string {

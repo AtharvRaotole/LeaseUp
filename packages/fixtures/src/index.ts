@@ -248,3 +248,9 @@ export {
   DEMO_PITCH_BOULDER_ULTA,
   DEMO_PITCH_BOULDER_ULTA_ID,
 } from './demo-pitch-boulder-ulta.js';
+export {
+  brandRealEstateForEntity,
+  brandRealEstateDataset,
+  brandRealEstateContactLine,
+  type BrandRealEstateEntry,
+} from './brand-real-estate.js';

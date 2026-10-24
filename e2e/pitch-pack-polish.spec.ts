@@ -29,7 +29,9 @@ test.describe('Pitch pack polish', () => {
     test.setTimeout(180_000);
     await openPitchPage(page, baseURL!);
     await page.setViewportSize({ width: 390, height: 844 });
-    await expect(page.getByTestId('pitch-brand-verification').first()).toContainText(/Checked in \d source/);
+    await expect(page.getByTestId('pitch-brand-verification').first()).toContainText(
+      /Checked against All The Places/
+    );
     const overflow = await page.evaluate(() => {
       const el = document.documentElement;
       return el.scrollWidth > el.clientWidth + 1;
