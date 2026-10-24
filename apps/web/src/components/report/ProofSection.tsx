@@ -100,10 +100,11 @@ export function ProofSection({
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody data-testid="proof-ranking-table">
             {top10.map((row, index) => (
               <motion.tr
                 key={row.entityId}
+                data-testid={`proof-ranking-row-${index}`}
                 className="border-t border-border cursor-pointer hover:bg-surface-2/60"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -124,7 +125,7 @@ export function ProofSection({
                 </td>
                 {!hideFit && rankingMode === 'qloo' && (
                   <td className="px-4 py-3 tabular-nums text-ink-2">
-                    {fitPercentileLabel(row.qlooRank, totalScored, row.tasteFitBeyondChainPercentile)}
+                    {fitPercentileLabel(row.blendedRank, totalScored)}
                   </td>
                 )}
                 <td className="px-4 py-3 text-xs text-ink-2">

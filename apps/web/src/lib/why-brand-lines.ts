@@ -1,10 +1,15 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
+import { rankTopPercentFromOrder } from '@leaseup/fixtures';
 import { displayBrandName } from './brand-display';
-import { tasteFitMatchHerePhrase } from './fit-display';
 import { absenceVerificationSummary } from './absence-verification-copy';
 import { formatTradeAreaTasteRow } from './trade-area-taste-copy';
 import { shopperInterestHighlight } from './broker-copy';
 import { brandReachPlainLine } from './brand-reach-copy';
+
+export function whyBrandRankSummaryLine(rank: number, total: number): string {
+  const top = rankTopPercentFromOrder(rank, total);
+  return `#${rank} of ${total} brands we scored (top ${top}% for local shopper taste).`;
+}
 
 export function whyBrandBulletLines(
   prospect: ProspectPack,
@@ -14,21 +19,10 @@ export function whyBrandBulletLines(
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   const total = results.rankings?.length ?? 0;
   const rank = prospect.brand.affinityRank;
-  const tasteLine = tasteFitMatchHerePhrase(
-    rank,
-    total || rank,
-    prospect.brand.tasteFitBeyondChainPercentile
-  );
 
   const lines: string[] = [];
-  if (total > 0) {
-    lines.push(
-      tasteLine
-        ? `#${rank} of ${total} brands we scored. ${tasteLine}.`
-        : `#${rank} of ${total} brands we scored for local shopper taste.`
-    );
-  } else if (tasteLine) {
-    lines.push(`${tasteLine} for ${name}.`);
+  if (total > 0 && rank > 0) {
+    lines.push(whyBrandRankSummaryLine(rank, total));
   } else {
     lines.push(`Strong local shopper match for ${name}.`);
   }

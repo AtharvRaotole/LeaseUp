@@ -32,6 +32,7 @@ import {
   demoAnalyzeBacktests,
   adaptiveEvalRadiusKm,
   expectedRandomPresentInTop10,
+  rankTopPercentFromOrder,
 } from '@leaseup/fixtures/worker';
 import { tasteLocationLabel, formatBacktestStepSummary } from '../lib/analyze-step-copy';
 import { NearbyPresenceCache } from '../lib/nearby-presence-cache';
@@ -960,18 +961,8 @@ export class AnalysisService {
     if (tasteUnavailable) {
       reasons.push(TASTE_UNAVAILABLE_RANKING_NOTICE);
     } else if (affinity > 0 && rankedCount > 0) {
-      const percentile =
-        rankedCount > 1 ? 1 - (leaseUpRank - 1) / (rankedCount - 1) : 1;
-      let head: string;
-      if (percentile >= 0.95) {
-        head = `${displayName}: LeaseUp rank #${leaseUpRank} (top 5% of ${rankedCount} brands) for ${area}`;
-      } else if (percentile >= 0.9) {
-        head = `${displayName}: LeaseUp rank #${leaseUpRank} (top 10% of ${rankedCount} brands) for ${area}`;
-      } else if (percentile >= 0.85) {
-        head = `${displayName}: LeaseUp rank #${leaseUpRank} (top 15% of ${rankedCount} brands) for ${area}`;
-      } else {
-        head = `${displayName}: LeaseUp rank #${leaseUpRank} of ${rankedCount} brands scored for ${area}`;
-      }
+      const topPct = rankTopPercentFromOrder(leaseUpRank, rankedCount);
+      let head = `${displayName}: LeaseUp rank #${leaseUpRank} (top ${topPct}% of ${rankedCount} brands) for ${area}`;
       if (qlooTasteRank !== leaseUpRank) {
         head += `; Qloo taste rank #${qlooTasteRank} of ${rankedCount}`;
       }

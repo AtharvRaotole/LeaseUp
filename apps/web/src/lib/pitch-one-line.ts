@@ -8,7 +8,7 @@ export function pitchOneLineWhy(prospect: ProspectPack, rankingsTotal: number): 
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   const rank = prospect.brand.affinityRank;
   const total = rankingsTotal || rank;
-  const fitPhrase = fitTopPercentPhrase(rank, total, prospect.brand.tasteFitBeyondChainPercentile);
+  const fitPhrase = fitTopPercentPhrase(rank, total);
   const verify = verificationBrokerLabel(prospect.brand.verified);
 
   if (prospect.reasons[0]) {
