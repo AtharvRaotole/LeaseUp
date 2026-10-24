@@ -3,7 +3,9 @@ import { join } from 'node:path';
 import type { PitchPackSnapshot, ProspectPack } from '@leaseup/contracts';
 import {
   mergeReconciledNearestProspect,
+  RECONCILE_ON_READ_MAX_PROSPECTS,
   refreshPitchPackNearestStores,
+  refreshProspectPacksNearest,
 } from '../lib/snapshot-nearest-refresh';
 import {
   createDemoPublicAssetsFetcher,
@@ -66,6 +68,38 @@ describe('mergeReconciledNearestProspect', () => {
     const { pack, snapshotOnly } = mergeReconciledNearestProspect(stored, reconciled, 3);
     expect(snapshotOnly).toBe(false);
     expect(pack.nearestExistingStoreKm).toBe(1.9);
+  });
+});
+
+describe('refreshProspectPacksNearest prospect cap', () => {
+  it('reconciles only the first RECONCILE_ON_READ_MAX_PROSPECTS rows', async () => {
+    installWorkersCacheApiStub();
+    const repoRoot = join(__dirname, '../../../../');
+    ensureWorkerGeotiles(repoRoot);
+
+    const kv = {
+      get: async () => null,
+      put: async () => undefined,
+    } as unknown as KVNamespace;
+
+    const env = offlineLiveAnalyzeEnv(createDemoPublicAssetsFetcher(), kv);
+    const base = prospect(AMERICAN_EAGLE, 'American Eagle Outfitters', 17.35);
+    const overflow = prospect('00000000-0000-4000-8000-000000000099', 'Overflow Brand', 9.5);
+    const packs = Array.from({ length: RECONCILE_ON_READ_MAX_PROSPECTS + 3 }, (_, i) =>
+      i === 0 ? base : { ...overflow, brand: { ...overflow.brand, entityId: `00000000-0000-4000-8000-${String(i).padStart(12, '0')}` } }
+    );
+
+    const { prospects, storeDistancesSnapshotOnly } = await refreshProspectPacksNearest(
+      env,
+      WICKER_LOC,
+      packs,
+      3
+    );
+
+    expect(prospects.length).toBe(packs.length);
+    expect(storeDistancesSnapshotOnly).toBe(true);
+    expect(prospects[0]!.nearestExistingStoreKm).toBeLessThan(5);
+    expect(prospects[RECONCILE_ON_READ_MAX_PROSPECTS]!.nearestExistingStoreKm).toBe(9.5);
   });
 });
 

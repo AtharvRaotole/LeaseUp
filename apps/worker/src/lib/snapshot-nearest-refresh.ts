@@ -14,6 +14,9 @@ export type StoreDistanceServeMeta = {
   storeDistancesSnapshotOnly: boolean;
 };
 
+/** Same cap as analyze pitch generation; bounds reconcile-on-read CPU on stored payloads. */
+export const RECONCILE_ON_READ_MAX_PROSPECTS = 10;
+
 /** Prefer reconciled km when present; never invent a distance. */
 export function mergeReconciledNearestProspect(
   stored: ProspectPack,
@@ -56,23 +59,29 @@ export async function refreshProspectPacksNearest(
     : null;
 
   const storeDistanceDataAsOf = resolveStoreDistanceDataAsOf(dataAsOfHint);
-  let storeDistancesSnapshotOnly = false;
+  let storeDistancesSnapshotOnly = prospects.length > RECONCILE_ON_READ_MAX_PROSPECTS;
+
+  const head = prospects.slice(0, RECONCILE_ON_READ_MAX_PROSPECTS);
+  const tail = prospects.slice(RECONCILE_ON_READ_MAX_PROSPECTS);
 
   const enriched = await enrichProspectsWithNearest(
-    prospects,
+    head,
     location,
     catalog,
     undefined,
     osmSnapshot
   );
 
-  const refreshed = enriched.map((pack, index) => {
-    const stored = prospects[index]!;
+  const refreshedHead = enriched.map((pack, index) => {
+    const stored = head[index]!;
     const reconciled = stripFalseAbsenceReasons(pack, absenceRadiusKm);
     const merged = mergeReconciledNearestProspect(stored, reconciled, absenceRadiusKm);
     if (merged.snapshotOnly) storeDistancesSnapshotOnly = true;
     return merged.pack;
   });
+
+  const refreshedTail = tail.map((stored) => stripFalseAbsenceReasons(stored, absenceRadiusKm));
+  const refreshed = [...refreshedHead, ...refreshedTail];
 
   return {
     prospects: refreshed,
