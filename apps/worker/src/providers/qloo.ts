@@ -109,6 +109,15 @@ export function normalizeHeatmapCells(raw: RawHeatmapCell[]): QlooHeatmapCell[] 
   return cells;
 }
 
+export type QlooRunAccounting = {
+  /** Logical Qloo operations (panel fetch, trade-area taste, etc.) for run budgeting. */
+  logicalCalls: number;
+};
+
+export function createQlooRunAccounting(): QlooRunAccounting {
+  return { logicalCalls: 0 };
+}
+
 export class QlooClient {
   private baseUrl: string;
   private apiKey: string;
@@ -116,8 +125,9 @@ export class QlooClient {
   private db: D1Database;
   private mode: 'live' | 'demo';
   private forceQlooDown: boolean;
+  private accounting?: QlooRunAccounting;
 
-  constructor(env: Env) {
+  constructor(env: Env, accounting?: QlooRunAccounting) {
     this.baseUrl = env.QLOO_BASE_URL || 'https://hackathon.api.qloo.com';
     this.apiKey = env.QLOO_API_KEY || '';
     this.cache = getResponseCache();
@@ -131,6 +141,15 @@ export class QlooClient {
 
     this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
     this.forceQlooDown = env.FORCE_QLOO_DOWN === '1';
+    this.accounting = accounting;
+  }
+
+  getLogicalCallCount(): number {
+    return this.accounting?.logicalCalls ?? 0;
+  }
+
+  private markLogicalQlooCall(): void {
+    if (this.accounting) this.accounting.logicalCalls += 1;
   }
 
   async getBrandInsights(params: {
@@ -148,6 +167,7 @@ export class QlooClient {
       if (params.location.kind !== 'query') {
         throw new DemoModeRequiredError();
       }
+      this.markLogicalQlooCall();
       return this.getDemoInsights(params.location.query);
     }
 
@@ -169,6 +189,8 @@ export class QlooClient {
       });
       return JSON.parse(cached) as QlooInsight[];
     }
+
+    this.markLogicalQlooCall();
 
     const batches = brandIds.length > 0 ? chunkBrandIds(brandIds) : [[]];
     const merged: QlooInsight[] = [];
@@ -279,6 +301,8 @@ export class QlooClient {
     if (this.mode === 'demo') {
       return null;
     }
+
+    this.markLogicalQlooCall();
 
     try {
       const [brandJson, localJson] = await Promise.all([

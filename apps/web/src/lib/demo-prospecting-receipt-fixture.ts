@@ -32,6 +32,33 @@ export const DEMO_PROSPECTING_RECEIPT_JOB: ProspectingJob = {
       detail: { location: { neighborhood: 'Wicker Park' } },
     },
     {
+      id: 'agent_plan',
+      label: 'Plan site checks (agent)',
+      status: 'complete',
+      durationMs: 18,
+      summary: 'Agent ran 2 tool step(s); 1 taste data call(s); results feed analysis.',
+      detail: {
+        agentSteps: [
+          {
+            stepIndex: 0,
+            planner: 'rule',
+            reason: 'Rule: fetch affinity panel before absence scan.',
+            tool: 'qloo_brand_insights',
+            resultSummary: 'taste data returned 224 brand insights (take=50).',
+            durationMs: 1,
+          },
+          {
+            stepIndex: 1,
+            planner: 'model',
+            reason: 'Nearest-store check disagrees on a top candidate; verify before pitching.',
+            tool: 'nearest_store_check',
+            resultSummary: 'Nearest store 1.9 km.',
+            durationMs: 2,
+          },
+        ],
+      },
+    },
+    {
       id: 'taste',
       label: 'Read neighborhood taste',
       status: 'complete',

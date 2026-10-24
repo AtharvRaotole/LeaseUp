@@ -29,10 +29,21 @@ describe('agent receipt', () => {
   it('exports JSON and Markdown from real job steps', () => {
     const job = DEMO_PROSPECTING_RECEIPT_JOB;
     const parsed = JSON.parse(agentReceiptJson(job)) as { steps: unknown[] };
-    expect(parsed.steps).toHaveLength(8);
+    expect(parsed.steps).toHaveLength(9);
     const md = agentReceiptMarkdown(job);
     expect(md).toContain('### Geocode and confirm');
     expect(md).toContain('Why: Demo chip address maps to a fixed storefront pin.');
+    expect(md).toContain('### Plan site checks (agent)');
+    expect(md).toContain('- Rule: fetch affinity panel before absence scan.');
+    expect(md).toContain('- Agent: Nearest-store check disagrees on a top candidate');
+  });
+
+  it('maps agentSteps planner kinds to Rule and Agent labels', () => {
+    const rows = buildAgentReceiptRows(DEMO_PROSPECTING_RECEIPT_JOB);
+    const plan = rows.find((r) => r.id === 'agent_plan');
+    expect(plan?.toolDecisions).toHaveLength(2);
+    expect(plan?.toolDecisions?.[0]?.plannerLabel).toBe('Rule');
+    expect(plan?.toolDecisions?.[1]?.plannerLabel).toBe('Agent');
   });
 
   it('receipt copy avoids broker jargon patterns', () => {

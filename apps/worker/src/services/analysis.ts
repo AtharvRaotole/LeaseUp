@@ -1,4 +1,5 @@
 import { QlooClient } from '../providers/qloo';
+import type { ProspectingAgentDagHooks } from '../lib/prospecting-agent-state';
 import { OpenAIClient } from '../providers/openai';
 import { OverpassClient } from './overpass';
 import { GeocodeService } from './geocode';
@@ -116,6 +117,13 @@ import type { NearbyTenant } from '@leaseup/contracts';
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
 
+export type AnalyzeWithStepsOptions = {
+  agentDagHooks?: ProspectingAgentDagHooks;
+  qlooClient?: QlooClient;
+  /** Set when prospecting (or another caller) already consumed the daily live Qloo judge quota. */
+  judgeQuotaAlreadyConsumed?: boolean;
+};
+
 export class AnalysisService {
   private qloo: QlooClient;
   private openai: OpenAIClient;
@@ -158,9 +166,12 @@ export class AnalysisService {
     request: AnalysisRequest,
     runId: string,
     ipHash: string,
-    onStep?: StepEmitter
+    onStep?: StepEmitter,
+    options?: AnalyzeWithStepsOptions
   ): Promise<AnalysisResponse> {
     const emit: StepEmitter = onStep ?? (() => undefined);
+    const qloo = options?.qlooClient ?? this.qloo;
+    const agentDagHooks = options?.agentDagHooks;
 
     await emitAnalyzeKickoff(emit);
 
@@ -190,7 +201,7 @@ export class AnalysisService {
 
       const qlooLocation = this.buildQlooLocation(location, request.address, request.radius);
 
-      if (this.mode === 'live') {
+      if (this.mode === 'live' && !options?.judgeQuotaAlreadyConsumed) {
         const nowSec = Math.floor(Date.now() / 1000);
         await consumeLiveQlooJudgeQuota(
           this.db,
@@ -199,14 +210,23 @@ export class AnalysisService {
         );
       }
 
-      let tasteUnavailable = false;
+      let tasteUnavailable = Boolean(agentDagHooks?.forceChainSizeRanking);
       const insights = await runStep(
         emit,
         'taste',
         "Read the neighborhood's taste (Qloo)",
         async () => {
+          if (agentDagHooks?.seedBrandInsights?.length) {
+            const rows = agentDagHooks.seedBrandInsights;
+            const tasteLabel = tasteLocationLabel(location, qlooLocation);
+            return {
+              summary: `${rows.length} brands ranked for ${tasteLabel} (agent panel cache)`,
+              detail: { brandCount: rows.length, query: tasteLabel, agentSeeded: true },
+              result: rows,
+            };
+          }
           try {
-            const rows = await this.qloo.getBrandInsights({
+            const rows = await qloo.getBrandInsights({
               location: qlooLocation,
               brandIds: this.catalog.getBrandIds(),
               tags: request.categoryTags,
@@ -305,7 +325,8 @@ export class AnalysisService {
             request.radius,
             runId,
             request.storefrontSqFt,
-            tasteUnavailable
+            tasteUnavailable,
+            agentDagHooks
           );
           formatFilteredCount = generated.formatFilteredCount;
           prospectFunnel = generated.funnel;
@@ -350,7 +371,7 @@ export class AnalysisService {
       const shoppersPromise = tasteUnavailable
         ? Promise.resolve(undefined)
         : loadTradeAreaShoppersSnapshot({
-            qloo: this.qloo,
+            qloo,
             responseCache: this.responseCache,
             location,
             radiusKm: request.radius,
@@ -398,14 +419,16 @@ export class AnalysisService {
             enrichedProspects.map(async (pack) => {
               const insight = insights.find((i) => i.entity_id === pack.brand.entityId);
               const signals = insight ? extractQlooSignals(insight) : [];
-              const tradeAreaTaste = await loadTradeAreaTasteForProspect(
-                this.qloo,
-                location,
-                pack.brand.entityId,
-                request.radius,
-                runId,
-                this.assets
-              );
+              const tradeAreaTaste =
+                agentDagHooks?.preloadedTradeAreaTaste?.get(pack.brand.entityId) ??
+                (await loadTradeAreaTasteForProspect(
+                  qloo,
+                  location,
+                  pack.brand.entityId,
+                  request.radius,
+                  runId,
+                  this.assets
+                ));
               return {
                 ...pack,
                 qlooSignals: signals.length > 0 ? signals : undefined,
@@ -441,7 +464,7 @@ export class AnalysisService {
 
       const coTenancyEnriched = await withSoftTimeout(
         enrichProspectsWithCoTenancy({
-          qloo: this.qloo,
+          qloo,
           responseCache: this.responseCache,
           location,
           radiusKm: request.radius,
@@ -578,7 +601,8 @@ export class AnalysisService {
     radius: number,
     _runId: string,
     storefrontSqFt?: number,
-    tasteUnavailable = false
+    tasteUnavailable = false,
+    agentDagHooks?: ProspectingAgentDagHooks
   ): Promise<{ packs: ProspectPack[]; formatFilteredCount: number; funnel: ProspectFunnel }> {
     const sqFt = storefrontSqFt ?? 2_500;
     let formatFilteredCount = 0;
@@ -631,6 +655,10 @@ export class AnalysisService {
     const eligible: Eligible[] = [];
 
     for (const candidate of candidates) {
+      if (agentDagHooks?.excludeProspectEntityIds?.has(candidate.entity_id)) {
+        continue;
+      }
+
       const nearbyStores = await presence.storesNearby(candidate.entity_id, absenceRadiusKm);
 
       if (nearbyStores.length > 0) {
@@ -651,6 +679,16 @@ export class AnalysisService {
       if (eligible.length >= 10) {
         break;
       }
+    }
+
+    const boostIds = agentDagHooks?.stratumBoostEntityIds;
+    if (boostIds?.size) {
+      eligible.sort((a, b) => {
+        const aBoost = boostIds.has(a.candidate.entity_id) ? 0 : 1;
+        const bBoost = boostIds.has(b.candidate.entity_id) ? 0 : 1;
+        if (aBoost !== bBoost) return aBoost - bBoost;
+        return a.candidate.blendedRank - b.candidate.blendedRank;
+      });
     }
 
     for (const { candidate, nationalCount } of eligible) {
