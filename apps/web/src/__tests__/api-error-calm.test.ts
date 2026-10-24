@@ -32,4 +32,17 @@ describe('api-error calm copy', () => {
     expect(info.message).toContain('Taste data is slow');
     expect(info.code).toBe('QLOO_UNAVAILABLE');
   });
+
+  it('maps typed-address guard codes', () => {
+    const po = humanizeApiError(400, {
+      code: 'GEOCODE_PO_BOX',
+      error: 'We need a street address for a retail storefront.',
+    });
+    expect(po.code).toBe('GEOCODE_PO_BOX');
+    const timeout = humanizeApiError(503, {
+      code: 'GEOCODE_TIMEOUT',
+      error: 'Address lookup timed out.',
+    });
+    expect(timeout.code).toBe('GEOCODE_TIMEOUT');
+  });
 });

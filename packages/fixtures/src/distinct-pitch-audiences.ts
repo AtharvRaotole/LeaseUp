@@ -7,6 +7,9 @@ export const PITCH_AUDIENCE_CANDIDATE_MAX = 12;
 /**
  * Trim each brand's lift-ordered candidate pool to `maxShown` rows. The primary row (index 0) is
  * the first unused entityId in pool order; when every candidate is already taken, repeat the top row.
+ *
+ * Analyze no longer applies this to pitch copy; each brand keeps its top combined brand x local
+ * audience from `computeBrandLocalAudienceOverlap`. Kept for tests and tooling.
  */
 export function distinctPitchAudienceLists(
   candidatePools: readonly (readonly TradeAreaTasteRow[])[],

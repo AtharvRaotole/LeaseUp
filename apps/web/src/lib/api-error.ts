@@ -18,6 +18,20 @@ export function humanizeApiError(status: number, body: { error?: string; code?: 
       code: 'GEOCODE_NOT_FOUND',
     };
   }
+  if (code === 'GEOCODE_PO_BOX' || code === 'GEOCODE_NON_US' || code === 'GEOCODE_UNRECOGNIZED') {
+    return {
+      message: body.error?.trim() || 'Enter a US retail storefront address with city and state.',
+      code,
+    };
+  }
+  if (code === 'GEOCODE_TIMEOUT' || code === 'GEOCODE_UPSTREAM_ERROR') {
+    return {
+      message:
+        body.error?.trim() || 'Address lookup timed out. Check the spelling and try again in a moment.',
+      code: code === 'GEOCODE_TIMEOUT' ? 'GEOCODE_TIMEOUT' : 'GEOCODE_UPSTREAM_ERROR',
+      retryAfterSec: 15,
+    };
+  }
   if (code === 'QLOO_UNAVAILABLE') {
     return {
       message: body.error?.trim() || 'Taste data is slow right now. Try again in a moment.',

@@ -7,6 +7,7 @@ import {
   type ProspectPack,
   type Location,
 } from '@leaseup/contracts';
+import { analyzeStreamErrorPayload } from '../lib/analyze-stream-error';
 import { AnalysisService } from '../services/analysis';
 import { randomUUID } from 'node:crypto';
 
@@ -94,7 +95,7 @@ analysisRouter.post('/analyze/stream', async (c) => {
         await send('verification', { runId, prospects: verified, osmSummary: summary });
       }
     } catch (error) {
-      await send('error', { message: (error as Error).message });
+      await send('error', analyzeStreamErrorPayload(error));
     } finally {
       await writer.close();
     }

@@ -8,6 +8,8 @@ export interface BrandRealEstateVerified {
   status: 'verified';
   url: string;
   source: string;
+  /** ISO date when URL last returned HTTP 2xx/3xx (YYYY-MM-DD). */
+  verifiedAt?: string;
 }
 
 export interface BrandRealEstateNotFound {

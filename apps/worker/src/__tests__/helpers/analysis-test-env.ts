@@ -66,6 +66,34 @@ export function offlineDemoAnalyzeEnv(
   } as import('../../index').Env;
 }
 
+/** Demo analyze with OSM snapshot tiles (matches wrangler ASSETS binding). */
+export function createDemoPublicAssetsFetcher(): Fetcher {
+  const publicRoot = join(__dirname, '../../../public');
+  return {
+    fetch: async (url: string) => {
+      if (url.includes('osm.local')) {
+        const path = url.replace('https://osm.local', '');
+        const file = join(publicRoot, path);
+        try {
+          return new Response(readFileSync(file), { status: 200 });
+        } catch {
+          return new Response('missing', { status: 404 });
+        }
+      }
+      if (url.includes('tiles.local')) {
+        const path = url.replace('https://tiles.local', '');
+        const file = join(publicRoot, path);
+        try {
+          return new Response(readFileSync(file), { status: 200 });
+        } catch {
+          return new Response('missing', { status: 404 });
+        }
+      }
+      return new Response('missing', { status: 404 });
+    },
+  } as unknown as Fetcher;
+}
+
 /**
  * ASSETS stub that serves only apps/worker/public/brand-explainability (the live audience recordings
  * the Why card needs) and 404s everything else, so other asset-backed paths behave as with no ASSETS.

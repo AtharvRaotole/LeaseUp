@@ -163,13 +163,13 @@ describe('audience display names', () => {
 describe('lift ranking and sensitive categories', () => {
   const local = [aud('a', 0.99), aud('b', 0.98), aud('c', 0.97), aud('d', 0.96)];
 
-  it('ranks by lift over the panel mean, keeps lift >= margin, shows at most 2', () => {
+  it('ranks by combined brand x local affinity after lift gate, shows at most 2', () => {
     const brand = [aud('a', 0.82), aud('b', 0.8), aud('c', 0.79), aud('d', 0.78)];
     const rows = computeBrandLocalAudienceOverlap(brand, local, {
       panelBaseline: { a: 0.79, b: 0.7, c: 0.65, d: 0.77 },
     });
-    // lifts: a 0.03 (below margin), b 0.10, c 0.14, d 0.01
-    expect(rows.map((r) => r.entityId)).toEqual(['c', 'b']);
+    // lifts: a 0.03 (below margin), b 0.10, c 0.14, d 0.01; combined favors b over c at local 0.98 vs 0.97
+    expect(rows.map((r) => r.entityId)).toEqual(['b', 'c']);
     expect(
       computeBrandLocalAudienceOverlap(brand, local, {
         panelBaseline: { a: 0.5, b: 0.5, c: 0.5, d: 0.5 },
@@ -227,11 +227,8 @@ describe('lift ranking and sensitive categories', () => {
       brandExplainabilityForDemo(chip, id)!.audiences.map((r) => r.name);
     expect(names('boulder', ULTA)).toEqual(['Health & Beauty']);
     expect(names('wicker', TJ_MAXX)).toEqual(['Arts & Crafts', 'Home Organization']);
-    expect(names('sevierville', MICHAELS)).toEqual([
-      'Cooking',
-      'Home Organization',
-    ]);
-    expect(names('sevierville', WHOLE_FOODS)).toEqual(['Wine Enthusiast', 'Cooking']);
+    expect(names('sevierville', MICHAELS)).toEqual(['Arts & Crafts', 'Home Organization']);
+    expect(names('sevierville', WHOLE_FOODS)).toEqual(['Home Organization', 'Wine Enthusiast']);
     expect(names('sevierville', SEPHORA)[0]).toBe('Health & Beauty');
   });
 });

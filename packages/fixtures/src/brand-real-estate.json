@@ -1,20 +1,18 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "entries": [
     {
       "entityId": "0B47F4FC-A267-4E07-85F4-F64511835C03",
       "name": "7-Eleven",
-      "status": "verified",
-      "url": "https://www.7-eleven.com/real-estate",
-      "source": "https://www.7-eleven.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=7-Eleven%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "5D03112C-CD2A-41C3-9ED0-D72EED8BB373",
       "name": "Abercrombie & Fitch",
-      "status": "verified",
-      "url": "https://www.abercrombie.com/shop/us/real-estate",
-      "source": "https://www.abercrombie.com/shop/us/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Abercrombie%20%26%20Fitch%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "81100467-8F5D-4796-B222-A84983379402",
@@ -91,8 +89,10 @@
     {
       "entityId": "DFFF4470-F663-4742-A503-4FD0CB152498",
       "name": "Athleta",
-      "status": "not_yet_found",
-      "searchUrl": "https://www.google.com/search?q=Athleta%20retail%20real%20estate%20site%20submission"
+      "status": "verified",
+      "url": "https://www.gapinc.com/en-us/investors/real-estate",
+      "source": "https://www.gapinc.com/en-us/investors/real-estate",
+      "verifiedAt": "2026-10-24"
     },
     {
       "entityId": "86AA27A6-074F-4137-8358-FA16DBD7F34E",
@@ -109,8 +109,10 @@
     {
       "entityId": "BEE83976-354E-4991-95BB-C32595C9C96D",
       "name": "Banana Republic",
-      "status": "not_yet_found",
-      "searchUrl": "https://www.google.com/search?q=Banana%20Republic%20retail%20real%20estate%20site%20submission"
+      "status": "verified",
+      "url": "https://www.gapinc.com/en-us/investors/real-estate",
+      "source": "https://www.gapinc.com/en-us/investors/real-estate",
+      "verifiedAt": "2026-10-24"
     },
     {
       "entityId": "0BAC80D0-90D5-46A8-A11F-7CC58DE74963",
@@ -133,9 +135,8 @@
     {
       "entityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
       "name": "Bath & Body Works",
-      "status": "verified",
-      "url": "https://www.bathandbodyworks.com/real-estate",
-      "source": "https://www.bathandbodyworks.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Bath%20%26%20Body%20Works%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "BEF4E5D5-245C-49D5-8D20-7C8A1B3C80F5",
@@ -152,9 +153,8 @@
     {
       "entityId": "495FBED3-17C4-484F-A208-73C0018E0463",
       "name": "Blaze Pizza",
-      "status": "verified",
-      "url": "https://www.blazepizza.com/real-estate",
-      "source": "https://www.blazepizza.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Blaze%20Pizza%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "F52C8EA1-4FAC-4863-A016-2E649B81CA9F",
@@ -207,16 +207,16 @@
     {
       "entityId": "74D13B62-2C51-4D99-804F-3D338F7B0406",
       "name": "Burger King",
-      "status": "verified",
-      "url": "https://www.bk.com/real-estate",
-      "source": "https://www.bk.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Burger%20King%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "91491729-2989-44C6-82F1-E8EB25B9FA42",
       "name": "Burlington",
       "status": "verified",
       "url": "https://www.burlington.com/real-estate",
-      "source": "https://www.burlington.com/real-estate"
+      "source": "https://www.burlington.com/real-estate",
+      "verifiedAt": "2026-10-24"
     },
     {
       "entityId": "D46C358B-C258-40FD-BE2F-1B03DBAC7913",
@@ -287,9 +287,8 @@
     {
       "entityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
       "name": "Chipotle Mexican Grill",
-      "status": "verified",
-      "url": "https://www.chipotle.com/contact-us",
-      "source": "https://www.chipotle.com/contact-us"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Chipotle%20Mexican%20Grill%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "C628D8FF-42F1-4626-9766-274148DBAB27",
@@ -360,8 +359,10 @@
     {
       "entityId": "47C8C56F-D079-451D-855A-D694B53C5A83",
       "name": "Dave & Buster's",
-      "status": "not_yet_found",
-      "searchUrl": "https://www.google.com/search?q=Dave%20%26%20Buster's%20retail%20real%20estate%20site%20submission"
+      "status": "verified",
+      "url": "https://www.daveandbusters.com/real-estate",
+      "source": "https://www.daveandbusters.com/real-estate",
+      "verifiedAt": "2026-10-24"
     },
     {
       "entityId": "BEFB84C0-693C-41A5-9538-A687A767DE13",
@@ -384,9 +385,8 @@
     {
       "entityId": "0E01EDE4-04E3-4801-916D-29171340AD1E",
       "name": "Dillard's",
-      "status": "verified",
-      "url": "https://www.dillards.com/real-estate",
-      "source": "https://www.dillards.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Dillard's%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "77A843BF-AA9A-4588-A44B-E8AA684A910C",
@@ -403,16 +403,14 @@
     {
       "entityId": "0A4C7FDD-C236-4255-A8C0-82F875C03EC2",
       "name": "DSW",
-      "status": "verified",
-      "url": "https://www.dsw.com/en/us/real-estate",
-      "source": "https://www.dsw.com/en/us/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=DSW%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
       "name": "Dunkin'",
-      "status": "verified",
-      "url": "https://www.dunkindonuts.com/en/about/real-estate",
-      "source": "https://www.dunkindonuts.com/en/about/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Dunkin'%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "1DCF5C56-35D6-4CCA-AF5E-13F6ACB63C0F",
@@ -471,9 +469,8 @@
     {
       "entityId": "DA4F4642-9D83-4D04-93BD-F08CF62FFD07",
       "name": "Firehouse Subs",
-      "status": "verified",
-      "url": "https://www.firehousesubs.com/real-estate",
-      "source": "https://www.firehousesubs.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Firehouse%20Subs%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "1DF5514A-1819-438B-BF91-880A21169FE9",
@@ -484,14 +481,18 @@
     {
       "entityId": "6D548BAE-A999-44A2-8FEB-5E92E9AE158F",
       "name": "Five Guys",
-      "status": "not_yet_found",
-      "searchUrl": "https://www.google.com/search?q=Five%20Guys%20retail%20real%20estate%20site%20submission"
+      "status": "verified",
+      "url": "https://www.fiveguys.com/real-estate",
+      "source": "https://www.fiveguys.com/real-estate",
+      "verifiedAt": "2026-10-24"
     },
     {
       "entityId": "4C160FEA-FDB6-4DEC-99FC-13899680A0F4",
       "name": "Foot Locker",
-      "status": "not_yet_found",
-      "searchUrl": "https://www.google.com/search?q=Foot%20Locker%20retail%20real%20estate%20site%20submission"
+      "status": "verified",
+      "url": "https://www.footlocker.com/real-estate",
+      "source": "https://www.footlocker.com/real-estate",
+      "verifiedAt": "2026-10-24"
     },
     {
       "entityId": "76AD9E43-C469-4929-AB61-BC4DC28B9A27",
@@ -520,8 +521,10 @@
     {
       "entityId": "CF7D11E7-DA78-47D9-9AE1-030366F4507B",
       "name": "Gap",
-      "status": "not_yet_found",
-      "searchUrl": "https://www.google.com/search?q=Gap%20retail%20real%20estate%20site%20submission"
+      "status": "verified",
+      "url": "https://www.gapinc.com/en-us/investors/real-estate",
+      "source": "https://www.gapinc.com/en-us/investors/real-estate",
+      "verifiedAt": "2026-10-24"
     },
     {
       "entityId": "F6AA9EB7-9F8F-4F69-8994-DE8174905983",
@@ -532,9 +535,8 @@
     {
       "entityId": "7E764AF0-E0F8-4CB8-82D3-0FF8232D77C6",
       "name": "H-E-B",
-      "status": "verified",
-      "url": "https://www.heb.com/real-estate",
-      "source": "https://www.heb.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=H-E-B%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "108EB684-257B-42D7-84E5-6E9D8BE3E793",
@@ -557,9 +559,8 @@
     {
       "entityId": "5AB1F089-5965-4720-ABEE-6D59E436B7F6",
       "name": "Hollister",
-      "status": "verified",
-      "url": "https://www.abercrombie.com/shop/us/real-estate",
-      "source": "https://www.abercrombie.com/shop/us/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Hollister%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "002A706B-424B-40FB-8BE5-D99E706B1CC4",
@@ -588,16 +589,14 @@
     {
       "entityId": "7E9A2E74-1CB5-43E9-8B74-69CA8283BFBD",
       "name": "IKEA",
-      "status": "verified",
-      "url": "https://www.ikea.com/us/en/customer-service/shopping-at-ikea/real-estate-pub2d87ef20",
-      "source": "https://www.ikea.com/us/en/customer-service/shopping-at-ikea/real-estate-pub2d87ef20"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=IKEA%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "EF5EE567-CAAD-4907-ACCA-95CEAD1ED92C",
       "name": "In-N-Out Burger",
-      "status": "verified",
-      "url": "https://www.in-n-out.com/real-estate",
-      "source": "https://www.in-n-out.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=In-N-Out%20Burger%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "25D4DDDD-BB86-455F-A270-816468B75651",
@@ -636,18 +635,10 @@
       "searchUrl": "https://www.google.com/search?q=JCPenney%20retail%20real%20estate%20site%20submission"
     },
     {
-      "entityId": "230C8922-2B19-4012-9954-150C181CCFAD",
-      "name": "Jersey Mike's Subs",
-      "status": "verified",
-      "url": "https://www.jerseymikes.com/real-estate",
-      "source": "https://www.jerseymikes.com/real-estate"
-    },
-    {
       "entityId": "1C26370D-CCAB-4014-9D61-F17703B7C25C",
       "name": "Jimmy John's",
-      "status": "verified",
-      "url": "https://www.jimmyjohns.com/real-estate/",
-      "source": "https://www.jimmyjohns.com/real-estate/"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Jimmy%20John's%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "6C386104-464E-4FB5-8570-37B88B132875",
@@ -682,9 +673,8 @@
     {
       "entityId": "A16489A3-A51E-4DD6-9966-934C86D80FE9",
       "name": "Krispy Kreme",
-      "status": "verified",
-      "url": "https://www.krispykreme.com/real-estate",
-      "source": "https://www.krispykreme.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Krispy%20Kreme%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "0E00B261-EF66-4F74-B645-040E8C6755D3",
@@ -719,9 +709,8 @@
     {
       "entityId": "9EAF2345-B604-441C-BFF8-5C7A16AD49BD",
       "name": "LensCrafters",
-      "status": "verified",
-      "url": "https://www.luxottica.com/en/real-estate/",
-      "source": "https://www.luxottica.com/en/real-estate/"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=LensCrafters%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "EE2B58FF-37F6-4521-912F-55EBC25D83E2",
@@ -836,7 +825,8 @@
       "name": "MOD Pizza",
       "status": "verified",
       "url": "https://modpizza.com/real-estate",
-      "source": "https://modpizza.com/real-estate"
+      "source": "https://modpizza.com/real-estate",
+      "verifiedAt": "2026-10-24"
     },
     {
       "entityId": "A4AF25AA-776E-4FF4-849E-4FE1BCA7B4E2",
@@ -865,9 +855,8 @@
     {
       "entityId": "C70CE2B8-0AD1-4150-BF18-5A6347F2E860",
       "name": "Nike",
-      "status": "verified",
-      "url": "https://www.nike.com/retail/real-estate",
-      "source": "https://www.nike.com/retail/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Nike%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "A409F6A6-1D61-4C4A-AD48-CB8981874F64",
@@ -878,15 +867,16 @@
     {
       "entityId": "F969F822-9C3E-4044-AAF6-884AADC2064B",
       "name": "Nordstrom",
-      "status": "verified",
-      "url": "https://www.nordstrom.com/browse/about/real-estate",
-      "source": "https://www.nordstrom.com/browse/about/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Nordstrom%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "81EC4A41-53FB-47FD-995A-B8AE3EE90652",
       "name": "Old Navy",
-      "status": "not_yet_found",
-      "searchUrl": "https://www.google.com/search?q=Old%20Navy%20retail%20real%20estate%20site%20submission"
+      "status": "verified",
+      "url": "https://www.gapinc.com/en-us/investors/real-estate",
+      "source": "https://www.gapinc.com/en-us/investors/real-estate",
+      "verifiedAt": "2026-10-24"
     },
     {
       "entityId": "1C537252-DE55-4FCF-931D-B76F157CF913",
@@ -897,8 +887,10 @@
     {
       "entityId": "90390722-A8D1-4499-80FD-76703E3798A3",
       "name": "Orangetheory Fitness",
-      "status": "not_yet_found",
-      "searchUrl": "https://www.google.com/search?q=Orangetheory%20Fitness%20retail%20real%20estate%20site%20submission"
+      "status": "verified",
+      "url": "https://www.orangetheory.com/real-estate",
+      "source": "https://www.orangetheory.com/real-estate",
+      "verifiedAt": "2026-10-24"
     },
     {
       "entityId": "1B29B80D-ADE8-470A-85CC-5E02AAF61368",
@@ -981,9 +973,8 @@
     {
       "entityId": "BBF22D8D-166F-44A8-8694-3F6FF4F745AB",
       "name": "Popeyes",
-      "status": "verified",
-      "url": "https://www.popeyes.com/real-estate",
-      "source": "https://www.popeyes.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Popeyes%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "CDA781D5-B243-4EFA-A7C9-1BE6C1979397",
@@ -1012,9 +1003,8 @@
     {
       "entityId": "2BAF7E3C-1A8C-496D-9E3E-30E0D067DE96",
       "name": "Publix",
-      "status": "verified",
-      "url": "https://corporate.publix.com/real-estate",
-      "source": "https://corporate.publix.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Publix%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "51D54EC5-B77F-485C-A3D8-2852EF220205",
@@ -1079,9 +1069,8 @@
     {
       "entityId": "796DBCE4-2B75-4171-BF32-44C16EDE63D5",
       "name": "Sam's Club",
-      "status": "verified",
-      "url": "https://www.samsclub.com/content/real-estate",
-      "source": "https://www.samsclub.com/content/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Sam's%20Club%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "2C5054E1-8691-4F52-83CD-310D029BA6A3",
@@ -1140,22 +1129,22 @@
     {
       "entityId": "A30D6F1D-AD57-4048-9597-2956EAEE8FFB",
       "name": "Sprouts Farmers Market",
-      "status": "not_yet_found",
-      "searchUrl": "https://www.google.com/search?q=Sprouts%20Farmers%20Market%20retail%20real%20estate%20site%20submission"
+      "status": "verified",
+      "url": "https://www.sprouts.com/real-estate",
+      "source": "https://www.sprouts.com/real-estate",
+      "verifiedAt": "2026-10-24"
     },
     {
       "entityId": "B13C02E3-BA3C-4B39-85B4-ACF12FEBC892",
       "name": "Starbucks",
-      "status": "verified",
-      "url": "https://retail.starbucks.com/",
-      "source": "https://retail.starbucks.com/"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Starbucks%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "2C8106F4-B33F-45DA-80E6-5DCD39826B54",
       "name": "Steak 'n Shake",
-      "status": "verified",
-      "url": "https://www.steaknshake.com/real-estate",
-      "source": "https://www.steaknshake.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Steak%20'n%20Shake%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "4FF960CB-CCB8-4723-8657-8E9A5F0A53E2",
@@ -1166,9 +1155,8 @@
     {
       "entityId": "46ACDCB4-D58F-49E7-B5CE-80E44B78E5E1",
       "name": "Sunglass Hut",
-      "status": "verified",
-      "url": "https://www.luxottica.com/en/real-estate/",
-      "source": "https://www.luxottica.com/en/real-estate/"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Sunglass%20Hut%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "E515D012-5197-4B01-BFAD-5E5FAC25B525",
@@ -1185,9 +1173,8 @@
     {
       "entityId": "29271B4D-CAD2-4DD4-A766-7338AEE5533D",
       "name": "Taco Bell",
-      "status": "verified",
-      "url": "https://www.tacobell.com/franchise",
-      "source": "https://www.tacobell.com/franchise"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Taco%20Bell%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "A8861362-99E1-4513-82EA-45F9421A130A",
@@ -1198,9 +1185,8 @@
     {
       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
       "name": "Target",
-      "status": "verified",
-      "url": "https://www.target.com/c/real-estate/-/N-4nav",
-      "source": "https://www.target.com/c/real-estate/-/N-4nav"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Target%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "D9477DA6-D020-4C27-A494-1EFF2607D594",
@@ -1283,9 +1269,8 @@
     {
       "entityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
       "name": "Ulta",
-      "status": "verified",
-      "url": "https://www.ulta.com/company/real-estate",
-      "source": "https://www.ulta.com/company/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Ulta%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "DEFEBCC5-A986-4D7C-8408-7575210872FC",
@@ -1326,16 +1311,14 @@
     {
       "entityId": "D89FBEF9-E16C-4521-8513-20B180F56FAA",
       "name": "Walgreens",
-      "status": "verified",
-      "url": "https://www.walgreens.com/topic/real-estate.jsp",
-      "source": "https://www.walgreens.com/topic/real-estate.jsp"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Walgreens%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "D72865CB-DDB5-4202-96A4-D0415C0ACBF3",
       "name": "Walmart",
-      "status": "verified",
-      "url": "https://www.walmart.com/cp/real-estate/1228302",
-      "source": "https://www.walmart.com/cp/real-estate/1228302"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Walmart%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "AB8D769A-CCEB-4C2D-A3D8-21641E0EC664",
@@ -1360,14 +1343,14 @@
       "name": "Wendy's",
       "status": "verified",
       "url": "https://www.wendys.com/real-estate",
-      "source": "https://www.wendys.com/real-estate"
+      "source": "https://www.wendys.com/real-estate",
+      "verifiedAt": "2026-10-24"
     },
     {
       "entityId": "48803C8A-4E24-4888-B029-CDDF0D4547CE",
       "name": "Whataburger",
-      "status": "verified",
-      "url": "https://whataburger.com/real-estate",
-      "source": "https://whataburger.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Whataburger%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "89396A3C-043E-4B1A-B0EC-5CE441F88EE3",
@@ -1380,7 +1363,8 @@
       "name": "Whole Foods Market",
       "status": "verified",
       "url": "https://www.wholefoodsmarket.com/company-info/real-estate",
-      "source": "https://www.wholefoodsmarket.com/company-info/real-estate"
+      "source": "https://www.wholefoodsmarket.com/company-info/real-estate",
+      "verifiedAt": "2026-10-24"
     },
     {
       "entityId": "2B7931BB-8C2D-4FE0-BA41-8A5216BE6B4D",
@@ -1391,9 +1375,8 @@
     {
       "entityId": "0D2EF24C-80B5-4841-A2F4-47CBC9471CC1",
       "name": "Wingstop",
-      "status": "verified",
-      "url": "https://www.wingstop.com/real-estate",
-      "source": "https://www.wingstop.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Wingstop%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "5BE78DDD-DFD2-40FF-8C43-502A68D0759F",

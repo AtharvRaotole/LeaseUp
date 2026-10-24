@@ -12,6 +12,7 @@ import {
 } from '../../lib/pitch-pack-copy';
 import { fitPercentileLabel } from '../../lib/fit-display';
 import { BrandReachLine } from '../report/BrandReachLine';
+import { brandReachForProspect } from '../../lib/brand-reach';
 
 export function PitchPackBrief({ snapshot }: { snapshot: PitchPackSnapshot }) {
   const propertyTitle = pitchPropertyHeadline(snapshot);
@@ -40,6 +41,7 @@ export function PitchPackBrief({ snapshot }: { snapshot: PitchPackSnapshot }) {
           const brandName = displayBrandName(prospect.brand.entityId, prospect.brand.name);
           const fitLines = pitchBrandFitLines(prospect, snapshot);
           const rankLabel = fitPercentileLabel(prospect.brand.affinityRank, totalScored);
+          const brandReach = brandReachForProspect(prospect);
           return (
             <article
               key={prospect.brand.entityId}
@@ -73,15 +75,13 @@ export function PitchPackBrief({ snapshot }: { snapshot: PitchPackSnapshot }) {
               {index === 0 && snapshot.mapImage && (
                 <figure
                   className="pitch-map-frame mt-5 overflow-hidden rounded-card border border-border bg-surface-2 print:mt-3 print:rounded-sm"
+                  aria-label="Map of the storefront pin and nearby stores in the trade area"
                 >
                   <img
                     src={snapshot.mapImage}
-                    alt="Map of the storefront pin, shopper demand heat, and nearby stores"
+                    alt=""
                     className="pitch-map-image w-full object-cover"
                   />
-                  <figcaption className="border-t border-border px-4 py-2 text-meta text-ink-3 print:py-1">
-                    Site pin with shopper demand (orange) and nearby stores in the trade area
-                  </figcaption>
                 </figure>
               )}
 
@@ -98,18 +98,14 @@ export function PitchPackBrief({ snapshot }: { snapshot: PitchPackSnapshot }) {
                 </section>
               )}
 
-              <div
-                className="pitch-brand-contact-slot mt-5 min-h-[2.75rem] rounded-control border border-dashed border-border bg-surface-2/60 px-3 py-2.5 text-sm print:mt-3 print:min-h-0 print:border-ink/25 print:bg-transparent"
-                data-testid="pitch-brand-contact-slot"
-              >
-                {prospect.brandReach ? (
-                  <BrandReachLine reach={prospect.brandReach} />
-                ) : (
-                  <span className="text-ink-3">
-                    How to reach them: brand real-estate contact will appear here when your team adds it.
-                  </span>
-                )}
-              </div>
+              {brandReach && (
+                <div
+                  className="pitch-brand-contact-slot mt-5 rounded-control border border-border bg-surface-2/60 px-3 py-2.5 text-sm print:mt-3 print:border-ink/25 print:bg-transparent"
+                  data-testid="pitch-brand-contact-slot"
+                >
+                  <BrandReachLine reach={brandReach} />
+                </div>
+              )}
 
               <p className="mt-4 text-sm font-medium text-ink print:mt-2">{pitchNextStepLine(brandName)}</p>
             </article>

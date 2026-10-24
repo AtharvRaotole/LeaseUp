@@ -83,6 +83,8 @@ export const TradeAreaTasteRowSchema = z.object({
   name: z.string(),
   affinity: z.number(),
   affinityRank: z.number(),
+  /** Location-only Qloo affinity for this audience at the pin (when overlap is computed). */
+  localAffinity: z.number().optional(),
 });
 
 export type TradeAreaTasteRow = z.infer<typeof TradeAreaTasteRowSchema>;
@@ -145,6 +147,7 @@ export const ProspectPackSchema = z.object({
   outreachDraft: z.string(),
   reasons: z.array(z.string()),
   nearestExistingStoreKm: z.number().optional(),
+  nearestExistingStoreUnconfirmed: z.boolean().optional(),
   qlooSignals: z.array(z.string()).optional(),
   tradeAreaTaste: TradeAreaTasteContextSchema.optional(),
   whyBrandTaste: WhyBrandTasteSchema.optional(),
