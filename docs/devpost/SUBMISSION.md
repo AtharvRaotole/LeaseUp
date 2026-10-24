@@ -6,7 +6,7 @@
 
 **On the live landing today:** the same headline appears above a short helper line from the app: "Enter an address to see which brands local shoppers want nearby, then check real store locations before you pitch." (`LANDING_PLAIN_SUMMARY` in `apps/web/src/lib/broker-copy.ts`).
 
-**Production reference:** Cloudflare Pages tracks branch **`cursor/leaseup-v1-c429`** (integration). The current integration head short SHA is in `docs/devpost/integration-head.txt` (CI verifies it is a commit on that branch; see `scripts/check-submission-doc.mjs`). Do not paste stale deploy SHAs in Devpost copy. **Mobile Lighthouse (GitHub Actions LHCI only):** median of **3** mobile runs on `ubuntu-latest` in Actions run [**40074283024**](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40074283024): landing performance **93**; Wicker report performance **89**, accessibility **96** (`docs/qa/a11y-perf.md`, `LHCI_MEDIANS` in the job log). Do not cite local preview Lighthouse scores in Devpost copy.
+**Production reference:** Cloudflare Pages tracks branch **`cursor/leaseup-v1-c429`** (integration). Live production is labeled **deploy32** on that branch. The current integration head short SHA is in `docs/devpost/integration-head.txt` (CI verifies it is a commit on that branch; see `scripts/check-submission-doc.mjs`). Do not paste stale deploy SHAs in Devpost copy. **Mobile Lighthouse (GitHub Actions LHCI only):** median of **3** mobile runs on `ubuntu-latest` in Actions run [**40074283024**](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40074283024): landing performance **93**; Wicker report performance **89**, accessibility **96** (`docs/qa/a11y-perf.md`, `LHCI_MEDIANS` in the job log). Do not cite local preview Lighthouse scores in Devpost copy.
 
 Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` (40 US addresses, live Qloo API; metrics refreshed Oct 24, 2026 per PR #103).
 
@@ -17,6 +17,15 @@ Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-
 **Where Qloo lift shows up (do not oversell raw affinity):** Raw Qloo order does **not** beat national chain size on mean P@10 (**54%** vs **76%** on the 40-address panel; exact **0.5375** vs **0.760** in `packages/fixtures/src/eval/live-qloo-lift/aggregates.json`). The honest lift is from the **fitted logistic taste blend** (**83%** vs **76%**; exact **0.825** vs **0.760**, **+6.5 pp** in the same file) and from **ordering within a chain-size tier** (for example mid-size **P@5 0.53** vs **0.23** in the 439 to 864 store tier per `data/qloo-eval-40/QLOO_LIFT_EVAL.md`). Same-size tier AUC **0.664** [0.642, 0.687] is the pre-registered control-for-size test (`aggregates.json`, `sameSizeAuc`).
 
 **Store verification honesty (PR #89 false-positive audit):** We removed all **4** known false positives across **13** test sites in that audit. We never claim "zero false positives": stores missing from **both** ATP and OSM cannot be detected, and OSM snapshot coverage applies to only **25** of **227** tracked chains on demo chips. Analyze also runs an **OSM `brand:wikidata` false-absence cross-check** (snapshot tiles plus demo Overpass recordings) so we do not label a top prospect as verified missing when wikidata says a store is in radius (`apps/worker/src/lib/osm-wikidata-absence-crosscheck.ts`, `data/qloo-eval-40/FALSE_ABSENCE_AUDIT.md`, `apps/worker/src/__tests__/false-absence-sweep.test.ts`).
+
+**Shipped on deploy32 (integration head in `integration-head.txt`):**
+
+- **13 verified brand real-estate URLs** in `brand-real-estate.json` (title/h1 content rule; parent-portal map for Gap Inc. brands only). Pitch rows link to official pages when verified, otherwise a Google search fallback (`BrandReachLine`, `scripts/check-brand-real-estate-urls.mjs`).
+- **Nearest store reconciled across ATP and OSM:** `reconcileNearestStoreKm()` picks the closer distance; large ATP/OSM gaps mark distance as unconfirmed (`nearest-store-reconcile.ts`, `nearest-store-display-copy.ts`).
+- **No false absences on the four demo pins (CI):** Wicker, Boulder, Sevierville, and 350 Bleecker Williamsburg fixture; `demo-chip-osm-absence-audit.test.ts` fails if OSM snapshot shows a store inside the absence radius but the report still claims absence (`docs/DEMO_NEAREST_OSM_AUDIT.md`).
+- **Honest `Shared local audience` lines:** pitch copy only when the audience is in the brand's top **5** brand-only Qloo affinities and passes local overlap and lift gates (`BRAND_PITCH_CHARACTERISTIC_TOP_K`, `qloo-brand-taste-overlap.ts`, `broker-copy.ts`).
+- **Address input validation:** typed addresses are rejected before geocode with plain errors for gibberish, PO boxes, non-US text, and ambiguous input (`address-input-validation.ts`, `analyze-robustness` e2e and screenshots under `docs/screenshots/analyze-robustness/`).
+- **Chain-size fallback when Qloo is down:** live analyze returns national chain-size ranking with `tasteDataStatus: unavailable` and `TasteUnavailableBanner`; no fabricated taste scores (`qloo-chain-fallback.ts`, `qloo-analyze-resilience.test.ts`).
 
 **Recording hold (owner):** Record **nothing** until Atharv explicitly says capture may start. That means no walkthrough video, no Devpost screenshots, no hero loop, and **no local test recordings** either. A message about "after the deploy" is **not** that signal. Script and doc edits are fine. When authorized, use the local stack (`pnpm record:demo:local`, `pnpm capture:devpost:local`) and set `LEASEUP_RECORDING_AUTHORIZED=1`. Production still requires `MEDIA_CAPTURE_ALLOW_PROD=1` separately.
 
@@ -84,7 +93,11 @@ Eval numbers below are only from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `pack
 | Adaptive **3 km** absence radius + prospect funnel copy | ✓ | ✓ | ✓ | ✓ | `packages/fixtures/src/eval-density-stratum.ts`, `ReportProspectFunnel.tsx`, `apps/worker/src/lib/prospect-funnel.ts` (#101) |
 | Non-blocking report first-run tour | | ✓ | ✓ | | `ReportFirstRunTour.tsx` (`report-first-run-tour-hint`) (#104) |
 | Stable demo pitch `/pitch/demo-boulder-ulta` | ✓ | ✓ | ✓ | | `packages/fixtures/src/demo-pitch-boulder-ulta.ts`, `e2e/demo-pitch-smoke.spec.ts` (#102) |
-| Qloo-down chain-size fallback | ✓ | ✓ | ✓ | | `apps/worker/src/lib/qloo-chain-fallback.ts`, `apps/worker/src/__tests__/qloo-analyze-resilience.test.ts`, `apps/web/src/components/report/TasteUnavailableBanner.tsx` |
+| Qloo-down chain-size fallback | ✓ | ✓ | ✓ | | `apps/worker/src/lib/qloo-chain-fallback.ts`, `apps/worker/src/__tests__/qloo-analyze-resilience.test.ts`, `apps/web/src/components/report/TasteUnavailableBanner.tsx`, `docs/screenshots/analyze-robustness/qloo-timeout-1440.png` |
+| Nearest store ATP + OSM reconcile | ✓ | ✓ | ✓ | | `apps/worker/src/lib/nearest-store-reconcile.ts`, `apps/worker/src/__tests__/nearest-store-reconcile.test.ts` |
+| Demo-pin OSM absence audit (4 addresses) | ✓ | ✓ | | | `apps/worker/src/__tests__/demo-chip-osm-absence-audit.test.ts`, `docs/DEMO_NEAREST_OSM_AUDIT.md` |
+| Shared local audience (brand top-5 affinity gate) | | ✓ | ✓ | | `packages/fixtures/src/qloo-brand-taste-overlap.ts`, `docs/screenshots/co-tenancy-fallback/` |
+| Address input validation + calm errors | ✓ | ✓ | | | `apps/worker/src/lib/address-input-validation.ts`, `e2e/analyze-robustness.spec.ts`, `docs/screenshots/analyze-robustness/` |
 | Brand-specific pitch reasons (per prospect) | ✓ | ✓ | ✓ | ✓ | `apps/worker/src/services/analysis.ts`, `apps/web/src/lib/prospect-one-line.ts`, `apps/worker/src/__tests__/prospect-reasons.test.ts` |
 | Above-fold **Top brands to pitch** (`brands-to-pitch`) | | ✓ | ✓ | | `apps/web/src/components/report/ReportSummaryAboveFold.tsx`, `e2e/report-brands-visible.spec.ts` (390 + 1440; #93) |
 | **Why this brand** card (live Qloo taste overlap + honest rank line) | ✓ | ✓ | ✓ | ✓ | `WhyThisBrandCard.tsx`, `why-brand-taste-ui.ts`, `packages/fixtures/src/brand-explainability/` |
@@ -252,7 +265,7 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 ## Accomplishments
 
-- Production on integration branch **`cursor/leaseup-v1-c429`**: compact summary with prospect funnel, search vs absence radius explainer, default **fitted taste blend** with **Compare ranking** toggle (**83%** vs **76%** on the 40-address eval), non-blocking tour, stable **`/pitch/demo-boulder-ulta`**, OSM wikidata false-absence cross-check, **`brands-to-pitch`**, pipeline evidence loop, watchlist hardening (#107), and **Qloo-down fallback**.
+- Production on integration branch **`cursor/leaseup-v1-c429`** (deploy32): compact summary with prospect funnel, search vs absence radius explainer, default **fitted taste blend** with **Compare ranking** toggle (**83%** vs **76%** on the 40-address eval), non-blocking tour, stable **`/pitch/demo-boulder-ulta`**, OSM wikidata false-absence cross-check, **`brands-to-pitch`**, pipeline evidence loop, watchlist hardening (#107), **13** verified reach URLs, ATP/OSM nearest-store reconcile, demo-pin absence CI audit, gated **Shared local audience** copy, address validation, and **Qloo-down fallback**.
 - Trade area shopper tags; brand reach lines; vacancy cost on report, share dialog, and pitch snapshot; owner update share links.
 - Plain-language broker pass + **`/methodology/qloo`** explainer; methodology shows exact cohort percents (82.5% vs 76%, +6.5 pp); mobile Lighthouse landing perf **93** / report perf **89** / report a11y **96** (GitHub Actions LHCI medians, run **40074283024**).
 - Preregistered **40-address** live Qloo evaluation (refreshed Oct 24, 2026): mean top-10 presence **54% / 76% / 83%** (raw Qloo / chain / blend; exact **0.5375 / 0.760 / 0.825** in `aggregates.json`) per ATP/OSM; same-size tier AUC **0.664**; mid-size tier **P@5 0.53 vs 0.23**.
@@ -313,6 +326,8 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 ## Devpost gallery checklist
 
-- [ ] 5-6 PNGs at 1600x1000 in `docs/media/devpost/` via `pnpm capture:devpost:local` (after owner authorization only)
-- [ ] `walkthrough.mp4` / `walkthrough.webm` from local capture (after owner authorization only)
-- [ ] Link to live demo when allowed; note commit SHA for local captures
+Use **existing** screenshots only (no new capture, no video) until recording is authorized. Pick **5 to 7** images from `docs/devpost/GALLERY_ASSETS.md` (paths, captions, and optional alternates). Upload at Devpost's recommended size; source PNGs stay in `docs/screenshots/`.
+
+- [ ] Gallery images chosen from `docs/devpost/GALLERY_ASSETS.md` with plain captions (no inflated claims)
+- [ ] Link to live demo (deploy32 / integration branch); integration head in `docs/devpost/integration-head.txt` only
+- [ ] Do **not** add `walkthrough.mp4` until owner authorizes recording
