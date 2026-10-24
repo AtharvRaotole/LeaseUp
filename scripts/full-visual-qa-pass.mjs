@@ -89,24 +89,6 @@ async function startStack() {
   await waitFor(`${BASE}/`);
 }
 
-async function createPitchPath() {
-  const analyzeRes = await fetch(`${API}/api/analyze`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ address: PEARL, radius: 10 }),
-  });
-  if (!analyzeRes.ok) throw new Error('analyze failed for pitch');
-  const results = await analyzeRes.json();
-  const pitchRes = await fetch(`${API}/api/pitch`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ results, radiusKm: 10 }),
-  });
-  if (!pitchRes.ok) throw new Error('pitch failed');
-  const pitch = await pitchRes.json();
-  return `/pitch/${pitch.id}`;
-}
-
 function boxesIntersect(a, b) {
   return !(a.right <= b.left || a.left >= b.right || a.bottom <= b.top || a.top >= b.bottom);
 }
@@ -239,12 +221,7 @@ const PAGE_DEFS_BASE = [
 await mkdir(OUT, { recursive: true });
 await startStack();
 
-let pitchPath = '/pitch/demo-unavailable';
-try {
-  pitchPath = await createPitchPath();
-} catch (e) {
-  console.warn('pitch path fallback', e);
-}
+const pitchPath = '/pitch/demo-boulder-ulta';
 
 const PAGE_DEFS = [
   ...PAGE_DEFS_BASE.slice(0, 6),
