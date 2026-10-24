@@ -8,7 +8,7 @@ export function SegmentedControl<T extends string>({
 }: {
   value: T;
   onChange: (v: T) => void;
-  options: Array<{ value: T; label: string }>;
+  options: Array<{ value: T; label: string; testId?: string }>;
   label?: string;
 }) {
   return (
@@ -19,6 +19,7 @@ export function SegmentedControl<T extends string>({
           <button
             key={opt.value}
             type="button"
+            data-testid={opt.testId}
             onClick={() => onChange(opt.value)}
             className={cn(
               'ui-transition min-h-11 min-w-[2.75rem] px-3 rounded-[6px] text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-2',

@@ -15,9 +15,9 @@ import {
 
 describe('broker-visible jargon guards', () => {
   it('plain fit labels avoid raw taste-fit wording', () => {
-    const line = tasteFitMatchHerePhrase(40, 200, 82);
+    const line = tasteFitMatchHerePhrase(40, 200);
     expect(findBrokerJargonViolations(line)).toEqual([]);
-    expect(fitPercentileLabel(40, 200, 82)).not.toMatch(/taste fit/i);
+    expect(fitPercentileLabel(40, 200)).not.toMatch(/taste fit/i);
   });
 
   it('verification broker labels avoid Verified/Unverified', () => {
