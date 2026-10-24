@@ -4,7 +4,7 @@ Run on Oct 23, 2026 (ET). Original live Qloo API collection and preregistration 
 
 ## Reproducibility (Oct 24, 2026 refresh)
 
-Integration base: `f94ee23`. Metrics and tiles in this tree: git commit `07b04fe0018a4452eb9990b6bb20cb6557b17cd6`.
+Integration base: `f94ee23`. Metrics and tiles in this tree: git commit `c32a51bde8775934fd6d3b367d2f284b9cbeb6e9`.
 
 ```bash
 node scripts/osm-snapshot-retile-report.mjs

@@ -49,8 +49,9 @@ export const EVAL_METRIC_CATALOG: EvalMetricDefinition[] = [
   {
     id: 'adaptive_present_at10',
     label: 'Adaptive-radius present in top 10',
-    shortLabel: 'Adaptive P@10',
-    description: 'Same as legacy P@10 but presence uses a tighter density-based radius.',
+    shortLabel: 'Adaptive top-10',
+    description:
+      'Same as legacy top-10 hit rate but presence uses a tighter density-based radius.',
     higherIsBetterForQloo: true,
     tieBand: 0,
     format: 'count_of_10',
@@ -91,7 +92,7 @@ export const EVAL_METRIC_CATALOG: EvalMetricDefinition[] = [
     format: 'decimal',
     qloo: (m) => m.legacyPresentAt10Qloo,
     randomMonteCarlo: (m) => m.randomMonteCarloPresentAt10,
-    detail: () => 'Compare legacy Qloo P@10 to random order',
+    detail: () => 'Compare legacy Qloo top-10 hit rate to random order',
   },
 ];
 

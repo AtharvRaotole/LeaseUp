@@ -294,12 +294,11 @@ export function MethodologyPage() {
               Qloo lift study (cohort aggregates)
             </h2>
             <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
-              Same {qlooLift.siteCount}-address cohort as{' '}
-              <code className="rounded bg-surface-2 px-1 py-0.5 text-xs">aggregates.json</code>: mean top-10
+              Same {qlooLift.siteCount}-address cohort as the evaluation metric catalog above: mean top-10
               presence {formatP10PercentRounded(qlooLift.rawQlooPrecisionAt10)} /{' '}
               {formatP10PercentRounded(qlooLift.chainSizePrecisionAt10)} /{' '}
-              {formatP10PercentRounded(qlooLift.logisticBlendPrecisionAt10)} (raw Qloo / chain / blend; exact{' '}
-              {qlooLift.logisticBlendPrecisionAt10} blend P@10). Same-size tier rank match{' '}
+              {formatP10PercentRounded(qlooLift.logisticBlendPrecisionAt10)} (raw Qloo / chain size / taste
+              blend). Same-size tier rank match{' '}
               {(qlooLift.sameSizeAuc.value * 100).toFixed(1)}%; legacy 0.75/0.25 blend{' '}
               {formatP10PercentRounded(qlooLift.legacyBlendPrecisionAt10)}. Heatmap features did not add
               ranking lift; fixed 10 km presence saturates in dense trade areas.
