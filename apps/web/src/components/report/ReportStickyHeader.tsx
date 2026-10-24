@@ -52,7 +52,7 @@ export function ReportStickyHeader({
         <div className="relative flex shrink-0 items-center gap-2">
           <button
             type="button"
-            className="rounded-pill border border-border bg-surface-2 px-3 py-1.5 text-sm tabular-nums text-ink transition-colors duration-150 hover:border-border-strong focus-visible:ring-2 focus-visible:ring-accent"
+            className="inline-flex min-h-11 items-center rounded-pill border border-border bg-surface-2 px-3 text-sm tabular-nums text-ink transition-colors duration-150 hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             onClick={() => setRadiusOpen((o) => !o)}
             aria-expanded={radiusOpen}
             aria-label={`Trade area: ${tradeAreaLabel(request.radius)}`}
@@ -96,7 +96,7 @@ export function ReportStickyHeader({
         <div className="relative shrink-0 md:hidden" ref={menuRef}>
           <button
             type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-control border border-border bg-surface-2 text-ink focus-visible:ring-2 focus-visible:ring-accent"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-control border border-border bg-surface-2 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             aria-label="More actions"
             onClick={() => setMenuOpen((o) => !o)}
           >
@@ -104,16 +104,28 @@ export function ReportStickyHeader({
           </button>
           {menuOpen && (
             <div className="absolute right-0 top-full z-30 mt-1 min-w-[10rem] rounded-card border border-border bg-surface py-1 shadow-pop">
-              <button type="button" className="block w-full px-3 py-2 text-left text-sm hover:bg-surface-2" onClick={() => navigate('/')}>
+              <button
+                type="button"
+                className="flex min-h-11 w-full items-center px-3 text-left text-sm hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                onClick={() => navigate('/')}
+              >
                 New search
               </button>
               {onRunProspecting && (
-                <button type="button" className="block w-full px-3 py-2 text-left text-sm hover:bg-surface-2" onClick={onRunProspecting}>
+                <button
+                  type="button"
+                  className="flex min-h-11 w-full items-center px-3 text-left text-sm hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  onClick={onRunProspecting}
+                >
                   Run full prospecting
                 </button>
               )}
               {onSharePitch && (
-                <button type="button" className="block w-full px-3 py-2 text-left text-sm hover:bg-surface-2" onClick={onSharePitch}>
+                <button
+                  type="button"
+                  className="flex min-h-11 w-full items-center px-3 text-left text-sm hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  onClick={onSharePitch}
+                >
                   Share pitch
                 </button>
               )}

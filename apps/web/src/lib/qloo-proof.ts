@@ -3,6 +3,8 @@ import {
   findDemoAdaptiveProofByAddress,
   findAdaptiveEvalRowByAddress,
   DEMO_ADAPTIVE_PROOF_AGG,
+  cohortCohortLineMarketing,
+  formatP10PercentExact,
   loadLiveQlooLiftAggregates,
   p10ToCountOf10,
 } from '@leaseup/fixtures';
@@ -52,8 +54,7 @@ export function qlooProofBrokerBanner(results: AnalysisResponse): {
     `At this address, LeaseUp's taste-aware ranking put ${blendHits} of its top 10 brands where they already do well, vs ${chainHits} of 10 using store count alone.`;
 
   const agg = DEMO_ADAPTIVE_PROOF_AGG;
-  const cohortLine =
-    `Across ${agg.n_sites} US neighborhoods, adding Qloo taste beat store count alone, ${Math.round(agg.p10_blend * 100)}% vs ${Math.round(agg.p10_chain * 100)}%.`;
+  const cohortLine = cohortCohortLineMarketing();
 
   let tieNote: string | null = null;
   if (blendHits === chainHits) {
@@ -78,7 +79,7 @@ export function qlooProofBrokerBanner(results: AnalysisResponse): {
       ? `Random baseline at that radius: ~${randomExpected.toFixed(1)} of 10 present (pool ${recorded!.n_present}/${recorded!.n_brands} in radius).`
       : '',
     `Cohort rank match among similar chains ${(auc.value * 100).toFixed(0)}% (likely range ${(auc.ciLow * 100).toFixed(0)}% to ${(auc.ciHigh * 100).toFixed(0)}%).`,
-    `Mean top-10 presence: raw Qloo ${(agg.p10_raw * 100).toFixed(0)}%, chain size ${(agg.p10_chain * 100).toFixed(0)}%, taste-aware blend ${(agg.p10_blend * 100).toFixed(0)}%.`,
+    `Mean top-10 presence: raw Qloo ${formatP10PercentExact(agg.p10_raw)}, chain size ${formatP10PercentExact(agg.p10_chain)}, taste-aware blend ${formatP10PercentExact(agg.p10_blend)} (${agg.blend_lift_vs_chain_pp} pp vs chain).`,
   ];
   if (recorded?.same_size_auc !== undefined && recorded.same_size_auc_ci) {
     methodParts.push(
@@ -109,7 +110,7 @@ export function qlooEvalHeadlineParts(): {
     `Among brands with a similar national footprint, Qloo ranks chains that already operate here ahead of absent ones about two-thirds of the time ` +
     `(same-size AUC ${auc.toFixed(2)}, 95% CI ${agg.same_size_auc_ci[0].toFixed(2)} to ${agg.same_size_auc_ci[1].toFixed(2)}).`;
   const companion =
-    `Taste-aware blend ${(agg.p10_blend * 100).toFixed(0)}% top-10 presence vs ${(agg.p10_chain * 100).toFixed(0)}% for chain size alone on ${agg.n_sites} recorded sites.`;
+    `Taste-aware blend ${formatP10PercentExact(agg.p10_blend)} top-10 presence vs ${formatP10PercentExact(agg.p10_chain)} for chain size alone (+${agg.blend_lift_vs_chain_pp} pp) on ${agg.n_sites} recorded sites.`;
   const caveat =
     'Qloo taste may partly reflect brands that already operate in the trade area; read lift alongside store absence checks.';
   return { headline, companion, caveat };
