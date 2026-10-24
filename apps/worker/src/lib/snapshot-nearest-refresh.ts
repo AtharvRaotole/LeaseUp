@@ -58,7 +58,7 @@ export async function refreshProspectPacksNearest(
     ? new OsmSnapshotCatalog(env.ASSETS, getResponseCache())
     : null;
 
-  const storeDistanceDataAsOf = resolveStoreDistanceDataAsOf(dataAsOfHint);
+  let storeDistanceDataAsOf = resolveStoreDistanceDataAsOf(dataAsOfHint);
   let storeDistancesSnapshotOnly = prospects.length > RECONCILE_ON_READ_MAX_PROSPECTS;
 
   const head = prospects.slice(0, RECONCILE_ON_READ_MAX_PROSPECTS);
@@ -69,7 +69,8 @@ export async function refreshProspectPacksNearest(
     location,
     catalog,
     undefined,
-    osmSnapshot
+    osmSnapshot,
+    absenceRadiusKm
   );
 
   const refreshedHead = enriched.map((pack, index) => {
@@ -82,6 +83,10 @@ export async function refreshProspectPacksNearest(
 
   const refreshedTail = tail.map((stored) => stripFalseAbsenceReasons(stored, absenceRadiusKm));
   const refreshed = [...refreshedHead, ...refreshedTail];
+
+  if (!storeDistancesSnapshotOnly) {
+    storeDistanceDataAsOf = new Date().toISOString();
+  }
 
   return {
     prospects: refreshed,

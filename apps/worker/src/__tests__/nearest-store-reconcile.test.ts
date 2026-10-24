@@ -33,8 +33,27 @@ describe('reconcileNearestStoreKm', () => {
       nearestStoreKm: vi.fn().mockResolvedValue(2.1),
     } as unknown as OsmSnapshotCatalog;
 
-    const result = await reconcileNearestStoreKm(REI, LOC, presence, osmSnapshot);
+    const result = await reconcileNearestStoreKm(REI, LOC, presence, osmSnapshot, {
+      confirmWithinKm: 3,
+    });
     expect(result.km).toBe(2.1);
+    expect(result.unconfirmed).toBe(false);
+  });
+
+  it('flags unconfirmed when sources disagree materially and neither is within confirm radius', async () => {
+    const catalog = {
+      findStoresNearby: vi.fn().mockResolvedValue([{ distance: 8 }]),
+    } as unknown as StoreCatalog;
+    const presence = new NearbyPresenceCache(catalog, LOC);
+    const osmSnapshot = {
+      getNationalStoreCount: vi.fn().mockResolvedValue(190),
+      nearestStoreKm: vi.fn().mockResolvedValue(22),
+    } as unknown as OsmSnapshotCatalog;
+
+    const result = await reconcileNearestStoreKm(REI, LOC, presence, osmSnapshot, {
+      confirmWithinKm: 3,
+    });
+    expect(result.km).toBe(8);
     expect(result.unconfirmed).toBe(true);
   });
 
