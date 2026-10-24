@@ -7,6 +7,7 @@ import {
   cohortBlendLiftPpLabel,
 } from '@leaseup/fixtures';
 import { presentInTop10Count } from './hit-rate';
+import { searchVsAbsenceRadiusPlainLine } from './prospect-funnel-copy';
 
 const RANKING_EVAL_BLEND_PCT = formatP10PercentRounded(COHORT_EVAL_AGG.p10_blend);
 const RANKING_EVAL_CHAIN_PCT = formatP10PercentRounded(COHORT_EVAL_AGG.p10_chain);
@@ -27,8 +28,11 @@ export function tradeAreaLabel(radiusKm: number): string {
   return `${radiusKm} km area`;
 }
 
-export function tradeAreaTooltip(radiusKm: number): string {
-  return `We look for existing stores within ${radiusKm} km of your pin.`;
+export function tradeAreaTooltip(searchRadiusKm: number, absenceRadiusKm?: number): string {
+  if (absenceRadiusKm !== undefined) {
+    return searchVsAbsenceRadiusPlainLine(searchRadiusKm, absenceRadiusKm);
+  }
+  return `We look for existing stores within ${searchRadiusKm} km of your pin.`;
 }
 
 export function rankingBacktestStatLabel(backtest: BacktestResult): string {

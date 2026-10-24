@@ -26,6 +26,9 @@ export function ReportSummaryAboveFold({
   selected,
   onSelectBrand,
   onSharePitch,
+  showHeadlineStats = true,
+  showBrandPitchDetails = true,
+  showPrimaryActions = true,
   vacancyInput,
   onVacancyChange,
 }: {
@@ -40,6 +43,10 @@ export function ReportSummaryAboveFold({
   selected: ProspectPack | null;
   onSelectBrand: (p: ProspectPack) => void;
   onSharePitch: () => void;
+  showHeadlineStats?: boolean;
+  /** When false, brand rows render without one-line reasons or per-row pipeline CTAs (mobile LCP/TBT). */
+  showBrandPitchDetails?: boolean;
+  showPrimaryActions?: boolean;
   vacancyInput: VacancyCalculatorDraft;
   onVacancyChange: (next: VacancyCalculatorDraft) => void;
 }) {
@@ -53,6 +60,7 @@ export function ReportSummaryAboveFold({
         radiusKm={radiusKm}
         chipSlug={chipSlug}
         backtestOverride={backtestOverride}
+        showStats={showHeadlineStats}
       />
 
       {results.prospectFunnel && (
@@ -70,7 +78,9 @@ export function ReportSummaryAboveFold({
           <ol className="mt-4 space-y-2.5" data-testid="report-top-brands-list">
             {topFive.map((prospect, index) => {
               const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
-              const reason = prospectOneLineReason(prospect, results, radiusKm);
+              const reason = showBrandPitchDetails
+                ? prospectOneLineReason(prospect, results, radiusKm)
+                : '';
               const isSelected = selected?.brand.entityId === prospect.brand.entityId;
               return (
                 <li key={prospect.brand.entityId} className="group">
@@ -96,34 +106,38 @@ export function ReportSummaryAboveFold({
                           <span className="text-meta font-medium text-ink-3">#{index + 1}</span>
                           <span className="font-medium text-body text-ink sm:text-body-lg">{name}</span>
                         </span>
-                        <span className="mt-0.5 block text-small leading-snug text-ink-2 sm:text-body">
-                          {reason}
-                        </span>
+                        {showBrandPitchDetails && reason ? (
+                          <span className="mt-0.5 block text-small leading-snug text-ink-2 sm:text-body">
+                            {reason}
+                          </span>
+                        ) : null}
                       </span>
                     </button>
-                    <div
-                      className={cn(
-                        'flex shrink-0 items-center border-l border-border/70 px-2 py-2 sm:px-3',
-                        'opacity-100 transition-opacity',
-                        'md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100'
-                      )}
-                      onPointerDown={(e) => e.stopPropagation()}
-                    >
-                      <AddToPipelineButton
-                        size="sm"
-                        variant="ghost"
-                        compact
-                        showPipelineLink={false}
-                        className="shrink-0"
-                        wrapperTestId={`add-pipeline-top-${index}`}
-                        buildPayload={() =>
-                          pipelineCardFromProspect(prospect, results, {
-                            reportPath: buildReportPath(request, slug),
-                            radiusKm,
-                          })
-                        }
-                      />
-                    </div>
+                    {showBrandPitchDetails ? (
+                      <div
+                        className={cn(
+                          'flex shrink-0 items-center border-l border-border/70 px-2 py-2 sm:px-3',
+                          'opacity-100 transition-opacity',
+                          'md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100'
+                        )}
+                        onPointerDown={(e) => e.stopPropagation()}
+                      >
+                        <AddToPipelineButton
+                          size="sm"
+                          variant="ghost"
+                          compact
+                          showPipelineLink={false}
+                          className="shrink-0"
+                          wrapperTestId={`add-pipeline-top-${index}`}
+                          buildPayload={() =>
+                            pipelineCardFromProspect(prospect, results, {
+                              reportPath: buildReportPath(request, slug),
+                              radiusKm,
+                            })
+                          }
+                        />
+                      </div>
+                    ) : null}
                   </div>
                 </li>
               );
@@ -141,27 +155,29 @@ export function ReportSummaryAboveFold({
 
       <ReportVacancyAboveFold draft={vacancyInput} onChange={onVacancyChange} />
 
-      <div
-        className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
-        data-testid="report-primary-actions"
-      >
-        <Button type="button" size="md" variant="primary" onClick={onSharePitch}>
-          Share pitch pack
-        </Button>
-        {pipelineProspect && (
-          <AddToPipelineButton
-            size="md"
-            variant="secondary"
-            wrapperTestId="report-pipeline-cta"
-            buildPayload={() =>
-              pipelineCardFromProspect(pipelineProspect, results, {
-                reportPath: buildReportPath(request, slug),
-                radiusKm,
-              })
-            }
-          />
-        )}
-      </div>
+      {showPrimaryActions ? (
+        <div
+          className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
+          data-testid="report-primary-actions"
+        >
+          <Button type="button" size="md" variant="primary" onClick={onSharePitch}>
+            Share pitch pack
+          </Button>
+          {pipelineProspect && (
+            <AddToPipelineButton
+              size="md"
+              variant="secondary"
+              wrapperTestId="report-pipeline-cta"
+              buildPayload={() =>
+                pipelineCardFromProspect(pipelineProspect, results, {
+                  reportPath: buildReportPath(request, slug),
+                  radiusKm,
+                })
+              }
+            />
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { Check, X } from 'lucide-react';
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
@@ -99,13 +98,10 @@ export function ProofSection({
           </thead>
           <tbody data-testid="proof-ranking-table">
             {top10.map((row, index) => (
-              <motion.tr
+              <tr
                 key={row.entityId}
                 data-testid={`proof-ranking-row-${index}`}
                 className="border-t border-border cursor-pointer hover:bg-surface-2/60"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: index * 0.04 }}
                 onClick={() => onBrandSelect?.(row.entityId, row.name)}
               >
                 <td className="px-4 py-3 tabular-nums text-ink-2">
@@ -142,13 +138,13 @@ export function ProofSection({
                       <span className="tabular-nums">{row.nearestStoreKm.toFixed(1)} km</span>
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 text-ink-3">
+                    <span className="inline-flex items-center gap-1.5 text-ink-2">
                       <X className="h-4 w-4 shrink-0" aria-hidden />
                       None within {radiusKm} km
                     </span>
                   )}
                 </td>
-              </motion.tr>
+              </tr>
             ))}
           </tbody>
         </table>
