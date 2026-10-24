@@ -71,6 +71,11 @@ export function audienceOverlapHighlight(audience: string): string {
   return `Qloo's ${audience} audience ranks high for this brand and near this site`;
 }
 
+/** Pitch-row fallback when co-tenancy is missing but whyBrandTaste overlap is verified. */
+export function shoppersAlsoFavorHighlight(audience: string): string {
+  return `Shoppers here also favor ${audience}`;
+}
+
 export function dataConfidenceStatTooltip(): string {
   return 'How sure we are about the address pin and how deep the brand ranking is.';
 }

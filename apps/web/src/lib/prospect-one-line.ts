@@ -1,7 +1,7 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 import { tasteFitMatchHerePhrase } from './fit-display';
 import { isNonRetailTasteName } from '@leaseup/fixtures';
-import { audienceOverlapHighlight } from './broker-copy';
+import { shoppersAlsoFavorHighlight } from './broker-copy';
 
 /** Broker-facing one-line summary built only from fields on the prospect payload. */
 export function prospectOneLineReason(
@@ -22,15 +22,16 @@ export function prospectOneLineReason(
     parts.push(`Nearest store is ${label} km away`);
   }
 
-  // Only verified brand x local overlap (whyBrandTaste); never location-only rows, and never a
-  // non-retail theme such as Hotel or Self Help.
-  const tasteSignal = prospect.whyBrandTaste?.signals?.find((s) => !isNonRetailTasteName(s));
-  if (tasteSignal) {
-    parts.push(audienceOverlapHighlight(tasteSignal.name.trim()));
-  }
-
-  if (prospect.coTenancyLine?.trim()) {
-    parts.push(prospect.coTenancyLine.trim());
+  const pairingLine = prospect.coTenancyLine?.trim();
+  if (pairingLine) {
+    parts.push(pairingLine);
+  } else {
+    // Only verified brand x local overlap (whyBrandTaste); never location-only rows, and never a
+    // non-retail theme such as Hotel or Self Help.
+    const tasteSignal = prospect.whyBrandTaste?.signals?.find((s) => !isNonRetailTasteName(s));
+    if (tasteSignal) {
+      parts.push(shoppersAlsoFavorHighlight(tasteSignal.name.trim()));
+    }
   }
 
   if (parts.length === 0) return '';

@@ -29,8 +29,9 @@ export function audiencePanelSize(): number {
 export function brandExplainabilityForDemo(
   chip: DemoFixtureId,
   brandEntityId: string,
+  options?: { maxAudiences?: number },
 ): BrandExplainabilityRecording | null {
-  return bundled().brandExplainabilityForDemo(chip, brandEntityId);
+  return bundled().brandExplainabilityForDemo(chip, brandEntityId, options);
 }
 
 export function listDemoExplainabilityRecordings(): BrandExplainabilityRecording[] {

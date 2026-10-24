@@ -168,6 +168,10 @@ export {
   audiencePanelSize,
 } from './brand-explainability-loader.js';
 export {
+  distinctPitchAudienceLists,
+  PITCH_AUDIENCE_CANDIDATE_MAX,
+} from './distinct-pitch-audiences.js';
+export {
   createBrandExplainabilityStore,
   type BrandExplainabilityStore,
   type LiveAudiencesCompact,
