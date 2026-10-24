@@ -89,12 +89,13 @@ describe('REI at 350 Bleecker St', () => {
         verifyFromOsmSnapshot: (
           id: string,
           loc: { address: string; latitude: number; longitude: number },
-          radius: number
+          searchRadiusKm: number,
+          absenceRadiusKm: number
         ) => Promise<{ status: string }>;
       }
     ).verifyFromOsmSnapshot;
 
-    const result = await verify.call(service, REI, BLEECKER, 10);
+    const result = await verify.call(service, REI, BLEECKER, 10, 3);
     expect(result.status).toBe('conflict - likely present');
   });
 });

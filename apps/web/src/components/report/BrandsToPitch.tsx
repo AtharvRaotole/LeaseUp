@@ -109,6 +109,7 @@ export function BrandsToPitch({
   const prospectsRef = useRef(prospects);
   prospectsRef.current = prospects;
   const totalScored = results.rankings?.length ?? 100;
+  const absenceKm = absenceRadiusKm(results, radiusKm);
 
   useEffect(() => setProspects(results.prospects), [results.prospects]);
 
@@ -131,7 +132,12 @@ export function BrandsToPitch({
     void fetch(apiUrl('/api/verify'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ location: results.location, radius: radiusKm, prospects: results.prospects }),
+      body: JSON.stringify({
+        location: results.location,
+        radius: radiusKm,
+        absenceRadiusKm: absenceKm,
+        prospects: results.prospects,
+      }),
     })
       .then((r) => r.json())
       .then((d: { prospects?: ProspectPack[] }) => {

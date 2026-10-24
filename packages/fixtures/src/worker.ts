@@ -124,6 +124,10 @@ export {
   WHY_BRAND_TASTE_BANNED_PHRASES,
 } from './why-brand-taste-summary.js';
 export {
+  brokerNoStoreWithinRadiusDualSourceShort,
+  brokerNoStoreWithinRadiusSingleSourceShort,
+} from './store-absence-broker-copy.js';
+export {
   distinctPitchAudienceLists,
   PITCH_AUDIENCE_CANDIDATE_MAX,
 } from './distinct-pitch-audiences.js';
