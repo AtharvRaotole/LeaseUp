@@ -10,6 +10,14 @@ import {
 import { analyzeStreamErrorPayload } from '../lib/analyze-stream-error';
 import { AnalysisService } from '../services/analysis';
 import { randomUUID } from 'node:crypto';
+import {
+  isDemoChipId,
+  recordedDemoChipId,
+  recordedDemoReport,
+} from '../lib/recorded-demo-report';
+
+/** Browsers and the edge may reuse a recorded demo report briefly; it only changes on deploy. */
+const RECORDED_DEMO_CACHE_CONTROL = 'public, max-age=300';
 
 function scheduleOsmWarmup(
   c: Context<{ Bindings: Env }>,
@@ -48,9 +56,34 @@ async function hashIP(ip: string): Promise<string> {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
 }
 
+/**
+ * Read-only recorded demo chip report. Never calls Qloo, never counts against the daily
+ * live judge cap and never writes D1 or KV, so the three demo chips always load.
+ */
+analysisRouter.get('/demo-report/:chip', async (c) => {
+  const chip = c.req.param('chip');
+  if (!isDemoChipId(chip)) {
+    return c.json({ error: 'Unknown demo report', code: 'NOT_FOUND' }, 404);
+  }
+  const sqftRaw = c.req.query('sqft');
+  const sqftNum = sqftRaw ? Number(sqftRaw) : undefined;
+  const sqft =
+    sqftNum !== undefined && Number.isFinite(sqftNum) && sqftNum >= 200 && sqftNum <= 500_000
+      ? Math.round(sqftNum)
+      : undefined;
+  const result = await recordedDemoReport(c.env, chip, sqft, c.req.query('address'));
+  c.header('Cache-Control', RECORDED_DEMO_CACHE_CONTROL);
+  return c.json(result);
+});
+
 analysisRouter.post('/analyze', async (c) => {
   const body = await c.req.json();
   const request = AnalysisRequestSchema.parse(body);
+
+  const recordedChip = recordedDemoChipId(request);
+  if (recordedChip) {
+    return c.json(await recordedDemoReport(c.env, recordedChip, request.storefrontSqFt, request.address));
+  }
 
   const runId = randomUUID();
   const ip = c.req.header('cf-connecting-ip') || 'unknown';
@@ -84,6 +117,28 @@ analysisRouter.post('/analyze/stream', async (c) => {
   const send = async (event: string, data: unknown) => {
     await writer.write(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
   };
+
+  const recordedChip = recordedDemoChipId(request);
+  if (recordedChip) {
+    void (async () => {
+      try {
+        const result = await recordedDemoReport(c.env, recordedChip, request.storefrontSqFt, request.address);
+        for (const step of result.agentSteps ?? []) await send('step', step);
+        await send('complete', result);
+      } catch (error) {
+        await send('error', analyzeStreamErrorPayload(error));
+      } finally {
+        await writer.close();
+      }
+    })();
+    return new Response(readable, {
+      headers: {
+        'Content-Type': 'text/event-stream; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+        Connection: 'keep-alive',
+      },
+    });
+  }
 
   const service = new AnalysisService(c.env);
 

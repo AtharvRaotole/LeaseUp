@@ -1,3 +1,4 @@
+import { LiveQlooJudgeQuotaError } from './live-qloo-judge-quota';
 import { GeocodeAmbiguousError, GeocodeInputError, GeocodeNotFoundError, UpstreamError } from './errors';
 
 export type AnalyzeStreamErrorPayload = {
@@ -7,6 +8,9 @@ export type AnalyzeStreamErrorPayload = {
 };
 
 export function analyzeStreamErrorPayload(err: unknown): AnalyzeStreamErrorPayload {
+  if (err instanceof LiveQlooJudgeQuotaError) {
+    return { message: err.message, code: err.code, retryAfterSec: err.retryAfterSec };
+  }
   if (err instanceof GeocodeInputError || err instanceof GeocodeNotFoundError) {
     return { message: err.message, code: err.code };
   }

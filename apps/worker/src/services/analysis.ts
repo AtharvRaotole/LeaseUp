@@ -137,9 +137,12 @@ export class AnalysisService {
   private assets?: Fetcher;
   private verifyInflight = new Map<string, Promise<unknown>>();
   private env: Env;
+  /** When true, the run never writes analysis_runs rows (recorded demo chip replays). */
+  private readOnly: boolean;
 
-  constructor(env: Env) {
+  constructor(env: Env, options?: { readOnly?: boolean }) {
     this.env = env;
+    this.readOnly = Boolean(options?.readOnly);
     this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
     this.qloo = new QlooClient(env);
     this.openai = new OpenAIClient(env);
@@ -175,12 +178,14 @@ export class AnalysisService {
 
     await emitAnalyzeKickoff(emit);
 
-    await this.db
-      .prepare(
-        'INSERT INTO analysis_runs (run_id, address, status, ip_address, created_at) VALUES (?, ?, ?, ?, ?)'
-      )
-      .bind(runId, request.address, 'running', ipHash, Math.floor(Date.now() / 1000))
-      .run();
+    if (!this.readOnly) {
+      await this.db
+        .prepare(
+          'INSERT INTO analysis_runs (run_id, address, status, ip_address, created_at) VALUES (?, ?, ?, ?, ?)'
+        )
+        .bind(runId, request.address, 'running', ipHash, Math.floor(Date.now() / 1000))
+        .run();
+    }
 
     try {
       const location = await runStep(emit, 'locate', 'Locate storefront', async () => {
@@ -529,10 +534,12 @@ export class AnalysisService {
       await this.persistRun(runId, location, response, 'completed');
       return response;
     } catch (error) {
-      await this.db
-        .prepare('UPDATE analysis_runs SET status = ?, error = ? WHERE run_id = ?')
-        .bind('failed', (error as Error).message, runId)
-        .run();
+      if (!this.readOnly) {
+        await this.db
+          .prepare('UPDATE analysis_runs SET status = ?, error = ? WHERE run_id = ?')
+          .bind('failed', (error as Error).message, runId)
+          .run();
+      }
 
       throw error;
     }
@@ -544,6 +551,7 @@ export class AnalysisService {
     response: AnalysisResponse,
     status: string
   ): Promise<void> {
+    if (this.readOnly) return;
     await this.db
       .prepare('UPDATE analysis_runs SET status = ?, result = ?, latitude = ?, longitude = ? WHERE run_id = ?')
       .bind(status, JSON.stringify(response), location.latitude, location.longitude, runId)

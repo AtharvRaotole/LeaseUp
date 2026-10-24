@@ -34,7 +34,10 @@ export function ReportErrorBanner({
         onRetry={canRetry ? onRetry : undefined}
         testId="report-error-panel"
       />
-      {!retrying && error?.retryAfterSec !== undefined && seconds > 0 && (
+      {!retrying &&
+        error?.code !== 'DAILY_LIMIT_REACHED' &&
+        error?.retryAfterSec !== undefined &&
+        seconds > 0 && (
         <p className="mt-2 text-sm text-ink-2">Try again in {seconds} s.</p>
       )}
     </div>
