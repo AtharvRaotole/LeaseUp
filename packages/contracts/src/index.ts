@@ -593,6 +593,19 @@ export const PipelineOutreachContextSchema = z.object({
 
 export type PipelineOutreachContext = z.infer<typeof PipelineOutreachContextSchema>;
 
+export const PipelineEvidenceSnapshotSchema = z.object({
+  savedAt: z.string(),
+  oneLineReason: z.string().max(500),
+  reasons: z.array(z.string()).max(20).default([]),
+  affinityRank: z.number().int(),
+  nearestStoreKm: z.number().optional(),
+  verification: z.string().max(200),
+  runId: z.string().optional(),
+  radiusKm: z.number().optional(),
+});
+
+export type PipelineEvidenceSnapshot = z.infer<typeof PipelineEvidenceSnapshotSchema>;
+
 export const PipelineCardSchema = z.object({
   id: z.string().uuid(),
   prospectStatus: PipelineProspectStatusSchema,
@@ -612,6 +625,9 @@ export const PipelineCardSchema = z.object({
   followUpAt: z.string().optional(),
   outreachContext: PipelineOutreachContextSchema.optional(),
   outreachDraft: PipelineOutreachDraftSchema.optional(),
+  evidenceSnapshot: PipelineEvidenceSnapshotSchema.optional(),
+  watchId: z.string().uuid().optional(),
+  tradeAreaAlert: z.string().max(500).optional(),
 });
 
 export type PipelineCard = z.infer<typeof PipelineCardSchema>;
@@ -646,6 +662,8 @@ export const PipelineAddCardSchema = z.object({
   pitchLink: z.string().optional(),
   reportPath: z.string().optional(),
   outreachContext: PipelineOutreachContextSchema.optional(),
+  evidenceSnapshot: PipelineEvidenceSnapshotSchema.optional(),
+  radiusKm: z.number().optional(),
 });
 
 export type PipelineAddCard = z.infer<typeof PipelineAddCardSchema>;
@@ -657,9 +675,21 @@ export const PipelineUpdateCardSchema = z.object({
   recipientEmail: z.string().max(320).optional(),
   followUpAt: z.string().nullable().optional(),
   outreachDraft: PipelineOutreachDraftSchema.nullable().optional(),
+  pitchId: z.string().optional(),
+  pitchLink: z.string().optional(),
+  tradeAreaAlert: z.string().nullable().optional(),
 });
 
 export type PipelineUpdateCard = z.infer<typeof PipelineUpdateCardSchema>;
+
+export const PipelineAttachPitchSchema = z.object({
+  pitchId: z.string(),
+  pitchLink: z.string().url(),
+  propertyAddress: z.string(),
+  brandEntityIds: z.array(z.string()).max(50),
+});
+
+export type PipelineAttachPitch = z.infer<typeof PipelineAttachPitchSchema>;
 
 export const OwnerUpdateBrandRowSchema = z.object({
   brandEntityId: z.string(),

@@ -100,6 +100,23 @@ app.use('/api/*', async (c, next) => {
       keyPrefix: 'portfolio-run',
     })(c, next);
   }
+  if (
+    path === '/api/pipeline/cards' &&
+    c.req.method === 'POST'
+  ) {
+    return rateLimiter({
+      windowMs: 60_000,
+      maxRequests: 40,
+      keyPrefix: 'pipeline-add',
+    })(c, next);
+  }
+  if (path === '/api/pipeline/attach-pitch' && c.req.method === 'POST') {
+    return rateLimiter({
+      windowMs: 60_000,
+      maxRequests: 20,
+      keyPrefix: 'pipeline-attach-pitch',
+    })(c, next);
+  }
   if (path.startsWith('/api/pipeline') && path.includes('/outreach')) {
     return rateLimiter({
       windowMs: 60_000,

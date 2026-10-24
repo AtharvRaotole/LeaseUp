@@ -75,6 +75,19 @@ export function ReportSummaryAboveFold({
                       <span className="mt-1 block text-body text-ink-2">{reason}</span>
                     </span>
                   </button>
+                  <div className="mt-2 pl-14">
+                    <AddToPipelineButton
+                      size="sm"
+                      variant="secondary"
+                      wrapperTestId={`add-pipeline-top-${index}`}
+                      buildPayload={() =>
+                        pipelineCardFromProspect(prospect, results, {
+                          reportPath: buildReportPath(request, slug),
+                          radiusKm,
+                        })
+                      }
+                    />
+                  </div>
                 </li>
               );
             })}
@@ -97,6 +110,7 @@ export function ReportSummaryAboveFold({
             buildPayload={() =>
               pipelineCardFromProspect(pipelineProspect, results, {
                 reportPath: buildReportPath(request, slug),
+                radiusKm,
               })
             }
           />

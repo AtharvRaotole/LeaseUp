@@ -1,4 +1,5 @@
 import { useEffect, useState, type KeyboardEvent } from 'react';
+import { Link } from 'react-router-dom';
 import type { PipelineCard, PipelineProspectStatus } from '@leaseup/contracts';
 import * as Dialog from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
@@ -130,17 +131,60 @@ export function PipelineCardDialog({
               </div>
             )}
 
-            {(card.pitchLink || card.reportPath) && (
+            {(card.pitchLink || card.reportPath || card.watchId) && (
               <div className="flex flex-wrap gap-3 text-sm">
-                {card.pitchLink && (
-                  <a href={card.pitchLink} className="text-accent hover:underline" target="_blank" rel="noreferrer">
-                    Pitch pack
-                  </a>
-                )}
                 {card.reportPath && (
                   <a href={card.reportPath} className="text-accent hover:underline">
-                    Report
+                    Site report
                   </a>
+                )}
+                {card.pitchLink && (
+                  <a href={card.pitchLink} className="text-accent hover:underline" target="_blank" rel="noreferrer">
+                    Shared pitch pack
+                  </a>
+                )}
+                {card.watchId && (
+                  <Link to={`/watchlist/${card.watchId}`} className="text-accent hover:underline">
+                    Watched space
+                  </Link>
+                )}
+              </div>
+            )}
+
+            {card.tradeAreaAlert && (
+              <div
+                className="rounded-card border border-warn/30 bg-warn/10 p-3 text-sm"
+                data-testid="pipeline-trade-area-alert-detail"
+              >
+                <p className="font-medium text-ink">Trade area update</p>
+                <p className="mt-1 text-ink-2">{card.tradeAreaAlert}</p>
+                {!readOnly && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    className="mt-3"
+                    onClick={() => void savePatch({ tradeAreaAlert: null })}
+                  >
+                    Dismiss
+                  </Button>
+                )}
+              </div>
+            )}
+
+            {card.evidenceSnapshot && (
+              <div
+                className="rounded-card border border-border bg-surface-2/50 p-3"
+                data-testid="pipeline-evidence"
+              >
+                <p className="text-sm font-semibold text-ink">Evidence when you saved</p>
+                <p className="mt-1 text-sm text-ink-2">{card.evidenceSnapshot.oneLineReason}</p>
+                {card.evidenceSnapshot.reasons.length > 0 && (
+                  <ul className="mt-2 list-disc pl-5 text-xs text-ink-3">
+                    {card.evidenceSnapshot.reasons.slice(0, 4).map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
+                  </ul>
                 )}
               </div>
             )}
