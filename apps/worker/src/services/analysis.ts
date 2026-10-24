@@ -91,6 +91,8 @@ import {
   isQlooUnavailableError,
   TASTE_UNAVAILABLE_RANKING_NOTICE,
 } from '../lib/qloo-chain-fallback';
+import { enrichProspectsWithCoTenancy } from '../lib/co-tenancy-enrich';
+import type { NearbyTenant } from '@leaseup/contracts';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -386,6 +388,33 @@ export class AnalysisService {
         'trade-area shoppers'
       );
 
+      let nearbyTenants: NearbyTenant[] = [];
+      if (this.osmSnapshot) {
+        nearbyTenants = await this.osmSnapshot.listNearbyTenants(
+          location.latitude,
+          location.longitude,
+          request.radius,
+          24
+        );
+      }
+
+      const coTenancyEnriched = await withSoftTimeout(
+        enrichProspectsWithCoTenancy({
+          qloo: this.qloo,
+          responseCache: this.responseCache,
+          location,
+          radiusKm: request.radius,
+          runId,
+          mode: this.mode,
+          nearbyTenants,
+          prospects: enrichedProspects,
+          tasteUnavailable,
+        }),
+        ANALYZE_ENRICHMENT_QLOO_BUDGET_MS,
+        'co-tenancy enrichment'
+      );
+      if (coTenancyEnriched) enrichedProspects = coTenancyEnriched;
+
       const effectiveBacktest =
         tasteUnavailable && backtestBaseline ? backtestBaseline : backtestBlended;
       const dataQuality = tasteUnavailable
@@ -426,6 +455,7 @@ export class AnalysisService {
         tasteDataStatus: tasteUnavailable ? 'unavailable' : 'ok',
         rankingNotice: tasteUnavailable ? TASTE_UNAVAILABLE_RANKING_NOTICE : undefined,
         prospectFunnel,
+        nearbyTenants: nearbyTenants.length > 0 ? nearbyTenants : undefined,
       };
 
       await this.persistRun(runId, location, response, 'completed');

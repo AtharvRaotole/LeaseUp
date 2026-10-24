@@ -28,10 +28,14 @@ export function prospectOneLineReason(
     parts.push(shopperInterestHighlight(tasteSignal.name.trim()));
   }
 
+  if (prospect.coTenancyLine?.trim()) {
+    parts.push(prospect.coTenancyLine.trim());
+  }
+
   const category =
     prospect.tenantMixScore?.categoryFit?.trim() ||
     brandCategoryLabel(prospect.brand.entityId);
-  if (category) {
+  if (category && !prospect.coTenancyLine?.trim()) {
     parts.push(category);
   }
 

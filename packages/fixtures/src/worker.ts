@@ -125,6 +125,7 @@ export {
   tradeAreaShopperFixtureForDemo,
   type TradeAreaShopperFixture,
 } from './trade-area-shoppers-loader.js';
+export { coTenancyRecordedRaw } from './co-tenancy-recorded-loader.js';
 export {
   parseQlooTradeAreaTagInsights,
   TRADE_AREA_SHOPPER_TAG_SUBTYPES,
