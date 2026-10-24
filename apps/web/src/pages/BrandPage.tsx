@@ -185,7 +185,7 @@ export function BrandPage() {
                         >
                           <div className="flex gap-3">
                             <span
-                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-white"
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-on-accent"
                               aria-hidden
                             >
                               {row.rank}
