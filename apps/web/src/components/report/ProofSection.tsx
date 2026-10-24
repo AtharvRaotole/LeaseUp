@@ -16,6 +16,12 @@ import { InfoTooltip } from '../ui/InfoTooltip';
 import { InfoPopover } from '../ui/InfoPopover';
 import { displayBrandName } from '../../lib/brand-display';
 import { rankMovementLabel } from '../../lib/qloo-proof';
+import {
+  activeBacktestForRankingMode,
+  displayRankForMode,
+  leaseUpProductionRank,
+  sortRankingsForMode,
+} from '../../lib/ranking-production';
 
 export function ProofSection({
   results,
@@ -28,17 +34,8 @@ export function ProofSection({
   onBrandSelect?: (entityId: string, name: string) => void;
   rankingMode: 'qloo' | 'baseline';
 }) {
-  const backtest =
-    rankingMode === 'baseline' && results.backtestBaseline
-      ? results.backtestBaseline
-      : results.backtest;
-  const top10 = [...(results.rankings ?? [])]
-    .sort((a, b) => {
-      const rankA = rankingMode === 'baseline' ? (a.baselineRank ?? a.qlooRank) : a.qlooRank;
-      const rankB = rankingMode === 'baseline' ? (b.baselineRank ?? b.qlooRank) : b.qlooRank;
-      return rankA - rankB;
-    })
-    .slice(0, 10);
+  const backtest = activeBacktestForRankingMode(results, rankingMode);
+  const top10 = sortRankingsForMode(results.rankings ?? [], rankingMode).slice(0, 10);
   const present = presentInTop10Count(backtest);
   const totalScored = results.rankings?.length ?? top10.length;
   const hideFit = useMemo(() => affinitiesAllIdentical(top10), [top10]);
@@ -111,10 +108,7 @@ export function ProofSection({
                 onClick={() => onBrandSelect?.(row.entityId, row.name)}
               >
                 <td className="px-4 py-3 tabular-nums text-ink-2">
-                  #
-                  {rankingMode === 'baseline'
-                    ? row.baselineRank ?? row.qlooRank
-                    : row.qlooRank}
+                  #{displayRankForMode(row, rankingMode)}
                 </td>
                 <td className="px-4 py-3 text-ink">
                   {displayBrandName(row.entityId, row.name)}
@@ -130,7 +124,7 @@ export function ProofSection({
                 <td className="px-4 py-3 text-xs text-ink-2">
                   <span className="inline-flex items-center gap-1">
                     {row.baselineRank !== undefined
-                      ? rankMovementLabel(row.qlooRank, row.baselineRank)
+                      ? rankMovementLabel(leaseUpProductionRank(row), row.baselineRank)
                       : 'n/a'}
                     {row.baselineRank !== undefined && (
                       <InfoPopover

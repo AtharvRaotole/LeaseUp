@@ -61,6 +61,7 @@ const WhoShopsHereCard = lazy(() =>
 import { WhyThisBrandCard } from '../components/report/WhyThisBrandCard';
 import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton';
 import { pipelineCardFromProspect } from '../lib/build-pipeline-card';
+import { activeBacktestForRankingMode } from '../lib/ranking-production';
 
 const ReportFirstRunTour = lazy(() =>
   import('../components/report/ReportFirstRunTour').then((m) => ({ default: m.ReportFirstRunTour }))
@@ -291,10 +292,7 @@ export function ReportPage() {
     Boolean(displayError) || (!simulateError && (autoRetrying || geocodeAutoRetrying));
 
   const activeBacktest =
-    results &&
-    (rankingMode === 'baseline' && results.backtestBaseline
-      ? results.backtestBaseline
-      : results.backtest);
+    results && activeBacktestForRankingMode(results, rankingMode);
 
   const reportSections = results && (
     <div className="report-content-enter space-y-8 text-body">
