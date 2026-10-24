@@ -1,10 +1,20 @@
 # Accessibility and mobile Lighthouse scores
 
-Measured locally on a **production Vite preview** (`vite preview`) with the **demo worker** (`APP_MODE=demo`, `127.0.0.1:8787` proxied as `/api`). Mobile Lighthouse uses `formFactor: mobile` (390×844). Axe uses `@axe-core/playwright` with WCAG 2.x tags; map canvas controls are excluded.
+## Measurement environments (do not mix)
 
-Command: `node scripts/run-a11y-perf-audit.mjs` (see `PLAYWRIGHT_BASE_URL` / `PLAYWRIGHT_API_URL`). Lighthouse scores discard one cold navigation per URL, then record the next run (landing) or the **median of three runs** (report).
+| Environment | Stack | Lighthouse protocol | Used in |
+|-------------|--------|---------------------|---------|
+| **GitHub Actions `ubuntu-latest`** | Production `vite preview` (port **4173**) + demo worker (`APP_MODE=demo`, port **8787**), proxied `/api` | Mobile 390×844; **3 runs** per URL (`lighthouserc.cjs`); **median** per category | **Lighthouse CI** job in `.github/workflows/ci.yml` (`node scripts/run-lighthouse-ci.mjs`). Job log line `LHCI_MEDIANS:` prints raw performance arrays and medians after each run. |
+| **GitHub Actions `ubuntu-latest`** | Same preview + demo worker as Lighthouse CI (ports **4180** / **8792** in `scripts/run-a11y-e2e.mjs`) | Axe via `@axe-core/playwright`, WCAG 2.x tags; map canvas excluded | **Axe a11y e2e** job |
+| Optional local reproduction | `node scripts/run-report-lighthouse-benchmark.mjs` (custom ports) | 1 cold discard + **5** post-warm runs, 3s gap | Engineering only; **not** cited in Devpost or submission copy |
+
+**Devpost / `SUBMISSION.md`:** cite only medians from the **GitHub Actions Lighthouse CI** row above, and state that environment explicitly. Never cite a higher score from a different machine, run count, or unmerged PR.
+
+Mobile Lighthouse uses `formFactor: mobile` (390×844). Axe uses `@axe-core/playwright` with WCAG 2.x tags; map canvas controls are excluded.
 
 ## Axe (serious / critical violations)
+
+Measured on **GitHub Actions `ubuntu-latest`** (Axe a11y e2e job, production preview + demo worker).
 
 | Page | Before | After |
 |------|--------|-------|
@@ -18,21 +28,32 @@ Command: `node scripts/run-a11y-perf-audit.mjs` (see `PLAYWRIGHT_BASE_URL` / `PL
 
 ## Lighthouse mobile (Performance / Accessibility / Best practices)
 
-| URL | Before | After |
-|-----|--------|-------|
-| `/` | 83 / 100 / 100 | 91 / 100 / 100 |
-| `/r/wicker?…&radius=10` | 63 / 95 / 100 | **90** / 100 / 100 |
+**Source:** **GitHub Actions LHCI median of 3 mobile runs** on `ubuntu-latest` (production preview port 4173 + demo worker, `lighthouserc.cjs`). Raw arrays and medians are printed as `LHCI_MEDIANS:` in the job log after each run.
 
-After scores follow PR #71 plus report mobile work: demo-chip analyze **prefetch at app entry**, single-shot demo `/api/analyze`, lazy map column (mobile report pane skips map until the user opens Map), font preload for body and display weights, opacity-only enter animation on mobile, and **post-paint deferral** for all users (`requestAnimationFrame` ×2, then `requestIdleCallback`: sticky header and tour at 2.5s cap, deep sections at 5s cap)—no Lighthouse, headless, or audit detection. Mobile report performance **median is 90** (three post-warm runs via `node scripts/run-a11y-perf-audit-local.mjs` on production preview + demo worker, 2026-10-24). Accessibility and best practices are 100 on landing and report.
+**Pinned from green CI** ([workflow run 40074283024](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40074283024); `LHCI_MEDIANS` on branch `cursor/report-lh-remeasure-ca63` after merge **d5c4040**; scores unchanged until a new green LHCI run):
 
-**Smoke / e2e:** `data-testid="brands-to-pitch"` lives on the above-fold top-five card (`ReportSummaryAboveFold`); the full list in the collapsible section uses `brands-to-pitch-full-list`.
+| URL | Raw performance (3 runs) | Median (perf / a11y / best practices) |
+|-----|--------------------------|----------------------------------------|
+| `/` | 91, 93, 93 | **93** / 100 / 93 |
+| `/r/wicker?…&radius=10` | 91, 89, 89 | **89** / 96 / 93 |
+
+| URL | Before | After (same CI environment as above) |
+|-----|--------|--------------------------------------|
+| `/` | 83 / 100 / 100 | **93** / 100 / 93 |
+| `/r/wicker?…&radius=10` | 63 / 95 / 100 | **89** / 96 / 93 |
+
+Landing performance is enforced ≥ 90 in CI. Report performance is **warn-only** below 90 (median **89** in the run above). Report accessibility median **96** in that run (axe e2e still enforces 0 serious/critical on the report with `?screenshot=1`).
+
+Report mobile work (#93+): demo-chip analyze **prefetch at app entry**, single-shot demo `/api/analyze`, lazy map column on mobile until Map tab, font preload, no mobile report enter animation, above-fold `brands-to-pitch`, post-paint deferral for all users (`requestAnimationFrame` ×2, then `requestIdleCallback`: mobile brand detail rows ~400ms idle, headline stats / sticky header / tour / demo banner 2.5s cap, deep sections 12s cap unless `?screenshot=1`)—no Lighthouse, headless, or audit detection.
+
+**Smoke / e2e:** `data-testid="brands-to-pitch"` on the above-fold top-five card (`ReportSummaryAboveFold`); full list uses `brands-to-pitch-full-list`.
 
 ### Tour / audit honesty (PR #78 follow-up)
 
-Re-checked `apps/web/src` after merging broker comprehension (#83): **no matches** for `lighthouse`, `HeadlessChrome`, `navigator.webdriver`, `LH_`, or audit-only env/query flags. Nothing in app code skips or changes the first-run tour for Lighthouse, headless Chrome, or Playwright.
+Re-checked `apps/web/src`: **no matches** for `lighthouse`, `HeadlessChrome`, `navigator.webdriver`, `LH_`, or audit-only env/query flags.
 
-- Tour timing for **all** users (including mobile): `ReportPage.tsx` sets `deferHeavyUi` after double `requestAnimationFrame` plus idle/timeout (`~93–126`), then mounts `ReportFirstRunTour` when `deferHeavyUi` is true (`~542–545`).
-- `?screenshot=1` only expands deep sections and adds `html.screenshot-capture` for capture scripts (`ReportPage.tsx` `~91`, `~149–151`); it does **not** suppress the tour.
-- E2e and Lighthouse CI dismiss the tour in **test setup** (`e2e/a11y-helpers.ts`, `e2e/usability.spec.ts`), not in production UI code.
+- Tour mounts when `deferPostPaint` is true (`ReportPage.tsx`, 2.5s idle cap).
+- `?screenshot=1` expands deep sections for capture; it does **not** suppress the tour.
+- E2e dismisses the tour in test setup (`e2e/a11y-helpers.ts`), not in production UI code.
 
-CI: `node scripts/run-a11y-e2e.mjs` fails on new serious or critical axe violations. Lighthouse CI uses `lighthouserc.cjs` (three runs per URL; landing enforces 90+ on all three categories; report enforces 90+ on accessibility and best practices, performance at **warn** 90 until mobile report performance consistently clears 90).
+CI: `node scripts/run-a11y-e2e.mjs` fails on new serious or critical axe violations. Lighthouse CI uses `lighthouserc.cjs` as above.

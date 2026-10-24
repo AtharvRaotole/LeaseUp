@@ -3,22 +3,29 @@ import { pitchExpandedLines } from '../lib/pitch-detail-copy';
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 
 describe('pitchExpandedLines', () => {
-  it('does not duplicate snapshot date in verification line', () => {
+  it('returns taste summary and signals without store verification lines', () => {
     const prospect = {
-      brand: { entityId: 'x', name: 'Test', affinityRank: 1, verified: 'verified (2 sources)' },
+      brand: {
+        entityId: 'x',
+        name: 'Test',
+        affinity: 0.9,
+        affinityRank: 1,
+        verified: 'verified (2 sources)',
+      },
+      outreachDraft: '',
+      reasons: [],
+      whyBrandTaste: {
+        signals: [{ kind: 'audience', name: 'Health & Beauty', affinity: 0.74, affinityRank: 27 }],
+        summary: "Qloo's Test audience leans toward Health & Beauty, which also ranks among the top audiences near this pin.",
+      },
     } as ProspectPack;
     const results = {
       rankings: [{ entityId: 'x', name: 'Test' }],
-      osmSnapshotLabel: 'OpenStreetMap snapshot',
-      osmSnapshotRecordedAt: '2026-10-23T04:57:36.264Z',
       timestamp: '2026-10-23T04:57:36.264Z',
     } as AnalysisResponse;
 
     const lines = pitchExpandedLines(prospect, results, 10);
-    const line = lines[lines.length - 1];
-    expect(line).toMatch(/as of Oct 23, 2026/);
-    expect(line).toMatch(/Checked in 2 sources/);
-    expect(line).not.toMatch(/on Oct 23, 2026 on/);
-    expect(line).not.toMatch(/snapshot, Oct 23, 2026 on/);
+    expect(lines.join(' ')).toContain('Health & Beauty');
+    expect(lines.join(' ')).not.toMatch(/All The Places/);
   });
 });

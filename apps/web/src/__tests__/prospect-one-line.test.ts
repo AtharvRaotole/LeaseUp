@@ -48,12 +48,43 @@ describe('prospectOneLineReason', () => {
     expect(line).not.toContain('taste-aware blend');
   });
 
+  it('ignores location-only trade-area rows without verified brand overlap', () => {
+    const line = prospectOneLineReason(
+      prospect({
+        brand: { entityId: 'a', name: 'Alpha', affinity: 0.9, affinityRank: 6, verified: 'unverified' },
+        tradeAreaTaste: { tags: [{ entityId: 't1', name: 'Tourist attraction', affinity: 0.99, affinityRank: 1 }], audiences: [] },
+      }),
+      baseResults,
+      10
+    );
+    expect(line).not.toContain('Tourist attraction');
+  });
+
+  it('skips a non-retail overlap signal such as Hotel and uses the next one', () => {
+    const line = prospectOneLineReason(
+      prospect({
+        whyBrandTaste: {
+          signals: [
+            { kind: 'audience', name: 'Hotel', affinity: 0.9, affinityRank: 2 },
+            { kind: 'audience', name: 'Health & Beauty', affinity: 0.74, affinityRank: 27 },
+          ],
+        },
+      }),
+      baseResults,
+      10
+    );
+    expect(line).not.toContain('Hotel');
+    expect(line).toContain('Health & Beauty');
+  });
+
   it('produces different copy for two brands with different data', () => {
     const a = prospectOneLineReason(
       prospect({
         brand: { entityId: 'a', name: 'Alpha', affinity: 0.9, affinityRank: 6, verified: 'unverified' },
         nearestExistingStoreKm: 12,
-        tradeAreaTaste: { tags: [{ entityId: 't1', name: 'Streetwear', affinity: 0.8, affinityRank: 1 }], audiences: [] },
+        whyBrandTaste: {
+          signals: [{ kind: 'audience', name: 'Sneakerheads', affinity: 0.8, affinityRank: 13 }],
+        },
       }),
       baseResults,
       10
@@ -75,7 +106,7 @@ describe('prospectOneLineReason', () => {
       10
     );
     expect(a).not.toBe(b);
-    expect(a).toContain('Streetwear');
+    expect(a).toContain('Sneakerheads');
     expect(b).toContain('Top 20% local match here');
     expect(b).toContain('Coffee');
   });

@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import type { PortfolioResponse, PortfolioRow } from '@leaseup/contracts';
-import { Upload } from 'lucide-react';
+import { Building2, Upload } from 'lucide-react';
 import { TopBar } from '../components/layout/TopBar';
 import { Button } from '../components/ui/Button';
-import { Card } from '../components/ui/Card';
+import { PageEmptyState } from '../components/ui/PageEmptyState';
 import { PortfolioLoadingSkeleton } from '../components/portfolio/PortfolioLoadingSkeleton';
 import { portfolioEmptyAction, portfolioEmptyLine } from '../lib/empty-state-copy';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -235,31 +235,36 @@ export function PortfolioPage() {
   return (
     <div className="min-h-screen bg-bg" data-testid="portfolio-page">
       <TopBar />
-      <main className="mx-auto max-w-[1280px] min-w-0 overflow-x-hidden px-4 py-8 md:px-6">
-        <div className="grid min-w-0 gap-8 lg:grid-cols-12">
+      <main className="mx-auto max-w-[1200px] min-w-0 overflow-x-hidden px-4 py-10 md:px-6 md:py-12">
+        <header className="max-w-3xl border-b border-border/60 pb-8">
+          <p className="text-label uppercase tracking-wide text-ink-3">Broker tools</p>
+          <h1 className="mt-2 break-words font-display font-semibold text-display tracking-tight text-ink">
+            Portfolio mode
+          </h1>
+          <p className="mt-3 break-words text-body leading-relaxed text-ink-2">
+            Paste up to 10 storefronts or upload a CSV. We geocode, confirm ambiguous matches, then run shopper taste analyses in sequence.
+          </p>
+        </header>
+        <div className="mt-10 grid min-w-0 gap-6 lg:grid-cols-12 lg:gap-8 lg:items-start">
           <div className="min-w-0 lg:col-span-5">
-            <h1 className="break-words font-display font-semibold text-display text-ink">Portfolio mode</h1>
-            <p className="mt-3 break-words text-ink-2">
-              Paste up to 10 storefronts or upload a CSV. We geocode, confirm ambiguous matches, then run shopper taste analyses in sequence.
-            </p>
             {!portfolio && (
-              <Card className="mt-8 p-5">
+              <div className="rounded-[1.25rem] border border-border bg-surface-2 p-6 md:p-7">
                 <label className="text-label uppercase text-ink-3" htmlFor="portfolio-addresses">
                   Addresses (one per line)
                 </label>
                 <textarea
                   id="portfolio-addresses"
-                  className="mt-2 min-h-[160px] w-full rounded-control border border-border bg-surface px-3 py-2 text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  className="mt-3 min-h-[168px] w-full rounded-control border border-border bg-surface px-3 py-3 text-body text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   placeholder="1574 N Milwaukee Ave, Chicago, IL"
                   data-testid="portfolio-input"
                 />
-                <div className="mt-4 flex flex-wrap gap-3">
+                <div className="mt-5 flex flex-wrap items-center gap-3">
                   <Button type="button" onClick={() => void submitDraft()} disabled={busy}>
                     {busy ? 'Working…' : 'Geocode and analyze'}
                   </Button>
-                  <label className="inline-flex cursor-pointer items-center gap-2 text-sm text-ink-2">
+                  <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-body text-ink-2">
                     <Upload className="h-4 w-4" aria-hidden />
                     Upload CSV
                     <input
@@ -282,24 +287,24 @@ export function PortfolioPage() {
                     />
                   </div>
                 )}
-              </Card>
+              </div>
             )}
             {portfolio && (
               <ErrorBoundary>
-                <section className="mt-8 min-w-0" aria-label="Progress timeline">
+                <section className="min-w-0 rounded-[1.25rem] border border-border bg-surface-2 p-6 md:p-7" aria-label="Progress timeline">
                   <h2 className="text-label uppercase text-ink-3">Progress</h2>
-                  <ol className="mt-3 min-w-0 space-y-2" data-testid="portfolio-timeline">
+                  <ol className="mt-4 min-w-0 space-y-2" data-testid="portfolio-timeline">
                     {portfolio.rows.map((row) => (
-                      <li key={row.id} className="min-w-0 rounded-control border border-border bg-surface px-3 py-2 text-sm">
+                      <li key={row.id} className="min-w-0 rounded-control border border-border bg-surface px-3 py-2.5 text-body">
                         <p className="break-words font-medium text-ink">{row.inputAddress}</p>
-                        <p className="text-ink-3">{statusLabel(row.status)}</p>
+                        <p className="text-small text-ink-3">{statusLabel(row.status)}</p>
                         {row.status === 'ambiguous' && row.geocodeCandidates && (
                           <div className="mt-2 space-y-1">
                             {row.geocodeCandidates.map((c, i) => (
                               <button
                                 key={c.resolvedAddress}
                                 type="button"
-                                className="block w-full break-words rounded-control border border-border px-2 py-1 text-left text-xs hover:border-accent"
+                                className="block w-full break-words rounded-control border border-border bg-surface-2 px-2 py-1.5 text-left text-small hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                                 onClick={() => void confirmRow(row.id, i)}
                               >
                                 {c.resolvedAddress}
@@ -327,29 +332,29 @@ export function PortfolioPage() {
           <div className="min-w-0 lg:col-span-7">
             <ErrorBoundary>
               {portfolio ? (
-                <Card className="overflow-x-auto p-0">
-                  <table className="w-full text-left text-sm" data-testid="portfolio-table">
-                    <thead className="border-b border-border bg-surface-2 text-label uppercase text-ink-3">
+                <div className="overflow-hidden overflow-x-auto rounded-[1.25rem] border border-border bg-surface">
+                  <table className="w-full text-left text-body" data-testid="portfolio-table">
+                    <thead className="border-b border-border/70 bg-surface-2/80 text-label uppercase text-ink-3">
                       <tr>
-                        <th className="px-4 py-3">
-                          <button type="button" onClick={() => toggleSort('property')}>Property</button>
+                        <th className="px-5 py-3.5 font-medium">
+                          <button type="button" className="hover:text-ink" onClick={() => toggleSort('property')}>Property</button>
                         </th>
-                        <th className="px-4 py-3">
-                          <button type="button" onClick={() => toggleSort('neighborhood')}>Neighborhood</button>
+                        <th className="px-5 py-3.5 font-medium">
+                          <button type="button" className="hover:text-ink" onClick={() => toggleSort('neighborhood')}>Neighborhood</button>
                         </th>
-                        <th className="px-4 py-3">Top prospects</th>
-                        <th className="px-4 py-3">
-                          <button type="button" onClick={() => toggleSort('hitRate')}>Backtest hit rate</button>
+                        <th className="px-5 py-3.5 font-medium">Top prospects</th>
+                        <th className="px-5 py-3.5 text-right font-medium">
+                          <button type="button" className="hover:text-ink" onClick={() => toggleSort('hitRate')}>Backtest hit rate</button>
                         </th>
-                        <th className="px-4 py-3">
-                          <button type="button" onClick={() => toggleSort('status')}>Status</button>
+                        <th className="px-5 py-3.5 font-medium">
+                          <button type="button" className="hover:text-ink" onClick={() => toggleSort('status')}>Status</button>
                         </th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-border/60">
                       {sortedRows.map((row) => (
-                        <tr key={row.id} className="border-b border-border">
-                          <td className="px-4 py-3 text-ink">
+                        <tr key={row.id} className="bg-surface">
+                          <td className="px-5 py-3.5 text-ink">
                             {row.location ? (
                               <Link
                                 className="text-accent hover:underline"
@@ -361,39 +366,41 @@ export function PortfolioPage() {
                               row.inputAddress
                             )}
                           </td>
-                          <td className="px-4 py-3 text-ink-2">{row.neighborhood ?? 'n/a'}</td>
-                          <td className="px-4 py-3 text-ink-2">
+                          <td className="px-5 py-3.5 text-ink-2">{row.neighborhood ?? 'n/a'}</td>
+                          <td className="px-5 py-3.5 text-ink-2">
                             {(row.topProspects ?? []).map((p) => p.name).join(', ') || 'n/a'}
                           </td>
-                          <td className="px-4 py-3 tabular-nums">
+                          <td className="px-5 py-3.5 text-right font-medium tabular-nums tracking-tight text-ink">
                             {row.backtestHitRate !== undefined ? row.backtestHitRate.toFixed(2) : 'n/a'}
                           </td>
-                          <td className="px-4 py-3">{statusLabel(row.status)}</td>
+                          <td className="px-5 py-3.5 text-ink-2">{statusLabel(row.status)}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                </Card>
+                </div>
               ) : loadingPortfolio ? (
                 <PortfolioLoadingSkeleton />
               ) : (
-                <Card
-                  className="flex min-h-[320px] flex-col items-center justify-center p-8 text-center"
+                <div
+                  className="flex min-h-[360px] items-center justify-center rounded-[1.25rem] border border-border bg-surface-2 lg:min-h-[420px]"
                   data-testid="portfolio-empty-state"
                 >
-                  <p className="max-w-sm text-ink-2">{portfolioEmptyLine}</p>
-                  <a
-                    href="#portfolio-addresses"
-                    className="mt-6 text-sm font-medium text-accent hover:underline"
-                  >
-                    {portfolioEmptyAction}
-                  </a>
-                </Card>
+                  <PageEmptyState icon={Building2} title="No portfolio run yet">
+                    <p>{portfolioEmptyLine}</p>
+                    <a
+                      href="#portfolio-addresses"
+                      className="mt-6 inline-block text-body font-medium text-accent hover:underline"
+                    >
+                      {portfolioEmptyAction}
+                    </a>
+                  </PageEmptyState>
+                </div>
               )}
               {portfolio && (
-                <p className="mt-3 text-meta text-ink-3">
+                <p className="mt-4 text-meta text-ink-3">
                   Shareable link:{' '}
-                  <span className="break-all text-ink-2">{`/portfolio/${portfolio.id}`}</span>
+                  <span className="break-all font-mono text-small text-ink-2">{`/portfolio/${portfolio.id}`}</span>
                 </p>
               )}
             </ErrorBoundary>

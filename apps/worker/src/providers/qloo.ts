@@ -4,8 +4,11 @@ import {
   wickerparkFixture,
   boulderFixture,
   seviervilleFixture,
-  parseQlooExplainabilityRows,
+  parseQlooAudienceRows,
+  computeBrandLocalAudienceOverlap,
+  audiencePanelBaseline,
   TRADE_AREA_SHOPPER_TAG_SUBTYPES,
+  type TradeAreaTasteRow,
 } from '@leaseup/fixtures/worker';
 import { ConfigurationError, UpstreamError } from '../lib/errors';
 import {
@@ -257,38 +260,37 @@ export class QlooClient {
     return insights;
   }
 
+  /**
+   * Verified brand x local audience overlap for the Why card.
+   *
+   * Two separate Qloo urn:audience calls: brand-only (signal.interests.entities, no location) and
+   * location-only (signal.location, no brand). Only audiences in both lists survive
+   * (computeBrandLocalAudienceOverlap), and the brand must beat the recorded live brand panel
+   * baseline for that audience. `tags` is always empty: brand + location tag insights return
+   * generic cross-domain tags at ~0.99 affinity and are not brand-specific.
+   */
   async getTradeAreaTasteContext(params: {
     location: QlooLocation;
     brandEntityId: string;
     runId?: string;
-  }): Promise<{ tags: ReturnType<typeof parseQlooExplainabilityRows>; audiences: ReturnType<typeof parseQlooExplainabilityRows> } | null> {
+  }): Promise<{ tags: TradeAreaTasteRow[]; audiences: TradeAreaTasteRow[] } | null> {
     if (this.mode === 'demo') {
       return null;
     }
 
     try {
-      const take = 25;
-      const [tagJson, audienceJson] = await Promise.all([
-        this.fetchExplainabilityInsights({
-          location: params.location,
-          brandEntityId: params.brandEntityId,
-          filterType: 'urn:tag',
-          take,
-          runId: params.runId,
-        }),
-        this.fetchExplainabilityInsights({
-          location: params.location,
-          brandEntityId: params.brandEntityId,
-          filterType: 'urn:audience',
-          take,
-          runId: params.runId,
-        }),
+      const [brandJson, localJson] = await Promise.all([
+        this.fetchAudienceInsights({ brandEntityId: params.brandEntityId, runId: params.runId }),
+        this.fetchAudienceInsights({ location: params.location, runId: params.runId }),
       ]);
-
-      const tags = parseQlooExplainabilityRows(tagJson, 'tag');
-      const audiences = parseQlooExplainabilityRows(audienceJson, 'audience');
-      if (tags.length === 0 && audiences.length === 0) return null;
-      return { tags, audiences };
+      // Ranked by lift over the recorded brand panel; sensitive categories excluded; at most 2 rows.
+      const audiences = computeBrandLocalAudienceOverlap(
+        parseQlooAudienceRows(brandJson),
+        parseQlooAudienceRows(localJson),
+        { panelBaseline: audiencePanelBaseline() }
+      );
+      if (audiences.length === 0) return null;
+      return { tags: [], audiences };
     } catch (err) {
       if (isQlooUnavailableError(err)) return null;
       throw err;
@@ -368,27 +370,43 @@ export class QlooClient {
     }
   }
 
-  private async fetchExplainabilityInsights(params: {
-    location: QlooLocation;
-    brandEntityId: string;
-    filterType: 'urn:tag' | 'urn:audience';
-    take: number;
+  /** In-flight audience fetches, so parallel prospects share one location-only call. */
+  private audienceInflight = new Map<string, Promise<unknown>>();
+
+  /** Brand-only (brandEntityId) or location-only (location) urn:audience insights, take 50. */
+  private fetchAudienceInsights(params: {
+    location?: QlooLocation;
+    brandEntityId?: string;
     runId?: string;
   }): Promise<unknown> {
-    const locationKey = this.locationCacheKey(params.location);
-    const cacheKey = `explain:${params.filterType}:${locationKey}:${params.brandEntityId}:take=${params.take}`;
+    const scope = params.location
+      ? `loc:${this.locationCacheKey(params.location)}`
+      : `brand:${params.brandEntityId}`;
+    const cacheKey = `audiences:${scope}:take=${QLOO_MAX_TAKE}`;
+    const existing = this.audienceInflight.get(cacheKey);
+    if (existing) return existing;
+    const pending = this.fetchAudienceInsightsUncached(params, cacheKey).finally(() => {
+      this.audienceInflight.delete(cacheKey);
+    });
+    this.audienceInflight.set(cacheKey, pending);
+    return pending;
+  }
 
+  private async fetchAudienceInsightsUncached(
+    params: { location?: QlooLocation; brandEntityId?: string; runId?: string },
+    cacheKey: string
+  ): Promise<unknown> {
+    const filterType = 'urn:audience';
     const cached = await this.cache.get(cacheKey, 'text');
     if (typeof cached === 'string') {
       return JSON.parse(cached) as unknown;
     }
 
     const url = new URL('/v2/insights', this.baseUrl);
-    url.searchParams.set('filter.type', params.filterType);
-    applyQlooInsightsLocationParams(url, params.location);
-    url.searchParams.set('signal.interests.entities', params.brandEntityId);
-    url.searchParams.set('take', params.take.toString());
-    url.searchParams.set('feature.explainability', 'true');
+    url.searchParams.set('filter.type', filterType);
+    if (params.location) applyQlooInsightsLocationParams(url, params.location);
+    if (params.brandEntityId) url.searchParams.set('signal.interests.entities', params.brandEntityId);
+    url.searchParams.set('take', QLOO_MAX_TAKE.toString());
 
     const start = Date.now();
     const response = await fetchQlooWithRetry(
@@ -408,7 +426,7 @@ export class QlooClient {
         latencyMs: latency,
         cached: false,
       });
-      throw this.mapQlooHttpError(response.status, response.statusText, params.filterType);
+      throw this.mapQlooHttpError(response.status, response.statusText, filterType);
     }
 
     const data = await response.json();
