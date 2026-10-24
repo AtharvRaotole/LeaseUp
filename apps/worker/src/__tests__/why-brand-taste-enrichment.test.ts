@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { buildWhyBrandTasteFromContext } from '../lib/why-brand-taste-enrichment';
 
 describe('buildWhyBrandTasteFromContext', () => {
-  it('builds up to three audience signals and a summary from verified overlap', () => {
+  it('builds up to two audience signals and a summary from verified overlap', () => {
     const taste = buildWhyBrandTasteFromContext('Ulta', {
       tags: [{ entityId: 't1', name: 'Tourist attraction', affinity: 0.99, affinityRank: 1 }],
       audiences: [
