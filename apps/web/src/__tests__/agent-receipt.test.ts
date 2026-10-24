@@ -5,14 +5,13 @@ import {
   agentReceiptMarkdown,
   buildPipelineReceiptRows,
   buildPlannerReceiptSection,
+  buildPlannerUnavailableLine,
   loggedProspectingSteps,
   parseAgentToolDecisions,
   plainProspectingStepResult,
-  PLANNER_UNAVAILABLE_LINE,
 } from '../lib/agent-receipt';
 import { DEMO_PROSPECTING_RECEIPT_JOB } from '../lib/demo-prospecting-receipt-fixture';
 import { LIVE_AGENT_PLAN_STEP } from './live-prospecting-receipt.fixture';
-import { buildPlannerUnavailableLine, parseAgentToolDecisions } from '../lib/agent-receipt';
 import { findBrokerJargonViolations } from '../lib/broker-visible-jargon';
 
 describe('agent receipt', () => {
