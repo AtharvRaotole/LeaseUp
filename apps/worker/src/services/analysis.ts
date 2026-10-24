@@ -42,6 +42,10 @@ import { NearbyPresenceCache } from '../lib/nearby-presence-cache';
 import { createStoreCatalog, type StoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
 import { brandCategoryLabel } from '../lib/brand-category';
+import {
+  NEARBY_TENANT_LIST_CAP,
+  nearbyCategoryTenantReasonLine,
+} from '../lib/nearby-category-tenant-line';
 
 import { OSM_SNAPSHOT_RECORDED_AT } from '../data/osm-snapshot-meta';
 
@@ -556,6 +560,18 @@ export class AnalysisService {
     const siteDensity = fixtureId ? demoFixtureDensity(fixtureId) : 'urban';
     const siteStratum = fixtureId ? demoFixtureStratum(fixtureId) : densityToDefaultStratum(siteDensity);
     const absenceRadiusKm = prospectAbsenceRadiusKm(siteStratum, radius);
+    let nearbyTenantsForReasons: NearbyTenant[] | undefined;
+    let nearbyTenantListCapped = false;
+    if (this.osmSnapshot) {
+      nearbyTenantsForReasons = await this.osmSnapshot.listNearbyTenants(
+        location.latitude,
+        location.longitude,
+        radius,
+        NEARBY_TENANT_LIST_CAP
+      );
+      nearbyTenantListCapped =
+        (nearbyTenantsForReasons?.length ?? 0) >= NEARBY_TENANT_LIST_CAP;
+    }
     const presence = new NearbyPresenceCache(this.catalog, location);
     const catalogBrandIds = new Set(this.catalog.getBrandIds());
     let alreadyNearbyCount = 0;
@@ -629,7 +645,9 @@ export class AnalysisService {
         nationalCount,
         rankedCount,
         tasteUnavailable,
-        absenceRadiusKm
+        absenceRadiusKm,
+        nearbyTenantsForReasons,
+        nearbyTenantListCapped
       );
 
       let coverageNote = this.catalog.getCoverageNote(candidate.entity_id, nationalCount);
@@ -1031,7 +1049,9 @@ export class AnalysisService {
     nationalCount: number,
     rankedCount: number,
     tasteUnavailable = false,
-    radiusKm = 10
+    radiusKm = 10,
+    nearbyTenants?: NearbyTenant[],
+    nearbyTenantListCapped = false
   ): string[] {
     const reasons: string[] = [];
     const affinity = prospect.query?.affinity ?? 0;
@@ -1055,8 +1075,14 @@ export class AnalysisService {
 
     reasons.push(`No ${displayName} store within ${radiusKm} km (ATP catalog)`);
 
-    if (category) {
-      reasons.push(`${category}: category gap vs. nearby tenants`);
+    const categoryLine = nearbyCategoryTenantReasonLine(
+      category,
+      nearbyTenants,
+      radiusKm,
+      nearbyTenantListCapped
+    );
+    if (categoryLine) {
+      reasons.push(categoryLine);
     }
 
     if (nationalCount >= 100) {
