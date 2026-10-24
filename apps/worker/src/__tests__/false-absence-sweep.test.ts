@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from 'vite
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { AnalysisService } from '../services/analysis';
+import { OverpassClient } from '../services/overpass';
+import * as qlooFetch from '../providers/qloo-fetch';
 import {
   FALSE_ABSENCE_SWEEP_SITES,
   findFalseAbsenceViolations,
@@ -87,6 +89,23 @@ function insightsForDemo(site: (typeof FALSE_ABSENCE_SWEEP_SITES)[number]): Qloo
   return site.evalInsightsId ? insightsForEval(site.evalInsightsId) : [];
 }
 
+function mockLiveOfflineAnalyze(
+  service: AnalysisService,
+  site: (typeof FALSE_ABSENCE_SWEEP_SITES)[number]
+): void {
+  vi.spyOn(service['geocode'], 'resolveForAnalysis').mockResolvedValue({
+    address: site.address,
+    resolvedAddress: site.address,
+    latitude: site.lat,
+    longitude: site.lon,
+    city: 'New York',
+    neighborhood: 'West Village',
+  });
+  vi.spyOn(service['qloo'], 'getBrandInsights').mockResolvedValue(insightsForDemo(site));
+  vi.spyOn(service['qloo'], 'getTradeAreaTasteContext').mockResolvedValue(null);
+  vi.spyOn(service['qloo'], 'getTradeAreaShopperTagInsights').mockResolvedValue(undefined);
+}
+
 async function analyzeSite(site: (typeof FALSE_ABSENCE_SWEEP_SITES)[number]) {
   const kv = createCountingKvNamespace();
   const isDemo = Boolean(site.demoFixture);
@@ -97,28 +116,13 @@ async function analyzeSite(site: (typeof FALSE_ABSENCE_SWEEP_SITES)[number]) {
   );
 
   if (!isDemo) {
-    const geocode = service['geocode'] as { resolveForAnalysis: () => Promise<unknown> };
-    vi.spyOn(geocode, 'resolveForAnalysis').mockResolvedValue({
-      address: site.address,
-      resolvedAddress: site.address,
-      latitude: site.lat,
-      longitude: site.lon,
-      city: 'New York',
-      neighborhood: 'West Village',
-    });
-    const qloo = service['qloo'] as {
-      getBrandInsights: () => Promise<QlooInsight[]>;
-      getTradeAreaTasteContext: () => Promise<null>;
-      getTradeAreaShopperTagInsights: () => Promise<undefined>;
-    };
-    vi.spyOn(qloo, 'getBrandInsights').mockResolvedValue(insightsForDemo(site));
-    vi.spyOn(qloo, 'getTradeAreaTasteContext').mockResolvedValue(null);
-    vi.spyOn(qloo, 'getTradeAreaShopperTagInsights').mockResolvedValue(undefined);
+    mockLiveOfflineAnalyze(service, site);
   }
 
   const address =
     site.demoFixture ? DEMO_CHIP_ADDRESSES[site.demoFixture] : site.address;
-  return service.analyze({ address, radius: site.radiusKm }, `fa-${site.id}`, 'ip');
+  const result = await service.analyze({ address, radius: site.radiusKm }, `fa-${site.id}`, 'ip');
+  return { result, kv };
 }
 
 describe('False-absence sweep (verified missing-brand)', () => {
@@ -149,6 +153,9 @@ describe('False-absence sweep (verified missing-brand)', () => {
   });
 
   it('does not label verified (2 sources) when OSM wikidata shows a store in radius', async () => {
+    const qlooHttpSpy = vi.spyOn(qlooFetch, 'fetchQlooWithRetry');
+    const overpassLiveSpy = vi.spyOn(OverpassClient.prototype, 'queryProspectBrands');
+
     const beforeViolations: FalseAbsenceViolation[] = [];
     const afterViolations: FalseAbsenceViolation[] = [];
     let prospectRows = 0;
@@ -159,8 +166,9 @@ describe('False-absence sweep (verified missing-brand)', () => {
       const demoCrosscheckSpy = vi
         .spyOn(osmWikidataAbsenceCrosscheck, 'nearestDemoOverpassMatchKm')
         .mockReturnValue(undefined);
-      const beforeResult = await analyzeSite(site);
+      const { result: beforeResult, kv: beforeKv } = await analyzeSite(site);
       demoCrosscheckSpy.mockRestore();
+      expect(beforeKv.puts, `${site.id} baseline KV puts`).toHaveLength(0);
 
       const baseline = findFalseAbsenceViolations(
         repoRoot,
@@ -179,12 +187,16 @@ describe('False-absence sweep (verified missing-brand)', () => {
         });
       }
 
-      const result = await analyzeSite(site);
+      const { result, kv } = await analyzeSite(site);
+      expect(kv.puts, `${site.id} KV puts`).toHaveLength(0);
       prospectRows += result.prospects.length;
 
       const still = findFalseAbsenceViolations(repoRoot, site, result.prospects, true);
       afterViolations.push(...still);
     }
+
+    expect(qlooHttpSpy).not.toHaveBeenCalled();
+    expect(overpassLiveSpy).not.toHaveBeenCalled();
 
     if (process.env.WRITE_FALSE_ABSENCE_AUDIT === '1') {
       const md = buildFalseAbsenceAuditMarkdown({
