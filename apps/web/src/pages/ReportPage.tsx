@@ -102,6 +102,11 @@ export function ReportPage() {
       setDeferDeepSections(false);
       return;
     }
+    if (expandDeepSections) {
+      setDeferPostPaint(true);
+      setDeferDeepSections(true);
+      return;
+    }
     let cancelled = false;
     const win = window as Window & {
       requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
@@ -133,7 +138,7 @@ export function ReportPage() {
       clearTour?.();
       clearDeep?.();
     };
-  }, [results]);
+  }, [results, expandDeepSections]);
 
   const [geocodeCandidates, setGeocodeCandidates] = useState<GeocodeCandidate[] | null>(null);
   const [geocodeChecking, setGeocodeChecking] = useState(false);
@@ -319,6 +324,8 @@ export function ReportPage() {
               selected={selected}
               onSelectBrand={selectProspect}
               onSharePitch={() => setSharePitchOpen(true)}
+              vacancyInput={vacancyInput}
+              onVacancyChange={handleVacancyChange}
             />
           {deferPostPaint && (
             <Suspense fallback={null}>
