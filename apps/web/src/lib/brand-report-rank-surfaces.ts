@@ -1,5 +1,5 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
-import { fitPercentileLabel } from './fit-display';
+import { brandRankSurfaceStrings } from '@leaseup/fixtures';
 import { pitchOneLineWhy } from './pitch-one-line';
 import { prospectOneLineReason } from './prospect-one-line';
 import { whyBrandBulletLines } from './why-brand-lines';
@@ -12,17 +12,12 @@ export function brandReportRankSurfaces(
 ): string[] {
   const total = results.rankings?.length ?? 0;
   const rank = prospect.brand.affinityRank;
+  const core = brandRankSurfaceStrings(rank, total, prospect.reasons[0]);
   const surfaces: string[] = [
     ...whyBrandBulletLines(prospect, results, radiusKm),
     prospectOneLineReason(prospect, results, radiusKm),
     pitchOneLineWhy(prospect, total),
+    ...core,
   ];
-  if (total > 0 && rank > 0) {
-    surfaces.push(fitPercentileLabel(rank, total));
-  }
-  const head = prospect.reasons[0];
-  if (head?.includes('LeaseUp rank #')) {
-    surfaces.push(head);
-  }
-  return surfaces.filter(Boolean);
+  return [...new Set(surfaces.filter(Boolean))];
 }
