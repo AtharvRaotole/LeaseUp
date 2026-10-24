@@ -11,5 +11,6 @@
     "types": ["vite/client"]
   },
   "include": ["src"],
+  "exclude": ["src/__tests__/demo-report-rank-surfaces.test.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -20,8 +20,9 @@ export function brandReportRankSurfaces(
   if (total > 0 && rank > 0) {
     surfaces.push(fitPercentileLabel(rank, total));
   }
-  if (prospect.reasons[0]) {
-    surfaces.push(prospect.reasons[0]);
+  const head = prospect.reasons[0];
+  if (head?.includes('LeaseUp rank #')) {
+    surfaces.push(head);
   }
   return surfaces.filter(Boolean);
 }

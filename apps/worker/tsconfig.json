@@ -7,9 +7,5 @@
     "types": ["@cloudflare/workers-types", "@types/node"]
   },
   "include": ["src/**/*"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "src/__tests__/demo-report-rank-surfaces.test.ts"
-  ]
+  "exclude": ["node_modules", "dist"]
 }
