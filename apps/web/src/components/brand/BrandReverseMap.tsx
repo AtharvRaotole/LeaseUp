@@ -3,13 +3,7 @@ import maplibregl from 'maplibre-gl';
 import type { BrandReverseResponse } from '@leaseup/contracts';
 import { heatmapWeightsFromAffinityRanks } from '../../lib/heatmap-scale';
 import { mapMarkerColor } from '../../lib/map-accent';
-
-function mapStyle() {
-  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
-  }
-  return 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
-}
+import { mapBasemapStyleUrl } from '../../lib/theme';
 
 function pinHtml(rank: number, active: boolean): string {
   const bg = mapMarkerColor(active);
@@ -33,7 +27,7 @@ export function BrandReverseMap({
     if (!containerRef.current || mapRef.current) return;
     const map = new maplibregl.Map({
       container: containerRef.current,
-      style: mapStyle(),
+      style: mapBasemapStyleUrl(),
       center: [-87.6298, 41.8781],
       zoom: 9,
     });

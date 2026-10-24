@@ -25,7 +25,14 @@ const context = await browser.newContext({
 const page = await context.newPage();
 
 for (const theme of ['light', 'dark']) {
-  await page.emulateMedia({ colorScheme: theme });
+  await page.addInitScript(
+    ({ key, value }) => {
+      localStorage.setItem(key, value);
+      document.documentElement.dataset.theme = value;
+      document.documentElement.style.colorScheme = value;
+    },
+    { key: 'leaseup-theme', value: theme }
+  );
   await page.goto(`${BASE}/__preview/landing-hero`, { waitUntil: 'networkidle' });
   const frame = page.getByTestId('landing-hero-preview-frame');
   await frame.waitFor({ timeout: 30_000 });

@@ -101,7 +101,11 @@ const pageDark = await browser.newPage({
   viewport: { width: 1440, height: 900 },
   colorScheme: 'dark',
 });
-await pageDark.emulateMedia({ colorScheme: 'dark' });
+await pageDark.addInitScript(() => {
+  localStorage.setItem('leaseup-theme', 'dark');
+  document.documentElement.dataset.theme = 'dark';
+  document.documentElement.style.colorScheme = 'dark';
+});
 await pageDark.goto(BASE, { waitUntil: 'networkidle' });
 await shot(pageDark, 'landing-dark-1440.png', { fullPage: true });
 await pageDark.goto(reportUrl(sevierville), { waitUntil: 'networkidle' });

@@ -46,7 +46,7 @@ export function ReportStickyHeader({
 
   return (
     <div className="sticky top-16 z-20 border-b border-border bg-surface/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-[1280px] items-center gap-2 px-4 py-3 md:gap-3">
+      <div className="mx-auto flex max-w-content items-center gap-2 px-4 py-3 md:gap-3">
         <p className="min-w-0 flex-1 truncate text-sm font-semibold text-ink md:font-normal md:text-ink-2">
           <span className="md:font-semibold md:text-ink">{neighborhood}</span>
           <span className="hidden text-ink-3 md:inline"> · </span>

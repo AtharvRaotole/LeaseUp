@@ -4,6 +4,7 @@ import { LandingPage } from './pages/LandingPage';
 import { MapRouteStyles } from './components/layout/MapRouteStyles';
 import { RouteFallback } from './components/layout/RouteFallback';
 import { SkipToContent } from './components/layout/SkipToContent';
+import { ThemeProvider } from './hooks/useAppTheme';
 import { previewRoutesEnabled } from './lib/preview-routes';
 
 const previewRoutesOn = previewRoutesEnabled();
@@ -67,6 +68,7 @@ const ProspectingReceiptPreviewPage = lazy(() =>
 
 export default function App() {
   return (
+    <ThemeProvider>
     <BrowserRouter>
       <SkipToContent />
       <MapRouteStyles />
@@ -107,5 +109,6 @@ export default function App() {
         </Routes>
       </Suspense>
     </BrowserRouter>
+    </ThemeProvider>
   );
 }

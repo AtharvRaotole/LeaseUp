@@ -74,7 +74,7 @@ export function LandingPage() {
     <div className="min-h-screen bg-bg">
       <TopBar />
       <main id="main-content" className="outline-none">
-        <section className="premium-hero-glow overflow-hidden border-b border-border bg-bg">
+        <section className="premium-hero-glow border-b border-border bg-bg">
           <div className="mx-auto max-w-content px-4 pb-16 pt-[12vh] md:px-6 md:pb-20 md:pt-[14vh]">
             <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(300px,560px)] lg:items-center lg:gap-8 xl:grid-cols-[minmax(0,1fr)_600px] xl:gap-12">
               <div className="min-w-0">
@@ -88,21 +88,21 @@ export function LandingPage() {
             </div>
 
             <form
-              className="frame-corner-ticks mx-auto mt-10 w-full max-w-[640px] rounded-card border border-border bg-surface p-4 md:p-5 lg:mx-0 lg:max-w-none"
+              className="frame-corner-ticks mx-auto mt-8 w-full max-w-[640px] rounded-card border border-border bg-surface p-3 md:p-3.5 lg:mx-0 lg:max-w-none"
               onSubmit={(e) => {
                 e.preventDefault();
                 submit(address);
               }}
             >
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
                 <div className="relative min-w-0 flex-1">
                   <MapPin
-                    className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-3 sm:left-4"
+                    className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-3"
                     aria-hidden
                   />
                   <Input
                     data-testid="landing-address-input"
-                    className="w-full pl-11 sm:pl-12"
+                    className="w-full min-w-0 pl-11"
                     placeholder={LANDING_ADDRESS_PLACEHOLDER}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
@@ -112,13 +112,13 @@ export function LandingPage() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full shrink-0 sm:w-auto sm:min-w-[124px]"
+                  className="w-full shrink-0 sm:w-auto sm:min-w-[132px]"
                   data-testid="landing-analyze-button"
                 >
                   Analyze
                 </Button>
               </div>
-              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-3">
+              <div className="mt-2.5 flex flex-wrap items-end gap-x-3 gap-y-2 lg:flex-nowrap">
                 <SegmentedControl
                   label="Trade area"
                   value={radiusKm}
@@ -134,12 +134,12 @@ export function LandingPage() {
                   value={category}
                   onChange={(v) => setCategory(v as CategoryKey)}
                   options={CATEGORY_OPTIONS.map((c) => ({ value: c.key, label: c.label }))}
-                  className="min-w-[140px] flex-1 sm:flex-none sm:min-w-[160px]"
+                  className="min-w-[148px] shrink-0"
                 />
                 <button
                   type="button"
                   data-testid="landing-run-prospecting"
-                  className="inline-flex min-h-11 items-center text-small font-medium text-accent-muted underline decoration-accent/70 underline-offset-2 transition-colors hover:text-accent hover:decoration-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface rounded-control"
+                  className="mb-0.5 inline-flex min-h-11 shrink-0 items-center text-small font-medium text-accent-muted underline decoration-accent/70 underline-offset-2 transition-colors hover:text-accent hover:decoration-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface rounded-control lg:ml-auto"
                   onClick={() => {
                     const trimmed = address.trim();
                     if (!trimmed) return;
@@ -155,7 +155,7 @@ export function LandingPage() {
               </div>
             </form>
 
-            <div className="mx-auto mt-8 flex max-w-[640px] flex-wrap gap-2 lg:mx-0">
+            <div className="mx-auto mt-6 flex w-full max-w-[640px] flex-nowrap gap-2 overflow-x-auto pb-0.5 lg:mx-0 lg:max-w-none lg:overflow-visible">
               {LANDING_DEMO_CHIPS.map((chip) => (
                 <button
                   key={chip.id}

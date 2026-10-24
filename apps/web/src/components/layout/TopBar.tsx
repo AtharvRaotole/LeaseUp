@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Logo } from '../brand/Logo';
 import { Badge } from '../ui/Badge';
+import { ThemeToggle } from '../ui/ThemeToggle';
 import { useHealth } from '../../hooks/useHealth';
 
 const NAV_LINKS = [
@@ -46,12 +47,14 @@ export function TopBar() {
           >
             GitHub
           </a>
+          <ThemeToggle />
           <Badge tone={isLive ? 'success' : 'warn'}>
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-current opacity-80" aria-hidden />
             {isLive ? 'Live data' : 'Demo data'}
           </Badge>
         </nav>
         <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
           <Badge tone={isLive ? 'success' : 'warn'}>
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-current opacity-80" aria-hidden />
             {isLive ? 'Live' : 'Demo'}

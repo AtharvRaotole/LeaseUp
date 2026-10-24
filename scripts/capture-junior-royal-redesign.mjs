@@ -61,6 +61,11 @@ for (const width of [1440, 390]) {
     viewport: { width, height: width === 390 ? 844 : 900 },
     colorScheme: 'dark',
   });
+  await page.addInitScript(() => {
+    localStorage.setItem('leaseup-theme', 'dark');
+    document.documentElement.dataset.theme = 'dark';
+    document.documentElement.style.colorScheme = 'dark';
+  });
   await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
   await page.getByTestId('landing-plain-summary').waitFor({ timeout: 60_000 });
   await page.screenshot({ path: join(OUT, `landing-${width}-dark.png`) });

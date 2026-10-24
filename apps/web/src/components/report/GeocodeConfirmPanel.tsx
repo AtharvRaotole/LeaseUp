@@ -14,12 +14,7 @@ import {
   geocodeCandidateTitle,
 } from '../../lib/geocode-display';
 
-function mapStyle() {
-  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
-  }
-  return 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
-}
+import { mapBasemapStyleUrl } from '../../lib/theme';
 
 export function GeocodeConfirmPanel({
   address,
@@ -61,7 +56,7 @@ export function GeocodeConfirmPanel({
     if (!containerRef.current || mapRef.current) return;
     const map = new maplibregl.Map({
       container: containerRef.current,
-      style: mapStyle(),
+      style: mapBasemapStyleUrl(),
       center: [pin.lng, pin.lat],
       zoom: 13,
       touchZoomRotate: true,

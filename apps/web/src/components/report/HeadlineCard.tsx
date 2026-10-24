@@ -49,11 +49,11 @@ export function HeadlineCard({
 
   return (
     <Card>
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-2">
         <h2 className="min-w-0 flex-1 font-display font-semibold text-h2 leading-snug text-ink md:text-title">
           {reportHeadlineLine(results, area, radiusKm)}
         </h2>
-        {headlineActions ? <div className="shrink-0">{headlineActions}</div> : null}
+        {headlineActions ? <div className="shrink-0 self-start md:self-auto">{headlineActions}</div> : null}
       </div>
       <p
         className="mt-3 text-small leading-snug text-ink-3"
