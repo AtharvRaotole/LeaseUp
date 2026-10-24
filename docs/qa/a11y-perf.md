@@ -28,12 +28,21 @@ Measured on **GitHub Actions `ubuntu-latest`** (Axe a11y e2e job, production pre
 
 ## Lighthouse mobile (Performance / Accessibility / Best practices)
 
-**Source:** GitHub Actions **Lighthouse CI** job, median of **three** mobile runs per URL (see table at top). Update the "After" column when a green CI run on the release branch prints a new `LHCI_MEDIANS:` line.
+**Source:** GitHub Actions **`ubuntu-latest` Lighthouse CI** job (production preview port 4173 + demo worker), **median of three** mobile runs per URL (`lighthouserc.cjs`). Raw arrays and medians are printed as `LHCI_MEDIANS:` in the job log after each run.
 
-| URL | Before | After (GitHub Actions Lighthouse CI, median of 3 mobile runs) |
-|-----|--------|------------------------------------------------------------------|
-| `/` | 83 / 100 / 100 | See latest `LHCI_MEDIANS` for `http://localhost:4173/` (landing performance enforced ≥ 90 in CI) |
-| `/r/wicker?…&radius=10` | 63 / 95 / 100 | See latest `LHCI_MEDIANS` for Wicker report URL (accessibility and best practices enforced ≥ 90; performance **warn** below 90) |
+**Latest green CI on `cursor/report-lh-remeasure-ca63` ([workflow run 40058723762](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40058723762); re-measure on the branch head and update this table when scores change):**
+
+| URL | Raw performance (3 runs) | Median (perf / a11y / best practices) |
+|-----|--------------------------|----------------------------------------|
+| `/` | 92, 93, 93 | **93** / 100 / 93 |
+| `/r/wicker?…&radius=10` | 90, 92, 90 | **90** / 96 / 93 |
+
+| URL | Before | After (same CI environment as above) |
+|-----|--------|--------------------------------------|
+| `/` | 83 / 100 / 100 | **93** / 100 / 93 |
+| `/r/wicker?…&radius=10` | 63 / 95 / 100 | **90** / 96 / 93 |
+
+Landing performance is enforced ≥ 90 in CI. Report performance is **warn-only** below 90 (median 90 in the run above). Report accessibility median **96** in that run (axe e2e still enforces 0 serious/critical on the report with `?screenshot=1`).
 
 Report mobile work (#93+): demo-chip analyze **prefetch at app entry**, single-shot demo `/api/analyze`, lazy map column on mobile until Map tab, font preload, no mobile report enter animation, above-fold `brands-to-pitch`, post-paint deferral for all users (`requestAnimationFrame` ×2, then `requestIdleCallback`: mobile brand detail rows ~400ms idle, headline stats / sticky header / tour / demo banner 2.5s cap, deep sections 12s cap unless `?screenshot=1`)—no Lighthouse, headless, or audit detection.
 

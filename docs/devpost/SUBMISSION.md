@@ -6,7 +6,7 @@
 
 **On the live landing today:** the same headline appears above a short helper line from the app: "Enter an address to see which brands local shoppers want nearby, then check real store locations before you pitch." (`LANDING_PLAIN_SUMMARY` in `apps/web/src/lib/broker-copy.ts`).
 
-**Production reference:** Cloudflare Pages at commit **`fce312c`** (demo chips + live mode). Mobile Lighthouse scores in this doc match **`docs/qa/a11y-perf.md`**: measured only on the **GitHub Actions `ubuntu-latest` Lighthouse CI** job (production preview + demo worker, mobile 390×844, **median of three runs** per URL). Do not cite scores from other machines or run counts.
+**Production reference:** Cloudflare Pages at commit **`fce312c`** (demo chips + live mode). Mobile Lighthouse (GitHub Actions **`ubuntu-latest` Lighthouse CI**, production preview + demo worker, mobile 390×844, **median of three runs** per URL; [run 40058723762](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40058723762)): landing **93** / 100 / 93 performance / accessibility / best practices; Wicker report **90** / 96 / 93. Same environment and numbers in `docs/qa/a11y-perf.md`. Do not cite scores from other VMs or run counts.
 
 Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` (40 US addresses, live Qloo API, October 23, 2026).
 
