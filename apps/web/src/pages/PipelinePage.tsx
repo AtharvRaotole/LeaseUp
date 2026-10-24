@@ -40,15 +40,15 @@ export function PipelinePage() {
   return (
     <div className="min-h-screen bg-bg" data-testid="pipeline-page">
       <TopBar />
-      <main id="main-content" className="mx-auto max-w-[1280px] px-4 py-8 md:px-6 outline-none">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
+      <main id="main-content" className="mx-auto max-w-[1280px] px-4 py-8 md:px-6 md:py-10 outline-none">
+        <div className="flex flex-wrap items-start justify-between gap-4 md:items-end">
+          <div className="min-w-0 max-w-2xl">
             <p className="text-label uppercase tracking-wide text-ink-3">Leasing</p>
             <h1 className="mt-1 font-display font-semibold text-display text-ink">Pipeline</h1>
-            <p className="mt-2 max-w-xl text-sm text-ink-2">
+            <p className="mt-2 text-sm leading-relaxed text-ink-2">
               {readOnly
-                ? 'Read-only view of a shared board. Outreach and contacts are not shown here.'
-                : 'Your lightweight CRM for leasing outreach. Set status, notes, and reminders by hand. LeaseUp never sends email for you.'}
+                ? 'Shared view only. Outreach drafts and contact details stay off this link.'
+                : 'Track brands you save from site reports. Set status, notes, and reminders yourself. LeaseUp does not send email for you.'}
             </p>
           </div>
           {!readOnly && board && (
@@ -92,8 +92,8 @@ export function PipelinePage() {
         </div>
 
         {readOnly && (
-          <p className="mt-4 rounded-card border border-border bg-surface-2 px-3 py-2 text-sm text-ink-2">
-            Shared pipeline · cards only (no outreach drafts on this link)
+          <p className="mt-4 rounded-card border border-border bg-surface-2 px-4 py-3 text-sm text-ink-2">
+            Cards on this link only. Outreach drafts are not included.
           </p>
         )}
 
@@ -112,28 +112,36 @@ export function PipelinePage() {
 
         {!error && !board && <PipelineLoadingSkeleton />}
 
-        {board && !error && !readOnly && <OwnerUpdatePanel />}
-
         {board && !error && (
-          <div className="mt-8">
-            {board.cards.length === 0 ? (
-              <div
-                className="rounded-card border border-dashed border-border bg-surface px-6 py-16 text-center"
-                data-testid="pipeline-empty"
-              >
-                <p className="text-ink">{pipelineEmptyLine}</p>
-                <Link to="/" className="mt-4 inline-block">
-                  <Button type="button" variant="primary" size="sm">{pipelineEmptyAction}</Button>
-                </Link>
+          <>
+            <div className="mt-8">
+              {board.cards.length === 0 ? (
+                <div
+                  className="rounded-card border border-dashed border-border bg-surface px-6 py-14 text-center md:px-10"
+                  data-testid="pipeline-empty"
+                >
+                  <h2 className="font-display text-h3 font-semibold text-ink">Nothing in your pipeline yet</h2>
+                  <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-2">
+                    {pipelineEmptyLine}
+                  </p>
+                  <Link to="/" className="mt-6 inline-block">
+                    <Button type="button" variant="primary" size="md">{pipelineEmptyAction}</Button>
+                  </Link>
+                </div>
+              ) : (
+                <PipelineKanban
+                  cards={board.cards}
+                  readOnly={readOnly}
+                  onBoardUpdated={() => void reload()}
+                />
+              )}
+            </div>
+            {!readOnly && (
+              <div className={board.cards.length > 0 ? 'mt-10 border-t border-border pt-10' : 'mt-8'}>
+                <OwnerUpdatePanel />
               </div>
-            ) : (
-              <PipelineKanban
-                cards={board.cards}
-                readOnly={readOnly}
-                onBoardUpdated={() => void reload()}
-              />
             )}
-          </div>
+          </>
         )}
 
         {!readOnly && sharePath && board && board.cards.length > 0 && (

@@ -44,6 +44,12 @@ export function GeocodeConfirmPanel({
   const markerRef = useRef<maplibregl.Marker | null>(null);
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
+  const resizeMap = useCallback(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    map.resize();
+  }, []);
+
   useEffect(() => {
     const c = candidates[selected];
     if (!c) return;
@@ -70,9 +76,14 @@ export function GeocodeConfirmPanel({
     });
     markerRef.current = marker;
     mapRef.current = map;
-    map.on('load', () => {
-      map.resize();
-    });
+    const scheduleResize = () => {
+      requestAnimationFrame(() => {
+        map.resize();
+        requestAnimationFrame(() => map.resize());
+      });
+    };
+    map.on('load', scheduleResize);
+    scheduleResize();
     return () => {
       marker.remove();
       map.remove();
@@ -82,13 +93,26 @@ export function GeocodeConfirmPanel({
   }, []);
 
   useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => resizeMap());
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [resizeMap]);
+
+  useEffect(() => {
+    window.addEventListener('resize', resizeMap);
+    return () => window.removeEventListener('resize', resizeMap);
+  }, [resizeMap]);
+
+  useEffect(() => {
     const map = mapRef.current;
     const marker = markerRef.current;
     if (!map || !marker) return;
     marker.setLngLat([pin.lng, pin.lat]);
     map.flyTo({ center: [pin.lng, pin.lat], duration: 600 });
-    map.resize();
-  }, [pin.lat, pin.lng]);
+    resizeMap();
+  }, [pin.lat, pin.lng, resizeMap]);
 
   const confirm = () => {
     const c = candidates[selected]!;
@@ -128,7 +152,7 @@ export function GeocodeConfirmPanel({
   const first = candidates[0]!;
 
   return (
-    <Card className="p-5" data-testid="geocode-confirm">
+    <Card className="min-w-0 p-5" data-testid="geocode-confirm">
       <h2 className="text-h3 font-semibold text-ink">Which storefront did you mean?</h2>
       <p className="mt-1 text-sm text-ink-2">
         We found a few close matches for &quot;{address}&quot;. Pick the one you are leasing, then
@@ -180,7 +204,7 @@ export function GeocodeConfirmPanel({
       </div>
       <div
         ref={containerRef}
-        className="mt-4 h-[min(52vh,360px)] min-h-[280px] w-full overflow-hidden rounded-lg border border-border sm:min-h-[220px] sm:h-[220px]"
+        className="relative mt-4 h-[min(52vh,360px)] min-h-[280px] w-full min-w-0 max-w-full overflow-hidden rounded-lg border border-border sm:min-h-[220px] sm:h-[220px]"
         aria-label="Confirm map location"
         data-testid="geocode-confirm-map"
       />

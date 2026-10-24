@@ -41,7 +41,7 @@ function ColumnShell({
     <div
       ref={setNodeRef}
       className={cn(
-        'flex w-[min(100%,240px)] shrink-0 flex-col rounded-card border border-border bg-surface-2/40',
+        'flex w-[min(88vw,260px)] shrink-0 snap-start flex-col rounded-card border border-border bg-surface-2/50 md:w-[min(100%,260px)]',
         isOver && 'ring-2 ring-accent/40'
       )}
       data-testid={`pipeline-column-${status}`}
@@ -57,12 +57,18 @@ function ColumnShell({
         </span>
       </div>
       <SortableContext items={ids} strategy={verticalListSortingStrategy}>
-        <ul className="flex min-h-[120px] flex-1 flex-col gap-2 p-2">
-          {cards.map((card) => (
-            <li key={card.id}>
-              <PipelineCardItem card={card} readOnly={readOnly} onOpen={onOpen} />
+        <ul className="flex min-h-[140px] flex-1 flex-col gap-2 p-2.5">
+          {cards.length === 0 ? (
+            <li className="flex flex-1 items-center justify-center px-2 py-6 text-center text-xs text-ink-3">
+              No cards in this stage
             </li>
-          ))}
+          ) : (
+            cards.map((card) => (
+              <li key={card.id}>
+                <PipelineCardItem card={card} readOnly={readOnly} onOpen={onOpen} />
+              </li>
+            ))
+          )}
         </ul>
       </SortableContext>
     </div>

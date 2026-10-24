@@ -216,6 +216,16 @@ const PAGE_DEFS_BASE = [
   },
   { id: 'portfolio', path: '/portfolio', waitTestId: 'portfolio-input' },
   { id: 'pipeline', path: '/pipeline', waitTestId: 'pipeline-page', prepare: preparePipeline },
+  {
+    id: 'pipeline-empty',
+    path: '/pipeline',
+    waitTestId: 'pipeline-empty',
+    prepare: async (page) => {
+      await page.context().clearCookies();
+      await page.goto(`${BASE}/pipeline`, { waitUntil: 'networkidle' });
+    },
+    optional: true,
+  },
   { id: 'watchlist', path: '/__preview/watchlist-diff', waitTestId: 'watchlist-diff-preview', prepare: prepareWatchlist },
   {
     id: 'methodology',
@@ -242,11 +252,16 @@ const PAGE_DEFS = [
   ...PAGE_DEFS_BASE.slice(6),
 ];
 
+const ONLY = process.env.VQA_ONLY?.split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+
 const browser = await chromium.launch();
 
 for (const theme of ['light', 'dark']) {
   for (const width of [1440, 390]) {
     for (const def of PAGE_DEFS) {
+      if (ONLY?.length && !ONLY.includes(def.id)) continue;
       const context = await browser.newContext({
         viewport: { width, height: width === 390 ? 844 : 900 },
         colorScheme: theme,
