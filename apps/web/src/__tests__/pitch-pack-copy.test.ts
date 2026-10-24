@@ -82,7 +82,7 @@ describe('pitch pack copy', () => {
   it('dedupes rank and nearest-store lines on demo Boulder pitch', () => {
     const snapshot = loadDemoPitchSnapshot(DEMO_PITCH_BOULDER_ULTA_ID);
     expect(snapshot).not.toBeNull();
-    const ultaPack = snapshot!.prospects[0];
+    const ultaPack = snapshot!.prospects[0]!;
     const lines = pitchBrandFitLines(ultaPack.prospect, snapshot!);
     const joined = lines.join('\n');
     expect(joined).not.toMatch(/#26 of 224 brands we scored/);
