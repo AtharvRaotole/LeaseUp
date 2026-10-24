@@ -30,30 +30,33 @@ export function PitchPage() {
 
   useEffect(() => {
     if (!id) return;
-    const demoSnapshot = loadDemoPitchSnapshot(id);
-    if (demoSnapshot) {
-      setSnapshot(demoSnapshot);
-      if (demoSnapshot.vacancy) {
-        setVacancy(pitchVacancyToDraft(demoSnapshot.vacancy));
-      } else {
-        setVacancy(loadVacancyDraft(demoSnapshot.address));
-      }
-      return;
-    }
     void (async () => {
       try {
         const res = await fetch(apiUrl(`/api/pitch/${id}`));
-        if (!res.ok) throw new Error('Pitch not found');
-        const data = (await res.json()) as PitchPackSnapshot;
-        setSnapshot(data);
-        if (data.vacancy) {
-          setVacancy(pitchVacancyToDraft(data.vacancy));
-        } else {
-          setVacancy(loadVacancyDraft(data.address));
+        if (res.ok) {
+          const data = (await res.json()) as PitchPackSnapshot;
+          setSnapshot(data);
+          if (data.vacancy) {
+            setVacancy(pitchVacancyToDraft(data.vacancy));
+          } else {
+            setVacancy(loadVacancyDraft(data.address));
+          }
+          return;
         }
       } catch {
-        setError(shareLinkExpiredLine);
+        /* try offline demo snapshot */
       }
+      const demoSnapshot = loadDemoPitchSnapshot(id);
+      if (demoSnapshot) {
+        setSnapshot(demoSnapshot);
+        if (demoSnapshot.vacancy) {
+          setVacancy(pitchVacancyToDraft(demoSnapshot.vacancy));
+        } else {
+          setVacancy(loadVacancyDraft(demoSnapshot.address));
+        }
+        return;
+      }
+      setError(shareLinkExpiredLine);
     })();
   }, [id]);
 

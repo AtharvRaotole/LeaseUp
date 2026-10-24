@@ -7,6 +7,11 @@ import {
   pitchBrandTasteFitSentence,
 } from '@leaseup/fixtures';
 import { absenceRadiusKm, pitchPackAbsenceRadiusKm } from './absence-radius';
+import {
+  nearestStoreDistanceAttribution,
+  storeDistanceDataAsOf,
+  storeDistancesSnapshotOnly,
+} from './store-distance-copy';
 
 export function pitchBriefKindLabel(snapshot: PitchPackSnapshot): string {
   return isDemoPitchId(snapshot.id) ? 'Sample leasing brief' : 'Leasing brief';
@@ -43,13 +48,23 @@ export function pitchTradeAreaFacts(snapshot: PitchPackSnapshot): string[] {
   return lines;
 }
 
-export function pitchNearestStoreBriefLine(prospect: ProspectPack): string | null {
+export function pitchNearestStoreBriefLine(
+  prospect: ProspectPack,
+  snapshot?: PitchPackSnapshot
+): string | null {
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   if (prospect.nearestExistingStoreUnconfirmed) {
     return nearestStoreDistanceUnconfirmedLine(name);
   }
   const km = prospect.nearestExistingStoreKm;
   if (km === undefined) return null;
+  if (snapshot && storeDistancesSnapshotOnly(snapshot)) {
+    const attribution = nearestStoreDistanceAttribution(
+      true,
+      storeDistanceDataAsOf(snapshot)
+    );
+    return `Nearest ${name} is ${km.toFixed(1)} km away (${attribution}).`;
+  }
   return `Nearest ${name} is ${km.toFixed(1)} km away (tracked chain store data).`;
 }
 
@@ -79,7 +94,7 @@ export function pitchBrandFitLines(
   const lines: string[] = [];
   const tasteLine = pitchBrandTasteBriefLine(prospect);
   if (tasteLine) lines.push(tasteLine);
-  const nearest = pitchNearestStoreBriefLine(prospect);
+  const nearest = pitchNearestStoreBriefLine(prospect, _snapshot);
   if (nearest) lines.push(nearest);
   for (const reason of prospect.reasons) {
     if (shouldShowStoredWhyLine(reason)) {
@@ -140,11 +155,15 @@ export function pitchProspectFactFromSnapshot(
     return nearestStoreDistanceUnconfirmedLine(name);
   }
   const km = prospect.nearestExistingStoreKm;
+  const staleNote =
+    storeDistancesSnapshotOnly(snapshot) && km !== undefined
+      ? ` (${nearestStoreDistanceAttribution(true, storeDistanceDataAsOf(snapshot))})`
+      : '';
   if (km !== undefined) {
     if (km > absenceKm) {
-      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (no store within ${absenceKm} km).`;
+      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (no store within ${absenceKm} km)${staleNote}.`;
     }
-    return `Nearest ${name} is ${km.toFixed(1)} km from this pin.`;
+    return `Nearest ${name} is ${km.toFixed(1)} km from this pin${staleNote}.`;
   }
   return `No ${name} tracked chain store within ${absenceKm} km of this pin in our store data.`;
 }

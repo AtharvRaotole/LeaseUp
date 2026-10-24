@@ -220,7 +220,9 @@ analysisRouter.get('/analyze/:runId', async (c) => {
   };
 
   if (run.status === 'completed' && run.result) {
-    response.result = JSON.parse(run.result);
+    const parsed = JSON.parse(run.result) as import('@leaseup/contracts').AnalysisResponse;
+    const { refreshAnalysisNearestStores } = await import('../lib/snapshot-nearest-refresh');
+    response.result = await refreshAnalysisNearestStores(c.env, parsed);
   } else if (run.status === 'failed' && run.error) {
     response.error = run.error;
   }

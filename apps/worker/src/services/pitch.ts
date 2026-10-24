@@ -5,12 +5,15 @@ import type { Env } from '../index';
 import { SHARE_PERSIST_UNAVAILABLE } from '../lib/kv-persistent';
 import { getDemoPitchSnapshot } from '../lib/demo-pitch-catalog';
 import { buildPitchPackSnapshot } from '../lib/pitch-snapshot';
+import { refreshPitchPackNearestStores } from '../lib/snapshot-nearest-refresh';
 
 export class PitchService {
   private db: D1Database;
+  private env: Env;
 
   constructor(env: Env) {
     this.db = env.DB;
+    this.env = env;
   }
 
   async create(input: PitchCreate): Promise<PitchPackSnapshot> {
@@ -37,7 +40,9 @@ export class PitchService {
 
   async get(id: string): Promise<PitchPackSnapshot | null> {
     const demo = getDemoPitchSnapshot(id);
-    if (demo) return demo;
+    if (demo) {
+      return refreshPitchPackNearestStores(this.env, demo);
+    }
 
     const row = await this.db
       .prepare('SELECT payload FROM pitch_packs WHERE pitch_id = ?')
@@ -45,6 +50,7 @@ export class PitchService {
       .first<{ payload: string }>();
     if (!row?.payload) return null;
     const parsed = JSON.parse(row.payload) as PitchPackSnapshot;
-    return PitchPackSnapshotSchema.parse(parsed);
+    const snapshot = PitchPackSnapshotSchema.parse(parsed);
+    return refreshPitchPackNearestStores(this.env, snapshot);
   }
 }
