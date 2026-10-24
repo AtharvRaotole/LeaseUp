@@ -60,6 +60,24 @@
     margin: 0;
     -webkit-font-smoothing: antialiased;
     font-feature-settings: 'kern' 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .text-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
   }
 
   .tabular-nums {
@@ -108,7 +126,114 @@
 
 .maplibregl-map {
   font-family: inherit;
-  border-radius: 12px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border);
+}
+
+.premium-hero-glow {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+}
+
+.premium-hero-glow::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -28%;
+  z-index: 0;
+  width: 100vw;
+  height: 120%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 48% 42% at 50% 22%,
+    color-mix(in srgb, var(--glow-steel) 70%, transparent) 0%,
+    color-mix(in srgb, var(--glow-indigo) 52%, transparent) 32%,
+    color-mix(in srgb, var(--glow-mauve) 42%, transparent) 52%,
+    transparent 68%
+  );
+  opacity: var(--hero-glow-opacity);
+}
+
+.premium-hero-glow::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -10%;
+  z-index: 0;
+  width: 100vw;
+  height: 95%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: 0.38;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  mask-image: radial-gradient(ellipse 46% 40% at 50% 24%, black 0%, transparent 70%);
+}
+
+.premium-hero-glow > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 767px) {
+  .premium-hero-glow::before {
+    top: 0;
+    width: 130vw;
+    height: 72%;
+    background: radial-gradient(
+      ellipse 92% 58% at 50% 14%,
+      color-mix(in srgb, var(--glow-steel) 68%, transparent) 0%,
+      color-mix(in srgb, var(--glow-indigo) 50%, transparent) 34%,
+      color-mix(in srgb, var(--glow-mauve) 40%, transparent) 54%,
+      transparent 74%
+    );
+  }
+
+  .premium-hero-glow::after {
+    top: 0;
+    width: 130vw;
+    height: 68%;
+    mask-image: radial-gradient(ellipse 90% 56% at 50% 16%, black 0%, transparent 72%);
+  }
+}
+
+.frame-hairline {
+  border: 1px solid var(--border);
+}
+
+.frame-corner-ticks {
+  position: relative;
+}
+
+.frame-corner-ticks::before,
+.frame-corner-ticks::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  opacity: 0.35;
+  border-color: var(--ink-3);
+}
+
+.frame-corner-ticks::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+
+.frame-corner-ticks::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+
+.maplibregl-ctrl-group button {
+  border-radius: var(--radius-control);
 }
 
 .maplibregl-ctrl-attrib {

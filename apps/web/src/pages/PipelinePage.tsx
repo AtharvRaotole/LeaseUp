@@ -45,7 +45,7 @@ export function PipelinePage() {
     <div className="min-h-screen bg-bg" data-testid="pipeline-page">
       <TopBar />
       <main id="main-content" className="mx-auto max-w-[1080px] px-4 py-10 md:px-6 md:py-12 outline-none">
-        <header className="flex flex-wrap items-end justify-between gap-6 border-b border-border/60 pb-8">
+        <header className="flex flex-wrap items-end justify-between gap-6 border-b border-border pb-8">
           <div className="min-w-0 max-w-2xl">
             <p className="text-label uppercase tracking-wide text-ink-3">Leasing</p>
             <h1 className="mt-2 font-display font-semibold text-display tracking-tight text-ink">Pipeline</h1>
@@ -128,7 +128,7 @@ export function PipelinePage() {
                     </Link>
                   </PageEmptyState>
                   {!readOnly && (
-                    <div className="border-t border-border/60 bg-surface/80">
+                    <div className="border-t border-border bg-surface/80">
                       <OwnerUpdatePanel embedded />
                     </div>
                   )}

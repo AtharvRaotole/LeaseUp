@@ -9,7 +9,7 @@ import {
 export function LandingHeroProductPreview() {
   return (
     <div
-      className="mx-auto w-full min-w-0 max-w-[600px] overflow-hidden lg:mx-0 xl:max-w-[640px]"
+      className="mx-auto w-full min-w-0 max-w-[min(100%,520px)] overflow-hidden lg:mx-0 lg:max-w-full xl:max-w-[500px]"
       data-testid="landing-hero-product-preview"
     >
       <Link
@@ -33,11 +33,12 @@ export function LandingHeroProductPreview() {
           </div>
           <LandingHeroFixtureFrame />
         </div>
-        <p className="mt-3 text-center text-meta text-ink-2 lg:text-left">
-          <span className="text-ink-3">Sample report: Wicker Park, Chicago</span>
-          <span className="mx-1.5 text-ink-3" aria-hidden>·</span>
-          <span className="font-medium text-accent group-hover:underline">Open Wicker Park report</span>
-        </p>
+        <div className="mt-3 text-center text-meta lg:text-left">
+          <p className="text-ink-3">Sample report: Wicker Park, Chicago</p>
+          <p className="mt-0.5 font-medium text-ink underline decoration-accent underline-offset-2 group-hover:decoration-2">
+            Open Wicker Park report
+          </p>
+        </div>
       </Link>
     </div>
   );

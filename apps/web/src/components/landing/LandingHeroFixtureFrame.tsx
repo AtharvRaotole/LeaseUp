@@ -5,6 +5,7 @@ import {
 import { displayBrandName } from '../../lib/brand-display';
 import { prospectOneLineReason } from '../../lib/prospect-one-line';
 import { brandMonogram, brandTint } from '../../lib/brand-monogram';
+import { LandingHeroMapEmbed } from './LandingHeroMapEmbed';
 
 type LandingHeroFixtureFrameProps = {
   /** High-density layout for 2× raster capture (no browser chrome). */
@@ -102,15 +103,9 @@ export function LandingHeroFixtureFrame({ capture = false }: LandingHeroFixtureF
         role="img"
         aria-label="Map preview for Wicker Park trade area"
       >
-        <img
-          src="/demo/map-poster.jpg"
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover object-center"
-          width={320}
-          height={240}
-          decoding="async"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-bg/25 to-transparent" aria-hidden />
+        <div className="pointer-events-none absolute inset-0 h-full w-full">
+          <LandingHeroMapEmbed className="h-full min-h-[140px] w-full" />
+        </div>
       </div>
     </div>
   );

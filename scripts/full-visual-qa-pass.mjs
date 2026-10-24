@@ -244,6 +244,14 @@ for (const theme of ['light', 'dark']) {
         viewport: { width, height: width === 390 ? 844 : 900 },
         colorScheme: theme,
       });
+      await context.addInitScript(
+        ({ key, value }) => {
+          localStorage.setItem(key, value);
+          document.documentElement.dataset.theme = value;
+          document.documentElement.style.colorScheme = value;
+        },
+        { key: 'leaseup-theme', value: theme }
+      );
       const page = await context.newPage();
       const label = `${def.id}-${theme}-${width}`;
       try {
