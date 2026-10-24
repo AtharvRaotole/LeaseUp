@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
-import { DEMO_PITCH_BOULDER_ULTA } from '@leaseup/fixtures/worker';
+import {
+  DEMO_PITCH_BOULDER_ULTA,
+  nearestChainStoreDistanceUnconfirmedLine,
+  nearestStoreDistanceUnconfirmedLine,
+} from '@leaseup/fixtures/worker';
 import { AnalysisService } from '../services/analysis';
 import { PipelineService } from '../services/pipeline';
 import { buildPitchPackSnapshot } from '../lib/pitch-snapshot';
@@ -9,6 +13,7 @@ import type { AnalysisResponse } from '@leaseup/contracts';
 
 /** Acronym only (case-sensitive); avoids false positives like run ids containing "atp". */
 const ATP_ACRONYM_RE = /\bATP\b/;
+const OSM_ACRONYM_RE = /\bOSM\b/;
 
 function collectStrings(value: unknown, out: string[] = []): string[] {
   if (value === null || value === undefined) return out;
@@ -31,6 +36,18 @@ function assertNoAtpInPayload(label: string, payload: unknown) {
   expect(hits, `${label} contained ATP: ${hits.join(' | ')}`).toEqual([]);
 }
 
+function assertNoOsmAcronymInPayload(label: string, payload: unknown) {
+  const hits = collectStrings(payload).filter((s) => OSM_ACRONYM_RE.test(s));
+  expect(hits, `${label} contained OSM acronym: ${hits.join(' | ')}`).toEqual([]);
+}
+
+function assertNoStoreDataAcronymsInStrings(label: string, strings: string[]) {
+  for (const line of strings) {
+    expect(line, `${label}`).not.toMatch(ATP_ACRONYM_RE);
+    expect(line, `${label}`).not.toMatch(OSM_ACRONYM_RE);
+  }
+}
+
 const db = {
   prepare: () => {
     const stmt = {
@@ -48,6 +65,13 @@ const kv = {
 } as unknown as KVNamespace;
 
 describe('no ATP acronym in API or export copy', () => {
+  it('nearest-store unconfirmed display copy omits ATP and OSM acronyms', () => {
+    assertNoStoreDataAcronymsInStrings('nearestStoreDistanceUnconfirmedLine', [
+      nearestStoreDistanceUnconfirmedLine('REI'),
+      nearestChainStoreDistanceUnconfirmedLine(),
+    ]);
+  });
+
   it('demo analyze responses omit ATP in all string fields', async () => {
     installWorkersCacheApiStub();
     const service = new AnalysisService({
@@ -59,6 +83,7 @@ describe('no ATP acronym in API or export copy', () => {
     for (const address of Object.values(DEMO_CHIP_ADDRESSES)) {
       const result = await service.analyze({ address, radius: 10 }, `no-atp-${address}`, 'ip');
       assertNoAtpInPayload(`analyze ${address}`, result);
+      assertNoOsmAcronymInPayload(`analyze ${address}`, result);
       const absenceLine = result.prospects[0]?.reasons.find((r) => /store within/i.test(r));
       expect(absenceLine).toContain('All The Places store data');
     }
@@ -85,6 +110,7 @@ describe('no ATP acronym in API or export copy', () => {
       radiusKm: 10,
     });
     assertNoAtpInPayload('pitch snapshot', snapshot);
+    assertNoOsmAcronymInPayload('pitch snapshot', snapshot);
   });
 
   it('pipeline CSV export omits ATP when cards carry analyze reasons', async () => {

@@ -35,7 +35,10 @@ export function absenceVerificationSummary(
     return `No store within ${radiusKm} km in All The Places. Checking ${osmLabel} for a second source.`;
   }
 
-  if (prospect.brand.verified === 'conflict - likely present' || prospect.brand.verified === 'conflict') {
+  if (prospect.brand.verified === 'conflict - likely present') {
+    return `Store data disagrees; likely has a nearby ${prospect.brand.name} store within ${radiusKm} km.`;
+  }
+  if (prospect.brand.verified === 'conflict') {
     return `Sources disagree about a ${prospect.brand.name} store within ${radiusKm} km.`;
   }
 
@@ -84,7 +87,10 @@ export function whyCardStoreCheckLine(
     return `No store within ${radiusKm} km in All The Places ${asOf}. Checking OpenStreetMap for a second source.`;
   }
 
-  if (prospect.brand.verified === 'conflict - likely present' || prospect.brand.verified === 'conflict') {
+  if (prospect.brand.verified === 'conflict - likely present') {
+    return `Store data disagrees; likely has a nearby ${prospect.brand.name} store within ${radiusKm} km ${asOf}.`;
+  }
+  if (prospect.brand.verified === 'conflict') {
     return `Sources disagree about a ${prospect.brand.name} store within ${radiusKm} km ${asOf}.`;
   }
 

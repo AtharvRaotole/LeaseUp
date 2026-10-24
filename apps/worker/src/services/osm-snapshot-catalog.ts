@@ -57,15 +57,25 @@ export class OsmSnapshotCatalog {
   private assets: Fetcher;
   private cache: ResponseCache;
   private brandsIndex: BrandsIndex | null = null;
+  private brandsIndexLoad: Promise<BrandsIndex | null> | null = null;
   private tileMemory = new Map<string, TilePayload>();
+  private tileLoads = new Map<string, Promise<TilePayload | null>>();
 
   constructor(assets: Fetcher, cache: ResponseCache) {
     this.assets = assets;
     this.cache = cache;
   }
 
-  private async loadBrandsIndex(): Promise<BrandsIndex | null> {
-    if (this.brandsIndex) return this.brandsIndex;
+  private loadBrandsIndex(): Promise<BrandsIndex | null> {
+    if (this.brandsIndex) return Promise.resolve(this.brandsIndex);
+    if (this.brandsIndexLoad) return this.brandsIndexLoad;
+    this.brandsIndexLoad = this.fetchBrandsIndex().finally(() => {
+      this.brandsIndexLoad = null;
+    });
+    return this.brandsIndexLoad;
+  }
+
+  private async fetchBrandsIndex(): Promise<BrandsIndex | null> {
     const cached = (await this.cache.get('osm-tiles:brands', 'json')) as BrandsIndex | null;
     if (cached) {
       this.brandsIndex = cached;
@@ -79,8 +89,19 @@ export class OsmSnapshotCatalog {
     return data;
   }
 
-  private async loadTile(gh: string): Promise<TilePayload | null> {
-    if (this.tileMemory.has(gh)) return this.tileMemory.get(gh)!;
+  private loadTile(gh: string): Promise<TilePayload | null> {
+    const mem = this.tileMemory.get(gh);
+    if (mem) return Promise.resolve(mem);
+    const inflight = this.tileLoads.get(gh);
+    if (inflight) return inflight;
+    const promise = this.fetchTile(gh).finally(() => {
+      this.tileLoads.delete(gh);
+    });
+    this.tileLoads.set(gh, promise);
+    return promise;
+  }
+
+  private async fetchTile(gh: string): Promise<TilePayload | null> {
     const kvKey = `osm-tiles:${gh}`;
     const cached = (await this.cache.get(kvKey, 'json')) as TilePayload | null;
     if (cached) {

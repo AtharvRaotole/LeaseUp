@@ -136,6 +136,10 @@ export {
 } from './brand-explainability-store.js';
 export { overpassDemoByFixture, DEMO_OSM_UNRECORDED_NOTE } from './overpass-demo.js';
 export {
+  nearestStoreDistanceUnconfirmedLine,
+  nearestChainStoreDistanceUnconfirmedLine,
+} from './nearest-store-display-copy.js';
+export {
   BLEECKER_NYC,
   REI_ENTITY_ID,
   REI_QID,

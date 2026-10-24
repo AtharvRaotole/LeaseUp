@@ -75,7 +75,7 @@ export function verificationShortLabel(verified: ProspectPack['brand']['verified
     case 'unverified (1 source)':
       return 'Checked against All The Places';
     case 'conflict - likely present':
-      return 'Likely present';
+      return 'Store data disagrees; likely has a nearby store';
     case 'conflict':
       return 'Conflict';
     case 'unverified':
@@ -149,7 +149,7 @@ export function verificationSourceHelp(
   }
 
   if (verified === 'conflict - likely present' || verified === 'conflict') {
-    return `All The Places and ${osmLabel} disagree about whether ${prospect.brand.name} has a store within ${absenceKm} km.`;
+    return `Store data disagrees; ${osmLabel} likely has a ${prospect.brand.name} store within ${absenceKm} km while All The Places does not.`;
   }
 
   if (verified === 'unverified') {
@@ -168,7 +168,7 @@ export function verificationLabel(verified: ProspectPack['brand']['verified']): 
     case 'unverified (1 source)':
       return 'Checked against All The Places';
     case 'conflict - likely present':
-      return 'Likely present';
+      return 'Store data disagrees; likely has a nearby store';
     case 'conflict':
       return 'Conflict';
     case 'unverified':
