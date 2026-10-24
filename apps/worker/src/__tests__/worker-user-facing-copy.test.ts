@@ -58,16 +58,18 @@ function assertReasonRanksMatchFields(response: AnalysisResponse): void {
   const rankedCount = response.rankings?.length ?? 0;
   for (const pack of response.prospects) {
     const leaseUpRank = pack.brand.affinityRank;
-    expect(pack.reasons[0]).toContain(`LeaseUp rank #${leaseUpRank}`);
+    const head = pack.reasons[0];
+    expect(head).toBeDefined();
+    expect(head!).toContain(`LeaseUp rank #${leaseUpRank}`);
     if (rankedCount > 0) {
-      expect(pack.reasons[0]).toMatch(/of \d+ brands/);
-      assertTopPercentClaimsMatchRank(pack.reasons[0], leaseUpRank, rankedCount);
+      expect(head!).toMatch(/of \d+ brands/);
+      assertTopPercentClaimsMatchRank(head!, leaseUpRank, rankedCount);
     }
     const row = response.rankings?.find((r) => r.entityId === pack.brand.entityId);
     if (row && row.qlooRank !== leaseUpRank) {
-      expect(pack.reasons[0]).toContain(`Qloo taste rank #${row.qlooRank}`);
+      expect(head!).toContain(`Qloo taste rank #${row.qlooRank}`);
     } else if (row) {
-      expect(pack.reasons[0]).not.toMatch(/Qloo taste rank/);
+      expect(head!).not.toMatch(/Qloo taste rank/);
     }
   }
 }
