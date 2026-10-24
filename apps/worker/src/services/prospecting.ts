@@ -23,6 +23,12 @@ import {
 import { rankGeocodeCandidates } from '../lib/geocode-rank';
 import { displayBrandName } from '../lib/brand-display';
 import { getResponseCache } from '../lib/worker-cache';
+import { QlooClient } from '../providers/qloo';
+import { runProspectingAgentPlanner } from '../lib/prospecting-agent-planner';
+import {
+  PROSPECTING_AGENT_MAX_QLOO_CALLS,
+  PROSPECTING_AGENT_MAX_STEPS,
+} from '../lib/analysis-step-budget';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -31,6 +37,7 @@ const STALE_RUNNING_MS = 120_000;
 
 const STEP_DEFS: Array<{ id: ProspectingStepId; label: string }> = [
   { id: 'geocode', label: 'Geocode and confirm' },
+  { id: 'agent_plan', label: 'Plan site checks (agent)' },
   { id: 'taste', label: 'Read neighborhood taste' },
   { id: 'scan_stores', label: 'Scan existing stores' },
   { id: 'verify_osm', label: 'Verify against OpenStreetMap' },
@@ -225,6 +232,37 @@ export class ProspectingService {
     };
 
     try {
+      const planStarted = Date.now();
+      await this.patchStep(job, 'agent_plan', { status: 'running', summary: 'Choosing extra site checks…' });
+      await this.save(job);
+      await onStep?.(job);
+
+      const qloo = new QlooClient(this.env);
+      const plan = await runProspectingAgentPlanner({
+        env: this.env,
+        location: job.confirmedLocation!,
+        radiusKm: request.radius,
+        runId,
+        qloo,
+      });
+
+      await this.patchStep(job, 'agent_plan', {
+        status: 'complete',
+        durationMs: Date.now() - planStarted,
+        summary: plan.summary,
+        detail: {
+          mode: plan.mode,
+          fallbackReason: plan.fallbackReason,
+          budget: {
+            maxSteps: PROSPECTING_AGENT_MAX_STEPS,
+            maxQlooCalls: PROSPECTING_AGENT_MAX_QLOO_CALLS,
+          },
+          agentSteps: plan.steps,
+        },
+      });
+      await this.save(job);
+      await onStep?.(job);
+
       const result = await analysisService.analyzeWithSteps(
         request,
         runId,

@@ -13,6 +13,11 @@ export const ANALYZE_STEP_TIMEOUT_MS: Record<AnalysisStepId, number> = {
 /** Optional Qloo enrichment after prospects (trade-area taste + shoppers). */
 export const ANALYZE_ENRICHMENT_QLOO_BUDGET_MS = 8_000;
 
+/** Bounded OpenAI tool-calling loop before the fixed analyze DAG on full prospecting runs. */
+export const PROSPECTING_AGENT_MAX_STEPS = 6;
+export const PROSPECTING_AGENT_MAX_QLOO_CALLS = 3;
+export const PROSPECTING_AGENT_LOOP_TIMEOUT_MS = 18_000;
+
 export async function withTimeout<T>(
   promise: Promise<T>,
   ms: number,

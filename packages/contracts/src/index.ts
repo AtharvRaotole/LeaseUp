@@ -540,6 +540,7 @@ export type PitchCreate = z.infer<typeof PitchCreateSchema>;
 
 export const ProspectingStepIdSchema = z.enum([
   'geocode',
+  'agent_plan',
   'taste',
   'scan_stores',
   'verify_osm',
