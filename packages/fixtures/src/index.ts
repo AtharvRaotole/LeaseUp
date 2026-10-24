@@ -45,6 +45,11 @@ export {
   placeFromEvalId,
 } from './eval/adaptive-eval-site-label.js';
 export {
+  WICKER_LANDING_PITCH_TOP,
+  wickerLandingPitchTopNames,
+  wickerLandingPitchTopEntityIds,
+} from './wicker-landing-pitch-order.js';
+export {
   COHORT_EVAL_AGG,
   COHORT_MID_TIER_P5,
   formatP10PercentExact,

@@ -11,160 +11,31 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
     "resolvedAddress": "Wicker Park, Chicago"
   },
   "backtest": {
-    "totalStores": 152,
-    "predictedStores": 152,
-    "accuracy": 1,
-    "precisionAt10": 1,
-    "presentInTop10": 10,
-    "auc": 0.7292580409356725,
-    "examples": [
-      {
-        "name": "Whole Foods Market",
-        "distance": 2.0121294531024927,
-        "rank": 1,
-        "predicted": true
-      },
-      {
-        "name": "Starbucks",
-        "distance": 0.7451795104115242,
-        "rank": 2,
-        "predicted": true
-      },
-      {
-        "name": "Sephora",
-        "distance": 2.0128131669835367,
-        "rank": 3,
-        "predicted": true
-      },
-      {
-        "name": "Ulta",
-        "distance": 0.9444663268635957,
-        "rank": 4,
-        "predicted": true
-      },
-      {
-        "name": "Nordstrom",
-        "distance": 4.689762521051053,
-        "rank": 5,
-        "predicted": true
-      },
-      {
-        "name": "Nike",
-        "distance": 4.752665165125034,
-        "rank": 6,
-        "predicted": true
-      },
-      {
-        "name": "Lululemon",
-        "distance": 2.0128131669835367,
-        "rank": 7,
-        "predicted": true
-      }
-    ]
+    "totalStores": 43,
+    "predictedStores": 9,
+    "accuracy": 0.9,
+    "precisionAt10": 0.9,
+    "presentInTop10": 9,
+    "auc": 0.6884709730171709,
+    "examples": []
   },
   "backtestBlended": {
-    "totalStores": 152,
-    "predictedStores": 152,
-    "accuracy": 1,
-    "precisionAt10": 1,
-    "presentInTop10": 10,
-    "auc": 0.7467105263157895,
-    "examples": [
-      {
-        "name": "Starbucks",
-        "distance": 0.7451795104115242,
-        "rank": 1,
-        "predicted": true
-      },
-      {
-        "name": "Dunkin' Donuts",
-        "distance": 0.8039880669756505,
-        "rank": 2,
-        "predicted": true
-      },
-      {
-        "name": "Ulta",
-        "distance": 0.9444663268635957,
-        "rank": 3,
-        "predicted": true
-      },
-      {
-        "name": "Whole Foods Market",
-        "distance": 2.0121294531024927,
-        "rank": 4,
-        "predicted": true
-      },
-      {
-        "name": "Sephora",
-        "distance": 2.0128131669835367,
-        "rank": 5,
-        "predicted": true
-      },
-      {
-        "name": "Target",
-        "distance": 0.9520003025034481,
-        "rank": 6,
-        "predicted": true
-      },
-      {
-        "name": "MAC Cosmetics",
-        "distance": 4.465737796131975,
-        "rank": 7,
-        "predicted": true
-      }
-    ]
+    "totalStores": 43,
+    "predictedStores": 9,
+    "accuracy": 0.9,
+    "precisionAt10": 0.9,
+    "presentInTop10": 9,
+    "auc": 0.6884709730171709,
+    "examples": []
   },
   "backtestBaseline": {
-    "totalStores": 152,
-    "predictedStores": 152,
-    "accuracy": 1,
-    "precisionAt10": 1,
-    "presentInTop10": 10,
-    "auc": 0.6422697368421053,
-    "examples": [
-      {
-        "name": "Dollar General",
-        "distance": 3.218157145174287,
-        "rank": 1,
-        "predicted": true
-      },
-      {
-        "name": "Subway",
-        "distance": 0.813561329672291,
-        "rank": 2,
-        "predicted": true
-      },
-      {
-        "name": "Starbucks",
-        "distance": 0.7451795104115242,
-        "rank": 3,
-        "predicted": true
-      },
-      {
-        "name": "Wendy's",
-        "distance": 1.088990448164171,
-        "rank": 4,
-        "predicted": true
-      },
-      {
-        "name": "McDonald's",
-        "distance": 1.123626099364513,
-        "rank": 5,
-        "predicted": true
-      },
-      {
-        "name": "Dunkin' Donuts",
-        "distance": 0.8039880669756505,
-        "rank": 6,
-        "predicted": true
-      },
-      {
-        "name": "Dollar Tree",
-        "distance": 2.0485113873393743,
-        "rank": 7,
-        "predicted": true
-      }
-    ]
+    "totalStores": 43,
+    "predictedStores": 7,
+    "accuracy": 0.7,
+    "precisionAt10": 0.7,
+    "presentInTop10": 7,
+    "auc": 0.6884709730171709,
+    "examples": []
   },
   "rankings": [
     {
@@ -172,11 +43,12 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Whole Foods Market",
       "affinity": 0.9999017137106407,
       "qlooRank": 1,
-      "blendedRank": 4,
+      "blendedRank": 76,
       "baselineRank": 121,
       "nationalStoreCount": 535,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.0121294531024927
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 99,
+      "presentInRadius": false
     },
     {
       "entityId": "B13C02E3-BA3C-4B39-85B4-ACF12FEBC892",
@@ -186,6 +58,8 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "blendedRank": 1,
       "baselineRank": 3,
       "nationalStoreCount": 16708,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 99,
       "presentInRadius": true,
       "nearestStoreKm": 0.7451795104115242
     },
@@ -194,20 +68,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Sephora",
       "affinity": 0.9998723534335713,
       "qlooRank": 3,
-      "blendedRank": 5,
+      "blendedRank": 74,
       "baselineRank": 120,
       "nationalStoreCount": 537,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.0128131669835367
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 99,
+      "presentInRadius": false
     },
     {
       "entityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
       "name": "Ulta",
       "affinity": 0.9998429922205413,
       "qlooRank": 4,
-      "blendedRank": 3,
+      "blendedRank": 32,
       "baselineRank": 49,
       "nationalStoreCount": 1556,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 98,
       "presentInRadius": true,
       "nearestStoreKm": 0.9444663268635957
     },
@@ -216,64 +93,71 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Nordstrom",
       "affinity": 0.9998102257039039,
       "qlooRank": 5,
-      "blendedRank": 9,
+      "blendedRank": 176,
       "baselineRank": 209,
       "nationalStoreCount": 98,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.689762521051053
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 99,
+      "presentInRadius": false
     },
     {
       "entityId": "C70CE2B8-0AD1-4150-BF18-5A6347F2E860",
       "name": "Nike",
       "affinity": 0.9998068213236498,
       "qlooRank": 6,
-      "blendedRank": 10,
+      "blendedRank": 118,
       "baselineRank": 160,
       "nationalStoreCount": 252,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.752665165125034
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 99,
+      "presentInRadius": false
     },
     {
       "entityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
       "name": "Lululemon",
       "affinity": 0.9997957570009373,
       "qlooRank": 7,
-      "blendedRank": 11,
+      "blendedRank": 83,
       "baselineRank": 131,
       "nationalStoreCount": 457,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.0128131669835367
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 96,
+      "presentInRadius": false
     },
     {
       "entityId": "002A706B-424B-40FB-8BE5-D99E706B1CC4",
       "name": "HomeGoods",
       "affinity": 0.9997557541101495,
       "qlooRank": 8,
-      "blendedRank": 8,
+      "blendedRank": 52,
       "baselineRank": 87,
       "nationalStoreCount": 940,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.9276908151803822
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 95,
+      "presentInRadius": false
     },
     {
       "entityId": "D3310425-7161-41FC-8C2C-5435AF0F0A5B",
       "name": "Victoria's Secret",
       "affinity": 0.9997519239550274,
       "qlooRank": 9,
-      "blendedRank": 12,
+      "blendedRank": 60,
       "baselineRank": 95,
       "nationalStoreCount": 768,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.596216256042221
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 94,
+      "presentInRadius": false
     },
     {
       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
       "name": "Target",
       "affinity": 0.9997008536986596,
       "qlooRank": 10,
-      "blendedRank": 6,
+      "blendedRank": 21,
       "baselineRank": 39,
       "nationalStoreCount": 2026,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 98,
       "presentInRadius": true,
       "nearestStoreKm": 0.9520003025034481
     },
@@ -282,31 +166,35 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "MAC Cosmetics",
       "affinity": 0.9996608466875164,
       "qlooRank": 11,
-      "blendedRank": 7,
+      "blendedRank": 24,
       "baselineRank": 42,
       "nationalStoreCount": 1952,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.465737796131975
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 95,
+      "presentInRadius": false
     },
     {
       "entityId": "096B986E-3D63-44F4-BE44-F85D52A2979D",
       "name": "Trader Joe's",
       "affinity": 0.9996242430070796,
       "qlooRank": 12,
-      "blendedRank": 13,
+      "blendedRank": 67,
       "baselineRank": 106,
       "nationalStoreCount": 671,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.8982431698461193
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 93,
+      "presentInRadius": false
     },
     {
       "entityId": "AC8F9047-F23D-4A54-BBAA-A3CBD2991C02",
       "name": "Vans",
       "affinity": 0.999598704694745,
       "qlooRank": 13,
-      "blendedRank": 14,
+      "blendedRank": 88,
       "baselineRank": 139,
       "nationalStoreCount": 397,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 98,
       "presentInRadius": false
     },
     {
@@ -314,86 +202,95 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "REI",
       "affinity": 0.9995804018023339,
       "qlooRank": 14,
-      "blendedRank": 15,
+      "blendedRank": 137,
       "baselineRank": 176,
       "nationalStoreCount": 193,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.19940077120658
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 97,
+      "presentInRadius": false
     },
     {
       "entityId": "6C386104-464E-4FB5-8570-37B88B132875",
       "name": "Kate Spade",
       "affinity": 0.9994637655341704,
       "qlooRank": 15,
-      "blendedRank": 17,
+      "blendedRank": 154,
       "baselineRank": 184,
       "nationalStoreCount": 165,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.545965442881952
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 96,
+      "presentInRadius": false
     },
     {
       "entityId": "D269C836-9B58-413F-B583-CF7CC64C5BDC",
       "name": "Cost Plus World Market",
       "affinity": 0.9994454599629143,
       "qlooRank": 16,
-      "blendedRank": 18,
+      "blendedRank": 119,
       "baselineRank": 161,
       "nationalStoreCount": 250,
-      "presentInRadius": true,
-      "nearestStoreKm": 5.525808213654644
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 95,
+      "presentInRadius": false
     },
     {
       "entityId": "CEBF621E-22D6-47C2-B02D-6C4C615BB341",
       "name": "Tiffany & Co.",
       "affinity": 0.999423322507639,
       "qlooRank": 17,
-      "blendedRank": 21,
+      "blendedRank": 184,
       "baselineRank": 214,
       "nationalStoreCount": 86,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.596216256042221
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 93,
+      "presentInRadius": false
     },
     {
       "entityId": "108EB684-257B-42D7-84E5-6E9D8BE3E793",
       "name": "H&M",
       "affinity": 0.9994126793111553,
       "qlooRank": 18,
-      "blendedRank": 20,
+      "blendedRank": 81,
       "baselineRank": 129,
       "nationalStoreCount": 478,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.712288958576044
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 92,
+      "presentInRadius": false
     },
     {
       "entityId": "632FE105-DF1C-4279-85BD-5E86858E5981",
       "name": "Madewell",
       "affinity": 0.9993833034515944,
       "qlooRank": 19,
-      "blendedRank": 24,
+      "blendedRank": 155,
       "baselineRank": 185,
       "nationalStoreCount": 162,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.663319010536115
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 92,
+      "presentInRadius": false
     },
     {
       "entityId": "A4F0BE29-87A4-4074-9ABB-21B215E532FD",
       "name": "J.Crew",
       "affinity": 0.9993615902584512,
       "qlooRank": 20,
-      "blendedRank": 23,
+      "blendedRank": 65,
       "baselineRank": 103,
       "nationalStoreCount": 693,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.643146486346599
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 91,
+      "presentInRadius": false
     },
     {
       "entityId": "23A88F48-A3C6-46A5-82FB-0D862DF508C0",
       "name": "Michael Kors",
       "affinity": 0.9993028343498105,
       "qlooRank": 21,
-      "blendedRank": 25,
+      "blendedRank": 132,
       "baselineRank": 167,
       "nationalStoreCount": 213,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 91,
       "presentInRadius": false
     },
     {
@@ -401,20 +298,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Bath & Body Works",
       "affinity": 0.9992955960442191,
       "qlooRank": 22,
-      "blendedRank": 19,
+      "blendedRank": 27,
       "baselineRank": 44,
       "nationalStoreCount": 1839,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.820406782854563
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 93,
+      "presentInRadius": false
     },
     {
       "entityId": "E4182E04-0D61-4DAD-AE66-EF4208951A5C",
       "name": "Lush",
       "affinity": 0.9992517392137242,
       "qlooRank": 23,
-      "blendedRank": 27,
+      "blendedRank": 136,
       "baselineRank": 171,
       "nationalStoreCount": 199,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 90,
       "presentInRadius": true,
       "nearestStoreKm": 0.3408582983557975
     },
@@ -423,64 +323,71 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "The North Face",
       "affinity": 0.9992044736939065,
       "qlooRank": 24,
-      "blendedRank": 28,
+      "blendedRank": 166,
       "baselineRank": 197,
       "nationalStoreCount": 126,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.795280360306419
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 89,
+      "presentInRadius": false
     },
     {
       "entityId": "97CC808A-759E-4CBA-B68F-655AC3FC58E8",
       "name": "Pottery Barn",
       "affinity": 0.9991972346167506,
       "qlooRank": 25,
-      "blendedRank": 29,
+      "blendedRank": 157,
       "baselineRank": 187,
       "nationalStoreCount": 158,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.9302106512254142
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 88,
+      "presentInRadius": false
     },
     {
       "entityId": "CDA781D5-B243-4EFA-A7C9-1BE6C1979397",
       "name": "Portillo's",
       "affinity": 0.9991567799050957,
       "qlooRank": 26,
-      "blendedRank": 30,
+      "blendedRank": 173,
       "baselineRank": 204,
       "nationalStoreCount": 110,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.145714315094996
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 87,
+      "presentInRadius": false
     },
     {
       "entityId": "D5B78065-6DBB-4DDB-80DF-6495B9B1006B",
       "name": "Apple",
       "affinity": 0.9990473303780022,
       "qlooRank": 27,
-      "blendedRank": 31,
+      "blendedRank": 115,
       "baselineRank": 156,
       "nationalStoreCount": 269,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.3433273678896307
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 86,
+      "presentInRadius": false
     },
     {
       "entityId": "2B7931BB-8C2D-4FE0-BA41-8A5216BE6B4D",
       "name": "Williams-Sonoma",
       "affinity": 0.998977906249429,
       "qlooRank": 28,
-      "blendedRank": 32,
+      "blendedRank": 163,
       "baselineRank": 191,
       "nationalStoreCount": 145,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.0921473990493813
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 85,
+      "presentInRadius": false
     },
     {
       "entityId": "DEFEBCC5-A986-4D7C-8408-7575210872FC",
       "name": "Under Armour",
       "affinity": 0.9989378678762313,
       "qlooRank": 29,
-      "blendedRank": 33,
+      "blendedRank": 149,
       "baselineRank": 182,
       "nationalStoreCount": 172,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 84,
       "presentInRadius": false
     },
     {
@@ -488,9 +395,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Dunkin'",
       "affinity": 0.9989340343239259,
       "qlooRank": 30,
-      "blendedRank": 2,
+      "blendedRank": 4,
       "baselineRank": 6,
       "nationalStoreCount": 10474,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 91,
       "presentInRadius": true,
       "nearestStoreKm": 0.8039880669756505
     },
@@ -499,9 +408,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "IKEA",
       "affinity": 0.99890847690197,
       "qlooRank": 31,
-      "blendedRank": 35,
+      "blendedRank": 138,
       "baselineRank": 173,
       "nationalStoreCount": 195,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 83,
       "presentInRadius": false
     },
     {
@@ -509,9 +420,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Chipotle Mexican Grill",
       "affinity": 0.9989050691922838,
       "qlooRank": 32,
-      "blendedRank": 22,
+      "blendedRank": 12,
       "baselineRank": 16,
       "nationalStoreCount": 4177,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 89,
       "presentInRadius": true,
       "nearestStoreKm": 0.3408582983557975
     },
@@ -520,9 +433,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Warby Parker",
       "affinity": 0.998875677174471,
       "qlooRank": 33,
-      "blendedRank": 38,
+      "blendedRank": 93,
       "baselineRank": 143,
       "nationalStoreCount": 379,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 82,
       "presentInRadius": true,
       "nearestStoreKm": 0.11996454147019397
     },
@@ -531,42 +446,47 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Old Navy",
       "affinity": 0.9988318003936041,
       "qlooRank": 34,
-      "blendedRank": 34,
+      "blendedRank": 43,
       "baselineRank": 74,
       "nationalStoreCount": 1133,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.8476213429898571
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 89,
+      "presentInRadius": false
     },
     {
       "entityId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
       "name": "TJ Maxx",
       "affinity": 0.998824558394489,
       "qlooRank": 35,
-      "blendedRank": 36,
+      "blendedRank": 35,
       "baselineRank": 62,
       "nationalStoreCount": 1281,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.702381830590345
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 88,
+      "presentInRadius": false
     },
     {
       "entityId": "C306B282-6425-46DF-98F0-D976C6A65B1E",
       "name": "Coach",
       "affinity": 0.9988062401433718,
       "qlooRank": 36,
-      "blendedRank": 41,
+      "blendedRank": 108,
       "baselineRank": 152,
       "nationalStoreCount": 305,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.795280360306419
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 80,
+      "presentInRadius": false
     },
     {
       "entityId": "4C160FEA-FDB6-4DEC-99FC-13899680A0F4",
       "name": "Foot Locker",
       "affinity": 0.9987955898304358,
       "qlooRank": 37,
-      "blendedRank": 40,
+      "blendedRank": 72,
       "baselineRank": 112,
       "nationalStoreCount": 621,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 87,
       "presentInRadius": true,
       "nearestStoreKm": 1.0132098044007842
     },
@@ -575,9 +495,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Adidas",
       "affinity": 0.998777271005058,
       "qlooRank": 38,
-      "blendedRank": 42,
+      "blendedRank": 146,
       "baselineRank": 178,
       "nationalStoreCount": 177,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 79,
       "presentInRadius": true,
       "nearestStoreKm": 0.14909232964953492
     },
@@ -586,9 +508,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Aerie",
       "affinity": 0.9987623600651642,
       "qlooRank": 39,
-      "blendedRank": 44,
+      "blendedRank": 102,
       "baselineRank": 150,
       "nationalStoreCount": 328,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 78,
       "presentInRadius": false
     },
     {
@@ -596,42 +520,47 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Athleta",
       "affinity": 0.998715069493038,
       "qlooRank": 40,
-      "blendedRank": 46,
+      "blendedRank": 125,
       "baselineRank": 163,
       "nationalStoreCount": 240,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.0921473990493813
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 77,
+      "presentInRadius": false
     },
     {
       "entityId": "BEE83976-354E-4991-95BB-C32595C9C96D",
       "name": "Banana Republic",
       "affinity": 0.9987005836084852,
       "qlooRank": 41,
-      "blendedRank": 47,
+      "blendedRank": 112,
       "baselineRank": 154,
       "nationalStoreCount": 290,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.626280437729045
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 76,
+      "presentInRadius": false
     },
     {
       "entityId": "C69202E6-9A83-4BD6-A720-ECAB9DB2AE52",
       "name": "Michaels",
       "affinity": 0.9986128113359732,
       "qlooRank": 42,
-      "blendedRank": 43,
+      "blendedRank": 39,
       "baselineRank": 67,
       "nationalStoreCount": 1215,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.799692431729192
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 86,
+      "presentInRadius": false
     },
     {
       "entityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
       "name": "Aldi",
       "affinity": 0.9985983238490465,
       "qlooRank": 43,
-      "blendedRank": 39,
+      "blendedRank": 16,
       "baselineRank": 29,
       "nationalStoreCount": 2750,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 86,
       "presentInRadius": true,
       "nearestStoreKm": 0.5966728734321494
     },
@@ -640,53 +569,59 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Express",
       "affinity": 0.9985910800204608,
       "qlooRank": 44,
-      "blendedRank": 48,
+      "blendedRank": 90,
       "baselineRank": 140,
       "nationalStoreCount": 387,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.684471202799807
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 75,
+      "presentInRadius": false
     },
     {
       "entityId": "251EC16B-0469-48A1-9EDF-86A756D5F0C4",
       "name": "Neiman Marcus",
       "affinity": 0.9984449130034678,
       "qlooRank": 45,
-      "blendedRank": 50,
+      "blendedRank": 207,
       "baselineRank": 223,
       "nationalStoreCount": 33,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.674209762721409
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 74,
+      "presentInRadius": false
     },
     {
       "entityId": "98110AE6-7C15-4B69-88DF-DB4E040C26B0",
       "name": "Kendra Scott",
       "affinity": 0.9983349529120286,
       "qlooRank": 46,
-      "blendedRank": 51,
+      "blendedRank": 139,
       "baselineRank": 175,
       "nationalStoreCount": 194,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.943292916532852
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 73,
+      "presentInRadius": false
     },
     {
       "entityId": "864FB0EF-F55A-478E-8E02-DAFF2DE6FDC2",
       "name": "SoulCycle",
       "affinity": 0.998229242522284,
       "qlooRank": 47,
-      "blendedRank": 54,
+      "blendedRank": 199,
       "baselineRank": 218,
       "nationalStoreCount": 53,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.6236970695806807
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 72,
+      "presentInRadius": false
     },
     {
       "entityId": "945C90D2-07D7-43B3-98FE-C437DE7A6D16",
       "name": "Kohl's",
       "affinity": 0.9981631673979361,
       "qlooRank": 48,
-      "blendedRank": 49,
+      "blendedRank": 44,
       "baselineRank": 73,
       "nationalStoreCount": 1150,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 85,
       "presentInRadius": true,
       "nearestStoreKm": 1.200796102589568
     },
@@ -695,20 +630,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Crumbl",
       "affinity": 0.9981525096781785,
       "qlooRank": 49,
-      "blendedRank": 53,
+      "blendedRank": 57,
       "baselineRank": 88,
       "nationalStoreCount": 890,
-      "presentInRadius": true,
-      "nearestStoreKm": 5.039849287112551
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 84,
+      "presentInRadius": false
     },
     {
       "entityId": "A17F327E-C061-477E-9B76-031DD0CDFB17",
       "name": "CorePower Yoga",
       "affinity": 0.9980574373906075,
       "qlooRank": 50,
-      "blendedRank": 55,
+      "blendedRank": 124,
       "baselineRank": 162,
       "nationalStoreCount": 246,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 71,
       "presentInRadius": true,
       "nearestStoreKm": 0.4585549422449338
     },
@@ -717,9 +655,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Chick-fil-A",
       "affinity": 0.9979841014255573,
       "qlooRank": 51,
-      "blendedRank": 45,
+      "blendedRank": 13,
       "baselineRank": 22,
       "nationalStoreCount": 3435,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 84,
       "presentInRadius": true,
       "nearestStoreKm": 0.9444663268635957
     },
@@ -728,9 +668,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "American Eagle Outfitters",
       "affinity": 0.9978672635368134,
       "qlooRank": 52,
-      "blendedRank": 56,
+      "blendedRank": 68,
       "baselineRank": 99,
       "nationalStoreCount": 712,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 82,
       "presentInRadius": false
     },
     {
@@ -738,31 +680,35 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "The Home Depot",
       "affinity": 0.997779412210937,
       "qlooRank": 53,
-      "blendedRank": 52,
+      "blendedRank": 25,
       "baselineRank": 40,
       "nationalStoreCount": 2022,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.530071354330617
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 82,
+      "presentInRadius": false
     },
     {
       "entityId": "A7E4F56C-19A7-4166-A4EA-EC77A59C3DC9",
       "name": "Marshalls",
       "affinity": 0.9977504109162192,
       "qlooRank": 54,
-      "blendedRank": 57,
+      "blendedRank": 41,
       "baselineRank": 71,
       "nationalStoreCount": 1203,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.7305003046709946
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 81,
+      "presentInRadius": false
     },
     {
       "entityId": "90390722-A8D1-4499-80FD-76703E3798A3",
       "name": "Orangetheory Fitness",
       "affinity": 0.9977320713939627,
       "qlooRank": 55,
-      "blendedRank": 58,
+      "blendedRank": 42,
       "baselineRank": 72,
       "nationalStoreCount": 1182,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 80,
       "presentInRadius": true,
       "nearestStoreKm": 0.6953967200799414
     },
@@ -771,20 +717,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "DSW",
       "affinity": 0.9976992299476628,
       "qlooRank": 56,
-      "blendedRank": 60,
+      "blendedRank": 82,
       "baselineRank": 125,
       "nationalStoreCount": 495,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.1748977607908087
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 79,
+      "presentInRadius": false
     },
     {
       "entityId": "423EDCAF-1289-474E-9982-0CC39A5BAEFE",
       "name": "Hobby Lobby",
       "affinity": 0.997669799611444,
       "qlooRank": 57,
-      "blendedRank": 59,
+      "blendedRank": 47,
       "baselineRank": 77,
       "nationalStoreCount": 1097,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 78,
       "presentInRadius": false
     },
     {
@@ -792,42 +741,47 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Gap",
       "affinity": 0.9975819295724238,
       "qlooRank": 58,
-      "blendedRank": 62,
+      "blendedRank": 92,
       "baselineRank": 138,
       "nationalStoreCount": 399,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.777139406564185
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 70,
+      "presentInRadius": false
     },
     {
       "entityId": "9AAD5961-85AE-4602-9649-6BF60D84BAF1",
       "name": "Macy's",
       "affinity": 0.9975563347916785,
       "qlooRank": 59,
-      "blendedRank": 64,
+      "blendedRank": 99,
       "baselineRank": 146,
       "nationalStoreCount": 361,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.99590029845123
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 68,
+      "presentInRadius": false
     },
     {
       "entityId": "D72865CB-DDB5-4202-96A4-D0415C0ACBF3",
       "name": "Walmart",
       "affinity": 0.9975345786727876,
       "qlooRank": 60,
-      "blendedRank": 61,
+      "blendedRank": 34,
       "baselineRank": 53,
       "nationalStoreCount": 1477,
-      "presentInRadius": true,
-      "nearestStoreKm": 6.109495553075294
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 76,
+      "presentInRadius": false
     },
     {
       "entityId": "29271B4D-CAD2-4DD4-A766-7338AEE5533D",
       "name": "Taco Bell",
       "affinity": 0.9974906382886655,
       "qlooRank": 61,
-      "blendedRank": 37,
+      "blendedRank": 6,
       "baselineRank": 8,
       "nationalStoreCount": 8280,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 80,
       "presentInRadius": true,
       "nearestStoreKm": 0.3469884970538997
     },
@@ -836,31 +790,35 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Bloomingdale's",
       "affinity": 0.9973259499876058,
       "qlooRank": 62,
-      "blendedRank": 65,
+      "blendedRank": 181,
       "baselineRank": 210,
       "nationalStoreCount": 97,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.465737796131975
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 67,
+      "presentInRadius": false
     },
     {
       "entityId": "C5E85462-1B81-40FF-A7B4-849DEE5120E9",
       "name": "Lego",
       "affinity": 0.9972674914137617,
       "qlooRank": 63,
-      "blendedRank": 66,
+      "blendedRank": 169,
       "baselineRank": 201,
       "nationalStoreCount": 122,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.605166893604133
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 66,
+      "presentInRadius": false
     },
     {
       "entityId": "EE2B58FF-37F6-4521-912F-55EBC25D83E2",
       "name": "Levi's",
       "affinity": 0.9972162837994146,
       "qlooRank": 64,
-      "blendedRank": 67,
+      "blendedRank": 120,
       "baselineRank": 157,
       "nationalStoreCount": 261,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 65,
       "presentInRadius": true,
       "nearestStoreKm": 0.024248343661842416
     },
@@ -869,9 +827,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Sweetgreen",
       "affinity": 0.9971283708099858,
       "qlooRank": 65,
-      "blendedRank": 69,
+      "blendedRank": 113,
       "baselineRank": 153,
       "nationalStoreCount": 292,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 64,
       "presentInRadius": true,
       "nearestStoreKm": 0.29111188930479165
     },
@@ -880,9 +840,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Hot Topic",
       "affinity": 0.9967843206033302,
       "qlooRank": 66,
-      "blendedRank": 68,
+      "blendedRank": 78,
       "baselineRank": 116,
       "nationalStoreCount": 576,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 75,
       "presentInRadius": false
     },
     {
@@ -890,9 +852,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Abercrombie & Fitch",
       "affinity": 0.9967809050746078,
       "qlooRank": 67,
-      "blendedRank": 71,
+      "blendedRank": 143,
       "baselineRank": 174,
       "nationalStoreCount": 195,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 63,
       "presentInRadius": true,
       "nearestStoreKm": 0.10631669915436825
     },
@@ -901,20 +865,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Ann Taylor",
       "affinity": 0.9965904695033427,
       "qlooRank": 68,
-      "blendedRank": 72,
+      "blendedRank": 134,
       "baselineRank": 164,
       "nationalStoreCount": 221,
-      "presentInRadius": true,
-      "nearestStoreKm": 5.195286726447033
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 62,
+      "presentInRadius": false
     },
     {
       "entityId": "A16489A3-A51E-4DD6-9966-934C86D80FE9",
       "name": "Krispy Kreme",
       "affinity": 0.9965610040154612,
       "qlooRank": 69,
-      "blendedRank": 73,
+      "blendedRank": 106,
       "baselineRank": 149,
       "nationalStoreCount": 343,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 61,
       "presentInRadius": false
     },
     {
@@ -922,9 +889,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "McDonald's",
       "affinity": 0.9965242776083764,
       "qlooRank": 70,
-      "blendedRank": 26,
+      "blendedRank": 3,
       "baselineRank": 5,
       "nationalStoreCount": 13486,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 77,
       "presentInRadius": true,
       "nearestStoreKm": 1.123626099364513
     },
@@ -933,9 +902,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Wendy's",
       "affinity": 0.995938594645568,
       "qlooRank": 71,
-      "blendedRank": 16,
+      "blendedRank": 2,
       "baselineRank": 4,
       "nationalStoreCount": 15714,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 75,
       "presentInRadius": true,
       "nearestStoreKm": 1.088990448164171
     },
@@ -944,9 +915,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Barnes & Noble",
       "affinity": 0.9958873138409241,
       "qlooRank": 72,
-      "blendedRank": 74,
+      "blendedRank": 69,
       "baselineRank": 97,
       "nationalStoreCount": 731,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 74,
       "presentInRadius": true,
       "nearestStoreKm": 0.11996454147019397
     },
@@ -955,42 +928,47 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Panera Bread",
       "affinity": 0.9957001149702466,
       "qlooRank": 73,
-      "blendedRank": 70,
+      "blendedRank": 23,
       "baselineRank": 35,
       "nationalStoreCount": 2246,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.7857432451367266
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 73,
+      "presentInRadius": false
     },
     {
       "entityId": "C7CDAEC5-8939-4754-941D-0FFFE70A2172",
       "name": "Paper Source",
       "affinity": 0.9951870489124114,
       "qlooRank": 74,
-      "blendedRank": 77,
+      "blendedRank": 179,
       "baselineRank": 206,
       "nationalStoreCount": 106,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.2758211181201795
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 60,
+      "presentInRadius": false
     },
     {
       "entityId": "5AB1F089-5965-4720-ABEE-6D59E436B7F6",
       "name": "Hollister",
       "affinity": 0.995142997605975,
       "qlooRank": 75,
-      "blendedRank": 76,
+      "blendedRank": 86,
       "baselineRank": 126,
       "nationalStoreCount": 495,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.605166893604133
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 73,
+      "presentInRadius": false
     },
     {
       "entityId": "E20071C1-B899-4DCA-AF66-B5B78BD4843C",
       "name": "Lane Bryant",
       "affinity": 0.9950587383528068,
       "qlooRank": 76,
-      "blendedRank": 78,
+      "blendedRank": 105,
       "baselineRank": 145,
       "nationalStoreCount": 362,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 59,
       "presentInRadius": false
     },
     {
@@ -998,20 +976,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Blue Bottle Coffee",
       "affinity": 0.9950074091969896,
       "qlooRank": 77,
-      "blendedRank": 81,
+      "blendedRank": 186,
       "baselineRank": 215,
       "nationalStoreCount": 84,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.131353391093274
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 58,
+      "presentInRadius": false
     },
     {
       "entityId": "B8D1335D-EDEC-4E7B-B431-5F3082E60FE4",
       "name": "Top Golf",
       "affinity": 0.9945376165782333,
       "qlooRank": 78,
-      "blendedRank": 83,
+      "blendedRank": 183,
       "baselineRank": 207,
       "nationalStoreCount": 103,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 57,
       "presentInRadius": false
     },
     {
@@ -1019,31 +1000,35 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Aveda",
       "affinity": 0.9942807996490071,
       "qlooRank": 79,
-      "blendedRank": 86,
+      "blendedRank": 175,
       "baselineRank": 200,
       "nationalStoreCount": 125,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.643146486346599
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 55,
+      "presentInRadius": false
     },
     {
       "entityId": "FBCBEB97-74E1-4390-984A-BC7E5EF4F2EA",
       "name": "Costco",
       "affinity": 0.9939429782287814,
       "qlooRank": 80,
-      "blendedRank": 82,
+      "blendedRank": 75,
       "baselineRank": 107,
       "nationalStoreCount": 660,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.2304924598191964
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 72,
+      "presentInRadius": false
     },
     {
       "entityId": "9F891CDB-7DDF-4F00-83FD-A6B8D0189632",
       "name": "JCPenney",
       "affinity": 0.9932086857714195,
       "qlooRank": 81,
-      "blendedRank": 87,
+      "blendedRank": 80,
       "baselineRank": 111,
       "nationalStoreCount": 622,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 71,
       "presentInRadius": false
     },
     {
@@ -1051,20 +1036,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "PetSmart",
       "affinity": 0.9931533978247534,
       "qlooRank": 82,
-      "blendedRank": 80,
+      "blendedRank": 36,
       "baselineRank": 50,
       "nationalStoreCount": 1535,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.19940077120658
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 69,
+      "presentInRadius": false
     },
     {
       "entityId": "00DA3218-DD1E-466F-8EFD-E2E71724AD9B",
       "name": "solidcore",
       "affinity": 0.9929107781809223,
       "qlooRank": 83,
-      "blendedRank": 90,
+      "blendedRank": 158,
       "baselineRank": 172,
       "nationalStoreCount": 197,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 54,
       "presentInRadius": true,
       "nearestStoreKm": 0.9520003025034481
     },
@@ -1073,20 +1061,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Blaze Pizza",
       "affinity": 0.9926831046347262,
       "qlooRank": 84,
-      "blendedRank": 91,
+      "blendedRank": 147,
       "baselineRank": 165,
       "nationalStoreCount": 219,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.401722908380346
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 53,
+      "presentInRadius": false
     },
     {
       "entityId": "D89FBEF9-E16C-4521-8513-20B180F56FAA",
       "name": "Walgreens",
       "affinity": 0.9925874739039302,
       "qlooRank": 85,
-      "blendedRank": 63,
+      "blendedRank": 7,
       "baselineRank": 9,
       "nationalStoreCount": 7683,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 70,
       "presentInRadius": true,
       "nearestStoreKm": 0.5459744978578775
     },
@@ -1095,9 +1086,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "In-N-Out Burger",
       "affinity": 0.9924845420902595,
       "qlooRank": 86,
-      "blendedRank": 95,
+      "blendedRank": 97,
       "baselineRank": 133,
       "nationalStoreCount": 445,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 52,
       "presentInRadius": false
     },
     {
@@ -1105,31 +1098,35 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Dick's Sporting Goods",
       "affinity": 0.9923665855627488,
       "qlooRank": 87,
-      "blendedRank": 94,
+      "blendedRank": 73,
       "baselineRank": 93,
       "nationalStoreCount": 778,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.4254212357075526
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 68,
+      "presentInRadius": false
     },
     {
       "entityId": "F524E022-2389-4EA8-BF4C-8D001C6129D3",
       "name": "Carter's",
       "affinity": 0.9922121474334442,
       "qlooRank": 88,
-      "blendedRank": 92,
+      "blendedRank": 54,
       "baselineRank": 66,
       "nationalStoreCount": 1218,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.563966827986072
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 67,
+      "presentInRadius": false
     },
     {
       "entityId": "DD982800-A3A4-40A6-A30D-276B7FEA74A3",
       "name": "Columbia Sportswear",
       "affinity": 0.9920907241460183,
       "qlooRank": 89,
-      "blendedRank": 97,
+      "blendedRank": 164,
       "baselineRank": 183,
       "nationalStoreCount": 167,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 51,
       "presentInRadius": false
     },
     {
@@ -1137,20 +1134,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Sally Beauty",
       "affinity": 0.9919250827337098,
       "qlooRank": 90,
-      "blendedRank": 89,
+      "blendedRank": 28,
       "baselineRank": 34,
       "nationalStoreCount": 2280,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.9343369662245102
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 68,
+      "presentInRadius": false
     },
     {
       "entityId": "118CA5C0-C148-4D07-8200-4C5B1876E2D6",
       "name": "T-Mobile",
       "affinity": 0.9917340869976223,
       "qlooRank": 91,
-      "blendedRank": 75,
+      "blendedRank": 11,
       "baselineRank": 14,
       "nationalStoreCount": 5518,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 66,
       "presentInRadius": true,
       "nearestStoreKm": 0.9444663268635957
     },
@@ -1159,9 +1159,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Jimmy John's",
       "affinity": 0.9913068893689008,
       "qlooRank": 92,
-      "blendedRank": 88,
+      "blendedRank": 20,
       "baselineRank": 28,
       "nationalStoreCount": 2836,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 64,
       "presentInRadius": true,
       "nearestStoreKm": 0.7848710891810032
     },
@@ -1170,42 +1172,47 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Dairy Queen",
       "affinity": 0.9913030243886064,
       "qlooRank": 93,
-      "blendedRank": 84,
+      "blendedRank": 14,
       "baselineRank": 17,
       "nationalStoreCount": 4177,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.0629483629619183
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 61,
+      "presentInRadius": false
     },
     {
       "entityId": "5318FE99-3ADB-4E62-BFA5-DED63001E3DD",
       "name": "Brooks Brothers",
       "affinity": 0.9909903381197187,
       "qlooRank": 94,
-      "blendedRank": 101,
+      "blendedRank": 174,
       "baselineRank": 192,
       "nationalStoreCount": 143,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.385604158332546
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 50,
+      "presentInRadius": false
     },
     {
       "entityId": "0025C006-CD75-479F-B42E-DFD4D16A6DE5",
       "name": "Petco",
       "affinity": 0.9908502830280668,
       "qlooRank": 95,
-      "blendedRank": 98,
+      "blendedRank": 48,
       "baselineRank": 58,
       "nationalStoreCount": 1372,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.704267912939003
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 66,
+      "presentInRadius": false
     },
     {
       "entityId": "1AE523DD-3DE5-419F-9FDF-FFF48A863E5D",
       "name": "Philz Coffee",
       "affinity": 0.9907213796718443,
       "qlooRank": 96,
-      "blendedRank": 103,
+      "blendedRank": 190,
       "baselineRank": 213,
       "nationalStoreCount": 88,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 49,
       "presentInRadius": true,
       "nearestStoreKm": 0.9520003025034481
     },
@@ -1214,42 +1221,47 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Vuori",
       "affinity": 0.9904119400575293,
       "qlooRank": 97,
-      "blendedRank": 104,
+      "blendedRank": 178,
       "baselineRank": 198,
       "nationalStoreCount": 126,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.050199600752209
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 48,
+      "presentInRadius": false
     },
     {
       "entityId": "16C4C92D-D525-419F-9D45-DE87FA5BD757",
       "name": "IHOP",
       "affinity": 0.9903268264556848,
       "qlooRank": 98,
-      "blendedRank": 99,
+      "blendedRank": 37,
       "baselineRank": 47,
       "nationalStoreCount": 1685,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.9923526814813717
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 65,
+      "presentInRadius": false
     },
     {
       "entityId": "20E485DE-70A9-4635-AF36-F1305B60827D",
       "name": "Raising Cane's",
       "affinity": 0.9895712161923725,
       "qlooRank": 99,
-      "blendedRank": 102,
+      "blendedRank": 64,
       "baselineRank": 81,
       "nationalStoreCount": 1004,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.877453118115693
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 64,
+      "presentInRadius": false
     },
     {
       "entityId": "76AD9E43-C469-4929-AB61-BC4DC28B9A27",
       "name": "Fossil",
       "affinity": 0.9895307738886425,
       "qlooRank": 100,
-      "blendedRank": 105,
+      "blendedRank": 205,
       "baselineRank": 217,
       "nationalStoreCount": 55,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 47,
       "presentInRadius": false
     },
     {
@@ -1257,9 +1269,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Pizza Hut",
       "affinity": 0.9890694378895754,
       "qlooRank": 101,
-      "blendedRank": 85,
+      "blendedRank": 10,
       "baselineRank": 12,
       "nationalStoreCount": 6284,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 59,
       "presentInRadius": true,
       "nearestStoreKm": 1.0589403001791178
     },
@@ -1268,9 +1282,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Insomnia Cookies",
       "affinity": 0.9890436102362316,
       "qlooRank": 102,
-      "blendedRank": 106,
+      "blendedRank": 117,
       "baselineRank": 144,
       "nationalStoreCount": 370,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 46,
       "presentInRadius": true,
       "nearestStoreKm": 0.10631669915436825
     },
@@ -1279,20 +1295,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "White House Black Market",
       "affinity": 0.9888993929658598,
       "qlooRank": 103,
-      "blendedRank": 107,
+      "blendedRank": 131,
       "baselineRank": 151,
       "nationalStoreCount": 308,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.763893021938033
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 45,
+      "presentInRadius": false
     },
     {
       "entityId": "BBF22D8D-166F-44A8-8694-3F6FF4F745AB",
       "name": "Popeyes",
       "affinity": 0.9888701163467944,
       "qlooRank": 104,
-      "blendedRank": 100,
+      "blendedRank": 19,
       "baselineRank": 26,
       "nationalStoreCount": 3120,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 57,
       "presentInRadius": true,
       "nearestStoreKm": 1.148863997509643
     },
@@ -1301,9 +1320,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Sprouts Farmers Market",
       "affinity": 0.9887667799132548,
       "qlooRank": 105,
-      "blendedRank": 108,
+      "blendedRank": 95,
       "baselineRank": 122,
       "nationalStoreCount": 519,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 62,
       "presentInRadius": false
     },
     {
@@ -1311,9 +1332,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Cabela's",
       "affinity": 0.9885449993352691,
       "qlooRank": 106,
-      "blendedRank": 109,
+      "blendedRank": 213,
       "baselineRank": 222,
       "nationalStoreCount": 36,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 43,
       "presentInRadius": false
     },
     {
@@ -1321,9 +1344,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Big Lots",
       "affinity": 0.9883714146768489,
       "qlooRank": 107,
-      "blendedRank": 111,
+      "blendedRank": 162,
       "baselineRank": 166,
       "nationalStoreCount": 216,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 42,
       "presentInRadius": false
     },
     {
@@ -1331,64 +1356,71 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Peet's Coffee",
       "affinity": 0.9875366478627842,
       "qlooRank": 108,
-      "blendedRank": 113,
+      "blendedRank": 148,
       "baselineRank": 158,
       "nationalStoreCount": 259,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.9302106512254142
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 41,
+      "presentInRadius": false
     },
     {
       "entityId": "8B4368C8-ABC7-4AC4-9B8C-D47495E6EE7D",
       "name": "Dollar Tree",
       "affinity": 0.9873960836799014,
       "qlooRank": 109,
-      "blendedRank": 79,
+      "blendedRank": 8,
       "baselineRank": 7,
       "nationalStoreCount": 9094,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.0485113873393743
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 55,
+      "presentInRadius": false
     },
     {
       "entityId": "54057197-DAD6-4798-846B-4A6EB72C8D9F",
       "name": "Culver's",
       "affinity": 0.9872037446398959,
       "qlooRank": 110,
-      "blendedRank": 110,
+      "blendedRank": 63,
       "baselineRank": 76,
       "nationalStoreCount": 1114,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.418665363405571
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 61,
+      "presentInRadius": false
     },
     {
       "entityId": "1DDDFC7F-5407-4602-A3B4-FFFFC17B2419",
       "name": "Casper",
       "affinity": 0.9869375975730614,
       "qlooRank": 111,
-      "blendedRank": 114,
+      "blendedRank": 70,
       "baselineRank": 82,
       "nationalStoreCount": 995,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.518719298160007
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 60,
+      "presentInRadius": false
     },
     {
       "entityId": "D9E4D872-7E4D-4E5A-B94F-FFD25B7D98C2",
       "name": "Buffalo Wild Wings",
       "affinity": 0.9868892776989278,
       "qlooRank": 112,
-      "blendedRank": 112,
+      "blendedRank": 55,
       "baselineRank": 56,
       "nationalStoreCount": 1415,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.6881657196082995
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 59,
+      "presentInRadius": false
     },
     {
       "entityId": "0B47F4FC-A267-4E07-85F4-F64511835C03",
       "name": "7-Eleven",
       "affinity": 0.9868707256716782,
       "qlooRank": 113,
-      "blendedRank": 96,
+      "blendedRank": 9,
       "baselineRank": 11,
       "nationalStoreCount": 6824,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 52,
       "presentInRadius": true,
       "nearestStoreKm": 0.8979962414078431
     },
@@ -1397,9 +1429,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Whataburger",
       "affinity": 0.9867339473236366,
       "qlooRank": 114,
-      "blendedRank": 116,
+      "blendedRank": 59,
       "baselineRank": 68,
       "nationalStoreCount": 1214,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 58,
       "presentInRadius": false
     },
     {
@@ -1407,42 +1441,47 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "GameStop",
       "affinity": 0.9864564474212881,
       "qlooRank": 115,
-      "blendedRank": 115,
+      "blendedRank": 50,
       "baselineRank": 48,
       "nationalStoreCount": 1562,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.600138034148688
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 56,
+      "presentInRadius": false
     },
     {
       "entityId": "45B2D126-FCBC-44EA-BD09-FFA408BC1078",
       "name": "LA Fitness",
       "affinity": 0.9864011968066659,
       "qlooRank": 116,
-      "blendedRank": 120,
+      "blendedRank": 96,
       "baselineRank": 117,
       "nationalStoreCount": 558,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.5208338802392496
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 55,
+      "presentInRadius": false
     },
     {
       "entityId": "A409F6A6-1D61-4C4A-AD48-CB8981874F64",
       "name": "Noodles & Company",
       "affinity": 0.9862971616305742,
       "qlooRank": 117,
-      "blendedRank": 123,
+      "blendedRank": 121,
       "baselineRank": 142,
       "nationalStoreCount": 383,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.704267912939003
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 40,
+      "presentInRadius": false
     },
     {
       "entityId": "2F3A3724-27EF-45BF-B7D2-B78DFEADACEB",
       "name": "Potbelly",
       "affinity": 0.9861456213606453,
       "qlooRank": 118,
-      "blendedRank": 124,
+      "blendedRank": 116,
       "baselineRank": 137,
       "nationalStoreCount": 410,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 39,
       "presentInRadius": true,
       "nearestStoreKm": 0.11996454147019397
     },
@@ -1451,9 +1490,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Chili's",
       "affinity": 0.9856308104903594,
       "qlooRank": 119,
-      "blendedRank": 121,
+      "blendedRank": 62,
       "baselineRank": 69,
       "nationalStoreCount": 1211,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 54,
       "presentInRadius": false
     },
     {
@@ -1461,9 +1502,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Cava",
       "affinity": 0.9856122341434812,
       "qlooRank": 120,
-      "blendedRank": 126,
+      "blendedRank": 104,
       "baselineRank": 124,
       "nationalStoreCount": 507,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 53,
       "presentInRadius": true,
       "nearestStoreKm": 0.21596188230493327
     },
@@ -1472,9 +1515,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Steak 'n Shake",
       "affinity": 0.9853936111319386,
       "qlooRank": 121,
-      "blendedRank": 127,
+      "blendedRank": 123,
       "baselineRank": 141,
       "nationalStoreCount": 387,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 38,
       "presentInRadius": false
     },
     {
@@ -1482,9 +1527,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Wingstop",
       "affinity": 0.9849008794049929,
       "qlooRank": 122,
-      "blendedRank": 119,
+      "blendedRank": 31,
       "baselineRank": 30,
       "nationalStoreCount": 2731,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 50,
       "presentInRadius": true,
       "nearestStoreKm": 0.1318012036234246
     },
@@ -1493,9 +1540,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Red Lobster",
       "affinity": 0.9845523574725318,
       "qlooRank": 123,
-      "blendedRank": 129,
+      "blendedRank": 110,
       "baselineRank": 128,
       "nationalStoreCount": 482,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 52,
       "presentInRadius": false
     },
     {
@@ -1503,9 +1552,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Kroger",
       "affinity": 0.9839034085104071,
       "qlooRank": 124,
-      "blendedRank": 118,
+      "blendedRank": 22,
       "baselineRank": 21,
       "nationalStoreCount": 3453,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 48,
       "presentInRadius": false
     },
     {
@@ -1513,9 +1564,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Caribou Coffee",
       "affinity": 0.9838103568012787,
       "qlooRank": 125,
-      "blendedRank": 130,
+      "blendedRank": 111,
       "baselineRank": 127,
       "nationalStoreCount": 490,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 51,
       "presentInRadius": false
     },
     {
@@ -1523,9 +1576,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Verizon",
       "affinity": 0.9837142661137309,
       "qlooRank": 126,
-      "blendedRank": 117,
+      "blendedRank": 18,
       "baselineRank": 18,
       "nationalStoreCount": 4093,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 45,
       "presentInRadius": true,
       "nearestStoreKm": 0.18451769535078444
     },
@@ -1534,75 +1589,83 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Arby's",
       "affinity": 0.983639810915723,
       "qlooRank": 127,
-      "blendedRank": 122,
+      "blendedRank": 26,
       "baselineRank": 25,
       "nationalStoreCount": 3188,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.7420683662856264
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 43,
+      "presentInRadius": false
     },
     {
       "entityId": "9ED4457E-07D3-446A-9E16-CF8BB028D512",
       "name": "Maggiano's Little Italy",
       "affinity": 0.9836250923500833,
       "qlooRank": 128,
-      "blendedRank": 136,
+      "blendedRank": 209,
       "baselineRank": 219,
       "nationalStoreCount": 48,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.371353972918742
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 37,
+      "presentInRadius": false
     },
     {
       "entityId": "91491729-2989-44C6-82F1-E8EB25B9FA42",
       "name": "Burlington",
       "affinity": 0.9835805023889517,
       "qlooRank": 129,
-      "blendedRank": 134,
+      "blendedRank": 98,
       "baselineRank": 114,
       "nationalStoreCount": 600,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.2642666151746837
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 49,
+      "presentInRadius": false
     },
     {
       "entityId": "0E67ECB0-C65D-4221-A0A2-2E5CD84B9322",
       "name": "Panda Express",
       "affinity": 0.9833761415545053,
       "qlooRank": 130,
-      "blendedRank": 128,
+      "blendedRank": 33,
       "baselineRank": 31,
       "nationalStoreCount": 2454,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.820406782854563
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 41,
+      "presentInRadius": false
     },
     {
       "entityId": "0E011D42-90B2-496E-B285-4EB2181EB0A9",
       "name": "AT&T",
       "affinity": 0.9830049779313864,
       "qlooRank": 131,
-      "blendedRank": 133,
+      "blendedRank": 61,
       "baselineRank": 57,
       "nationalStoreCount": 1380,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.820406782854563
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 48,
+      "presentInRadius": false
     },
     {
       "entityId": "CF8FDD0C-2601-4F42-95A7-05B5DAD71529",
       "name": "Planet Fitness",
       "affinity": 0.9828784813374943,
       "qlooRank": 132,
-      "blendedRank": 132,
+      "blendedRank": 51,
       "baselineRank": 46,
       "nationalStoreCount": 1771,
-      "presentInRadius": true,
-      "nearestStoreKm": 5.228801200216661
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 47,
+      "presentInRadius": false
     },
     {
       "entityId": "706BC87D-2A45-474B-AD67-210677434F88",
       "name": "Baskin-Robbins",
       "affinity": 0.9827636670766896,
       "qlooRank": 133,
-      "blendedRank": 131,
+      "blendedRank": 40,
       "baselineRank": 37,
       "nationalStoreCount": 2108,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 39,
       "presentInRadius": true,
       "nearestStoreKm": 0.8360599303290741
     },
@@ -1611,20 +1674,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Applebee's",
       "affinity": 0.9827303034062448,
       "qlooRank": 134,
-      "blendedRank": 137,
+      "blendedRank": 58,
       "baselineRank": 55,
       "nationalStoreCount": 1452,
-      "presentInRadius": true,
-      "nearestStoreKm": 9.619783432121375
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 46,
+      "presentInRadius": false
     },
     {
       "entityId": "D0D3D990-E5B5-4B8A-AAC1-8D97E9227B56",
       "name": "Denny's",
       "affinity": 0.9825738688370852,
       "qlooRank": 135,
-      "blendedRank": 138,
+      "blendedRank": 66,
       "baselineRank": 65,
       "nationalStoreCount": 1231,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 45,
       "presentInRadius": false
     },
     {
@@ -1632,20 +1698,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Hooters",
       "affinity": 0.9814065322792354,
       "qlooRank": 136,
-      "blendedRank": 141,
+      "blendedRank": 185,
       "baselineRank": 190,
       "nationalStoreCount": 152,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.9227092403493287
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 36,
+      "presentInRadius": false
     },
     {
       "entityId": "7E764AF0-E0F8-4CB8-82D3-0FF8232D77C6",
       "name": "H-E-B",
       "affinity": 0.9810493740689301,
       "qlooRank": 137,
-      "blendedRank": 142,
+      "blendedRank": 141,
       "baselineRank": 148,
       "nationalStoreCount": 346,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 35,
       "presentInRadius": false
     },
     {
@@ -1653,9 +1722,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Yard House",
       "affinity": 0.9809677691618464,
       "qlooRank": 138,
-      "blendedRank": 145,
+      "blendedRank": 198,
       "baselineRank": 208,
       "nationalStoreCount": 100,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 34,
       "presentInRadius": false
     },
     {
@@ -1663,31 +1734,35 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Sonic Drive-In",
       "affinity": 0.9799697283882401,
       "qlooRank": 139,
-      "blendedRank": 135,
+      "blendedRank": 29,
       "baselineRank": 23,
       "nationalStoreCount": 3354,
-      "presentInRadius": true,
-      "nearestStoreKm": 6.4771900908559195
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 36,
+      "presentInRadius": false
     },
     {
       "entityId": "74D13B62-2C51-4D99-804F-3D338F7B0406",
       "name": "Burger King",
       "affinity": 0.9797237535410793,
       "qlooRank": 140,
-      "blendedRank": 125,
+      "blendedRank": 15,
       "baselineRank": 13,
       "nationalStoreCount": 6169,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.7099159894705382
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 34,
+      "presentInRadius": false
     },
     {
       "entityId": "4C7C9E59-5CD7-4EDF-860D-5427FEA4046C",
       "name": "Waffle House",
       "affinity": 0.9793733718574092,
       "qlooRank": 141,
-      "blendedRank": 139,
+      "blendedRank": 46,
       "baselineRank": 38,
       "nationalStoreCount": 2106,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 32,
       "presentInRadius": false
     },
     {
@@ -1695,9 +1770,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "MOD Pizza",
       "affinity": 0.9789258664793159,
       "qlooRank": 142,
-      "blendedRank": 147,
+      "blendedRank": 130,
       "baselineRank": 135,
       "nationalStoreCount": 438,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 33,
       "presentInRadius": false
     },
     {
@@ -1705,42 +1782,47 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Jamba",
       "affinity": 0.9787392369594315,
       "qlooRank": 143,
-      "blendedRank": 148,
+      "blendedRank": 100,
       "baselineRank": 104,
       "nationalStoreCount": 687,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.379002895783947
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 44,
+      "presentInRadius": false
     },
     {
       "entityId": "F38E6BB8-1015-439A-B574-FC38F747497E",
       "name": "Ross Dress for Less",
       "affinity": 0.978190889499724,
       "qlooRank": 144,
-      "blendedRank": 144,
+      "blendedRank": 53,
       "baselineRank": 41,
       "nationalStoreCount": 1996,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.1908493827787403
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 30,
+      "presentInRadius": false
     },
     {
       "entityId": "A7EB849F-73C2-4367-AB4D-467EED8A65D4",
       "name": "Little Caesars",
       "affinity": 0.9781386499991462,
       "qlooRank": 145,
-      "blendedRank": 143,
+      "blendedRank": 45,
       "baselineRank": 33,
       "nationalStoreCount": 2307,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.738859091334756
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 27,
+      "presentInRadius": false
     },
     {
       "entityId": "0E01EDE4-04E3-4801-916D-29171340AD1E",
       "name": "Dillard's",
       "affinity": 0.9778473640141342,
       "qlooRank": 146,
-      "blendedRank": 151,
+      "blendedRank": 165,
       "baselineRank": 155,
       "nationalStoreCount": 272,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 32,
       "presentInRadius": false
     },
     {
@@ -1748,9 +1830,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Wawa",
       "affinity": 0.9777916223556887,
       "qlooRank": 147,
-      "blendedRank": 149,
+      "blendedRank": 85,
       "baselineRank": 86,
       "nationalStoreCount": 943,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 42,
       "presentInRadius": false
     },
     {
@@ -1758,20 +1842,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Sam's Club",
       "affinity": 0.977720634276607,
       "qlooRank": 148,
-      "blendedRank": 150,
+      "blendedRank": 77,
       "baselineRank": 75,
       "nationalStoreCount": 1132,
-      "presentInRadius": true,
-      "nearestStoreKm": 9.123448772632289
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 41,
+      "presentInRadius": false
     },
     {
       "entityId": "4FF960CB-CCB8-4723-8657-8E9A5F0A53E2",
       "name": "Subway",
       "affinity": 0.9774592844505701,
       "qlooRank": 149,
-      "blendedRank": 93,
+      "blendedRank": 5,
       "baselineRank": 2,
       "nationalStoreCount": 17883,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 25,
       "presentInRadius": true,
       "nearestStoreKm": 0.813561329672291
     },
@@ -1780,20 +1867,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Smashburger",
       "affinity": 0.9766482242689393,
       "qlooRank": 150,
-      "blendedRank": 152,
+      "blendedRank": 187,
       "baselineRank": 186,
       "nationalStoreCount": 159,
-      "presentInRadius": true,
-      "nearestStoreKm": 9.11259852808314
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 30,
+      "presentInRadius": false
     },
     {
       "entityId": "25FFE815-A824-4029-9BA5-10E70CD8EE26",
       "name": "Build-A-Bear Workshop",
       "affinity": 0.976341669989554,
       "qlooRank": 151,
-      "blendedRank": 153,
+      "blendedRank": 194,
       "baselineRank": 199,
       "nationalStoreCount": 126,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 29,
       "presentInRadius": false
     },
     {
@@ -1801,20 +1891,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "KFC",
       "affinity": 0.9762147470612612,
       "qlooRank": 152,
-      "blendedRank": 146,
+      "blendedRank": 30,
       "baselineRank": 20,
       "nationalStoreCount": 3746,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.6624461896832345
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 23,
+      "presentInRadius": false
     },
     {
       "entityId": "2D00EBC5-9F4C-46E2-86D5-99E55B8D30D9",
       "name": "Bass Pro Shops",
       "affinity": 0.9754738211126828,
       "qlooRank": 153,
-      "blendedRank": 154,
+      "blendedRank": 195,
       "baselineRank": 196,
       "nationalStoreCount": 129,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 28,
       "presentInRadius": false
     },
     {
@@ -1822,9 +1915,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Le Pain Quotidien",
       "affinity": 0.9753315070125903,
       "qlooRank": 154,
-      "blendedRank": 157,
+      "blendedRank": 216,
       "baselineRank": 220,
       "nationalStoreCount": 48,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 27,
       "presentInRadius": false
     },
     {
@@ -1832,9 +1927,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Talbots",
       "affinity": 0.9743989768954026,
       "qlooRank": 155,
-      "blendedRank": 155,
+      "blendedRank": 142,
       "baselineRank": 136,
       "nationalStoreCount": 437,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 26,
       "presentInRadius": false
     },
     {
@@ -1842,9 +1939,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "LongHorn Steakhouse",
       "affinity": 0.9739269193665098,
       "qlooRank": 156,
-      "blendedRank": 156,
+      "blendedRank": 114,
       "baselineRank": 109,
       "nationalStoreCount": 652,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 40,
       "presentInRadius": false
     },
     {
@@ -1852,9 +1951,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Bonefish Grill",
       "affinity": 0.973447202636647,
       "qlooRank": 157,
-      "blendedRank": 160,
+      "blendedRank": 192,
       "baselineRank": 188,
       "nationalStoreCount": 156,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 25,
       "presentInRadius": false
     },
     {
@@ -1862,9 +1963,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Red Robin",
       "affinity": 0.9730980935097713,
       "qlooRank": 158,
-      "blendedRank": 159,
+      "blendedRank": 144,
       "baselineRank": 132,
       "nationalStoreCount": 448,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 24,
       "presentInRadius": false
     },
     {
@@ -1872,9 +1975,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Best Buy",
       "affinity": 0.9723211294925876,
       "qlooRank": 159,
-      "blendedRank": 158,
+      "blendedRank": 87,
       "baselineRank": 78,
       "nationalStoreCount": 1058,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 39,
       "presentInRadius": true,
       "nearestStoreKm": 1.1737156730492098
     },
@@ -1883,42 +1988,47 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Finish Line",
       "affinity": 0.9715137627855087,
       "qlooRank": 160,
-      "blendedRank": 161,
+      "blendedRank": 193,
       "baselineRank": 189,
       "nationalStoreCount": 153,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.684471202799807
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 23,
+      "presentInRadius": false
     },
     {
       "entityId": "DFD670C3-579A-4561-8233-B41F98A7276B",
       "name": "Fresh Market",
       "affinity": 0.9714572271979017,
       "qlooRank": 161,
-      "blendedRank": 163,
+      "blendedRank": 191,
       "baselineRank": 181,
       "nationalStoreCount": 173,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.389921360992679
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 22,
+      "presentInRadius": false
     },
     {
       "entityId": "FF5D6B55-7FF3-432C-A0E8-CE3F790E7941",
       "name": "Men's Wearhouse",
       "affinity": 0.9714274242136661,
       "qlooRank": 162,
-      "blendedRank": 162,
+      "blendedRank": 128,
       "baselineRank": 113,
       "nationalStoreCount": 609,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.6166531554739565
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 38,
+      "presentInRadius": false
     },
     {
       "entityId": "937A21AD-ACF2-4DBE-B61E-4A5466FE3E77",
       "name": "Famous Footwear",
       "affinity": 0.9713971820476536,
       "qlooRank": 163,
-      "blendedRank": 167,
+      "blendedRank": 200,
       "baselineRank": 195,
       "nationalStoreCount": 135,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 21,
       "presentInRadius": false
     },
     {
@@ -1926,9 +2036,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "European Wax Center",
       "affinity": 0.9713559811121862,
       "qlooRank": 164,
-      "blendedRank": 164,
+      "blendedRank": 94,
       "baselineRank": 84,
       "nationalStoreCount": 986,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 36,
       "presentInRadius": true,
       "nearestStoreKm": 0.22252377118095712
     },
@@ -1937,42 +2049,47 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Claire's",
       "affinity": 0.9702920628677875,
       "qlooRank": 165,
-      "blendedRank": 166,
+      "blendedRank": 109,
       "baselineRank": 92,
       "nationalStoreCount": 802,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.605166893604133
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 35,
+      "presentInRadius": false
     },
     {
       "entityId": "B4F15973-8C09-4ACA-8E11-5CF3437D514D",
       "name": "F45 Training",
       "affinity": 0.9699910150782408,
       "qlooRank": 166,
-      "blendedRank": 168,
+      "blendedRank": 122,
       "baselineRank": 105,
       "nationalStoreCount": 675,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.916129642008563
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 34,
+      "presentInRadius": false
     },
     {
       "entityId": "93F6AA68-9168-4F6F-A27E-2508755B1690",
       "name": "Party City",
       "affinity": 0.9699796033388154,
       "qlooRank": 167,
-      "blendedRank": 169,
+      "blendedRank": 107,
       "baselineRank": 91,
       "nationalStoreCount": 864,
-      "presentInRadius": true,
-      "nearestStoreKm": 5.195286726447033
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 33,
+      "presentInRadius": false
     },
     {
       "entityId": "AE59B629-0D66-40D7-9986-2F6A985A40DC",
       "name": "Ruth's Chris Steak House",
       "affinity": 0.9692643570423645,
       "qlooRank": 168,
-      "blendedRank": 172,
+      "blendedRank": 202,
       "baselineRank": 194,
       "nationalStoreCount": 137,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 20,
       "presentInRadius": false
     },
     {
@@ -1980,20 +2097,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Skechers",
       "affinity": 0.9669192583733601,
       "qlooRank": 169,
-      "blendedRank": 170,
+      "blendedRank": 129,
       "baselineRank": 101,
       "nationalStoreCount": 705,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.5566095473694985
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 32,
+      "presentInRadius": false
     },
     {
       "entityId": "C2FBC3D3-1A7E-4DFA-8824-BEDC0EB86C57",
       "name": "Crunch Fitness",
       "affinity": 0.966643630579982,
       "qlooRank": 170,
-      "blendedRank": 173,
+      "blendedRank": 135,
       "baselineRank": 110,
       "nationalStoreCount": 628,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 31,
       "presentInRadius": false
     },
     {
@@ -2001,9 +2121,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Natural Grocers",
       "affinity": 0.9659449817066487,
       "qlooRank": 171,
-      "blendedRank": 176,
+      "blendedRank": 196,
       "baselineRank": 180,
       "nationalStoreCount": 176,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 18,
       "presentInRadius": false
     },
     {
@@ -2011,20 +2133,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Smoothie King",
       "affinity": 0.9645762577099369,
       "qlooRank": 172,
-      "blendedRank": 171,
+      "blendedRank": 89,
       "baselineRank": 60,
       "nationalStoreCount": 1293,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.107807251317467
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 29,
+      "presentInRadius": false
     },
     {
       "entityId": "FFB9D7B9-F161-4003-86BA-6FD2A860AFDA",
       "name": "Tommy Bahama",
       "affinity": 0.9643909163788222,
       "qlooRank": 173,
-      "blendedRank": 179,
+      "blendedRank": 204,
       "baselineRank": 193,
       "nationalStoreCount": 142,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 17,
       "presentInRadius": false
     },
     {
@@ -2032,9 +2157,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Freddy's Frozen Custard & Steakburgers",
       "affinity": 0.9643419277301132,
       "qlooRank": 174,
-      "blendedRank": 178,
+      "blendedRank": 150,
       "baselineRank": 115,
       "nationalStoreCount": 578,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 28,
       "presentInRadius": false
     },
     {
@@ -2042,9 +2169,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Twin Peaks",
       "affinity": 0.9642585092558548,
       "qlooRank": 175,
-      "blendedRank": 180,
+      "blendedRank": 208,
       "baselineRank": 205,
       "nationalStoreCount": 110,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 16,
       "presentInRadius": false
     },
     {
@@ -2052,9 +2181,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Tropical Smoothie Cafe",
       "affinity": 0.9633497369973526,
       "qlooRank": 176,
-      "blendedRank": 175,
+      "blendedRank": 79,
       "baselineRank": 45,
       "nationalStoreCount": 1810,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 20,
       "presentInRadius": true,
       "nearestStoreKm": 0.21596188230493327
     },
@@ -2063,20 +2194,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Qdoba",
       "affinity": 0.9633422267942606,
       "qlooRank": 177,
-      "blendedRank": 165,
+      "blendedRank": 38,
       "baselineRank": 15,
       "nationalStoreCount": 4283,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.118762210951661
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 18,
+      "presentInRadius": false
     },
     {
       "entityId": "98440E84-530F-4A97-AC5B-3677C78A9720",
       "name": "Jack in the Box",
       "affinity": 0.9627284143347765,
       "qlooRank": 178,
-      "blendedRank": 181,
+      "blendedRank": 210,
       "baselineRank": 211,
       "nationalStoreCount": 96,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 15,
       "presentInRadius": false
     },
     {
@@ -2084,20 +2218,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "J.Jill",
       "affinity": 0.9625882778576125,
       "qlooRank": 179,
-      "blendedRank": 182,
+      "blendedRank": 188,
       "baselineRank": 159,
       "nationalStoreCount": 256,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.684471202799807
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 14,
+      "presentInRadius": false
     },
     {
       "entityId": "47C8C56F-D079-451D-855A-D694B53C5A83",
       "name": "Dave & Buster's",
       "affinity": 0.9621597933938444,
       "qlooRank": 180,
-      "blendedRank": 184,
+      "blendedRank": 201,
       "baselineRank": 177,
       "nationalStoreCount": 182,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 13,
       "presentInRadius": false
     },
     {
@@ -2105,9 +2242,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Outback Steakhouse",
       "affinity": 0.9620080788777092,
       "qlooRank": 181,
-      "blendedRank": 183,
+      "blendedRank": 145,
       "baselineRank": 108,
       "nationalStoreCount": 658,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 27,
       "presentInRadius": false
     },
     {
@@ -2115,9 +2254,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Casey's",
       "affinity": 0.9616514844253422,
       "qlooRank": 182,
-      "blendedRank": 174,
+      "blendedRank": 49,
       "baselineRank": 19,
       "nationalStoreCount": 3750,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 16,
       "presentInRadius": false
     },
     {
@@ -2125,9 +2266,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Publix",
       "affinity": 0.9614125063724723,
       "qlooRank": 183,
-      "blendedRank": 177,
+      "blendedRank": 56,
       "baselineRank": 24,
       "nationalStoreCount": 3242,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 14,
       "presentInRadius": false
     },
     {
@@ -2135,9 +2278,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Bojangles",
       "affinity": 0.96130627623664,
       "qlooRank": 184,
-      "blendedRank": 185,
+      "blendedRank": 127,
       "baselineRank": 89,
       "nationalStoreCount": 881,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 26,
       "presentInRadius": false
     },
     {
@@ -2145,31 +2290,35 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "P.F. Chang's",
       "affinity": 0.9608661906947282,
       "qlooRank": 185,
-      "blendedRank": 188,
+      "blendedRank": 197,
       "baselineRank": 168,
       "nationalStoreCount": 205,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.142839460112301
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 12,
+      "presentInRadius": false
     },
     {
       "entityId": "46ACDCB4-D58F-49E7-B5CE-80E44B78E5E1",
       "name": "Sunglass Hut",
       "affinity": 0.960007620896539,
       "qlooRank": 186,
-      "blendedRank": 186,
+      "blendedRank": 101,
       "baselineRank": 59,
       "nationalStoreCount": 1300,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.465737796131975
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 25,
+      "presentInRadius": false
     },
     {
       "entityId": "1DCF5C56-35D6-4CCA-AF5E-13F6ACB63C0F",
       "name": "Dutch Bros Coffee",
       "affinity": 0.9595780705600304,
       "qlooRank": 187,
-      "blendedRank": 187,
+      "blendedRank": 103,
       "baselineRank": 63,
       "nationalStoreCount": 1274,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 24,
       "presentInRadius": false
     },
     {
@@ -2177,31 +2326,35 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Einstein Bros. Bagels",
       "affinity": 0.9582963496328086,
       "qlooRank": 188,
-      "blendedRank": 189,
+      "blendedRank": 153,
       "baselineRank": 100,
       "nationalStoreCount": 707,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.553720958928538
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 22,
+      "presentInRadius": false
     },
     {
       "entityId": "A4AF25AA-776E-4FF4-849E-4FE1BCA7B4E2",
       "name": "Moe's Southwest Grill",
       "affinity": 0.9561855753982024,
       "qlooRank": 189,
-      "blendedRank": 191,
+      "blendedRank": 167,
       "baselineRank": 119,
       "nationalStoreCount": 540,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.907407213565162
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 21,
+      "presentInRadius": false
     },
     {
       "entityId": "BEFB84C0-693C-41A5-9538-A687A767DE13",
       "name": "Del Taco",
       "affinity": 0.9550065912829611,
       "qlooRank": 190,
-      "blendedRank": 192,
+      "blendedRank": 168,
       "baselineRank": 118,
       "nationalStoreCount": 557,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 20,
       "presentInRadius": false
     },
     {
@@ -2209,9 +2362,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Gold's Gym",
       "affinity": 0.9548231052900387,
       "qlooRank": 191,
-      "blendedRank": 194,
+      "blendedRank": 206,
       "baselineRank": 179,
       "nationalStoreCount": 177,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 11,
       "presentInRadius": false
     },
     {
@@ -2219,9 +2374,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Wegmans",
       "affinity": 0.9542310127919902,
       "qlooRank": 192,
-      "blendedRank": 196,
+      "blendedRank": 214,
       "baselineRank": 203,
       "nationalStoreCount": 114,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 10,
       "presentInRadius": false
     },
     {
@@ -2229,20 +2386,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Chico's",
       "affinity": 0.9538949458103189,
       "qlooRank": 193,
-      "blendedRank": 195,
+      "blendedRank": 182,
       "baselineRank": 134,
       "nationalStoreCount": 439,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.605166893604133
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 9,
+      "presentInRadius": false
     },
     {
       "entityId": "3CCF14AE-D5B0-4CB8-A8BA-5597827E8130",
       "name": "Mattress Firm",
       "affinity": 0.9537264265944578,
       "qlooRank": 194,
-      "blendedRank": 190,
+      "blendedRank": 84,
       "baselineRank": 36,
       "nationalStoreCount": 2240,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 11,
       "presentInRadius": true,
       "nearestStoreKm": 0.38342320381355993
     },
@@ -2251,9 +2411,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Academy Sports + Outdoors",
       "affinity": 0.9532563933089856,
       "qlooRank": 195,
-      "blendedRank": 199,
+      "blendedRank": 189,
       "baselineRank": 147,
       "nationalStoreCount": 347,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 8,
       "presentInRadius": false
     },
     {
@@ -2261,42 +2423,47 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Kay Jewelers",
       "affinity": 0.9510130802617575,
       "qlooRank": 196,
-      "blendedRank": 197,
+      "blendedRank": 140,
       "baselineRank": 80,
       "nationalStoreCount": 1005,
-      "presentInRadius": true,
-      "nearestStoreKm": 5.4999710723178445
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 19,
+      "presentInRadius": false
     },
     {
       "entityId": "D9477DA6-D020-4C27-A494-1EFF2607D594",
       "name": "Tempur-Pedic",
       "affinity": 0.9509670395290768,
       "qlooRank": 197,
-      "blendedRank": 202,
+      "blendedRank": 215,
       "baselineRank": 202,
       "nationalStoreCount": 117,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.6491907331750655
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 7,
+      "presentInRadius": false
     },
     {
       "entityId": "231BC53E-E9BE-4D78-BFFA-AA85FF2029EF",
       "name": "Massage Envy",
       "affinity": 0.948860915494099,
       "qlooRank": 198,
-      "blendedRank": 200,
+      "blendedRank": 151,
       "baselineRank": 83,
       "nationalStoreCount": 989,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.0069830238186035
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 18,
+      "presentInRadius": false
     },
     {
       "entityId": "14D07FA0-1C87-48E7-B19A-0D6401D2D082",
       "name": "Boot Barn",
       "affinity": 0.9482731334088498,
       "qlooRank": 199,
-      "blendedRank": 204,
+      "blendedRank": 219,
       "baselineRank": 212,
       "nationalStoreCount": 95,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 5,
       "presentInRadius": false
     },
     {
@@ -2304,9 +2471,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Firehouse Subs",
       "affinity": 0.9476464712311143,
       "qlooRank": 200,
-      "blendedRank": 201,
+      "blendedRank": 133,
       "baselineRank": 61,
       "nationalStoreCount": 1283,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 16,
       "presentInRadius": false
     },
     {
@@ -2314,9 +2483,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Anytime Fitness",
       "affinity": 0.9474621689530588,
       "qlooRank": 201,
-      "blendedRank": 198,
+      "blendedRank": 91,
       "baselineRank": 32,
       "nationalStoreCount": 2328,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 9,
       "presentInRadius": true,
       "nearestStoreKm": 0.8869129787867525
     },
@@ -2325,9 +2496,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Carl's Jr.",
       "affinity": 0.9469813109828711,
       "qlooRank": 202,
-      "blendedRank": 203,
+      "blendedRank": 160,
       "baselineRank": 85,
       "nationalStoreCount": 944,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 15,
       "presentInRadius": false
     },
     {
@@ -2335,9 +2508,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Zaxby's",
       "affinity": 0.9448984299980852,
       "qlooRank": 203,
-      "blendedRank": 205,
+      "blendedRank": 159,
       "baselineRank": 79,
       "nationalStoreCount": 1031,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 14,
       "presentInRadius": false
     },
     {
@@ -2345,20 +2520,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Church's Chicken",
       "affinity": 0.9442046016380751,
       "qlooRank": 204,
-      "blendedRank": 207,
+      "blendedRank": 171,
       "baselineRank": 94,
       "nationalStoreCount": 769,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.699688020107908
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 13,
+      "presentInRadius": false
     },
     {
       "entityId": "9278BB94-37C8-4C8F-908A-5067ECA014E7",
       "name": "Tim Hortons",
       "affinity": 0.9433442381199812,
       "qlooRank": 205,
-      "blendedRank": 209,
+      "blendedRank": 177,
       "baselineRank": 102,
       "nationalStoreCount": 694,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 12,
       "presentInRadius": false
     },
     {
@@ -2366,9 +2544,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "QuikTrip",
       "affinity": 0.9418685335832766,
       "qlooRank": 206,
-      "blendedRank": 208,
+      "blendedRank": 152,
       "baselineRank": 64,
       "nationalStoreCount": 1261,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 11,
       "presentInRadius": false
     },
     {
@@ -2376,9 +2556,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Sheetz",
       "affinity": 0.9408015180652579,
       "qlooRank": 207,
-      "blendedRank": 210,
+      "blendedRank": 172,
       "baselineRank": 90,
       "nationalStoreCount": 865,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 9,
       "presentInRadius": false
     },
     {
@@ -2386,9 +2568,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Safeway",
       "affinity": 0.9390901651966994,
       "qlooRank": 208,
-      "blendedRank": 206,
+      "blendedRank": 126,
       "baselineRank": 43,
       "nationalStoreCount": 1945,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 7,
       "presentInRadius": false
     },
     {
@@ -2396,31 +2580,35 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Dollar General",
       "affinity": 0.938904422061858,
       "qlooRank": 209,
-      "blendedRank": 140,
+      "blendedRank": 17,
       "baselineRank": 1,
       "nationalStoreCount": 20496,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.218157145174287
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 5,
+      "presentInRadius": false
     },
     {
       "entityId": "9EAF2345-B604-441C-BFF8-5C7A16AD49BD",
       "name": "LensCrafters",
       "affinity": 0.9351585785793984,
       "qlooRank": 210,
-      "blendedRank": 211,
+      "blendedRank": 156,
       "baselineRank": 51,
       "nationalStoreCount": 1516,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.626280437729045
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 8,
+      "presentInRadius": false
     },
     {
       "entityId": "7D48963B-E4CF-484F-8760-4EAF7165ECF1",
       "name": "Hardee's",
       "affinity": 0.9339993410041865,
       "qlooRank": 211,
-      "blendedRank": 212,
+      "blendedRank": 161,
       "baselineRank": 54,
       "nationalStoreCount": 1477,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 7,
       "presentInRadius": false
     },
     {
@@ -2428,9 +2616,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Carrabba's Italian Grill",
       "affinity": 0.9317946535530278,
       "qlooRank": 212,
-      "blendedRank": 217,
+      "blendedRank": 218,
       "baselineRank": 169,
       "nationalStoreCount": 203,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 4,
       "presentInRadius": false
     },
     {
@@ -2438,9 +2628,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "El Pollo Loco",
       "affinity": 0.9300654525913062,
       "qlooRank": 213,
-      "blendedRank": 216,
+      "blendedRank": 203,
       "baselineRank": 123,
       "nationalStoreCount": 518,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 6,
       "presentInRadius": false
     },
     {
@@ -2448,9 +2640,11 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Family Dollar",
       "affinity": 0.9300030450800759,
       "qlooRank": 214,
-      "blendedRank": 193,
+      "blendedRank": 71,
       "baselineRank": 10,
       "nationalStoreCount": 7080,
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 2,
       "presentInRadius": true,
       "nearestStoreKm": 1.4708472475732892
     },
@@ -2459,31 +2653,35 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Marco's Pizza",
       "affinity": 0.9260005386839785,
       "qlooRank": 215,
-      "blendedRank": 214,
+      "blendedRank": 180,
       "baselineRank": 70,
       "nationalStoreCount": 1210,
-      "presentInRadius": true,
-      "nearestStoreKm": 8.229191430839425
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 5,
+      "presentInRadius": false
     },
     {
       "entityId": "6D548BAE-A999-44A2-8FEB-5E92E9AE158F",
       "name": "Five Guys",
       "affinity": 0.9256516999526233,
       "qlooRank": 216,
-      "blendedRank": 213,
+      "blendedRank": 170,
       "baselineRank": 52,
       "nationalStoreCount": 1512,
-      "presentInRadius": true,
-      "nearestStoreKm": 3.4374206530681195
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 4,
+      "presentInRadius": false
     },
     {
       "entityId": "4950A64D-D8D8-4315-8925-8767AABBC7E9",
       "name": "Snap Fitness",
       "affinity": 0.9177096467277918,
       "qlooRank": 217,
-      "blendedRank": 218,
+      "blendedRank": 211,
       "baselineRank": 130,
       "nationalStoreCount": 458,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 2,
       "presentInRadius": false
     },
     {
@@ -2494,8 +2692,9 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "blendedRank": 220,
       "baselineRank": 216,
       "nationalStoreCount": 58,
-      "presentInRadius": true,
-      "nearestStoreKm": 4.164006154638302
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 3,
+      "presentInRadius": false
     },
     {
       "entityId": "0CBF81A1-FE3A-4D7B-885C-72BC90AC55B6",
@@ -2505,17 +2704,20 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "blendedRank": 221,
       "baselineRank": 221,
       "nationalStoreCount": 47,
-      "presentInRadius": true,
-      "nearestStoreKm": 2.597671507538023
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 2,
+      "presentInRadius": false
     },
     {
       "entityId": "1C537252-DE55-4FCF-931D-B76F157CF913",
       "name": "Ollie's Bargain Outlet",
       "affinity": 0.9040630271300891,
       "qlooRank": 220,
-      "blendedRank": 219,
+      "blendedRank": 212,
       "baselineRank": 98,
       "nationalStoreCount": 720,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 1,
       "presentInRadius": false
     },
     {
@@ -2526,6 +2728,8 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "blendedRank": 222,
       "baselineRank": 224,
       "nationalStoreCount": 24,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 1,
       "presentInRadius": false
     },
     {
@@ -2533,11 +2737,12 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "name": "Papa John's",
       "affinity": 0.8552137271488057,
       "qlooRank": 222,
-      "blendedRank": 215,
+      "blendedRank": 217,
       "baselineRank": 27,
       "nationalStoreCount": 3086,
-      "presentInRadius": true,
-      "nearestStoreKm": 1.9343369662245102
+      "chainSizeTier": "big",
+      "tasteFitBeyondChainPercentile": 1,
+      "presentInRadius": false
     },
     {
       "entityId": "860B2C89-6ED2-48E8-8C79-B5FE8A1F7F7F",
@@ -2547,6 +2752,8 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "blendedRank": 224,
       "baselineRank": 170,
       "nationalStoreCount": 203,
+      "chainSizeTier": "small",
+      "tasteFitBeyondChainPercentile": 1,
       "presentInRadius": false
     },
     {
@@ -2557,6 +2764,8 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "blendedRank": 223,
       "baselineRank": 96,
       "nationalStoreCount": 741,
+      "chainSizeTier": "mid",
+      "tasteFitBeyondChainPercentile": 1,
       "presentInRadius": false
     }
   ],
@@ -2733,48 +2942,23 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
   "heatmapAvailable": false,
   "prospects": [
     {
-      "coverageNote": "No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "brandReach": {
+        "status": "not_yet_found",
+        "searchUrl": "https://www.google.com/search?q=TJ%20Maxx%20retail%20real%20estate%20site%20submission"
+      },
       "brand": {
-        "entityId": "AC8F9047-F23D-4A54-BBAA-A3CBD2991C02",
-        "name": "Vans",
-        "affinity": 0.999598704694745,
-        "affinityRank": 13,
+        "entityId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
+        "name": "TJ Maxx",
+        "affinity": 0.998824558394489,
+        "affinityRank": 35,
         "verified": "unverified (1 source)",
         "verificationSources": [
           "All The Places (CC0)"
         ],
-        "nationalStoreCount": 397,
-        "nearbyStoreCount": 0,
-        "storefrontFormat": "streetfront",
-        "minStorefrontSqFt": 800
-      },
-      "tenantMixScore": {
-        "categoryFit": "Apparel"
-      },
-      "outreachDraft": "",
-      "reasons": [
-        "Qloo rank #13 (top 10% of 224 brands) in Wicker Park",
-        "Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, trade-area density)",
-        "Established chain with 397 US locations"
-      ],
-      "nearestExistingStoreKm": 12.191706680907302,
-      "qlooSignals": [
-        "affinity rank 0.999598704694745",
-        "affinity 1.000"
-      ]
-    },
-    {
-      "coverageNote": "No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
-      "brand": {
-        "entityId": "23A88F48-A3C6-46A5-82FB-0D862DF508C0",
-        "name": "Michael Kors",
-        "affinity": 0.9993028343498105,
-        "affinityRank": 21,
-        "verified": "unverified (1 source)",
-        "verificationSources": [
-          "All The Places (CC0)"
-        ],
-        "nationalStoreCount": 213,
+        "nationalStoreCount": 1281,
+        "chainSizeTier": "mid",
+        "tasteFitBeyondChainPercentile": 88,
         "nearbyStoreCount": 0,
         "storefrontFormat": "streetfront",
         "minStorefrontSqFt": 800
@@ -2784,28 +2968,107 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       },
       "outreachDraft": "",
       "reasons": [
-        "Qloo rank #21 (top 10% of 224 brands) in Wicker Park",
-        "Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, trade-area density)",
-        "Established chain with 213 US locations"
+        "TJ Maxx: LeaseUp rank #35 (top 16% of 224 brands) for Wicker Park",
+        "No TJ Maxx store within 3 km (ATP catalog)",
+        "Established chain with 1281 US locations"
       ],
-      "nearestExistingStoreKm": 17.35370955548852,
+      "nearestExistingStoreKm": 3.702381830590345,
       "qlooSignals": [
-        "affinity rank 0.9993028343498105",
-        "affinity 0.999"
+        "affinity rank 0.998824558394489",
+        "tier taste fit (not raw affinity)"
       ]
     },
     {
-      "coverageNote": "No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "brandReach": {
+        "status": "not_yet_found",
+        "searchUrl": "https://www.google.com/search?q=Crumbl%20retail%20real%20estate%20site%20submission"
+      },
       "brand": {
-        "entityId": "DEFEBCC5-A986-4D7C-8408-7575210872FC",
-        "name": "Under Armour",
-        "affinity": 0.9989378678762313,
-        "affinityRank": 29,
+        "entityId": "7C4CC0B9-1C3C-4C5C-A732-5991046EBB03",
+        "name": "Crumbl",
+        "affinity": 0.9981525096781785,
+        "affinityRank": 57,
         "verified": "unverified (1 source)",
         "verificationSources": [
           "All The Places (CC0)"
         ],
-        "nationalStoreCount": 172,
+        "nationalStoreCount": 890,
+        "chainSizeTier": "mid",
+        "tasteFitBeyondChainPercentile": 84,
+        "nearbyStoreCount": 0,
+        "storefrontFormat": "streetfront",
+        "minStorefrontSqFt": 800
+      },
+      "tenantMixScore": {
+        "categoryFit": "Retail"
+      },
+      "outreachDraft": "",
+      "reasons": [
+        "Crumbl: LeaseUp rank #57 of 224 brands for Wicker Park; Qloo taste rank #49 of 224",
+        "No Crumbl store within 3 km (ATP catalog)",
+        "Established chain with 890 US locations"
+      ],
+      "nearestExistingStoreKm": 5.039849287112551,
+      "qlooSignals": [
+        "affinity rank 0.9981525096781785",
+        "tier taste fit (not raw affinity)"
+      ]
+    },
+    {
+      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "brandReach": {
+        "status": "not_yet_found",
+        "searchUrl": "https://www.google.com/search?q=Victoria's%20Secret%20retail%20real%20estate%20site%20submission"
+      },
+      "brand": {
+        "entityId": "D3310425-7161-41FC-8C2C-5435AF0F0A5B",
+        "name": "Victoria's Secret",
+        "affinity": 0.9997519239550274,
+        "affinityRank": 60,
+        "verified": "unverified (1 source)",
+        "verificationSources": [
+          "All The Places (CC0)"
+        ],
+        "nationalStoreCount": 768,
+        "chainSizeTier": "mid",
+        "tasteFitBeyondChainPercentile": 94,
+        "nearbyStoreCount": 0,
+        "storefrontFormat": "streetfront",
+        "minStorefrontSqFt": 800
+      },
+      "tenantMixScore": {
+        "categoryFit": "Retail"
+      },
+      "outreachDraft": "",
+      "reasons": [
+        "Victoria's Secret: LeaseUp rank #60 of 224 brands for Wicker Park; Qloo taste rank #9 of 224",
+        "No Victoria's Secret store within 3 km (ATP catalog)",
+        "Established chain with 768 US locations"
+      ],
+      "nearestExistingStoreKm": 4.596216256042221,
+      "qlooSignals": [
+        "affinity rank 0.9997519239550274",
+        "tier taste fit (not raw affinity)"
+      ]
+    },
+    {
+      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "brandReach": {
+        "status": "not_yet_found",
+        "searchUrl": "https://www.google.com/search?q=J.Crew%20retail%20real%20estate%20site%20submission"
+      },
+      "brand": {
+        "entityId": "A4F0BE29-87A4-4074-9ABB-21B215E532FD",
+        "name": "J.Crew",
+        "affinity": 0.9993615902584512,
+        "affinityRank": 65,
+        "verified": "unverified (1 source)",
+        "verificationSources": [
+          "All The Places (CC0)"
+        ],
+        "nationalStoreCount": 693,
+        "chainSizeTier": "mid",
+        "tasteFitBeyondChainPercentile": 91,
         "nearbyStoreCount": 0,
         "storefrontFormat": "streetfront",
         "minStorefrontSqFt": 800
@@ -2815,58 +3078,33 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       },
       "outreachDraft": "",
       "reasons": [
-        "Qloo rank #29 (top 15% of 224 brands) in Wicker Park",
-        "Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, trade-area density)",
-        "Established chain with 172 US locations"
+        "J.Crew: LeaseUp rank #65 of 224 brands for Wicker Park; Qloo taste rank #20 of 224",
+        "No J.Crew store within 3 km (ATP catalog)",
+        "Established chain with 693 US locations"
       ],
-      "nearestExistingStoreKm": 17.278564483786198,
+      "nearestExistingStoreKm": 3.643146486346599,
       "qlooSignals": [
-        "affinity rank 0.9989378678762313",
-        "affinity 0.999"
+        "affinity rank 0.9993615902584512",
+        "tier taste fit (not raw affinity)"
       ]
     },
     {
-      "coverageNote": "No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
-      "brand": {
-        "entityId": "09C15518-A1F2-45C3-AA01-629D86330E27",
-        "name": "Aerie",
-        "affinity": 0.9987623600651642,
-        "affinityRank": 39,
-        "verified": "unverified (1 source)",
-        "verificationSources": [
-          "All The Places (CC0)"
-        ],
-        "nationalStoreCount": 328,
-        "nearbyStoreCount": 0,
-        "storefrontFormat": "streetfront",
-        "minStorefrontSqFt": 800
+      "brandReach": {
+        "status": "not_yet_found",
+        "searchUrl": "https://www.google.com/search?q=American%20Eagle%20Outfitters%20retail%20real%20estate%20site%20submission"
       },
-      "tenantMixScore": {
-        "categoryFit": "Apparel"
-      },
-      "outreachDraft": "",
-      "reasons": [
-        "Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, trade-area density)",
-        "Established chain with 328 US locations"
-      ],
-      "nearestExistingStoreKm": 17.35370955548852,
-      "qlooSignals": [
-        "affinity rank 0.9987623600651642",
-        "affinity 0.999"
-      ]
-    },
-    {
       "brand": {
         "entityId": "2D890327-8794-4C5A-898F-FFF0323325CF",
         "name": "American Eagle Outfitters",
         "affinity": 0.9978672635368134,
-        "affinityRank": 52,
-        "verified": "verified (2 sources)",
+        "affinityRank": 68,
+        "verified": "unverified (1 source)",
         "verificationSources": [
-          "All The Places (CC0)",
-          "OpenStreetMap snapshot"
+          "All The Places (CC0)"
         ],
         "nationalStoreCount": 712,
+        "chainSizeTier": "mid",
+        "tasteFitBeyondChainPercentile": 82,
         "nearbyStoreCount": 0,
         "storefrontFormat": "streetfront",
         "minStorefrontSqFt": 800
@@ -2876,29 +3114,280 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       },
       "outreachDraft": "",
       "reasons": [
-        "Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, trade-area density)",
+        "American Eagle Outfitters: LeaseUp rank #68 of 224 brands for Wicker Park; Qloo taste rank #52 of 224",
+        "No American Eagle Outfitters store within 3 km (ATP catalog)",
         "Established chain with 712 US locations"
       ],
       "nearestExistingStoreKm": 17.23241769016111,
       "qlooSignals": [
         "affinity rank 0.9978672635368134",
-        "affinity 0.998"
+        "tier taste fit (not raw affinity)"
+      ]
+    },
+    {
+      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "brandReach": {
+        "status": "not_yet_found",
+        "searchUrl": "https://www.google.com/search?q=H%26M%20retail%20real%20estate%20site%20submission"
+      },
+      "brand": {
+        "entityId": "108EB684-257B-42D7-84E5-6E9D8BE3E793",
+        "name": "H&M",
+        "affinity": 0.9994126793111553,
+        "affinityRank": 81,
+        "verified": "unverified (1 source)",
+        "verificationSources": [
+          "All The Places (CC0)"
+        ],
+        "nationalStoreCount": 478,
+        "chainSizeTier": "mid",
+        "tasteFitBeyondChainPercentile": 92,
+        "nearbyStoreCount": 0,
+        "storefrontFormat": "streetfront",
+        "minStorefrontSqFt": 800
+      },
+      "tenantMixScore": {
+        "categoryFit": "Retail"
+      },
+      "outreachDraft": "",
+      "reasons": [
+        "H&M: LeaseUp rank #81 of 224 brands for Wicker Park; Qloo taste rank #18 of 224",
+        "No H&M store within 3 km (ATP catalog)",
+        "Established chain with 478 US locations"
+      ],
+      "nearestExistingStoreKm": 4.712288958576044,
+      "qlooSignals": [
+        "affinity rank 0.9994126793111553",
+        "tier taste fit (not raw affinity)"
+      ]
+    },
+    {
+      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "brandReach": {
+        "status": "not_yet_found",
+        "searchUrl": "https://www.google.com/search?q=Vans%20retail%20real%20estate%20site%20submission"
+      },
+      "brand": {
+        "entityId": "AC8F9047-F23D-4A54-BBAA-A3CBD2991C02",
+        "name": "Vans",
+        "affinity": 0.999598704694745,
+        "affinityRank": 88,
+        "verified": "unverified (1 source)",
+        "verificationSources": [
+          "All The Places (CC0)"
+        ],
+        "nationalStoreCount": 397,
+        "chainSizeTier": "small",
+        "tasteFitBeyondChainPercentile": 98,
+        "nearbyStoreCount": 0,
+        "storefrontFormat": "streetfront",
+        "minStorefrontSqFt": 800
+      },
+      "tenantMixScore": {
+        "categoryFit": "Apparel"
+      },
+      "outreachDraft": "",
+      "reasons": [
+        "Vans: LeaseUp rank #88 of 224 brands for Wicker Park; Qloo taste rank #13 of 224",
+        "No Vans store within 3 km (ATP catalog)",
+        "Established chain with 397 US locations"
+      ],
+      "nearestExistingStoreKm": 12.191706680907302,
+      "qlooSignals": [
+        "affinity rank 0.999598704694745",
+        "tier taste fit (not raw affinity)"
+      ]
+    },
+    {
+      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "brandReach": {
+        "status": "not_yet_found",
+        "searchUrl": "https://www.google.com/search?q=Express%20retail%20real%20estate%20site%20submission"
+      },
+      "brand": {
+        "entityId": "DB37F394-B330-4BFC-A14B-42A53B9CF7D9",
+        "name": "Express",
+        "affinity": 0.9985910800204608,
+        "affinityRank": 90,
+        "verified": "unverified (1 source)",
+        "verificationSources": [
+          "All The Places (CC0)"
+        ],
+        "nationalStoreCount": 387,
+        "chainSizeTier": "small",
+        "tasteFitBeyondChainPercentile": 75,
+        "nearbyStoreCount": 0,
+        "storefrontFormat": "streetfront",
+        "minStorefrontSqFt": 800
+      },
+      "tenantMixScore": {
+        "categoryFit": "Retail"
+      },
+      "outreachDraft": "",
+      "reasons": [
+        "Express: LeaseUp rank #90 of 224 brands for Wicker Park; Qloo taste rank #44 of 224",
+        "No Express store within 3 km (ATP catalog)",
+        "Established chain with 387 US locations"
+      ],
+      "nearestExistingStoreKm": 4.684471202799807,
+      "qlooSignals": [
+        "affinity rank 0.9985910800204608",
+        "tier taste fit (not raw affinity)"
+      ]
+    },
+    {
+      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "brandReach": {
+        "status": "not_yet_found",
+        "searchUrl": "https://www.google.com/search?q=Aerie%20retail%20real%20estate%20site%20submission"
+      },
+      "brand": {
+        "entityId": "09C15518-A1F2-45C3-AA01-629D86330E27",
+        "name": "Aerie",
+        "affinity": 0.9987623600651642,
+        "affinityRank": 102,
+        "verified": "unverified (1 source)",
+        "verificationSources": [
+          "All The Places (CC0)"
+        ],
+        "nationalStoreCount": 328,
+        "chainSizeTier": "small",
+        "tasteFitBeyondChainPercentile": 78,
+        "nearbyStoreCount": 0,
+        "storefrontFormat": "streetfront",
+        "minStorefrontSqFt": 800
+      },
+      "tenantMixScore": {
+        "categoryFit": "Apparel"
+      },
+      "outreachDraft": "",
+      "reasons": [
+        "Aerie: LeaseUp rank #102 of 224 brands for Wicker Park; Qloo taste rank #39 of 224",
+        "No Aerie store within 3 km (ATP catalog)",
+        "Established chain with 328 US locations"
+      ],
+      "nearestExistingStoreKm": 17.35370955548852,
+      "qlooSignals": [
+        "affinity rank 0.9987623600651642",
+        "tier taste fit (not raw affinity)"
+      ]
+    },
+    {
+      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "brandReach": {
+        "status": "not_yet_found",
+        "searchUrl": "https://www.google.com/search?q=Coach%20retail%20real%20estate%20site%20submission"
+      },
+      "brand": {
+        "entityId": "C306B282-6425-46DF-98F0-D976C6A65B1E",
+        "name": "Coach",
+        "affinity": 0.9988062401433718,
+        "affinityRank": 108,
+        "verified": "unverified (1 source)",
+        "verificationSources": [
+          "All The Places (CC0)"
+        ],
+        "nationalStoreCount": 305,
+        "chainSizeTier": "small",
+        "tasteFitBeyondChainPercentile": 80,
+        "nearbyStoreCount": 0,
+        "storefrontFormat": "streetfront",
+        "minStorefrontSqFt": 800
+      },
+      "tenantMixScore": {
+        "categoryFit": "Retail"
+      },
+      "outreachDraft": "",
+      "reasons": [
+        "Coach: LeaseUp rank #108 of 224 brands for Wicker Park; Qloo taste rank #36 of 224",
+        "No Coach store within 3 km (ATP catalog)",
+        "Established chain with 305 US locations"
+      ],
+      "nearestExistingStoreKm": 4.795280360306419,
+      "qlooSignals": [
+        "affinity rank 0.9988062401433718",
+        "tier taste fit (not raw affinity)"
       ]
     }
   ],
   "dataQuality": "high",
   "warnings": [
-    "Absence uses ATP geotiles + OpenStreetMap when available (227 chains). Single-source absence is never shown as confirmed.",
-    "1 big-box or format brands hidden for 2500 sq ft storefront"
+    "Absence uses ATP geotiles + OpenStreetMap when available (227 chains). Single-source absence is never shown as confirmed."
   ],
-  "runId": "d7c814a9-f878-4fa5-95d3-ab4abfb03650",
-  "timestamp": "2026-10-23T03:36:00.000Z",
+  "runId": "export-landing-wicker",
+  "timestamp": "2026-10-24T04:32:32.498Z",
   "mode": "demo",
-  "chainPriorWeight": 0.25,
-  "osmSnapshotRecordedAt": "2026-10-23T04:57:36.264Z",
-  "osmSnapshotLabel": "OpenStreetMap snapshot",
   "storefrontSqFt": 2500,
-  "formatFilteredCount": 1
+  "strictEval": {
+    "manifestId": "leaseup-eval-v1",
+    "headlineMetricId": "same_size_auc",
+    "dataSource": "fixtures",
+    "searchRadiusKm": 10,
+    "adaptiveRadiusKm": 1.5,
+    "density": "urban",
+    "poolSize": 224,
+    "panels": [
+      {
+        "id": "adaptive_present_at_10",
+        "label": "Adaptive present in top 10",
+        "qloo": 3,
+        "chain": 7,
+        "winner": "qloo"
+      },
+      {
+        "id": "logistic_blend_present_at_10",
+        "label": "Logistic blend present in top 10",
+        "qloo": 9,
+        "chain": 7,
+        "winner": "qloo"
+      },
+      {
+        "id": "random_monte_carlo",
+        "label": "Random ranking baseline",
+        "randomExpected": 1.9196428571428572
+      }
+    ],
+    "notes": [
+      "Recorded 40-site adaptive eval: taste blend top-10 hit rate 90% vs chain size 70% at this pin."
+    ]
+  },
+  "tradeAreaShoppers": {
+    "groups": [
+      {
+        "id": "customer_identity",
+        "label": "Who shops here",
+        "names": [
+          "Beer Enthusiasts",
+          "Cocktail Enthusiasts",
+          "Foodies",
+          "Regulars"
+        ]
+      },
+      {
+        "id": "ambience",
+        "label": "Vibe",
+        "names": [
+          "Social"
+        ]
+      }
+    ],
+    "qlooFields": [
+      "results.tags[].name",
+      "results.tags[].subtype",
+      "results.tags[].query.affinity",
+      "query.geospatial.panel_size"
+    ]
+  },
+  "tasteDataStatus": "ok",
+  "prospectFunnel": {
+    "brandsScored": 224,
+    "searchRadiusKm": 10,
+    "absenceRadiusKm": 3,
+    "alreadyNearbyCount": 84,
+    "strongFitAbsentCount": 10,
+    "pitchedCount": 10,
+    "verifiedCount": 0
+  }
 } as AnalysisResponse;
 
 export const LANDING_WICKER_RADIUS_KM = 10;
