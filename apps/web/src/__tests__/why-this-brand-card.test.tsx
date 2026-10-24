@@ -41,6 +41,16 @@ const results = {
   warnings: [],
   runId: 'r1',
   timestamp: '2026-10-23T00:00:00.000Z',
+  osmSnapshotRecordedAt: '2026-10-24T04:32:32.498Z',
+  prospectFunnel: {
+    brandsScored: 224,
+    searchRadiusKm: 10,
+    absenceRadiusKm: 3,
+    alreadyNearbyCount: 0,
+    strongFitAbsentCount: 1,
+    pitchedCount: 1,
+    verifiedCount: 1,
+  },
   rankings: [{ entityId: prospect.brand.entityId, name: 'REI', affinity: 0.9, qlooRank: 3, blendedRank: 3, presentInRadius: false }],
 } as AnalysisResponse;
 
@@ -52,7 +62,8 @@ describe('WhyThisBrandCard', () => {
     expect(html).toContain('Why REI?');
     expect(html).toContain('Qloo taste overlap');
     expect(html).toContain('Audience: Adventuring (brand affinity 0.76, #9 locally)');
-    expect(html).toContain('All The Places');
+    expect(html).toContain('No store within 3 km (checked Oct 24, 2026).');
+    expect(html).not.toContain('All The Places');
   });
 
   it('uses one top percent consistent with rank and total scored', () => {

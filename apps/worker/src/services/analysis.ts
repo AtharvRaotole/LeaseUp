@@ -651,6 +651,7 @@ export class AnalysisService {
         candidate.entity_id,
         location,
         radius,
+        absenceRadiusKm,
         candidate.name
       );
 
@@ -757,7 +758,8 @@ export class AnalysisService {
   private async verifyFromOsmSnapshot(
     entityId: string,
     location: Location,
-    radiusKm: number,
+    searchRadiusKm: number,
+    absenceRadiusKm: number,
     qlooName?: string
   ): Promise<{
     status:
@@ -773,7 +775,7 @@ export class AnalysisService {
     const demoOverpassConflict = this.demoOverpassConflictStatus(
       entityId,
       location,
-      radiusKm,
+      searchRadiusKm,
       qlooName,
       sources
     );
@@ -799,11 +801,12 @@ export class AnalysisService {
             : undefined,
       };
     }
+    const osmPresenceRadiusKm = Math.max(absenceRadiusKm, searchRadiusKm);
     const found = await this.osmSnapshot.hasBrandNearby(
       entityId,
       location.latitude,
       location.longitude,
-      radiusKm
+      osmPresenceRadiusKm
     );
     if (found) {
       return {
@@ -815,7 +818,7 @@ export class AnalysisService {
     const demoConflictAfterSnapshot = this.demoOverpassConflictStatus(
       entityId,
       location,
-      radiusKm,
+      searchRadiusKm,
       qlooName,
       sources
     );
@@ -856,11 +859,17 @@ export class AnalysisService {
 
   async warmOsmVerification(
     location: Location,
-    radiusKm: number,
-    prospects: ProspectPack[]
+    searchRadiusKm: number,
+    prospects: ProspectPack[],
+    absenceRadiusKm?: number
   ): Promise<void> {
-    await this.applyOsmVerification(location, radiusKm, prospects);
-    void this.refreshLiveOverpassOptional(location, radiusKm, prospects);
+    await this.applyOsmVerification(
+      location,
+      searchRadiusKm,
+      prospects,
+      absenceRadiusKm ?? searchRadiusKm
+    );
+    void this.refreshLiveOverpassOptional(location, searchRadiusKm, prospects);
   }
 
   /** Live Overpass refresh only; never downgrades snapshot-based verification. */
@@ -904,20 +913,22 @@ export class AnalysisService {
 
   private async verifyResultCacheKey(
     location: Location,
-    radiusKm: number,
+    searchRadiusKm: number,
+    absenceRadiusKm: number,
     prospects: ProspectPack[]
   ): Promise<string | null> {
     const pendingIds = prospects.map((p) => p.brand.entityId).sort();
     if (pendingIds.length === 0) return null;
     const gh5 = encodeGeohash(location.latitude, location.longitude, 5);
     const idHash = await sha256Short(pendingIds.join(','));
-    return `verify:result:v1:${gh5}:${radiusKm}:${idHash}`;
+    return `verify:result:v1:${gh5}:${searchRadiusKm}:${absenceRadiusKm}:${idHash}`;
   }
 
   async applyOsmVerification(
     location: Location,
-    radiusKm: number,
-    prospects: ProspectPack[]
+    searchRadiusKm: number,
+    prospects: ProspectPack[],
+    absenceRadiusKm: number = searchRadiusKm
   ): Promise<{
     prospects: ProspectPack[];
     summary: {
@@ -927,7 +938,12 @@ export class AnalysisService {
       unavailable: boolean;
     };
   }> {
-    const verifyCacheKey = await this.verifyResultCacheKey(location, radiusKm, prospects);
+    const verifyCacheKey = await this.verifyResultCacheKey(
+      location,
+      searchRadiusKm,
+      absenceRadiusKm,
+      prospects
+    );
     if (verifyCacheKey) {
       const cached = await this.responseCache.get(verifyCacheKey, 'text');
       if (typeof cached === 'string') {
@@ -966,7 +982,8 @@ export class AnalysisService {
           const verification = await this.verifyFromOsmSnapshot(
             pack.brand.entityId,
             location,
-            radiusKm
+            searchRadiusKm,
+            absenceRadiusKm
           );
           if (verification.status === 'verified (2 sources)') verifiedTwoSource += 1;
           if (verification.status === 'unverified (1 source)') singleSource += 1;

@@ -15,13 +15,16 @@ function scheduleOsmWarmup(
   c: Context<{ Bindings: Env }>,
   location: Location,
   radiusKm: number,
-  prospects: ProspectPack[]
+  prospects: ProspectPack[],
+  absenceRadiusKm?: number
 ) {
   if (c.env.APP_MODE !== 'live') return;
   if (!prospects.some((p) => p.brand.verified === 'verifying...')) return;
   const service = new AnalysisService(c.env);
   c.executionCtx.waitUntil(
-    service.warmOsmVerification(location, radiusKm, prospects).catch((err) => {
+    service
+      .warmOsmVerification(location, radiusKm, prospects, absenceRadiusKm ?? radiusKm)
+      .catch((err) => {
       console.warn(
         JSON.stringify({
           event: 'osm_warmup_failed',
@@ -55,7 +58,13 @@ analysisRouter.post('/analyze', async (c) => {
 
   const service = new AnalysisService(c.env);
   const result = await service.analyze(request, runId, ipHash);
-  scheduleOsmWarmup(c, result.location, request.radius, result.prospects);
+  scheduleOsmWarmup(
+    c,
+    result.location,
+    request.radius,
+    result.prospects,
+    result.prospectFunnel?.absenceRadiusKm
+  );
 
   return c.json(result);
 });
@@ -83,14 +92,21 @@ analysisRouter.post('/analyze/stream', async (c) => {
       const result = await service.analyzeWithSteps(request, runId, ipHash, async (step) => {
         await send('step', step);
       });
-      scheduleOsmWarmup(c, result.location, request.radius, result.prospects);
+      scheduleOsmWarmup(
+        c,
+        result.location,
+        request.radius,
+        result.prospects,
+        result.prospectFunnel?.absenceRadiusKm
+      );
       await send('complete', result);
       const needsOsm = result.prospects.some((p) => p.brand.verified === 'verifying...');
       if (needsOsm) {
         const { prospects: verified, summary } = await service.applyOsmVerification(
           result.location,
           request.radius,
-          result.prospects
+          result.prospects,
+          result.prospectFunnel?.absenceRadiusKm ?? request.radius
         );
         await send('verification', { runId, prospects: verified, osmSummary: summary });
       }
@@ -153,6 +169,7 @@ analysisRouter.post('/verify', async (c) => {
   const body = await c.req.json();
   const location = body.location as import('@leaseup/contracts').Location;
   const radius = Number(body.radius);
+  const absenceRadiusKm = Number(body.absenceRadiusKm) || radius;
   const prospects = body.prospects as import('@leaseup/contracts').ProspectPack[];
   if (!location || !radius || !Array.isArray(prospects)) {
     return c.json({ error: 'location, radius, and prospects are required', code: 'VALIDATION_ERROR' }, 400);
@@ -162,7 +179,8 @@ analysisRouter.post('/verify', async (c) => {
   const { prospects: updated, summary } = await service.applyOsmVerification(
     location,
     radius,
-    prospects
+    prospects,
+    absenceRadiusKm
   );
   return c.json({ prospects: updated, osmSummary: summary });
 });

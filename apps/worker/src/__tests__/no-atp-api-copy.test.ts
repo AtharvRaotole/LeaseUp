@@ -85,7 +85,8 @@ describe('no ATP acronym in API or export copy', () => {
       assertNoAtpInPayload(`analyze ${address}`, result);
       assertNoOsmAcronymInPayload(`analyze ${address}`, result);
       const absenceLine = result.prospects[0]?.reasons.find((r) => /store within/i.test(r));
-      expect(absenceLine).toContain('All The Places store data');
+      expect(absenceLine).toMatch(/No .+ store within \d+ km\./);
+      expect(absenceLine).not.toContain('ATP');
     }
   });
 

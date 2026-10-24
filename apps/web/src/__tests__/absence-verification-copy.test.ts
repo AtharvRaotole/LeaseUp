@@ -16,7 +16,7 @@ const results = {
 } as AnalysisResponse;
 
 describe('absenceVerificationSummary', () => {
-  it('states ATP-only absence when OSM not checked', () => {
+  it('states single-source absence in plain language', () => {
     const prospect = {
       brand: {
         verified: 'unverified (1 source)',
@@ -28,7 +28,7 @@ describe('absenceVerificationSummary', () => {
       },
     } as ProspectPack;
     expect(absenceVerificationSummary(prospect, 10, results)).toBe(
-      'No store within 3 km in All The Places. Not yet checked in OpenStreetMap snapshot.'
+      'No store within 3 km in our store data.'
     );
   });
 
@@ -43,8 +43,8 @@ describe('absenceVerificationSummary', () => {
         affinityRank: 1,
       },
     } as ProspectPack;
-    expect(absenceVerificationSummary(prospect, 10, results)).toContain(
-      'No store within 3 km in All The Places or OpenStreetMap snapshot'
+    expect(absenceVerificationSummary(prospect, 10, results)).toBe(
+      'No store within 3 km (checked in our store data).'
     );
   });
 });
@@ -55,21 +55,20 @@ describe('whyCardStoreCheckLine', () => {
       brand: { verified, verificationSources, entityId: 'x', name: 'Test', affinity: 1, affinityRank: 1 },
     }) as ProspectPack;
 
-  it('merges the ATP-only result, date and OSM status into one plain line', () => {
+  it('uses one plain line for ATP-only (Bleecker-like) prospects', () => {
     const line = whyCardStoreCheckLine(
       prospect('unverified (1 source)', ['All The Places (CC0)']),
       10,
       results,
       'Oct 24, 2026'
     );
-    expect(line).toBe(
-      'No store within 3 km in All The Places (store data as of Oct 24, 2026). OpenStreetMap not checked yet.'
-    );
-    expect(line).not.toMatch(/Checked against|Not yet checked in OpenStreetMap snapshot/);
+    expect(line).toBe('No store within 3 km in our store data as of Oct 24, 2026.');
+    expect(line).not.toMatch(/OpenStreetMap not checked/i);
+    expect(line).not.toMatch(/All The Places/i);
     expect(line).not.toMatch(/[\u2013\u2014]/);
   });
 
-  it('names both sources once when verified', () => {
+  it('names checked date when both sources verified', () => {
     expect(
       whyCardStoreCheckLine(
         prospect('verified (2 sources)', ['All The Places (CC0)', 'OpenStreetMap']),
@@ -77,7 +76,7 @@ describe('whyCardStoreCheckLine', () => {
         results,
         'Oct 24, 2026'
       )
-    ).toBe('No store within 3 km in All The Places or OpenStreetMap (store data as of Oct 24, 2026).');
+    ).toBe('No store within 3 km (checked Oct 24, 2026).');
   });
 
   it('keeps the demo OSM note accurate', () => {
@@ -86,7 +85,7 @@ describe('whyCardStoreCheckLine', () => {
       coverageNote: 'OSM check not recorded for demo',
     } as ProspectPack;
     expect(whyCardStoreCheckLine(p, 10, results, 'Oct 24, 2026')).toBe(
-      'No store within 3 km in All The Places (store data as of Oct 24, 2026). OSM check not recorded for demo.'
+      'No store within 3 km in our store data as of Oct 24, 2026. OSM check not recorded for demo.'
     );
   });
 });

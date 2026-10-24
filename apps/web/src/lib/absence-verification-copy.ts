@@ -1,4 +1,10 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
+import {
+  brokerNoStoreWithinRadiusDualSource,
+  brokerNoStoreWithinRadiusDualSourceShort,
+  brokerNoStoreWithinRadiusSingleSource,
+  brokerNoStoreWithinRadiusSingleSourceShort,
+} from '@leaseup/fixtures';
 import { absenceRadiusKm } from './absence-radius';
 
 const DEMO_OSM_UNRECORDED_NOTE = 'OSM check not recorded for demo';
@@ -13,7 +19,6 @@ export function absenceVerificationSummary(
   results: AnalysisResponse
 ): string {
   const radiusKm = absenceRadiusKm(results, searchRadiusKm);
-  const osmLabel = results.osmSnapshotLabel ?? 'OpenStreetMap snapshot';
   const sources = prospect.brand.verificationSources ?? [];
   const atpChecked = sourceChecked(sources, 'all the places');
   const osmChecked =
@@ -21,18 +26,18 @@ export function absenceVerificationSummary(
   const demoOsmSkipped = prospect.coverageNote?.includes(DEMO_OSM_UNRECORDED_NOTE);
 
   if (prospect.brand.verified === 'verified (2 sources)' && atpChecked && osmChecked) {
-    return `No store within ${radiusKm} km in All The Places or ${osmLabel}.`;
+    return brokerNoStoreWithinRadiusDualSourceShort(radiusKm);
   }
 
   if (prospect.brand.verified === 'unverified (1 source)' && atpChecked && !osmChecked) {
     if (demoOsmSkipped) {
-      return `No store within ${radiusKm} km in All The Places. ${DEMO_OSM_UNRECORDED_NOTE}.`;
+      return `${brokerNoStoreWithinRadiusSingleSourceShort(radiusKm)} ${DEMO_OSM_UNRECORDED_NOTE}.`;
     }
-    return `No store within ${radiusKm} km in All The Places. Not yet checked in ${osmLabel}.`;
+    return brokerNoStoreWithinRadiusSingleSourceShort(radiusKm);
   }
 
   if (prospect.brand.verified === 'verifying...') {
-    return `No store within ${radiusKm} km in All The Places. Checking ${osmLabel} for a second source.`;
+    return `No store within ${radiusKm} km in our store data. Checking for a second source.`;
   }
 
   if (prospect.brand.verified === 'conflict - likely present') {
@@ -44,19 +49,18 @@ export function absenceVerificationSummary(
 
   const checked = [
     atpChecked ? 'All The Places' : null,
-    osmChecked ? osmLabel : null,
+    osmChecked ? 'OpenStreetMap' : null,
   ].filter(Boolean);
 
   if (checked.length > 0) {
     return `No store within ${radiusKm} km per ${checked.join(' and ')}.`;
   }
 
-  return `No store within ${radiusKm} km in our store datasets.`;
+  return `No store within ${radiusKm} km in our store data.`;
 }
 
 /**
- * One plain line for the Why card: what was checked, the result and the store data date together, so the
- * card never shows a separate "Checked against ... as of" line next to a "Not yet checked" line.
+ * One plain line for the Why card: absence result and store data date together.
  */
 export function whyCardStoreCheckLine(
   prospect: ProspectPack,
@@ -65,7 +69,6 @@ export function whyCardStoreCheckLine(
   storeDataDateLabel: string
 ): string {
   const radiusKm = absenceRadiusKm(results, searchRadiusKm);
-  const asOf = `(store data as of ${storeDataDateLabel})`;
   const sources = prospect.brand.verificationSources ?? [];
   const atpChecked = sourceChecked(sources, 'all the places');
   const osmChecked =
@@ -73,32 +76,32 @@ export function whyCardStoreCheckLine(
   const demoOsmSkipped = prospect.coverageNote?.includes(DEMO_OSM_UNRECORDED_NOTE);
 
   if (prospect.brand.verified === 'verified (2 sources)' && atpChecked && osmChecked) {
-    return `No store within ${radiusKm} km in All The Places or OpenStreetMap ${asOf}.`;
+    return brokerNoStoreWithinRadiusDualSource(radiusKm, storeDataDateLabel);
   }
 
   if (prospect.brand.verified === 'unverified (1 source)' && atpChecked && !osmChecked) {
-    const osmNote = demoOsmSkipped
-      ? `${DEMO_OSM_UNRECORDED_NOTE}.`
-      : 'OpenStreetMap not checked yet.';
-    return `No store within ${radiusKm} km in All The Places ${asOf}. ${osmNote}`;
+    if (demoOsmSkipped) {
+      return `${brokerNoStoreWithinRadiusSingleSource(radiusKm, storeDataDateLabel)} ${DEMO_OSM_UNRECORDED_NOTE}.`;
+    }
+    return brokerNoStoreWithinRadiusSingleSource(radiusKm, storeDataDateLabel);
   }
 
   if (prospect.brand.verified === 'verifying...') {
-    return `No store within ${radiusKm} km in All The Places ${asOf}. Checking OpenStreetMap for a second source.`;
+    return `No store within ${radiusKm} km in our store data as of ${storeDataDateLabel}. Checking for a second source.`;
   }
 
   if (prospect.brand.verified === 'conflict - likely present') {
-    return `Store data disagrees; likely has a nearby ${prospect.brand.name} store within ${radiusKm} km ${asOf}.`;
+    return `Store data disagrees; likely has a nearby ${prospect.brand.name} store within ${radiusKm} km (store data as of ${storeDataDateLabel}).`;
   }
   if (prospect.brand.verified === 'conflict') {
-    return `Sources disagree about a ${prospect.brand.name} store within ${radiusKm} km ${asOf}.`;
+    return `Sources disagree about a ${prospect.brand.name} store within ${radiusKm} km (store data as of ${storeDataDateLabel}).`;
   }
 
-  const checked = [atpChecked ? 'All The Places' : null, osmChecked ? 'OpenStreetMap' : null].filter(
+  const checked = [atpChecked ? 'our store data' : null, osmChecked ? 'OpenStreetMap' : null].filter(
     Boolean
   );
   if (checked.length > 0) {
-    return `No store within ${radiusKm} km per ${checked.join(' and ')} ${asOf}.`;
+    return `No store within ${radiusKm} km per ${checked.join(' and ')} (as of ${storeDataDateLabel}).`;
   }
-  return `No store within ${radiusKm} km in our store datasets ${asOf}.`;
+  return `No store within ${radiusKm} km in our store data as of ${storeDataDateLabel}.`;
 }

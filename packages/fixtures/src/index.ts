@@ -255,6 +255,12 @@ export {
   type BrandRealEstateEntry,
 } from './brand-real-estate.js';
 export {
+  brokerNoStoreWithinRadiusDualSource,
+  brokerNoStoreWithinRadiusSingleSource,
+  brokerNoStoreWithinRadiusDualSourceShort,
+  brokerNoStoreWithinRadiusSingleSourceShort,
+} from './store-absence-broker-copy.js';
+export {
   nearestStoreDistanceUnconfirmedLine,
   nearestChainStoreDistanceUnconfirmedLine,
 } from './nearest-store-display-copy.js';
