@@ -1,10 +1,21 @@
 #!/usr/bin/env node
 import { readFileSync, writeFileSync } from 'node:fs';
+import { execSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const tables = readFileSync(join(root, 'data/qloo-eval-40/tables.md'), 'utf8');
+
+function gitHead() {
+  try {
+    return execSync('git rev-parse HEAD', { cwd: root, encoding: 'utf8' }).trim();
+  } catch {
+    return 'unknown';
+  }
+}
+
+const metricsCommit = process.env.EVAL_METRICS_COMMIT?.trim() || gitHead();
 
 const head = `# LeaseUp: does Qloo add signal beyond chain size?
 
@@ -12,7 +23,7 @@ Run on Oct 23, 2026 (ET). Original live Qloo API collection and preregistration 
 
 ## Reproducibility (Oct 24, 2026 refresh)
 
-From repo root at the git commit that updates this file:
+Integration base: \`f94ee23\`. Metrics and tiles in this tree: git commit \`${metricsCommit}\`.
 
 \`\`\`bash
 node scripts/osm-snapshot-retile-report.mjs
