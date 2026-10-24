@@ -60,6 +60,7 @@ export type BrandExplainabilityStore = {
   brandExplainabilityForDemo(
     chip: DemoFixtureId,
     brandEntityId: string,
+    options?: { maxAudiences?: number },
   ): BrandExplainabilityRecording | null;
   listDemoExplainabilityRecordings(): BrandExplainabilityRecording[];
 };
@@ -129,6 +130,7 @@ export function createBrandExplainabilityStore(
   function brandExplainabilityForDemo(
     chip: DemoFixtureId,
     brandEntityId: string,
+    options?: { maxAudiences?: number },
   ): BrandExplainabilityRecording | null {
     const local = LOCAL_BY_CHIP[chip];
     const brand = BRAND_BY_ID[brandEntityId];
@@ -142,6 +144,7 @@ export function createBrandExplainabilityStore(
       tags: [],
       audiences: computeBrandLocalAudienceOverlap(brand.audiences, local.audiences, {
         panelBaseline: audiencePanelBaseline(),
+        maxAudiences: options?.maxAudiences,
       }),
       provenance: {
         recordedAt:

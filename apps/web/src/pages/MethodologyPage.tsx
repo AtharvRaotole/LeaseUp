@@ -8,6 +8,7 @@ import {
   loadLiveQlooLiftAggregates,
   loadResultsAdaptive,
   formatP10PercentExact,
+  adaptiveEvalSiteDisplayLabel,
 } from '@leaseup/fixtures';
 import { TopBar } from '../components/layout/TopBar';
 import { SiteFooter } from '../components/layout/SiteFooter';
@@ -48,7 +49,9 @@ const PIPELINE = [
   {
     title: 'Backtest',
     body:
-      'We score how many physically present chains appear in the top 10 ranked prospects. Dense pins often saturate that legacy metric, so we also publish a metric catalog (adaptive radius, Spearman, chain-residual hits, random baselines) with a swappable results bundle.',
+      'We score how many physically present chains appear in the top 10 ranked prospects. Dense city pins often max out that simple check, so we also record extra comparison metrics in the tables below (same recorded numbers as the landing proof section).',
+    advanced:
+      'We also track adaptive search radius by neighborhood density, Spearman rank correlation vs stores on the ground, chain-residual surprise hits, random-order baselines, and a swappable results bundle in the repo for auditors.',
   },
   {
     title: 'Outreach',
@@ -78,7 +81,7 @@ export function MethodologyPage() {
           <h1 className="mt-3 font-display font-semibold text-display text-ink">How LeaseUp ranks tenants</h1>
           <p className="mt-4 max-w-[640px] text-lg leading-relaxed text-ink-2">
             A transparent pipeline from address to ranked brands, with backtests against real store
-            footprints so judges can see where taste data helps and where it does not.
+            footprints so you can see where taste data helps and where it does not.
           </p>
 
           <div
@@ -88,7 +91,7 @@ export function MethodologyPage() {
             <h2 className="font-semibold text-ink">How LeaseUp uses Qloo</h2>
             <p className="mt-2 text-sm leading-relaxed text-ink-2">
               Short broker-friendly explainer: what we call from Qloo, how ranking works, and what we
-              do not claim. No API jargon required.
+              do not claim.
             </p>
             <Link
               to="/methodology/qloo"
@@ -103,8 +106,8 @@ export function MethodologyPage() {
               Pipeline
             </h2>
             <p className="mt-2 text-sm text-ink-2">
-              Each report run follows the same steps. Numbers below come from recorded evaluation
-              runs, not copy-pasted marketing stats.
+              Each report run follows the same steps. Numbers below come from recorded evaluation runs
+              in the repo (fixtures and evaluation bundles committed with the app).
             </p>
             <ol className="mt-8 space-y-0">
               {PIPELINE.map((step, index) => (
@@ -124,6 +127,14 @@ export function MethodologyPage() {
                   <div className="pt-0.5">
                     <h3 className="font-semibold text-ink">{step.title}</h3>
                     <p className="mt-1 text-sm leading-relaxed text-ink-2">{step.body}</p>
+                    {'advanced' in step && step.advanced ? (
+                      <details className="mt-2 text-sm text-ink-2">
+                        <summary className="cursor-pointer font-medium text-ink">
+                          Extra comparison metrics (optional detail)
+                        </summary>
+                        <p className="mt-2 leading-relaxed">{step.advanced}</p>
+                      </details>
+                    ) : null}
                   </div>
                 </li>
               ))}
@@ -225,8 +236,9 @@ export function MethodologyPage() {
               </span>
               . On average, mean top-10 presence was{' '}
               {formatP10PercentExact(adaptiveEval.agg.p10_blend)} with our taste blend vs{' '}
-              {formatP10PercentExact(adaptiveEval.agg.p10_chain)} when sorted by chain size alone (
-              +{adaptiveEval.agg.blend_lift_vs_chain_pp} pp), and{' '}
+              {formatP10PercentExact(adaptiveEval.agg.p10_chain)} when sorted by chain size only, about{' '}
+              {(adaptiveEval.agg.blend_lift_vs_chain_pp ?? qlooLift.logisticBlendLiftVsChainPp).toFixed(1)}{' '}
+              percentage points higher, and{' '}
               {formatP10PercentExact(adaptiveEval.agg.p10_raw)} with taste order only. Rank match among
               similar-sized chains was {(adaptiveEval.agg.same_size_auc * 100).toFixed(1)}% (likely range{' '}
               {(adaptiveEval.agg.same_size_auc_ci[0] * 100).toFixed(0)}% to{' '}
@@ -263,7 +275,7 @@ export function MethodologyPage() {
                   {adaptiveEval.per_address.map((row) => (
                     <tr key={row.address} className="border-b border-border last:border-0">
                       <th scope="row" className="px-3 py-3 font-medium text-ink">
-                        {row.label}
+                        {adaptiveEvalSiteDisplayLabel(row)}
                       </th>
                       <td className="px-3 py-3 text-ink-2">{row.stratum.replace('_', ' ')}</td>
                       <td className="px-3 py-3 text-right tabular-nums text-ink-2">

@@ -3,6 +3,7 @@ import { displayBrandName } from '../../lib/brand-display';
 import { pitchCheckedSourcesLabel } from '../../lib/copy';
 import {
   pitchBrandFitLines,
+  pitchListOrderLabel,
   pitchNextStepLine,
   pitchBriefKindLabel,
   pitchDateMetaLine,
@@ -52,14 +53,7 @@ export function PitchPackBrief({ snapshot }: { snapshot: PitchPackSnapshot }) {
                     {propertyTitle} × {brandName}
                   </h2>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium text-ink-2">Pitch priority #{index + 1}</p>
-                  {prospect.brand.affinityRank > 0 && totalScored > 0 && (
-                    <p className="mt-0.5 text-xs text-ink-3">
-                      Taste rank #{prospect.brand.affinityRank} of {totalScored}
-                    </p>
-                  )}
-                </div>
+                <p className="text-sm font-medium text-ink-2">{pitchListOrderLabel(index)}</p>
               </div>
 
               <p className="mt-4 text-sm font-medium text-ink-2">{rankLabel}</p>

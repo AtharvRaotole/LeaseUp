@@ -1,6 +1,6 @@
 # Adaptive radius trade-area audit
 
-Generated: 2026-10-24T04:36:28.890Z
+Generated: 2026-10-24T09:25:55.255Z
 
 Prospects after PR #101 (adaptive absence radius for pitching). Flags a pitch when **ground-truth catalog** shows ATP or OSM within the user **search radius** or within **3 km**.
 
