@@ -8,6 +8,7 @@ import { spawn, execSync } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
+import { viteEnvWithPreviewRoutes } from './preview-routes-vite-env.mjs';
 
 const ROOT = process.cwd();
 const OUT = process.env.VQA_OUT || join(ROOT, 'docs/screenshots/visual-qa-pass/before');
@@ -54,7 +55,7 @@ async function startStack() {
     'pnpm --filter @leaseup/worker exec wrangler d1 execute leaseup_db --local --file=schema.sql'
   );
   run('pnpm --filter @leaseup/web build', {
-    env: { ...process.env, VITE_API_URL: BASE },
+    env: viteEnvWithPreviewRoutes(BASE),
   });
   worker = spawn(
     'pnpm',

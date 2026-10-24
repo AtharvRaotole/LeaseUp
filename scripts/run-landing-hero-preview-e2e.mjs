@@ -3,6 +3,7 @@
  * Playwright smoke: landing hero preview image must decode (naturalWidth > 0).
  */
 import { spawn, execSync } from 'node:child_process';
+import { viteEnvWithPreviewRoutes } from './preview-routes-vite-env.mjs';
 
 function run(cmd, opts = {}) {
   execSync(cmd, { stdio: 'inherit', ...opts });
@@ -14,10 +15,7 @@ const previewOrigin = `http://127.0.0.1:${PREVIEW_PORT}`;
 run('pnpm --filter @leaseup/contracts build');
 run('pnpm --filter @leaseup/fixtures build');
 run('pnpm --filter @leaseup/web build', {
-  env: {
-    ...process.env,
-    VITE_API_URL: process.env.VITE_API_URL || 'https://ci.leaseup.invalid',
-  },
+  env: viteEnvWithPreviewRoutes(process.env.VITE_API_URL || previewOrigin),
 });
 
 const preview = spawn(

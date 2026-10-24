@@ -1,10 +1,20 @@
 #!/usr/bin/env node
 /** Pitch freshness + non-happy path screenshots (offline preview routes). */
+import { execSync, spawn } from 'node:child_process';
 import { chromium } from 'playwright';
 import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
+import { viteEnvWithPreviewRoutes } from './preview-routes-vite-env.mjs';
 
-const BASE = (process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:4173').replace(/\/$/, '');
+function run(cmd, opts = {}) {
+  execSync(cmd, { stdio: 'inherit', ...opts });
+}
+
+const PREVIEW_PORT = process.env.PITCH_FRESHNESS_PREVIEW_PORT || '4173';
+const BASE = (process.env.PLAYWRIGHT_BASE_URL || `http://127.0.0.1:${PREVIEW_PORT}`).replace(
+  /\/$/,
+  ''
+);
 const OUT = process.env.OUT || '/opt/cursor/artifacts/pitch-freshness';
 
 const CAPTURES = [
@@ -13,6 +23,45 @@ const CAPTURES = [
   { path: '/__preview/watchlist-empty', wait: 'watchlist-empty', tag: 'watchlist-empty' },
 ];
 
+if (process.env.SKIP_BUILD !== '1') {
+  run('pnpm --filter @leaseup/contracts build');
+  run('pnpm --filter @leaseup/fixtures build');
+  run('pnpm --filter @leaseup/web build', {
+    env: viteEnvWithPreviewRoutes(BASE),
+  });
+}
+
+const preview = spawn(
+  'pnpm',
+  [
+    '--filter',
+    '@leaseup/web',
+    'exec',
+    'vite',
+    'preview',
+    '--host',
+    '127.0.0.1',
+    '--port',
+    PREVIEW_PORT,
+    '--strictPort',
+  ],
+  { cwd: process.cwd(), stdio: 'inherit' }
+);
+
+async function waitFor(url, attempts = 60) {
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) return;
+    } catch {
+      /* retry */
+    }
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+  throw new Error(`Timed out waiting for ${url}`);
+}
+
+await waitFor(`${BASE}/`);
 await mkdir(OUT, { recursive: true });
 
 async function shot(page, viewport, tag) {
@@ -28,9 +77,13 @@ async function shot(page, viewport, tag) {
   }
 }
 
-const browser = await chromium.launch();
-const page = await browser.newPage();
-await shot(page, { width: 1440, height: 900 });
-await shot(page, { width: 390, height: 844 });
-await browser.close();
-console.log('Saved to', OUT);
+try {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  await shot(page, { width: 1440, height: 900 });
+  await shot(page, { width: 390, height: 844 });
+  await browser.close();
+  console.log('Saved to', OUT);
+} finally {
+  preview.kill('SIGTERM');
+}
