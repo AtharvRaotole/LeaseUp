@@ -71,7 +71,7 @@ export function MethodologyPage() {
   return (
     <div className="min-h-screen bg-bg">
       <TopBar />
-      <main id="main-content" className="outline-none">
+      <main id="main-content" className="outline-none" data-testid="methodology-page">
         <div className="mx-auto max-w-[880px] px-4 pb-16 pt-10 md:pt-14">
           <p className="text-label uppercase text-ink-3">Methodology</p>
           <h1 className="mt-3 font-display font-semibold text-display text-ink">How LeaseUp ranks tenants</h1>

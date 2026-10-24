@@ -940,6 +940,7 @@ export class AnalysisService {
       entity_id: string;
       name: string;
       qlooRank: number;
+      blendedRank: number;
       query?: { affinity?: number };
     },
     location: Location,
@@ -953,28 +954,28 @@ export class AnalysisService {
     const area = location.neighborhood || location.city || 'this area';
     const category = brandCategoryLabel(prospect.entity_id);
     const displayName = displayBrandName(prospect.entity_id, prospect.name);
+    const leaseUpRank = prospect.blendedRank;
+    const qlooTasteRank = prospect.qlooRank;
 
     if (tasteUnavailable) {
       reasons.push(TASTE_UNAVAILABLE_RANKING_NOTICE);
     } else if (affinity > 0 && rankedCount > 0) {
-      const percentile = rankedCount > 1 ? 1 - (prospect.qlooRank - 1) / (rankedCount - 1) : 1;
+      const percentile =
+        rankedCount > 1 ? 1 - (leaseUpRank - 1) / (rankedCount - 1) : 1;
+      let head: string;
       if (percentile >= 0.95) {
-        reasons.push(
-          `${displayName}: Qloo rank #${prospect.qlooRank} (top 5% of ${rankedCount} brands) for ${area}`
-        );
+        head = `${displayName}: LeaseUp rank #${leaseUpRank} (top 5% of ${rankedCount} brands) for ${area}`;
       } else if (percentile >= 0.9) {
-        reasons.push(
-          `${displayName}: Qloo rank #${prospect.qlooRank} (top 10% of ${rankedCount} brands) for ${area}`
-        );
+        head = `${displayName}: LeaseUp rank #${leaseUpRank} (top 10% of ${rankedCount} brands) for ${area}`;
       } else if (percentile >= 0.85) {
-        reasons.push(
-          `${displayName}: Qloo rank #${prospect.qlooRank} (top 15% of ${rankedCount} brands) for ${area}`
-        );
+        head = `${displayName}: LeaseUp rank #${leaseUpRank} (top 15% of ${rankedCount} brands) for ${area}`;
       } else {
-        reasons.push(
-          `${displayName}: Qloo rank #${prospect.qlooRank} of ${rankedCount} brands scored for ${area}`
-        );
+        head = `${displayName}: LeaseUp rank #${leaseUpRank} of ${rankedCount} brands scored for ${area}`;
       }
+      if (qlooTasteRank !== leaseUpRank) {
+        head += `; Qloo taste rank #${qlooTasteRank} of ${rankedCount}`;
+      }
+      reasons.push(head);
     } else {
       reasons.push(`No taste score for ${displayName} in this run`);
     }
@@ -982,7 +983,7 @@ export class AnalysisService {
     reasons.push(`No ${displayName} store within ${radiusKm} km (ATP catalog)`);
 
     if (category) {
-      reasons.push(`${category} — category gap vs. nearby tenants`);
+      reasons.push(`${category}: category gap vs. nearby tenants`);
     }
 
     if (nationalCount >= 100) {

@@ -19,7 +19,7 @@ test.describe('Qloo unavailable fallback', () => {
     await expect(banner).toContainText(/ranked by chain size only/i);
     await waitForReportReady(page);
     await expect(page.getByText(/taste fit/i)).toHaveCount(0);
-    await expect(page.getByTestId('report-top-brands').locator('li').first()).toBeVisible();
+    await expect(page.getByTestId('brands-to-pitch').locator('li').first()).toBeVisible();
     const severe = consoleErrors.filter(
       (line) => !/favicon|404|devtools/i.test(line) && !/QLOO_UNAVAILABLE/i.test(line)
     );
