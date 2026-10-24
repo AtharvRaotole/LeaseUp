@@ -2,6 +2,7 @@ import type { TradeAreaTasteContext } from '@leaseup/contracts';
 import type { QlooLocation } from '../providers/qloo';
 import type { QlooClient } from '../providers/qloo';
 import { brandExplainabilityForDemo, matchDemoFixtureId, topOverIndexRows } from '@leaseup/fixtures/worker';
+import { isQlooUnavailableError } from './qloo-chain-fallback';
 
 export async function loadTradeAreaTasteForProspect(
   qloo: QlooClient,
@@ -27,14 +28,19 @@ export async function loadTradeAreaTasteForProspect(
     radiusKm,
   };
 
-  const live = await qloo.getTradeAreaTasteContext({
-    location: qlooLocation,
-    brandEntityId,
-    runId,
-  });
-  if (!live) return undefined;
-  return {
-    tags: topOverIndexRows(live.tags),
-    audiences: topOverIndexRows(live.audiences),
-  };
+  try {
+    const live = await qloo.getTradeAreaTasteContext({
+      location: qlooLocation,
+      brandEntityId,
+      runId,
+    });
+    if (!live) return undefined;
+    return {
+      tags: topOverIndexRows(live.tags),
+      audiences: topOverIndexRows(live.audiences),
+    };
+  } catch (err) {
+    if (isQlooUnavailableError(err)) return undefined;
+    throw err;
+  }
 }

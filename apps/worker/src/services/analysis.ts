@@ -571,7 +571,8 @@ export class AnalysisService {
         location,
         nationalCount,
         rankedCount,
-        tasteUnavailable
+        tasteUnavailable,
+        radius
       );
 
       let coverageNote = this.catalog.getCoverageNote(candidate.entity_id, nationalCount);
@@ -935,33 +936,53 @@ export class AnalysisService {
   }
 
   private generateReasons(
-    prospect: { name: string; qlooRank: number; query?: { affinity?: number } },
+    prospect: {
+      entity_id: string;
+      name: string;
+      qlooRank: number;
+      query?: { affinity?: number };
+    },
     location: Location,
     nationalCount: number,
     rankedCount: number,
-    tasteUnavailable = false
+    tasteUnavailable = false,
+    radiusKm = 10
   ): string[] {
     const reasons: string[] = [];
     const affinity = prospect.query?.affinity ?? 0;
     const area = location.neighborhood || location.city || 'this area';
-
-    if (!tasteUnavailable && affinity > 0 && rankedCount > 1) {
-      const percentile = 1 - (prospect.qlooRank - 1) / (rankedCount - 1);
-      if (percentile >= 0.95) {
-        reasons.push(`Qloo rank #${prospect.qlooRank} (top 5% of ${rankedCount} brands) in ${area}`);
-      } else if (percentile >= 0.9) {
-        reasons.push(`Qloo rank #${prospect.qlooRank} (top 10% of ${rankedCount} brands) in ${area}`);
-      } else if (percentile >= 0.85) {
-        reasons.push(`Qloo rank #${prospect.qlooRank} (top 15% of ${rankedCount} brands) in ${area}`);
-      }
-    }
+    const category = brandCategoryLabel(prospect.entity_id);
+    const displayName = displayBrandName(prospect.entity_id, prospect.name);
 
     if (tasteUnavailable) {
       reasons.push(TASTE_UNAVAILABLE_RANKING_NOTICE);
+    } else if (affinity > 0 && rankedCount > 0) {
+      const percentile = rankedCount > 1 ? 1 - (prospect.qlooRank - 1) / (rankedCount - 1) : 1;
+      if (percentile >= 0.95) {
+        reasons.push(
+          `${displayName}: Qloo rank #${prospect.qlooRank} (top 5% of ${rankedCount} brands) for ${area}`
+        );
+      } else if (percentile >= 0.9) {
+        reasons.push(
+          `${displayName}: Qloo rank #${prospect.qlooRank} (top 10% of ${rankedCount} brands) for ${area}`
+        );
+      } else if (percentile >= 0.85) {
+        reasons.push(
+          `${displayName}: Qloo rank #${prospect.qlooRank} (top 15% of ${rankedCount} brands) for ${area}`
+        );
+      } else {
+        reasons.push(
+          `${displayName}: Qloo rank #${prospect.qlooRank} of ${rankedCount} brands scored for ${area}`
+        );
+      }
     } else {
-      reasons.push(
-        'Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, and trade-area density); backtest uses the same blend with adaptive-radius presence'
-      );
+      reasons.push(`No taste score for ${displayName} in this run`);
+    }
+
+    reasons.push(`No ${displayName} store within ${radiusKm} km (ATP catalog)`);
+
+    if (category) {
+      reasons.push(`${category} — category gap vs. nearby tenants`);
     }
 
     if (nationalCount >= 100) {
