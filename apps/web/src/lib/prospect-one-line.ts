@@ -30,11 +30,12 @@ export function prospectOneLineReason(
     parts.push(audienceOverlapHighlight(tasteSignal.name.trim()));
   }
 
-  const category =
+  const categoryRaw =
     prospect.tenantMixScore?.categoryFit?.trim() ||
     brandCategoryLabel(prospect.brand.entityId);
-  if (category) {
-    parts.push(category);
+  if (categoryRaw) {
+    const category = categoryRaw.replace(/\.$/, '').trim();
+    if (category) parts.push(`Category fit: ${category}`);
   }
 
   if (parts.length === 0) return '';
