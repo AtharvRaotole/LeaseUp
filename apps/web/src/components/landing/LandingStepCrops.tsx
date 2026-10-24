@@ -1,4 +1,5 @@
 import { displayBrandName } from '../../lib/brand-display';
+import { LANDING_WICKER_DEMO_ADDRESS } from '../../data/landing-wicker-demo-address';
 import { LANDING_WICKER_PREVIEW, LANDING_WICKER_RADIUS_KM } from '../../data/landing-wicker-preview';
 import { prospectOneLineReason } from '../../lib/prospect-one-line';
 
@@ -13,7 +14,7 @@ export function AddressStepCrop() {
       <p className="text-meta uppercase text-ink-3">Street address</p>
       <div className="mt-2 flex gap-2">
         <div className="h-10 flex-1 rounded-control border border-border bg-surface px-3 text-small leading-10 text-ink-2">
-          1560 N Milwaukee Ave, Chicago
+          {LANDING_WICKER_DEMO_ADDRESS}
         </div>
         <div className="flex h-10 items-center rounded-control bg-accent px-4 text-small font-medium text-[var(--on-accent)]">
           Analyze

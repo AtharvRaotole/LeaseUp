@@ -25,7 +25,7 @@ test('demo pitch page renders with clean console and plain copy', async ({ page 
   await expect(page.getByTestId('pitch-date-meta')).toContainText(
     /Data snapshot of Oct 23, 2026/
   );
-  await expect(page.getByText('Pitch priority #1')).toBeVisible();
+  await expect(page.getByText('Your list #1')).toBeVisible();
   await expect(page.getByTestId('pitch-date-meta')).not.toContainText(/^Prepared /);
   await expect(page.getByTestId('pitch-brand-brief').first()).toContainText(/Ulta/i);
 
