@@ -218,9 +218,9 @@
   ],
   "summary": {
     "recordedCount": 3,
-    "sameSizeAuc": 0.672,
-    "sameSizeAucCiLow": 0.65,
-    "sameSizeAucCiHigh": 0.693,
+    "sameSizeAuc": 0.667,
+    "sameSizeAucCiLow": 0.646,
+    "sameSizeAucCiHigh": 0.689,
     "logisticBlendPrecisionAt10": 0.82,
     "chainSizePrecisionAt10": 0.76,
     "rawQlooPrecisionAt10": 0.54

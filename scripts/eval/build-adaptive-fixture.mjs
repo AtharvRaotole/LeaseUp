@@ -81,10 +81,10 @@ async function main() {
       p10_chain: aggPoint(agg, 'chain.p10'),
       p10_blend: aggPoint(agg, 'logit_blend.p10'),
       p10_legacy_blend: aggPoint(agg, 'app_blend.p10'),
-      same_size_auc: aggPoint(agg, 'strat_auc_qloo_pooled'),
+      same_size_auc: aggPoint(agg, 'strat_auc_qloo_mean'),
       same_size_auc_ci: [
-        agg['strat_auc_qloo_pooled']?.[1] ?? 0.65,
-        agg['strat_auc_qloo_pooled']?.[2] ?? 0.693,
+        agg['strat_auc_qloo_mean']?.[1] ?? 0.646,
+        agg['strat_auc_qloo_mean']?.[2] ?? 0.689,
       ],
       blend_lift_vs_chain_pp: (aggPoint(agg, 'diff_logit_blend_minus_chain.p10') ?? 0.065) * 100,
       blend_lift_vs_chain_ci: [

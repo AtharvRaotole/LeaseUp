@@ -126,8 +126,8 @@ Sevierville (0.618, 28th percentile) is below typical. If you show it, say so. S
 
 | Metric | adaptive | fixed 10 km | fixed 5 km |
 |---|---|---|---|
-| Stratified AUC of Qloo within chain-size quintiles (pooled; 0.5 = no lift) | 0.672 [0.650, 0.693] | 0.703 [0.682, 0.723] | 0.670 [0.650, 0.689] |
-| Stratified AUC (mean of per-address) | 0.663 [0.642, 0.684] | 0.688 [0.665, 0.711] | 0.660 [0.641, 0.680] |
+| Stratified AUC of Qloo within chain-size quintiles (pooled; 0.5 = no lift) | 0.676 [0.655, 0.699] | 0.709 [0.688, 0.729] | 0.676 [0.655, 0.696] |
+| Stratified AUC (mean of per-address) | 0.667 [0.646, 0.689] | 0.693 [0.671, 0.717] | 0.665 [0.645, 0.685] |
 | Partial Spearman Qloo~presence | log chain size | 0.239 [0.208, 0.273] | 0.291 [0.253, 0.328] | 0.239 [0.207, 0.275] |
 | Spearman Qloo vs log chain size (confound check) | -0.105 [-0.125, -0.085] | -0.105 [-0.125, -0.085] | -0.105 [-0.125, -0.085] |
 | Held-out log-loss/obs, M0 chain+density | 0.555 [0.518, 0.593] | 0.599 [0.567, 0.634] | 0.553 [0.507, 0.596] |
