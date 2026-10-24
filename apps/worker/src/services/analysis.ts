@@ -186,7 +186,7 @@ export class AnalysisService {
 
       const qlooLocation = this.buildQlooLocation(location, request.address, request.radius);
 
-      let tasteUnavailable = false;
+      const tasteUnavailable = false;
       const insights = await runStep(
         emit,
         'taste',
