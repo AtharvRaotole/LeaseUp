@@ -22,6 +22,8 @@ import { BrandReachLine } from './BrandReachLine';
 import { cn } from '../../lib/cn';
 import { AddToPipelineButton } from '../pipeline/AddToPipelineButton';
 import { pipelineCardFromProspect } from '../../lib/build-pipeline-card';
+import { absenceRadiusKm } from '../../lib/absence-radius';
+import { brandsToPitchDistanceLine } from '../../lib/brands-to-pitch-copy';
 
 const OSM_VERIFY_WAIT_MS = 30_000;
 
@@ -59,21 +61,22 @@ function verificationPillCopy(
   prospect: ProspectPack,
   entityId: string,
   osmTimedOut: Set<string>,
-  radiusKm: number,
+  searchRadiusKm: number,
   results: AnalysisResponse
 ): { label: string; help: string; spinner: boolean } {
+  const absenceKm = absenceRadiusKm(results, searchRadiusKm);
   const verified = prospect.brand.verified;
   if (verified === 'verifying...' && osmTimedOut.has(entityId)) {
     const osmLabel = results.osmSnapshotLabel ?? 'OpenStreetMap';
     return {
       label: 'One source',
-      help: `Checked: All The Places (no store within ${radiusKm} km). Not checked: ${osmLabel} (timed out).`,
+      help: `Checked: All The Places (no store within ${absenceKm} km). Not checked: ${osmLabel} (timed out).`,
       spinner: false,
     };
   }
   return {
     label: verificationBrokerLabel(verified),
-    help: verificationBrokerTooltip(verified, radiusKm, results.osmSnapshotLabel),
+    help: verificationBrokerTooltip(verified, absenceKm, results.osmSnapshotLabel),
     spinner: verified === 'verifying...',
   };
 }
@@ -218,9 +221,7 @@ export function BrandsToPitch({
             const fitLabel = fitPercentileLabel(prospect.brand.affinityRank, totalScored);
             const category =
               prospect.tenantMixScore?.categoryFit ?? brandCategoryLabel(prospect.brand.entityId);
-            const distanceLine = prospect.nearestExistingStoreKm !== undefined
-              ? `Closest store ${prospect.nearestExistingStoreKm.toFixed(1)} km`
-              : `No store within ${radiusKm} km`;
+            const distanceLine = brandsToPitchDistanceLine(prospect, results, radiusKm);
             const subline = category ? `${category} · ${distanceLine}` : distanceLine;
 
             const pill = verificationPillCopy(

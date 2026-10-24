@@ -330,6 +330,7 @@ export function ReportPage() {
             <ReportShortListNotice
               count={results.prospects.length}
               radiusKm={request.radius}
+              results={results}
               request={request}
               slug={slug ?? 'run'}
             />
@@ -501,6 +502,7 @@ export function ReportPage() {
             className={`col-span-12 xl:col-span-5 ${
               mobilePane === 'report' ? 'hidden md:block' : ''
             }`}
+            data-testid="report-map-panel"
           >
             {!results && (loading || geocodeChecking) && !geocodeCandidates && (
               <ReportMapSkeleton />

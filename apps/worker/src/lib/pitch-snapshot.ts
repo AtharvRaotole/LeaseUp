@@ -5,7 +5,7 @@ import { formatFitsStorefront } from './storefront-format';
 
 function buildWhyLine(
   prospect: PitchCreate['results']['prospects'][0],
-  radiusKm: number
+  absenceKm: number
 ): string {
   const informative = prospect.reasons.find(
     (reason) => !isRankOnlyReason(reason) && !isNearestStoreDistanceLine(reason)
@@ -16,9 +16,9 @@ function buildWhyLine(
 
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   if (prospect.nearestExistingStoreKm === undefined) {
-    return `No ${name} store within ${radiusKm} km in All The Places and OpenStreetMap checks.`;
+    return `No ${name} store within ${absenceKm} km in All The Places and OpenStreetMap checks.`;
   }
-  return `Verified absent within ${radiusKm} km (All The Places + OpenStreetMap).`;
+  return `Verified absent within ${absenceKm} km (All The Places + OpenStreetMap).`;
 }
 
 function isRankOnlyReason(text: string): boolean {
@@ -46,6 +46,7 @@ export function buildPitchPackSnapshot(
 ): PitchPackSnapshot {
   const rankingsTotal = input.results.rankings?.length ?? 0;
   const top = prospectsForPitch(input).slice(0, 5);
+  const absenceKm = input.results.prospectFunnel?.absenceRadiusKm ?? input.radiusKm;
 
   const snapshot: PitchPackSnapshot = {
     id,
@@ -54,6 +55,7 @@ export function buildPitchPackSnapshot(
     neighborhood: input.results.location.neighborhood,
     location: input.results.location,
     radiusKm: input.radiusKm,
+    absenceRadiusKm: absenceKm,
     analysisTimestamp: input.results.timestamp,
     runId: input.results.runId,
     mode: input.results.mode,
@@ -62,7 +64,7 @@ export function buildPitchPackSnapshot(
     mapImage: input.mapImage,
     prospects: top.map((prospect) => ({
       prospect,
-      whyLine: buildWhyLine(prospect, input.radiusKm),
+      whyLine: buildWhyLine(prospect, absenceKm),
     })),
     rankingsTotal: rankingsTotal || undefined,
     landlord: input.landlord,

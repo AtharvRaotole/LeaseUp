@@ -31,12 +31,26 @@ export function tradeAreaTooltip(radiusKm: number): string {
   return `We look for existing stores within ${radiusKm} km of your pin.`;
 }
 
-export function alreadyNearbyStatLabel(backtest: BacktestResult): string {
+export function rankingBacktestStatLabel(backtest: BacktestResult): string {
   return `${presentInTop10Count(backtest)} of 10`;
 }
 
+export function rankingBacktestStatSubtitle(): string {
+  return 'Top-ranked brands that already have a store in this area';
+}
+
+export function rankingBacktestStatTooltip(absenceKm: number): string {
+  return `Ranking backtest only: of the top 10 taste-ranked brands, how many already have a store within ${absenceKm} km. This is separate from your pitch list below.`;
+}
+
+/** @deprecated use rankingBacktestStatLabel */
+export function alreadyNearbyStatLabel(backtest: BacktestResult): string {
+  return rankingBacktestStatLabel(backtest);
+}
+
+/** @deprecated use rankingBacktestStatTooltip */
 export function alreadyNearbyStatTooltip(radiusKm: number): string {
-  return `Of the top 10 picks, how many already have a store within ${radiusKm} km. Lower means more room for a new tenant.`;
+  return rankingBacktestStatTooltip(radiusKm);
 }
 
 export function brandsScoredStatTooltip(): string {

@@ -28,7 +28,11 @@ test.describe('Pipeline CRM', () => {
     await expect(
       page.getByTestId('pipeline-column-sent_by_me').getByTestId('pipeline-card')
     ).toBeVisible();
-    await page.getByTestId('pipeline-card').first().click();
+    await page
+      .getByTestId('pipeline-column-sent_by_me')
+      .getByTestId('pipeline-card')
+      .first()
+      .click();
     await expect(page.getByTestId('pipeline-notes')).toHaveValue(/callback/);
     await expect(page.getByTestId('pipeline-prospect-status')).toHaveValue('sent_by_me');
   });

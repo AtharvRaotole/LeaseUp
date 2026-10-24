@@ -1,4 +1,6 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
+import { absenceRadiusKm } from './absence-radius';
+
 const DEMO_OSM_UNRECORDED_NOTE = 'OSM check not recorded for demo';
 
 function sourceChecked(sources: string[], needle: string): boolean {
@@ -7,9 +9,10 @@ function sourceChecked(sources: string[], needle: string): boolean {
 
 export function absenceVerificationSummary(
   prospect: ProspectPack,
-  radiusKm: number,
+  searchRadiusKm: number,
   results: AnalysisResponse
 ): string {
+  const radiusKm = absenceRadiusKm(results, searchRadiusKm);
   const osmLabel = results.osmSnapshotLabel ?? 'OpenStreetMap snapshot';
   const sources = prospect.brand.verificationSources ?? [];
   const atpChecked = sourceChecked(sources, 'all the places');

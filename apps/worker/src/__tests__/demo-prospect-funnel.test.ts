@@ -45,6 +45,7 @@ describe('demo prospect funnel', () => {
     expect(wicker.prospectFunnel!.absenceRadiusKm).toBe(3);
     expect(wicker.prospectFunnel!.searchRadiusKm).toBe(10);
     expect(wicker.prospectFunnel!.brandsScored).toBe(224);
+    expect(wicker.prospectFunnel!.alreadyNearbyCount).toBe(84);
     expect(wicker.prospects.length).toBeGreaterThan(4);
     expect(boulder.prospects.length).toBeGreaterThanOrEqual(6);
 
@@ -52,6 +53,14 @@ describe('demo prospect funnel', () => {
       boulder.prospectFunnel!.alreadyNearbyCount ?? 0
     );
     expect(wicker.prospectFunnel!.pitchedCount).toBe(wicker.prospects.length);
+
+    const withoutStore =
+      wicker.prospectFunnel!.brandsScored - wicker.prospectFunnel!.alreadyNearbyCount;
+    expect(wicker.prospectFunnel!.pitchedCount).toBeLessThanOrEqual(withoutStore);
+    expect(wicker.prospectFunnel!.strongFitAbsentCount).toBeLessThanOrEqual(withoutStore);
+    expect(
+      wicker.prospectFunnel!.alreadyNearbyCount + withoutStore
+    ).toBe(wicker.prospectFunnel!.brandsScored);
   });
 
   it('funnel counts are internally consistent', async () => {
@@ -69,9 +78,9 @@ describe('demo prospect funnel', () => {
     );
     const funnel = result.prospectFunnel!;
     expect(funnel.strongFitAbsentCount).toBeGreaterThanOrEqual(funnel.pitchedCount);
-    expect(funnel.alreadyNearbyCount + funnel.strongFitAbsentCount).toBeLessThanOrEqual(
-      funnel.brandsScored
-    );
+    const withoutStore = funnel.brandsScored - funnel.alreadyNearbyCount;
+    expect(funnel.pitchedCount).toBeLessThanOrEqual(withoutStore);
+    expect(funnel.alreadyNearbyCount + withoutStore).toBe(funnel.brandsScored);
     expect(JSON.stringify(funnel)).not.toMatch(UNICODE_DASH);
   });
 });
