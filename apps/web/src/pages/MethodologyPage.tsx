@@ -8,6 +8,7 @@ import {
   loadLiveQlooLiftAggregates,
   loadResultsAdaptive,
   formatP10PercentExact,
+  adaptiveEvalSiteDisplayLabel,
 } from '@leaseup/fixtures';
 import { TopBar } from '../components/layout/TopBar';
 import { SiteFooter } from '../components/layout/SiteFooter';
@@ -263,7 +264,7 @@ export function MethodologyPage() {
                   {adaptiveEval.per_address.map((row) => (
                     <tr key={row.address} className="border-b border-border last:border-0">
                       <th scope="row" className="px-3 py-3 font-medium text-ink">
-                        {row.label}
+                        {adaptiveEvalSiteDisplayLabel(row)}
                       </th>
                       <td className="px-3 py-3 text-ink-2">{row.stratum.replace('_', ' ')}</td>
                       <td className="px-3 py-3 text-right tabular-nums text-ink-2">
