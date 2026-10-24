@@ -19,9 +19,24 @@ test.describe('Pipeline CRM', () => {
 
     await page.getByTestId('pipeline-prospect-status').selectOption('sent_by_me');
     await page.getByTestId('pipeline-notes').fill('Called leasing inbox, waiting on callback.');
+    const notesPatch = page.waitForResponse(
+      (res) =>
+        res.request().method() === 'PATCH' &&
+        res.url().includes('/api/pipeline/cards/') &&
+        res.ok()
+    );
     await page.getByTestId('pipeline-notes').blur();
+    await notesPatch;
     await page.getByTestId('pipeline-next-step-reminder').fill('2030-06-01');
+    const reminderPatch = page.waitForResponse(
+      (res) =>
+        res.request().method() === 'PATCH' &&
+        res.url().includes('/api/pipeline/cards/') &&
+        res.ok()
+    );
     await page.getByTestId('pipeline-next-step-reminder').blur();
+    await reminderPatch;
+    await expect(page.getByTestId('pipeline-notes')).toHaveValue(/callback/);
 
     await page.keyboard.press('Escape');
     await page.reload();
