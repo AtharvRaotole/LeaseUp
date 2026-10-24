@@ -61,6 +61,7 @@ const WhoShopsHereCard = lazy(() =>
 import { WhyThisBrandCard } from '../components/report/WhyThisBrandCard';
 import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton';
 import { pipelineCardFromProspect } from '../lib/build-pipeline-card';
+import { orderProspectsForRankingMode } from '../lib/ranking-mode';
 
 const ReportFirstRunTour = lazy(() =>
   import('../components/report/ReportFirstRunTour').then((m) => ({ default: m.ReportFirstRunTour }))
@@ -281,6 +282,11 @@ export function ReportPage() {
     return reportShareHead(results, request.radius, canonicalPath, searchParams.toString());
   }, [results, request, slug, searchParams]);
 
+  const pitchProspects = useMemo(
+    () => (results ? orderProspectsForRankingMode(results, rankingMode) : []),
+    [results, rankingMode]
+  );
+
   if (!request) return null;
 
   const displayError: ApiErrorInfo | null = simulateError
@@ -307,6 +313,8 @@ export function ReportPage() {
             radiusKm={request.radius}
             chipSlug={slug}
             backtestOverride={activeBacktest ?? undefined}
+            pitchProspects={pitchProspects}
+            rankingMode={rankingMode}
             selected={selected}
             onSelectBrand={selectProspect}
             onSharePitch={() => setSharePitchOpen(true)}

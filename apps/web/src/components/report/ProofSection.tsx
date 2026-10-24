@@ -100,10 +100,11 @@ export function ProofSection({
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody data-testid="proof-ranking-table">
             {top10.map((row, index) => (
               <motion.tr
                 key={row.entityId}
+                data-testid={`proof-ranking-row-${index}`}
                 className="border-t border-border cursor-pointer hover:bg-surface-2/60"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
