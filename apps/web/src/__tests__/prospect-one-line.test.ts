@@ -60,6 +60,23 @@ describe('prospectOneLineReason', () => {
     expect(line).not.toContain('Tourist attraction');
   });
 
+  it('skips a non-retail overlap signal such as Hotel and uses the next one', () => {
+    const line = prospectOneLineReason(
+      prospect({
+        whyBrandTaste: {
+          signals: [
+            { kind: 'audience', name: 'Hotel', affinity: 0.9, affinityRank: 2 },
+            { kind: 'audience', name: 'Health & Beauty', affinity: 0.74, affinityRank: 27 },
+          ],
+        },
+      }),
+      baseResults,
+      10
+    );
+    expect(line).not.toContain('Hotel');
+    expect(line).toContain('Health & Beauty');
+  });
+
   it('produces different copy for two brands with different data', () => {
     const a = prospectOneLineReason(
       prospect({

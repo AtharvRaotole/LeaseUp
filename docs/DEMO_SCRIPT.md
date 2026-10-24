@@ -18,7 +18,7 @@
 
 **1:00 - Trust + methodology (25 s)**  
 - Nav: **How it works** (`/methodology`).  
-- Cite the cohort: same-size tier AUC **0.67** [0.65, 0.69]; logistic blend **82%** top-10 presence vs chain size **76%**; raw Qloo order **54%** (does not beat chain size).  
+- Cite the cohort: same-size tier AUC **0.66** [0.64, 0.69]; logistic blend **82.5%** top-10 presence vs chain size **76%** (+6.5 pp); raw Qloo order **54%** (does not beat chain size).  
 - Mid-size chain tier (Q3) **53%** vs **23%** at P@5 inside the tier.  
 - Caveat: taste may partly reflect brands already nearby; use absence checks on the pitch list.
 

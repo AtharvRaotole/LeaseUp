@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * PR evidence: tour hint clear of map + landing hero dark copy.
- * Usage: CAPTURE_ONLY=1 SCREENSHOT_BASE=http://127.0.0.1:PORT node scripts/pr-tour-hint-landing-screenshots.mjs
+ * PR evidence: inline tour hint + report at 1440/1024/390.
+ * Usage: SCREENSHOT_BASE=http://127.0.0.1:PORT node scripts/pr-tour-hint-landing-screenshots.mjs
  */
 import { chromium } from 'playwright';
 import { mkdir } from 'node:fs/promises';
@@ -27,27 +27,30 @@ for (const width of [1440, 1024, 390]) {
   await page.evaluate(() => localStorage.removeItem('leaseup-report-guided-tour-v1'));
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.getByTestId('brands-to-pitch').waitFor({ timeout: 180_000 });
-  if (width === 390) {
-    await page.getByRole('button', { name: 'Map' }).click();
-  }
   await page.getByTestId('report-first-run-tour-hint').waitFor({ timeout: 120_000 });
+
+  const layout = await page.evaluate(() => {
+    const hint = document.querySelector('[data-testid="report-first-run-tour-hint"]');
+    const brands = document.querySelector('[data-testid="brands-to-pitch"]');
+    if (!hint || !brands) return { error: 'missing elements' };
+    const hintRect = hint.getBoundingClientRect();
+    const brandsRect = brands.getBoundingClientRect();
+    return {
+      position: window.getComputedStyle(hint).position,
+      hintBottom: hintRect.bottom,
+      brandsTop: brandsRect.top,
+    };
+  });
+  if (layout.error) throw new Error(layout.error);
+  if (layout.position === 'fixed') {
+    throw new Error(`Tour hint must be in page flow, not fixed at width ${width}`);
+  }
+  if (layout.hintBottom > layout.brandsTop + 4) {
+    throw new Error(`Tour hint overlaps pitch list at width ${width}`);
+  }
+
   await page.screenshot({ path: join(OUT, `report-tour-hint-${width}.png`), fullPage: false });
   console.log('wrote', `report-tour-hint-${width}.png`);
-  await context.close();
-}
-
-{
-  const context = await browser.newContext({
-    viewport: { width: 390, height: 844 },
-    colorScheme: 'dark',
-  });
-  const page = await context.newPage();
-  await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
-  await page.getByTestId('landing-hero-product-preview').waitFor({ timeout: 30_000 });
-  await page.getByTestId('landing-hero-preview-frame').screenshot({
-    path: join(OUT, 'landing-hero-dark-390.png'),
-  });
-  console.log('wrote', 'landing-hero-dark-390.png');
   await context.close();
 }
 
