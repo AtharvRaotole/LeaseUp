@@ -1,9 +1,10 @@
 import type { BrandReachContact } from '@leaseup/contracts';
-import { brandReachPlainLine } from '../../lib/brand-reach-copy';
+import { brandReachLinkHostname, brandReachPlainLine } from '../../lib/brand-reach-copy';
 
 export function BrandReachLine({ reach }: { reach: BrandReachContact }) {
   const text = brandReachPlainLine(reach);
   if (reach.status === 'verified' && reach.url) {
+    const hostname = brandReachLinkHostname(reach.url);
     return (
       <p className="text-sm text-ink-2" data-testid="brand-reach-line">
         How to reach them:{' '}
@@ -13,9 +14,8 @@ export function BrandReachLine({ reach }: { reach: BrandReachContact }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Official real-estate page
+          {hostname}
         </a>
-        <span className="text-ink-3"> (source: {reach.source ?? reach.url})</span>
       </p>
     );
   }
