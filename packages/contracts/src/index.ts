@@ -458,6 +458,10 @@ export type PitchProspectSnapshot = z.infer<typeof PitchProspectSnapshotSchema>;
 /** Stable demo share links (no D1); used in smoke and docs. */
 export const DEMO_PITCH_BOULDER_ULTA_ID = 'demo-boulder-ulta';
 
+export function isDemoPitchId(id: string): boolean {
+  return id === DEMO_PITCH_BOULDER_ULTA_ID || id.startsWith('demo-');
+}
+
 export const PitchPackIdSchema = z.union([
   z.string().uuid(),
   z.literal(DEMO_PITCH_BOULDER_ULTA_ID),

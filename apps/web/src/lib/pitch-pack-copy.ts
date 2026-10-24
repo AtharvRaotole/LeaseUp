@@ -1,8 +1,22 @@
 import type { AnalysisResponse, PitchPackSnapshot, ProspectPack } from '@leaseup/contracts';
+import { isDemoPitchId } from '@leaseup/contracts';
 import { displayBrandName } from './brand-display';
 import { formatUserFacingDate } from './format-date';
 import { whyBrandBulletLines } from './why-brand-lines';
 import { absenceRadiusKm, pitchPackAbsenceRadiusKm } from './absence-radius';
+
+export function pitchBriefKindLabel(snapshot: PitchPackSnapshot): string {
+  return isDemoPitchId(snapshot.id) ? 'Sample leasing brief' : 'Leasing brief';
+}
+
+export function pitchDateMetaLine(snapshot: PitchPackSnapshot): string {
+  const radius = `${snapshot.radiusKm} km trade area`;
+  if (isDemoPitchId(snapshot.id)) {
+    const snapDate = formatUserFacingDate(snapshot.analysisTimestamp);
+    return `Sample pitch from data snapshot of ${snapDate} · ${radius}`;
+  }
+  return `Prepared ${formatUserFacingDate(snapshot.createdAt)} · ${radius}`;
+}
 
 export function pitchPropertyHeadline(snapshot: PitchPackSnapshot): string {
   return (

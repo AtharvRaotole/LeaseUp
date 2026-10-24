@@ -1,10 +1,11 @@
 import type { PitchPackSnapshot } from '@leaseup/contracts';
 import { displayBrandName } from '../../lib/brand-display';
 import { pitchCheckedSourcesLabel } from '../../lib/copy';
-import { formatUserFacingDate } from '../../lib/format-date';
 import {
   pitchBrandFitLines,
   pitchNextStepLine,
+  pitchBriefKindLabel,
+  pitchDateMetaLine,
   pitchPropertyHeadline,
   pitchTradeAreaFacts,
 } from '../../lib/pitch-pack-copy';
@@ -18,11 +19,11 @@ export function PitchPackBrief({ snapshot }: { snapshot: PitchPackSnapshot }) {
   return (
     <div className="pitch-pack-brief space-y-8 print:space-y-5" data-testid="pitch-pack-brief">
       <header className="pitch-pack-hero border-b border-border pb-6 print:pb-4">
-        <p className="text-label uppercase tracking-wide text-ink-3">Leasing brief</p>
+        <p className="text-label uppercase tracking-wide text-ink-3">{pitchBriefKindLabel(snapshot)}</p>
         <h1 className="mt-2 break-words font-display font-semibold text-display text-ink">{propertyTitle}</h1>
         <p className="mt-2 break-words text-lg text-ink-2">{snapshot.address}</p>
-        <p className="mt-1 text-sm text-ink-3">
-          Prepared {formatUserFacingDate(snapshot.createdAt)} · {snapshot.radiusKm} km trade area
+        <p className="mt-1 text-sm text-ink-3" data-testid="pitch-date-meta">
+          {pitchDateMetaLine(snapshot)}
         </p>
         {(snapshot.landlord?.name || snapshot.landlord?.contact) && (
           <p className="mt-3 text-sm text-ink-2">
