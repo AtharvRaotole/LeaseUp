@@ -11,6 +11,8 @@ import { brandMonogram, brandTint } from '../../lib/brand-monogram';
 import { cn } from '../../lib/cn';
 import type { QlooRankingMode } from './QlooRankingToggle';
 import { ReportProspectFunnel } from './ReportProspectFunnel';
+import { ReportVacancyAboveFold } from './ReportVacancyAboveFold';
+import type { VacancyCalculatorDraft } from '../../lib/vacancy-cost';
 
 export function ReportSummaryAboveFold({
   results,
@@ -24,6 +26,8 @@ export function ReportSummaryAboveFold({
   selected,
   onSelectBrand,
   onSharePitch,
+  vacancyInput,
+  onVacancyChange,
 }: {
   results: AnalysisResponse;
   request: AnalysisRequest;
@@ -36,6 +40,8 @@ export function ReportSummaryAboveFold({
   selected: ProspectPack | null;
   onSelectBrand: (p: ProspectPack) => void;
   onSharePitch: () => void;
+  vacancyInput: VacancyCalculatorDraft;
+  onVacancyChange: (next: VacancyCalculatorDraft) => void;
 }) {
   const topFive = pitchProspects.slice(0, 5);
   const pipelineProspect = selected ?? topFive[0] ?? null;
@@ -132,6 +138,8 @@ export function ReportSummaryAboveFold({
           </p>
         </Card>
       )}
+
+      <ReportVacancyAboveFold draft={vacancyInput} onChange={onVacancyChange} />
 
       <div
         className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"

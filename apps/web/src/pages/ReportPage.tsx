@@ -316,6 +316,8 @@ export function ReportPage() {
             selected={selected}
             onSelectBrand={selectProspect}
             onSharePitch={() => setSharePitchOpen(true)}
+            vacancyInput={vacancyInput}
+            onVacancyChange={handleVacancyChange}
           />
           {deferPostPaint && (
             <Suspense fallback={null}>
