@@ -175,7 +175,7 @@ export function BrandReverseMap({
   }, [highlightRank, data.opportunities]);
 
   return (
-    <div className="relative h-full min-h-[360px] w-full">
+    <div className="relative h-full min-h-[280px] w-full lg:min-h-[360px]">
       <div ref={containerRef} className="!absolute inset-0 rounded-card" />
       <div
         className="pointer-events-none absolute bottom-3 left-3 rounded-control border border-border bg-surface/90 px-3 py-2 text-xs text-ink-2 shadow-sm"
