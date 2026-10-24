@@ -103,7 +103,7 @@ Eval numbers below are only from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `pack
 | Pitch pack share link | ✓ | ✓ | ✓ | | `apps/web/src/components/report/SharePitchDialog.tsx`, `apps/worker/src/services/pipeline.ts` (pitch API) |
 | Pipeline kanban + D1 cards | ✓ | | ✓ | | `apps/web/src/pages/PipelinePage.tsx`, `apps/worker/src/lib/pipeline-cards-db.ts` |
 | Owner update share from pipeline | ✓ | ✓ | ✓ | | `apps/web/src/components/pipeline/OwnerUpdatePanel.tsx`, `apps/worker/src/lib/owner-update.ts` |
-| Brand reach lines (~57 verified official URLs) | | ✓ | ✓ | | `BrandReachLine.tsx`, `brand-real-estate.json` (fetch-verified **2026-10-24**; TJX, Gap Inc., VF Corp. parent pages where shared) |
+| Brand reach lines (**14** verified official URLs, title/h1 rule) | | ✓ | ✓ | | `BrandReachLine.tsx`, `brand-real-estate.json`, `scripts/check-brand-real-estate-urls.mjs` (content-verified **2026-10-24**) |
 | Portfolio batch (up to 10 sites) | ✓ | | ✓ | | `apps/web/src/pages/PortfolioPage.tsx` |
 | Brand sites / heatmap explore (not used to rank pitch list) | ✓ | ✓ | | ✓ | `apps/web/src/pages/BrandPage.tsx`; heatmap lift: `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` (`heatmapAddsLift: false`) |
 | Watchlist + diff | ✓ | ✓ | ✓ | | `apps/web/src/pages/WatchlistPage.tsx`, `packages/fixtures/src/watch-diff.ts` |
@@ -121,6 +121,14 @@ Eval numbers below are only from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `pack
 | Random P@10 | 0.29 | `data/qloo-eval-40/QLOO_LIFT_EVAL.md` (T1 adaptive) |
 | Mid-size tier P@5 (439 to 864 stores), Qloo vs chain | 0.53 vs 0.23 | `data/qloo-eval-40/QLOO_LIFT_EVAL.md` (T4), `packages/fixtures/src/eval/tables.md` |
 | Wicker adaptive row (blend vs chain P@10 at 1.5 km) | 0.9 vs 0.7 | `data/qloo-eval-40/QLOO_LIFT_EVAL.md` (demo addresses), `packages/fixtures/src/demo-adaptive-proof.ts` |
+| 40-address eval panel size | 40 sites | `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` (`siteCount`) |
+| Qloo brand batch size / tracked chains | 45 IDs per request, 227 chains | `apps/worker/src/providers/qloo-location.ts` (`QLOO_MAX_BRANDS_PER_REQUEST`), `apps/worker/src/data/tracked-brand-ids.ts` (`TRACKED_BRAND_COUNT`) |
+| Adaptive absence radius floor (dense trade areas) | 3 km | `packages/fixtures/src/eval-density-stratum.ts`, `data/qloo-eval-40/ADAPTIVE_RADIUS_TRADE_AREA_AUDIT.md` |
+| False-positive audit removals | 4 across 13 sites | `data/qloo-eval-40/FALSE_POSITIVE_AUDIT.md`, `apps/worker/src/__tests__/false-positive-prospect-audit.test.ts` |
+| OSM snapshot chain coverage on demo chips | 25 of 227 | `packages/fixtures/src/eval/cohort-eval-display.ts` |
+| Mobile Lighthouse medians (3 runs) | landing perf 93; report perf 89; report a11y 96 | `docs/qa/a11y-perf.md` (Actions run **40074283024**, `LHCI_MEDIANS`) |
+| Verified brand real-estate URLs | 14 | `packages/fixtures/src/brand-real-estate.json` (`status: verified`, checked by `scripts/check-brand-real-estate-urls.mjs`) |
+| Production integration reference SHA | `9873456` | commit message / deploy tag in this doc header (not a runtime metric) |
 
 ---
 
@@ -159,7 +167,7 @@ LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped l
 ### Who to contact (brand reach)
 
 - **`BrandReachLine`** (`data-testid="brand-reach-line"`) on the pitch list (`BrandsToPitch`) and on each brand block in **`PitchPackBrief`**.
-- When `brand-real-estate.json` has a verified URL (official brand or parent company domain, HTTP **200** on **2026-10-24**), shows the official real-estate link. Examples added for demo-chip staples: **TJ Maxx**, **Old Navy**, **Foot Locker**, **Dick's Sporting Goods**, **Sprouts**, **Kendra Scott**, and TJX/Gap/VF shared portals. Otherwise **Search for their real estate contact** (`brand-reach-copy.ts`). CI skips transient network failures (status **0**) without failing the build.
+- When `brand-real-estate.json` marks a row **verified**, the link passed CI on **2026-10-24**: official brand or parent domain, HTTP **2xx**, and the page `<title>` or `<h1>` contains **real estate**, **site selection**, **leasing**, or **property** (see `scripts/brand-real-estate-page-verify.mjs`). Examples that pass today: **Old Navy**, **Foot Locker**, **Sprouts**, **Victoria's Secret** (Gap Inc. shared portal), **Wendy's**, **Whole Foods Market**. Bot-blocked or soft-404 pages fall back to **Search for their real estate contact** (`brand-reach-copy.ts`). CI skips transient network failures (status **0**) without failing the build.
 - Pitch pack also has a dashed **contact slot** when no reach record exists yet.
 
 ### Vacancy cost
