@@ -134,7 +134,7 @@ def main() -> int:
 
     payload = {
         "version": 2,
-        "fittedOn": "data/qloo-eval-40 pooled M1 (log chain, log radius, log density, tier, Qloo z)",
+        "fittedOn": "40-site data/qloo-eval-40 pooled M1 (log chain, log radius, log density, tier, Qloo z)",
         "model": "M1_pooled",
         "features": FEATURE_NAMES,
         "standardize": {
