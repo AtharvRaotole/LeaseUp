@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { computeTourHintPlacement } from './tour-hint-placement';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { Button } from '../ui/Button';
@@ -120,6 +121,10 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
   const [phase, setPhase] = useState<Phase>('hidden');
   const [step, setStep] = useState(0);
   const [layout, setLayout] = useState<PopoverLayout | null>(null);
+  const hintRef = useRef<HTMLDivElement>(null);
+  const [hintPlacement, setHintPlacement] = useState<{ left: number; top: number; width: number } | null>(
+    null
+  );
 
   useEffect(() => {
     if (!ready) return;
@@ -149,6 +154,37 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
     highlightTarget(current.highlightTestId);
   }, [step]);
 
+  const placeHint = useCallback(() => {
+    const el = hintRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const width = rect.width > 0 ? rect.width : Math.min(448, window.innerWidth - 32);
+    const height = rect.height > 0 ? rect.height : 160;
+    setHintPlacement(computeTourHintPlacement(width, height));
+  }, []);
+
+  useLayoutEffect(() => {
+    if (phase !== 'hint') {
+      setHintPlacement(null);
+      return;
+    }
+    placeHint();
+    const onLayout = () => placeHint();
+    window.addEventListener('resize', onLayout);
+    window.addEventListener('scroll', onLayout, true);
+    const el = hintRef.current;
+    const ro =
+      el && typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(() => placeHint())
+        : null;
+    ro?.observe(el!);
+    return () => {
+      window.removeEventListener('resize', onLayout);
+      window.removeEventListener('scroll', onLayout, true);
+      ro?.disconnect();
+    };
+  }, [phase, placeHint]);
+
   useLayoutEffect(() => {
     if (phase !== 'steps') {
       highlightTarget(undefined);
@@ -167,12 +203,18 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
   }, [phase, step, placePopover]);
 
   if (phase === 'hint') {
+    const hintStyle = hintPlacement
+      ? { left: hintPlacement.left, top: hintPlacement.top, width: hintPlacement.width }
+      : { left: 16, top: 140, width: Math.min(448, window.innerWidth - 32) };
+
     return createPortal(
       <div
-        className="no-print pointer-events-none fixed inset-x-0 bottom-0 z-[60] flex justify-center px-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:inset-x-auto sm:right-4 sm:bottom-4 sm:justify-end sm:px-0"
+        className="no-print pointer-events-none fixed z-[60]"
         data-testid="report-first-run-tour-hint"
+        style={hintStyle}
       >
         <div
+          ref={hintRef}
           className="pointer-events-auto w-full max-w-md rounded-card border border-border bg-surface p-4 shadow-pop sm:max-w-sm"
           role="status"
           aria-live="polite"

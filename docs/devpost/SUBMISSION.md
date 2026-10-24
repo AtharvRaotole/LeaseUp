@@ -6,13 +6,15 @@
 
 **On the live landing today:** the same headline appears above a short helper line from the app: "Enter an address to see which brands local shoppers want nearby, then check real store locations before you pitch." (`LANDING_PLAIN_SUMMARY` in `apps/web/src/lib/broker-copy.ts`).
 
-**Production reference:** Cloudflare Pages at commit **`3368b9e`** (integration head; includes #100 to #104). **Mobile Lighthouse (GitHub Actions LHCI only):** median of **3** mobile runs on `ubuntu-latest` in Actions run [**40058723762**](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40058723762): landing performance **93**; Wicker report performance **90**, accessibility **96**. Do not cite local preview Lighthouse scores in Devpost copy; details in `docs/qa/a11y-perf.md`.
+**Production reference:** Cloudflare Pages at commit **`757b8f9`** (integration head). **Mobile Lighthouse (GitHub Actions LHCI only):** median of **3** mobile runs on `ubuntu-latest` in Actions run [**40058723762**](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40058723762): landing performance **93**; Wicker report performance **90**, accessibility **96**. Do not cite local preview Lighthouse scores in Devpost copy; details in `docs/qa/a11y-perf.md`.
 
-Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` (40 US addresses, live Qloo API, October 23, 2026).
+Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` (40 US addresses, live Qloo API; metrics refreshed Oct 24, 2026 per PR #103).
 
-**How to read the backtest numbers:** **P@10** means the share of the **top 10** that **already had a store in the trade area per ATP/OSM** (All The Places plus OpenStreetMap snapshot tiles in the 40-address study, with the adaptive radius rule). It is **not** signed leases, lease success, or proof of open whitespace. Plain-language counts below are the average number of those top-10 slots that were present (multiply P@10 by 10). Exact metrics stay in parentheses.
+**How to read the backtest numbers:** **P@10** is the **share of the top 10 ranked brands that already had a store in the trade area per ATP/OSM** (All The Places plus OpenStreetMap snapshot tiles in the 40-address study, with the density-adaptive eval radius). It is **not** signed leases, lease success, or proof of open whitespace. Plain-language counts are average slots present (multiply P@10 by 10). Exact means are in parentheses where we cite them.
 
-**Where Qloo lift shows up (do not oversell raw affinity):** Raw Qloo order does **not** beat national chain size on mean P@10 (**0.54** vs **0.76** on the 40-address panel). The honest lift is from the **fitted logistic taste blend** (**0.82** vs **0.76**) and from **ordering within a chain-size tier** (for example mid-size **P@5 0.53** vs **0.23** in the 439 to 864 store tier). Same-size tier AUC **0.667** [0.646, 0.689] is the pre-registered control-for-size test.
+**Pitch absence radius (live product):** When building the pitch list, dense areas use an adaptive absence check with at least a **3 km** floor (for example Wicker at 10 km search uses **3 km** for "already nearby") so brokers do not pitch chains with a store a short drive away (`prospectAbsenceRadiusKm`, `data/qloo-eval-40/ADAPTIVE_RADIUS_TRADE_AREA_AUDIT.md`). The report shows a plain funnel line (`report-prospect-funnel`): brands scored, how many already have a store within that km, and how many fit taste with none (`prospect-funnel-copy.ts`).
+
+**Where Qloo lift shows up (do not oversell raw affinity):** Raw Qloo order does **not** beat national chain size on mean P@10 (**0.54** vs **0.76** on the 40-address panel; exact **0.538** vs **0.760**). The honest lift is from the **fitted logistic taste blend** (**0.825** vs **0.760**, about **83%** vs **76%**) and from **ordering within a chain-size tier** (for example mid-size **P@5 0.53** vs **0.23** in the 439 to 864 store tier). Same-size tier AUC **0.664** [0.642, 0.687] is the pre-registered control-for-size test.
 
 **Store verification honesty (PR #89 false-positive audit):** We removed all **4** known false positives across **13** test sites in that audit. We never claim "zero false positives": stores missing from **both** ATP and OSM cannot be detected, and OSM snapshot coverage applies to only **25** of **227** tracked chains on demo chips. Analyze also runs an **OSM `brand:wikidata` false-absence cross-check** (snapshot tiles plus demo Overpass recordings) so we do not label a top prospect as verified missing when wikidata says a store is in radius (`apps/worker/src/lib/osm-wikidata-absence-crosscheck.ts`, `data/qloo-eval-40/FALSE_ABSENCE_AUDIT.md`, `apps/worker/src/__tests__/false-absence-sweep.test.ts`).
 
@@ -24,11 +26,11 @@ Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-
 
 ### Technological Implementation
 
-LeaseUp is a real split stack: a React site on Cloudflare Pages talks to a Hono worker that batches live Qloo `/v2/insights` brand calls (45 IDs per request, 227 tracked chains), merges them with a fitted logistic taste blend (default pitch order), and checks open store footprints from All The Places, OSM snapshot tiles, and the wikidata false-absence cross-check before a broker pitches. If Qloo returns errors in live mode, analysis **falls back to chain-size ranking** with a visible banner (`TasteUnavailableBanner`, `qloo-chain-fallback.ts`). Pipeline cards persist **prospect status**, **notes**, **follow-up reminders**, and **evidence** (reasons + links back to the report and watchlist). We preregistered a **40-address** live API study, fixed a ground-truth bug in OSM tiles, and committed the headline metrics in the repo. Raw Qloo order reached **P@10 0.54** on that panel; national chain size reached **0.76**; our shipped blend reached **0.82** (**+6.2** percentage points vs chain, 95% CI **2.8 to 9.3**). Among similar-size chains, Qloo separated present vs absent about two thirds of the time (**same-size tier AUC 0.667**, 95% CI **0.646 to 0.689**). We do not use Qloo heatmap to rank the pitch list.
+LeaseUp is a real split stack: a React site on Cloudflare Pages talks to a Hono worker that batches live Qloo `/v2/insights` brand calls (45 IDs per request, 227 tracked chains), merges them with a fitted logistic taste blend (default pitch order), and checks open store footprints from All The Places, OSM snapshot tiles, and the wikidata false-absence cross-check before a broker pitches. Dense trade areas apply a **3 km** absence-radius floor when filtering prospects (`prospectAbsenceRadiusKm`). If Qloo returns errors in live mode, analysis **falls back to chain-size ranking** with a visible banner (`TasteUnavailableBanner`, `qloo-chain-fallback.ts`). Pipeline cards persist **prospect status**, **notes**, **follow-up reminders**, and **evidence** (reasons + links back to the report and watchlist). We preregistered a **40-address** live API study, refreshed ATP/OSM ground truth after the OSM tile retile (PR #103), and committed the headline metrics in the repo. Raw Qloo order reached **P@10 0.538** on that panel; national chain size reached **0.760**; our shipped blend reached **0.825** (**+6.5** percentage points vs chain, 95% CI **3.3 to 9.3**). Among similar-size chains, Qloo separated present vs absent about two thirds of the time (**same-size tier AUC 0.664**, 95% CI **0.642 to 0.687**). We do not use Qloo heatmap to rank the pitch list.
 
 ### Design
 
-Brokers see a **compact summary-first report**: three headline stat tiles, then **Top brands to pitch** with brand-specific one-line reasons (taste rank, distance to nearest store, shopper interest, category fit). The default list follows the **fitted taste blend**; under **How we know**, **Compare ranking** toggles **Local taste** vs **Chain size** so judges can see **82%** vs **76%** mean top-10 presence on the 40-address eval without implying raw Qloo beats chain size. Trade area shopper tags stay plain names; vacancy math is broker-controlled; pitch pack and pipeline close the loop. A **plain-language pass** keeps jargon off primary surfaces (`broker-visible-jargon.ts`, `broker-jargon.spec.ts`). **`/methodology/qloo`** explains Qloo in plain broker language.
+Brokers see a **compact summary-first report**: three headline stat tiles, a plain **prospect funnel** sentence (scored / already nearby / pitched), then **Top brands to pitch** with brand-specific one-line reasons. The default list follows the **fitted taste blend**; under **How we know**, **Compare ranking** toggles **Local taste** vs **Chain size** so judges can see **83%** vs **76%** mean top-10 presence on the 40-address eval without implying raw Qloo beats chain size. A **non-blocking** first-run tour (`report-first-run-tour-hint`) keeps the report readable; judges can dismiss it or take three steps. Stable demo pitch at **`/pitch/demo-boulder-ulta`** (`e2e/demo-pitch-smoke.spec.ts`). Trade area shopper tags stay plain names; vacancy math is broker-controlled; pitch pack and pipeline close the loop. **`/methodology/qloo`** explains Qloo in plain broker language.
 
 ### Potential Impact
 
@@ -36,7 +38,7 @@ Empty storefronts cost landlords carry every month; brokers waste outreach on ch
 
 ### Quality of Idea
 
-The idea is to treat Qloo as **local taste beyond chain size**, not a replacement for footprint data. Raw Qloo order is weaker than chain size on mean P@10; the product story is the **blend** (**0.82** vs **0.76**) and **within-tier** ordering (mid-size **P@5 0.53** vs **0.23**). P@10 still means stores already in the trade area per ATP/OSM, not leases or guaranteed whitespace.
+The idea is to treat Qloo as **local taste beyond chain size**, not a replacement for footprint data. Raw Qloo order is weaker than chain size on mean P@10; the product story is the **blend** (**0.825** vs **0.760**) and **within-tier** ordering (mid-size **P@5 0.53** vs **0.23**). P@10 still means share of top 10 already in the trade area per ATP/OSM, not leases or guaranteed whitespace.
 
 ---
 
@@ -50,8 +52,8 @@ Three stops judges care about: **finished report**, **shareable pitch**, **pipel
 
 | Stop | Clicks from `/` | What you should see |
 | --- | --- | --- |
-| **1. Report** | **1** (click demo chip **Wicker Park, Chicago**) | Compact summary (`report-summary`): three stat tiles, then **Top brands to pitch** (`brands-to-pitch`, top five; default order is the **fitted taste blend**). Open **How we know**, use **Compare ranking** (`qloo-ranking-toggle`): **Local taste** vs **Chain size** reorders the proof table and **Nearby match** stat (82% vs 76% on the 40-address eval; `e2e/qloo-ranking-toggle.spec.ts`). Select a row or map pin for **Why this brand** (`why-this-brand`). Expand **Why these brands** for the full list (`brands-to-pitch-full-list`). |
-| **2. Pitch pack** | **+2** on report (**Share pitch pack** → **Create public link**, then open the pitch URL) | Read-only pitch page (`pitch-page`) with leasing brief and vacancy block |
+| **1. Report** | **1** (click demo chip **Wicker Park, Chicago**) | Compact summary (`report-summary`): stat tiles, plain funnel (`report-prospect-funnel`, 3 km absence radius on dense Wicker), **Top brands to pitch** (`brands-to-pitch`). Dismiss or take the optional **Quick tour** (`report-first-run-tour-hint`; non-blocking). Open **How we know**, **Compare ranking** (`qloo-ranking-toggle`): **Local taste** vs **Chain size** (83% vs 76% mean top-10 presence; `e2e/qloo-ranking-toggle.spec.ts`). **Why this brand** (`why-this-brand`); full list in **Why these brands** (`brands-to-pitch-full-list`). |
+| **2. Pitch pack** | **+1** open stable demo **`/pitch/demo-boulder-ulta`** (`pitch-page`, `e2e/demo-pitch-smoke.spec.ts`) **or +2** from report (**Share pitch pack** → **Create public link**) | Read-only pitch with leasing brief and vacancy block |
 | **3. Pipeline + watchlist loop** | **+2** on report (**Add to pipeline** on a top brand and/or **Watch this space**, then **Pipeline** or **Watchlist** in the header) | Kanban with saved evidence (`pipeline-evidence`); open a card and follow **Site report** / **Watched space** back to the same pitch (`e2e/pipeline-loop.spec.ts`) |
 
 **Exact demo addresses** (recorded Qloo + store fixtures; keep in sync with `packages/fixtures/src/demo-addresses.ts`):
@@ -78,7 +80,10 @@ Eval numbers below are only from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `pack
 | Hero product preview (static Wicker still) | | ✓ | ✓ | | `apps/web/src/components/landing/LandingHeroProductPreview.tsx` |
 | Qloo `/v2/insights` brand batching (45 IDs, 227 chains) | ✓ | | | ✓ | `apps/worker/src/providers/qloo.ts`, `apps/worker/src/services/analysis.ts` |
 | Logistic taste blend ranking (default pitch order) | ✓ | | | ✓ | `packages/fixtures/src/eval/live-qloo-lift/logistic-coefficients.json`, `apps/worker/src/lib/analysis-enrichment.ts`, `apps/web/src/lib/ranking-production.ts` |
-| **Compare ranking** toggle (Local taste vs Chain size, 82% vs 76% eval) | ✓ | ✓ | | ✓ | `apps/web/src/components/report/QlooRankingToggle.tsx`, `e2e/qloo-ranking-toggle.spec.ts` |
+| **Compare ranking** toggle (Local taste vs Chain size, 83% vs 76% eval) | ✓ | ✓ | | ✓ | `apps/web/src/components/report/QlooRankingToggle.tsx`, `e2e/qloo-ranking-toggle.spec.ts` |
+| Adaptive **3 km** absence radius + prospect funnel copy | ✓ | ✓ | ✓ | ✓ | `packages/fixtures/src/eval-density-stratum.ts`, `ReportProspectFunnel.tsx`, `apps/worker/src/lib/prospect-funnel.ts` (#101) |
+| Non-blocking report first-run tour | | ✓ | ✓ | | `ReportFirstRunTour.tsx` (`report-first-run-tour-hint`) (#104) |
+| Stable demo pitch `/pitch/demo-boulder-ulta` | ✓ | ✓ | ✓ | | `packages/fixtures/src/demo-pitch-boulder-ulta.ts`, `e2e/demo-pitch-smoke.spec.ts` (#102) |
 | Qloo-down chain-size fallback | ✓ | ✓ | ✓ | | `apps/worker/src/lib/qloo-chain-fallback.ts`, `apps/worker/src/__tests__/qloo-analyze-resilience.test.ts`, `apps/web/src/components/report/TasteUnavailableBanner.tsx` |
 | Brand-specific pitch reasons (per prospect) | ✓ | ✓ | ✓ | ✓ | `apps/worker/src/services/analysis.ts`, `apps/web/src/lib/prospect-one-line.ts`, `apps/worker/src/__tests__/prospect-reasons.test.ts` |
 | Above-fold **Top brands to pitch** (`brands-to-pitch`) | | ✓ | ✓ | | `apps/web/src/components/report/ReportSummaryAboveFold.tsx`, `e2e/report-brands-visible.spec.ts` (390 + 1440; #93) |
@@ -108,10 +113,10 @@ Eval numbers below are only from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `pack
 
 | Claim | Value | Where committed |
 | --- | --- | --- |
-| Raw Qloo mean P@10 (adaptive radius) | 0.54 | `packages/fixtures/src/eval/live-qloo-lift/aggregates.json`, `data/qloo-eval-40/QLOO_LIFT_EVAL.md` |
-| Chain size mean P@10 | 0.76 | same |
-| Logistic blend mean P@10 vs chain | 0.82 vs 0.76 (+6.2 pp, 95% CI 2.8 to 9.3) | same |
-| Same-size tier AUC | 0.667 [0.646, 0.689] | same |
+| Raw Qloo mean P@10 (adaptive radius) | 0.538 (report as 0.54) | `packages/fixtures/src/eval/live-qloo-lift/aggregates.json`, `data/qloo-eval-40/QLOO_LIFT_EVAL.md` |
+| Chain size mean P@10 | 0.760 (report as 0.76) | same |
+| Logistic blend mean P@10 vs chain | 0.825 vs 0.760 (+6.5 pp, 95% CI 3.3 to 9.3) | same |
+| Same-size tier AUC | 0.664 [0.642, 0.687] | same |
 | Random P@10 | 0.29 | `data/qloo-eval-40/QLOO_LIFT_EVAL.md` (T1 adaptive) |
 | Mid-size tier P@5 (439 to 864 stores), Qloo vs chain | 0.53 vs 0.23 | `data/qloo-eval-40/QLOO_LIFT_EVAL.md` (T4), `packages/fixtures/src/eval/tables.md` |
 | Wicker adaptive row (blend vs chain P@10 at 1.5 km) | 0.9 vs 0.7 | `data/qloo-eval-40/QLOO_LIFT_EVAL.md` (demo addresses), `packages/fixtures/src/demo-adaptive-proof.ts` |
@@ -126,7 +131,7 @@ Brokers and landlords lose time pitching chains that already operate inside the 
 
 ## What it does
 
-LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped live at **`3368b9e`**:
+LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped live at **`757b8f9`**:
 
 ### Landing redesign
 
@@ -137,9 +142,10 @@ LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped l
 
 ### Summary-first report
 
-- **`ReportSummaryAboveFold`** (`data-testid="report-summary"`): compact **`HeadlineCard`** with three stat tiles (including **Nearby match** tied to the active ranking mode), then **Top brands to pitch** (`data-testid="brands-to-pitch"`, dense top-five rows with **brand-specific one-line reasons** from `prospectOneLineReason`). Default pitch order uses the **fitted logistic taste blend** (`ranking-production.ts`, `orderProspectsForRankingMode`). Per-row **Add to pipeline** (compact ghost control on desktop hover) plus **Share pitch pack** and report-level **Add to pipeline** CTAs.
+- **`ReportSummaryAboveFold`** (`data-testid="report-summary"`): compact **`HeadlineCard`** with three stat tiles (including **Nearby match** tied to the active ranking mode), **`ReportProspectFunnel`** (`report-prospect-funnel`) with the plain scored / already nearby / pitched sentence at the adaptive absence radius (3 km floor in dense areas), then **Top brands to pitch** (`data-testid="brands-to-pitch"`, dense top-five rows with **brand-specific one-line reasons** from `prospectOneLineReason`). Default pitch order uses the **fitted logistic taste blend** (`ranking-production.ts`, `orderProspectsForRankingMode`). Per-row **Add to pipeline** (compact ghost control on desktop hover) plus **Share pitch pack** and report-level **Add to pipeline** CTAs.
+- **`ReportFirstRunTour`**: optional bottom hint (`report-first-run-tour-hint`); dismiss or **Take the tour** without blocking the report (`ReportFirstRunTour.tsx`).
 - **`WatchSpaceButton`** (`watch-this-space`) saves the address to **Watchlist** for later diff alerts.
-- Deeper sections collapse under **Why these brands**, **What it costs you**, and **How we know** (`ReportCollapsibleSection`). **How we know** hosts **`QlooRankingToggle`** (`qloo-ranking-toggle`): **Local taste** (blend, **82%** mean top-10 presence on the 40-address eval) vs **Chain size** (**76%**), reordering the proof table and summary stat (`e2e/qloo-ranking-toggle.spec.ts`).
+- Deeper sections collapse under **Why these brands**, **What it costs you**, and **How we know** (`ReportCollapsibleSection`). **How we know** hosts **`QlooRankingToggle`** (`qloo-ranking-toggle`): **Local taste** (blend, **83%** mean top-10 presence on the 40-address eval) vs **Chain size** (**76%**), reordering the proof table and summary stat (`e2e/qloo-ranking-toggle.spec.ts`).
 - Map column: ranked map, **`WhyThisBrandCard`** (`data-testid="why-this-brand"`) for the selection, sidebar facts, and **Trade area shoppers** when data is available. Full ranked list stays in collapsible **Why these brands** (`brands-to-pitch-full-list`).
 
 ### Trade area shoppers (Qloo tags)
@@ -162,6 +168,7 @@ LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped l
 ### Pitch pack
 
 - **`PitchPackBrief`** (`data-testid="pitch-pack-brief"`): leasing brief per brand, fit lines, store verification labels, optional map on the first brand, trade area facts, reach line, and print-friendly layout on **`PitchPage`** (`data-testid="pitch-page"`).
+- Stable judge demo (no share dialog): **`/pitch/demo-boulder-ulta`** (Boulder Ulta fixture, `demo-pitch-boulder-ulta`; smoke in `e2e/demo-pitch-smoke.spec.ts`).
 
 ### Owner update
 
@@ -190,7 +197,7 @@ LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped l
 
 ### Still in the flow
 
-- Geocode confirm when needed; ranked list uses the fitted logistic taste blend when Qloo is available; store checks via All The Places (227 tracked chains), OSM snapshot tiles, and the wikidata false-absence cross-check on demo chips; Qloo proof under **How we know** cites **54% / 76% / 82%** mean top-10 presence (raw Qloo / chain / blend) per `data/qloo-eval-40/QLOO_LIFT_EVAL.md`; optional **OutreachSheet** draft (broker clicks, never auto-sent).
+- Geocode confirm when needed; ranked list uses the fitted logistic taste blend when Qloo is available; store checks via All The Places (227 tracked chains), OSM snapshot tiles, wikidata false-absence cross-check, and adaptive absence radius (3 km floor in dense areas) on demo chips; Qloo proof under **How we know** cites **54% / 76% / 83%** mean top-10 presence (raw Qloo / chain / blend; exact **0.538 / 0.760 / 0.825**) per `data/qloo-eval-40/QLOO_LIFT_EVAL.md`; optional **OutreachSheet** draft (broker clicks, never auto-sent).
 
 Demo chips use recorded Qloo JSON so judge demos stay fast.
 
@@ -202,7 +209,7 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 - **Web:** React, Vite, MapLibre GL, TanStack Query on Cloudflare Pages.
 - **API:** Cloudflare Worker (Hono), response cache for successful upstream calls, D1 for portfolio, pipeline, and metrics.
-- **Quality:** Playwright e2e (broker jargon, pipeline loop, Qloo-down, CRM, `report-brands-visible`, `qloo-ranking-toggle`), Lighthouse CI (GitHub Actions LHCI median of 3 mobile runs, run **40058723762**: landing perf **93**, report perf **90**, report a11y **96**; `docs/qa/a11y-perf.md`), CSP regression, worker bundle guard, Vitest on copy, ranking mode, and false-absence sweep.
+- **Quality:** Playwright e2e (broker jargon, pipeline loop, Qloo-down, CRM, `report-brands-visible`, `qloo-ranking-toggle`, `demo-pitch-smoke`), Lighthouse CI (GitHub Actions LHCI median of 3 mobile runs, run **40058723762**: landing perf **93**, report perf **90**, report a11y **96**; `docs/qa/a11y-perf.md`), CSP regression, worker bundle guard, Vitest on copy, ranking mode, prospect funnel, adaptive absence radius, and false-absence sweep.
 
 ### Exactly how Qloo is used
 
@@ -220,14 +227,14 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 **Demo mode:** recorded brand insights and shopper tag fixtures for Wicker, Boulder, and Sevierville.
 
-**Evaluation honesty (broker read, then exact):** Across 40 US addresses, ranking by raw Qloo affinity put about **5** brands in the top 10 that already had a store in the trade area on average (**P@10 0.54**). Sorting by national chain size put about **8** of those top 10 slots on brands already there (**P@10 0.76**). The legacy 0.75/0.25 blend averaged about **6** (**P@10 0.59**). The fitted logistic taste blend averaged about **8**, slightly better than size alone (**P@10 0.82**, **+6.2** percentage points vs chain, 95% CI **2.8 to 9.3** pp). Among brands of similar chain size, Qloo's score separated present vs not present about two thirds of the time (**same-size tier AUC 0.667**, 95% CI **0.646 to 0.689**). Ground truth was recomputed after fixing OSM snapshot tile coordinates; Qloo responses are unchanged.
+**Evaluation honesty (broker read, then exact):** Across 40 US addresses, ranking by raw Qloo affinity put about **5** brands in the top 10 that already had a store in the trade area on average (**P@10 0.538**, rounded **0.54**). Sorting by national chain size put about **8** of those top 10 slots on brands already there (**P@10 0.760**). The legacy 0.75/0.25 blend averaged about **6** (**P@10 0.59**). The fitted logistic taste blend averaged about **8**, slightly better than size alone (**P@10 0.825**, about **83%**, **+6.5** percentage points vs chain, 95% CI **3.3 to 9.3** pp). Among brands of similar chain size, Qloo's score separated present vs not present about two thirds of the time (**same-size tier AUC 0.664**, 95% CI **0.642 to 0.687**). Ground truth and aggregates were refreshed Oct 24, 2026 after the OSM snapshot retile (PR #103); Qloo insight JSON is unchanged.
 
 ---
 
 ## Challenges
 
 1. **Telling the truth about Qloo:** raw affinity puts fewer "already here" brands in the top 10 than chain size alone (about 5 vs about 8 of 10 slots on average; **P@10 0.54 vs 0.76**). We rebuilt ranking around the logistic blend and show chain-size baselines beside taste rankings.
-2. **Dense trade areas:** a fixed 10 km presence check saturates. Adaptive radius in backtests breaks the tie.
+2. **Dense trade areas:** a fixed 10 km presence check saturates in eval and over-filters pitches in product. We use density-adaptive eval radii and a **3 km** absence floor when pitching in dense areas, with the funnel sentence on the report.
 3. **Broker-readable UI:** summary-first report, plain headline copy, shopper tags without misleading affinity decimals, and reach lines that admit when contact data is missing.
 4. **Split hosting and KV budget:** Pages vs Worker API, pipeline cookies, local-only media capture, and cached Qloo responses.
 
@@ -235,10 +242,10 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 ## Accomplishments
 
-- Live at **`3368b9e`**: compact summary report, default **fitted taste blend** ranking with **Compare ranking** toggle (**82%** vs **76%** on the 40-address eval), OSM wikidata false-absence cross-check, **`brands-to-pitch`**, pipeline evidence loop, watchlist, and **Qloo-down fallback**.
+- Live at **`757b8f9`**: compact summary with prospect funnel, search vs absence radius explainer, default **fitted taste blend** with **Compare ranking** toggle (**83%** vs **76%** on the 40-address eval), non-blocking tour, stable **`/pitch/demo-boulder-ulta`**, OSM wikidata false-absence cross-check, **`brands-to-pitch`**, pipeline evidence loop, watchlist, and **Qloo-down fallback**.
 - Trade area shopper tags; brand reach lines; vacancy cost on report, share dialog, and pitch snapshot; owner update share links.
 - Plain-language broker pass + **`/methodology/qloo`** explainer; mobile Lighthouse landing perf **93** / report perf **90** / report a11y **96** (GitHub Actions LHCI medians, run **40058723762**).
-- Preregistered **40-address** live Qloo evaluation: mean top-10 presence **54% / 76% / 82%** (raw Qloo / chain / blend) per ATP/OSM; same-size tier AUC **0.667**; mid-size tier **P@5 0.53 vs 0.23**.
+- Preregistered **40-address** live Qloo evaluation (refreshed Oct 24, 2026): mean top-10 presence **54% / 76% / 83%** (raw Qloo / chain / blend; exact **0.538 / 0.760 / 0.825**) per ATP/OSM; same-size tier AUC **0.664**; mid-size tier **P@5 0.53 vs 0.23**.
 
 ---
 
@@ -270,13 +277,13 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 | --- | --- | --- |
 | 0:00-0:10 | Landing hero | Light mode. Read headline and subhead (tagline above). Point at **hero product preview** image: "Recorded Wicker demo beside the form." |
 | 0:10-0:18 | Address | Type `1560 N Milwaukee Ave, Chicago, IL 60622`. Click **Analyze**. |
-| 0:18-0:30 | Report summary | Hold on `report-summary` and `brands-to-pitch`: headline, plain summary, **Top brands to pitch** above the fold. "Summary first, then detail on demand." |
+| 0:18-0:30 | Report summary | Hold on `report-summary`, `report-prospect-funnel`, and `brands-to-pitch`. Dismiss tour hint if shown. "Summary first, then detail on demand." |
 | 0:30-0:40 | Trade area shoppers | Scroll map column to **Trade area shoppers** (`who-shops-here`). "Qloo location tags describe who shops here, as ordered names, not fake-precise scores." |
 | 0:40-0:50 | Who to contact | In **Why these brands**, expand a row with **How to reach them** (`brand-reach-line`) or show the dashed slot. "Official real-estate link when we have it." |
 | 0:50-1:00 | Vacancy cost | Open **What it costs you**. Adjust vacancy calculator briefly. "Landlords see carrying cost in their own inputs." |
-| 1:00-1:12 | Qloo proof | Open **How we know**. Toggle **Chain size**, then back to **Local taste** (`qloo-ranking-toggle`). "Default blend about 82% top-10 presence vs 76% chain size on 40 addresses; raw Qloo is lower at 54%. We do not claim raw Qloo beats chain size." |
-| 1:12-1:22 | Share pitch pack | Click **Share pitch pack**, **Create public link**. Show link field. |
-| 1:22-1:38 | Pitch pack | Open pitch tab. Hold on **Leasing brief** and first brand: map, fit bullets, **How to reach them**, vacancy section on page. |
+| 1:00-1:12 | Qloo proof | Open **How we know**. Toggle **Chain size**, then back to **Local taste** (`qloo-ranking-toggle`). "Default blend about 83% top-10 presence vs 76% chain size on 40 addresses; raw Qloo is lower at 54%. We do not claim raw Qloo beats chain size." |
+| 1:12-1:22 | Share pitch pack | Click **Share pitch pack**, **Create public link**, or open **`/pitch/demo-boulder-ulta`**. Show link or stable demo URL. |
+| 1:22-1:38 | Pitch pack | Hold on **Leasing brief** and first brand: map, fit bullets, **How to reach them**, vacancy section on page. |
 | 1:38-1:46 | Pipeline add | Back to report; **Add to pipeline**; hold **Added to pipeline**. |
 | 1:46-2:04 | Pipeline and owner update | `/pipeline`: card on board. Scroll to **Owner update**; preview and copy share link. "One page for the landlord from real pipeline cards." |
 | 2:04-2:14 | Map | Pan map; click a second brand. Brief hold. |

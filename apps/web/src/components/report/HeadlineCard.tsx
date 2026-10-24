@@ -4,12 +4,17 @@ import { InfoTooltip } from '../ui/InfoTooltip';
 import { dataConfidenceLabel, dataConfidenceSubtitle } from '../../lib/copy';
 import { placeHeadlineLabel } from '../../lib/location-label';
 import {
-  alreadyNearbyStatLabel,
-  alreadyNearbyStatTooltip,
+  rankingBacktestStatLabel,
+  rankingBacktestStatSubtitle,
+  rankingBacktestStatTooltip,
   brandsScoredStatTooltip,
   dataConfidenceStatTooltip,
 } from '../../lib/broker-copy';
 import { presentInTop10Count } from '../../lib/hit-rate';
+import { absenceRadiusKm } from '../../lib/absence-radius';
+import { reportHeadlineLine } from '../../lib/report-headline-copy';
+import { searchVsAbsenceRadiusPlainLine } from '../../lib/prospect-funnel-copy';
+
 export function HeadlineCard({
   results,
   radiusKm,
@@ -24,10 +29,11 @@ export function HeadlineCard({
   /** When false, only the headline renders (stats deferred for faster LCP). */
   showStats?: boolean;
 }) {
-  const count = results.prospects.length;
   const area = placeHeadlineLabel(results.location, chipSlug);
+  const searchKm = results.prospectFunnel?.searchRadiusKm ?? radiusKm;
+  const absenceKm = absenceRadiusKm(results, radiusKm);
   const activeBacktest = backtestOverride ?? results.backtest;
-  const hitLabel = alreadyNearbyStatLabel(activeBacktest);
+  const rankingCheckLabel = rankingBacktestStatLabel(activeBacktest);
   const analyzed = results.rankings?.length ?? 0;
   const baseline = results.backtestBaseline;
   const blendBacktest = results.backtestBlended ?? results.backtest;
@@ -41,19 +47,23 @@ export function HeadlineCard({
   return (
     <Card>
       <h2 className="font-display font-semibold text-h2 leading-snug text-ink md:text-title">
-        {count > 0
-          ? `${count} brand${count === 1 ? '' : 's'} fit ${area} but have no store within ${radiusKm} km.`
-          : `Every top brand for ${area} already has a store within ${radiusKm} km.`}
+        {reportHeadlineLine(results, area, radiusKm)}
       </h2>
+      <p
+        className="mt-3 text-small leading-snug text-ink-3"
+        data-testid="report-search-absence-radius-line"
+      >
+        {searchVsAbsenceRadiusPlainLine(searchKm, absenceKm)}
+      </p>
       {showStats && (
         <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 md:mt-7 md:gap-4">
           <StatTile
-            label="Nearby match"
-            mobileLabel="Nearby"
-            value={hitLabel}
-            subtitle={hitTieSubtitle ?? 'Top picks with a store in your radius'}
-            mobileSubtitle="Stores already in radius"
-            tooltip={alreadyNearbyStatTooltip(radiusKm)}
+            label="Ranking check"
+            mobileLabel="Rank check"
+            value={rankingCheckLabel}
+            subtitle={hitTieSubtitle ?? rankingBacktestStatSubtitle()}
+            mobileSubtitle="Top 10 vs stores nearby"
+            tooltip={rankingBacktestStatTooltip(absenceKm)}
           />
           <StatTile
             label="Brands scored"

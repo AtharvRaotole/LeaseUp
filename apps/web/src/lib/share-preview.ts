@@ -1,4 +1,5 @@
 import type { AnalysisResponse, PitchPackSnapshot } from '@leaseup/contracts';
+import { absenceRadiusKm } from './absence-radius';
 import { displayBrandName } from './brand-display';
 import { SITE_PUBLIC_ORIGIN, WORKER_PUBLIC_ORIGIN } from './public-origins';
 import type { ShareHeadProps } from '../components/seo/ShareHead';
@@ -38,7 +39,7 @@ export function reportShareHead(
   const description =
     count > 0
       ? `${radiusKm} km radius. Top picks: ${picks}. Qloo taste + verified store absence.`
-      : `Every tracked brand already has a store within ${radiusKm} km of ${area}.`;
+      : `Every tracked brand already has a store within ${absenceRadiusKm(results, radiusKm)} km of ${area}.`;
   return {
     title,
     description,

@@ -63,6 +63,7 @@ import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton'
 import { pipelineCardFromProspect } from '../lib/build-pipeline-card';
 import { activeBacktestForRankingMode } from '../lib/ranking-production';
 import { orderProspectsForRankingMode } from '../lib/ranking-mode';
+import { absenceRadiusKm as pitchAbsenceRadiusKm } from '../lib/absence-radius';
 
 const ReportFirstRunTour = lazy(() =>
   import('../components/report/ReportFirstRunTour').then((m) => ({ default: m.ReportFirstRunTour }))
@@ -348,6 +349,7 @@ export function ReportPage() {
             <ReportShortListNotice
               count={results.prospects.length}
               radiusKm={request.radius}
+              results={results}
               request={request}
               slug={slug ?? 'run'}
             />
@@ -413,6 +415,7 @@ export function ReportPage() {
               request={request}
               location={results.location}
               chipSlug={slug}
+              absenceRadiusKm={pitchAbsenceRadiusKm(results, request.radius)}
               onRadiusChange={() => {
                 ranKey.current = '';
               }}
@@ -519,6 +522,7 @@ export function ReportPage() {
             className={`col-span-12 xl:col-span-5 ${
               mobilePane === 'report' ? 'hidden md:block' : ''
             }`}
+            data-testid="report-map-panel"
           >
             {!results && (loading || geocodeChecking) && !geocodeCandidates && (
               <ReportMapSkeleton />

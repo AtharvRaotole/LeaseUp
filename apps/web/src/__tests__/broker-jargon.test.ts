@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  alreadyNearbyStatTooltip,
+  rankingBacktestStatTooltip,
   brandsScoredStatTooltip,
   shopperInterestHighlight,
 } from '../lib/broker-copy';
@@ -12,7 +12,7 @@ const JARGON = /\b(auc|white space|over-index|affinity)\b/i;
 describe('broker-facing copy avoids jargon', () => {
   it('tooltips stay plain', () => {
     for (const line of [
-      alreadyNearbyStatTooltip(10),
+      rankingBacktestStatTooltip(10),
       brandsScoredStatTooltip(),
       shopperInterestHighlight('Streetwear'),
     ]) {
