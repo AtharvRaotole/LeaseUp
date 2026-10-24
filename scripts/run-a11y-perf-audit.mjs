@@ -50,7 +50,7 @@ const ROUTES = [
     name: 'report',
     path: `/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10&screenshot=1`,
     ready: async (page) => {
-      await page.getByTestId('report-top-brands').waitFor({ timeout: 120_000 });
+      await page.getByTestId('brands-to-pitch').waitFor({ state: 'visible', timeout: 120_000 });
       await page.getByTestId('report-tour-dismiss').click({ timeout: 5000 }).catch(() => undefined);
     },
   },

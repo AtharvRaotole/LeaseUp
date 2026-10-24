@@ -19,7 +19,7 @@ test.describe('Broker journey (demo)', () => {
     await page.getByRole('button', { name: 'Analyze' }).click();
     await expect(page).toHaveURL(/\/r\//, { timeout: 30_000 });
     await expect(page.getByTestId('report-summary')).toBeVisible({ timeout: 120_000 });
-    await expect(page.getByTestId('report-top-brands')).toBeVisible();
+    await expect(page.getByTestId('brands-to-pitch')).toBeVisible();
   });
 
   test('report to pipeline at 1440', async ({ page }) => {
