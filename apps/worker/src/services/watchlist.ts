@@ -15,6 +15,7 @@ import { buildWatchRunSnapshot, diffWatchSnapshots } from '@leaseup/fixtures';
 import { normalizeAddress } from '@leaseup/fixtures/worker';
 import type { Env } from '../index';
 import { assertRecheckAllowed, markRecheckCompleted } from '../lib/watch-recheck-cooldown';
+import { applyWatchTradeAreaAlerts, linkPipelineCardsToWatch } from '../lib/pipeline-watch-alerts';
 
 function addressKey(address: string): string {
   return normalizeAddress(address);
@@ -132,6 +133,7 @@ export class WatchlistService {
       .first<{ watch_id: string }>();
 
     if (existing) {
+      await linkPipelineCardsToWatch(this.db, workspaceId, existing.watch_id, address.trim());
       const detail = await this.getDetail(existing.watch_id, workspaceId);
       if (detail) return detail;
     }
@@ -148,6 +150,7 @@ export class WatchlistService {
 
     const snapshot = await this.insertSnapshot(watchId, analysis);
     await this.touchWatch(watchId, now);
+    await linkPipelineCardsToWatch(this.db, workspaceId, watchId, address.trim());
 
     const summary = WatchSpaceSummarySchema.parse({
       watchId,
@@ -217,6 +220,17 @@ export class WatchlistService {
       };
     } else {
       diff = diffWatchSnapshots(prior[0]!, snapshot, space.radius_km);
+    }
+
+    if (diff.kind === 'changes') {
+      await applyWatchTradeAreaAlerts(
+        this.db,
+        workspaceId,
+        watchId,
+        space.address,
+        diff,
+        space.radius_km
+      );
     }
 
     return WatchSpaceDetailSchema.parse({

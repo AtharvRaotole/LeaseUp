@@ -129,10 +129,14 @@ CREATE TABLE IF NOT EXISTS pipeline_cards (
   next_step_reminder_at INTEGER,
   outreach_draft_json TEXT,
   outreach_context_json TEXT,
+  evidence_snapshot_json TEXT,
+  watch_id TEXT,
+  trade_area_alert TEXT,
   created_at INTEGER NOT NULL DEFAULT (unixepoch())
 );
 
 CREATE INDEX IF NOT EXISTS idx_pipeline_cards_workspace ON pipeline_cards(workspace_id);
 CREATE INDEX IF NOT EXISTS idx_pipeline_cards_workspace_status ON pipeline_cards(workspace_id, prospect_status);
+CREATE INDEX IF NOT EXISTS idx_pipeline_cards_watch ON pipeline_cards(workspace_id, watch_id);
 
 -- Store locations are served from static geotiles (apps/worker/public/tiles), not D1.

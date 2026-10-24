@@ -1,7 +1,11 @@
 import { Hono } from 'hono';
 import type { Env } from '../index';
 import type { Context } from 'hono';
-import { PipelineAddCardSchema, PipelineUpdateCardSchema } from '@leaseup/contracts';
+import {
+  PipelineAddCardSchema,
+  PipelineAttachPitchSchema,
+  PipelineUpdateCardSchema,
+} from '@leaseup/contracts';
 import { PipelineService } from '../services/pipeline';
 import { workspaceIdFromRequest } from '../lib/workspace-cookie';
 
@@ -15,6 +19,14 @@ pipelineRouter.get('/pipeline', async (c) => {
   const ws = await workspaceId(c);
   const service = new PipelineService(c.env);
   const board = await service.getOrCreate(ws);
+  return c.json(board);
+});
+
+pipelineRouter.post('/pipeline/attach-pitch', async (c) => {
+  const body = PipelineAttachPitchSchema.parse(await c.req.json());
+  const ws = await workspaceId(c);
+  const service = new PipelineService(c.env);
+  const board = await service.attachPitchLink(ws, body);
   return c.json(board);
 });
 

@@ -20,6 +20,7 @@ import {
   migrateLegacyCardsToTable,
   updatePipelineCardRow,
 } from '../lib/pipeline-cards-db';
+import { findWatchIdForProperty } from '../lib/pipeline-watch-alerts';
 import { normalizePipelineCard } from '../lib/pipeline-legacy';
 import {
   PIPELINE_STATUS_ORDER,
@@ -160,6 +161,35 @@ export class PipelineService {
   async addCard(workspaceId: string, input: PipelineAddCard): Promise<PipelineBoard> {
     const board = await this.getOrCreate(workspaceId);
     const now = new Date().toISOString();
+    const watchId =
+      input.radiusKm !== undefined
+        ? await findWatchIdForProperty(
+            this.db,
+            workspaceId,
+            input.propertyAddress,
+            input.radiusKm
+          )
+        : undefined;
+
+    const existingIdx = board.cards.findIndex(
+      (c) =>
+        c.brandEntityId === input.brandEntityId &&
+        c.propertyAddress.trim().toLowerCase() === input.propertyAddress.trim().toLowerCase()
+    );
+
+    if (existingIdx >= 0) {
+      const card = board.cards[existingIdx]!;
+      card.evidenceSnapshot = input.evidenceSnapshot ?? card.evidenceSnapshot;
+      card.reportPath = input.reportPath ?? card.reportPath;
+      card.pitchId = input.pitchId ?? card.pitchId;
+      card.pitchLink = input.pitchLink ?? card.pitchLink;
+      card.watchId = watchId ?? card.watchId;
+      card.lastTouchedAt = now;
+      board.cards[existingIdx] = PipelineCardSchema.parse(card);
+      await updatePipelineCardRow(this.db, workspaceId, board.cards[existingIdx]);
+      return this.saveMeta(board);
+    }
+
     const card: PipelineCard = {
       id: randomUUID(),
       prospectStatus: 'to_pitch',
@@ -176,10 +206,44 @@ export class PipelineService {
       notes: '',
       lastTouchedAt: now,
       outreachContext: input.outreachContext,
+      evidenceSnapshot: input.evidenceSnapshot,
+      watchId,
     };
     PipelineCardSchema.parse(card);
     await insertPipelineCard(this.db, workspaceId, card);
     board.cards.push(card);
+    return this.saveMeta(board);
+  }
+
+  async attachPitchLink(
+    workspaceId: string,
+    input: {
+      pitchId: string;
+      pitchLink: string;
+      propertyAddress: string;
+      brandEntityIds: string[];
+    }
+  ): Promise<PipelineBoard> {
+    const board = await this.getOrCreate(workspaceId);
+    const normalized = input.propertyAddress.trim().toLowerCase();
+    const idSet = new Set(input.brandEntityIds);
+    const now = new Date().toISOString();
+    let touched = false;
+
+    for (let i = 0; i < board.cards.length; i++) {
+      const card = board.cards[i]!;
+      if (card.propertyAddress.trim().toLowerCase() !== normalized) continue;
+      if (!idSet.has(card.brandEntityId)) continue;
+      card.pitchId = input.pitchId;
+      card.pitchLink = input.pitchLink;
+      card.lastTouchedAt = now;
+      const parsed = PipelineCardSchema.parse(card);
+      board.cards[i] = parsed;
+      await updatePipelineCardRow(this.db, workspaceId, parsed);
+      touched = true;
+    }
+
+    if (!touched) return board;
     return this.saveMeta(board);
   }
 
@@ -213,6 +277,11 @@ export class PipelineService {
     }
     if (patch.outreachDraft !== undefined) {
       card.outreachDraft = patch.outreachDraft ?? undefined;
+    }
+    if (patch.pitchId !== undefined) card.pitchId = patch.pitchId;
+    if (patch.pitchLink !== undefined) card.pitchLink = patch.pitchLink;
+    if (patch.tradeAreaAlert !== undefined) {
+      card.tradeAreaAlert = patch.tradeAreaAlert ?? undefined;
     }
     card.lastTouchedAt = now;
     board.cards[idx] = PipelineCardSchema.parse(card);

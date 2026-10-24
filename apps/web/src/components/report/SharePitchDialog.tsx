@@ -8,6 +8,7 @@ import { VacancyCostCalculator } from './VacancyCostCalculator';
 import { apiUrl } from '../../lib/api';
 import type { ReportMapCaptureRef } from './ReportMap';
 import { copyPitchLinkToClipboard } from '../../lib/share-pitch-copy';
+import { attachPipelinePitchLink } from '../../lib/pipeline-api';
 
 export function SharePitchDialog({
   open,
@@ -80,6 +81,14 @@ export function SharePitchDialog({
       const snapshot = (await res.json()) as { id: string };
       const url = `${window.location.origin}/pitch/${snapshot.id}`;
       setPitchUrl(url);
+      void attachPipelinePitchLink({
+        pitchId: snapshot.id,
+        pitchLink: url,
+        propertyAddress: results.location.address,
+        brandEntityIds: results.prospects.map((p) => p.brand.entityId),
+      }).catch(() => {
+        /* pipeline link is optional if board is empty */
+      });
       const copy = await copyPitchLinkToClipboard(url);
       if (copy.copied) {
         setCopyHint('Link copied to your clipboard.');

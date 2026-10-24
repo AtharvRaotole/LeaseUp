@@ -52,11 +52,14 @@ const db = {
             next_step_reminder_at: this.binds[16],
             outreach_draft_json: this.binds[17],
             outreach_context_json: this.binds[18],
+            evidence_snapshot_json: this.binds[19],
+            watch_id: this.binds[20],
+            trade_area_alert: this.binds[21],
           });
         }
         if (sql.includes('UPDATE pipeline_cards SET')) {
-          const cardId = String(this.binds[7]);
-          const ws = String(this.binds[8]);
+          const cardId = String(this.binds[13]);
+          const ws = String(this.binds[14]);
           const row = cardsForWorkspace(ws).get(cardId);
           if (row) {
             row.prospect_status = String(this.binds[0]);
@@ -66,6 +69,12 @@ const db = {
             row.last_touched_at = Number(this.binds[4]);
             row.next_step_reminder_at = this.binds[5];
             row.outreach_draft_json = this.binds[6];
+            row.outreach_context_json = this.binds[7];
+            row.pitch_id = this.binds[8];
+            row.pitch_link = this.binds[9];
+            row.report_path = this.binds[10];
+            row.trade_area_alert = this.binds[11];
+            row.evidence_snapshot_json = this.binds[12];
           }
         }
         return {};

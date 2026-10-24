@@ -1,5 +1,6 @@
 import type {
   PipelineCard,
+  PipelineEvidenceSnapshot,
   PipelineOutreachContext,
   PipelineOutreachDraft,
   PipelineProspectStatus,
@@ -26,6 +27,9 @@ type CardRow = {
   next_step_reminder_at: number | null;
   outreach_draft_json: string | null;
   outreach_context_json: string | null;
+  evidence_snapshot_json: string | null;
+  watch_id: string | null;
+  trade_area_alert: string | null;
 };
 
 function isoFromUnix(sec: number): string {
@@ -62,21 +66,26 @@ function rowToCard(row: CardRow): PipelineCard {
     outreachContext: row.outreach_context_json
       ? (JSON.parse(row.outreach_context_json) as PipelineOutreachContext)
       : undefined,
+    evidenceSnapshot: row.evidence_snapshot_json
+      ? (JSON.parse(row.evidence_snapshot_json) as PipelineEvidenceSnapshot)
+      : undefined,
+    watchId: row.watch_id ?? undefined,
+    tradeAreaAlert: row.trade_area_alert ?? undefined,
   });
 }
+
+const CARD_SELECT = `SELECT card_id, workspace_id, prospect_status, sort_order, brand_entity_id, brand_name,
+              property_address, property_neighborhood, affinity_rank, verification,
+              pitch_id, pitch_link, report_path, notes, recipient_email, last_touched_at,
+              next_step_reminder_at, outreach_draft_json, outreach_context_json,
+              evidence_snapshot_json, watch_id, trade_area_alert`;
 
 export async function listPipelineCards(
   db: D1Database,
   workspaceId: string
 ): Promise<PipelineCard[]> {
   const result = await db
-    .prepare(
-      `SELECT card_id, workspace_id, prospect_status, sort_order, brand_entity_id, brand_name,
-              property_address, property_neighborhood, affinity_rank, verification,
-              pitch_id, pitch_link, report_path, notes, recipient_email, last_touched_at,
-              next_step_reminder_at, outreach_draft_json, outreach_context_json
-       FROM pipeline_cards WHERE workspace_id = ? ORDER BY prospect_status, sort_order`
-    )
+    .prepare(`${CARD_SELECT} FROM pipeline_cards WHERE workspace_id = ? ORDER BY prospect_status, sort_order`)
     .bind(workspaceId)
     .all<CardRow>();
   return (result.results ?? []).map(rowToCard);
@@ -93,8 +102,9 @@ export async function insertPipelineCard(
         card_id, workspace_id, prospect_status, sort_order, brand_entity_id, brand_name,
         property_address, property_neighborhood, affinity_rank, verification,
         pitch_id, pitch_link, report_path, notes, recipient_email, last_touched_at,
-        next_step_reminder_at, outreach_draft_json, outreach_context_json
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        next_step_reminder_at, outreach_draft_json, outreach_context_json,
+        evidence_snapshot_json, watch_id, trade_area_alert
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .bind(
       card.id,
@@ -115,7 +125,10 @@ export async function insertPipelineCard(
       unixFromIso(card.lastTouchedAt),
       card.followUpAt ? unixFromIso(card.followUpAt) : null,
       card.outreachDraft ? JSON.stringify(card.outreachDraft) : null,
-      card.outreachContext ? JSON.stringify(card.outreachContext) : null
+      card.outreachContext ? JSON.stringify(card.outreachContext) : null,
+      card.evidenceSnapshot ? JSON.stringify(card.evidenceSnapshot) : null,
+      card.watchId ?? null,
+      card.tradeAreaAlert ?? null
     )
     .run();
 }
@@ -130,7 +143,9 @@ export async function updatePipelineCardRow(
       `UPDATE pipeline_cards SET
         prospect_status = ?, sort_order = ?, notes = ?, recipient_email = ?,
         last_touched_at = ?, next_step_reminder_at = ?,
-        outreach_draft_json = ?, outreach_context_json = ?
+        outreach_draft_json = ?, outreach_context_json = ?,
+        pitch_id = ?, pitch_link = ?, report_path = ?,
+        trade_area_alert = ?, evidence_snapshot_json = ?, watch_id = ?
        WHERE card_id = ? AND workspace_id = ?`
     )
     .bind(
@@ -142,6 +157,12 @@ export async function updatePipelineCardRow(
       card.followUpAt ? unixFromIso(card.followUpAt) : null,
       card.outreachDraft ? JSON.stringify(card.outreachDraft) : null,
       card.outreachContext ? JSON.stringify(card.outreachContext) : null,
+      card.pitchId ?? null,
+      card.pitchLink ?? null,
+      card.reportPath ?? null,
+      card.tradeAreaAlert ?? null,
+      card.evidenceSnapshot ? JSON.stringify(card.evidenceSnapshot) : null,
+      card.watchId ?? null,
       card.id,
       workspaceId
     )

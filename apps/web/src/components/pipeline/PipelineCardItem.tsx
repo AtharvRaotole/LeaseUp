@@ -75,6 +75,14 @@ export function PipelineCardItem({
           <span className="rounded-pill border border-border px-2 py-0.5 text-ink-2">
             {prospectStatusLabel(card.prospectStatus)}
           </span>
+          {card.tradeAreaAlert && (
+            <span
+              className="rounded-pill bg-warn/15 px-2 py-0.5 font-medium text-warn"
+              data-testid="pipeline-trade-area-alert"
+            >
+              Trade area update
+            </span>
+          )}
           {overdue && (
             <span
               className="rounded-pill bg-danger/10 px-2 py-0.5 font-medium text-danger"
