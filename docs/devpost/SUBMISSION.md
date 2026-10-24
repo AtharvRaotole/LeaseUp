@@ -29,6 +29,8 @@ Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-
 
 **Recording hold (owner):** Record **nothing** until Atharv explicitly says capture may start. That means no walkthrough video, no Devpost screenshots, no hero loop, and **no local test recordings** either. A message about "after the deploy" is **not** that signal. Script and doc edits are fine. When authorized, use the local stack (`pnpm record:demo:local`, `pnpm capture:devpost:local`) and set `LEASEUP_RECORDING_AUTHORIZED=1`. Production still requires `MEDIA_CAPTURE_ALLOW_PROD=1` separately.
 
+**Walkthrough video:** **pending re-record** at the current integration head (compare ranking, deploy33 copy). Do not upload a new `walkthrough.mp4` to Devpost until Atharv lifts the recording hold above; `docs/media/recording.json` still points at an older capture.
+
 ---
 
 ## Devpost judging criteria (plain English)
@@ -62,6 +64,7 @@ Three stops judges care about: **finished report**, **shareable pitch**, **pipel
 | Stop | Clicks from `/` | What you should see |
 | --- | --- | --- |
 | **1. Report** | **1** (click demo chip **Wicker Park, Chicago**) | Compact summary (`report-summary`): stat tiles, plain funnel (`report-prospect-funnel`, 3 km absence radius on dense Wicker), **Top brands to pitch** (`brands-to-pitch`). Dismiss or take the optional **Quick tour** (`report-first-run-tour-hint`; non-blocking). Open **How we know**, **Compare ranking** (`qloo-ranking-toggle`): **Local taste** vs **Chain size** (83% vs 76% mean top-10 presence; `e2e/qloo-ranking-toggle.spec.ts`). **Why this brand** (`why-this-brand`); full list in **Why these brands** (`brands-to-pitch-full-list`). |
+| **1b. Run full prospecting** | **1** (paste a demo chip address, click **Run full prospecting**, `landing-run-prospecting`) **or +1** from a finished report (**Run full prospecting** in the sticky header, `run-full-prospecting`) | Agent timeline (`prospecting-page`, `prospecting-timeline`) through **Assemble pitch pack**, then **Open pitch pack** (`e2e/features.spec.ts`, `e2e/broker-journey.spec.ts`; allow up to ~4 minutes on demo fixtures). |
 | **2. Pitch pack** | **+1** open stable demo **`/pitch/demo-boulder-ulta`** (`pitch-page`, `e2e/demo-pitch-smoke.spec.ts`) **or +2** from report (**Share pitch pack** → **Create public link**) | Read-only pitch with leasing brief and vacancy block |
 | **3. Pipeline + watchlist loop** | **+2** on report (**Add to pipeline** on a top brand and/or **Watch this space**, then **Pipeline** or **Watchlist** in the header) | Kanban with saved evidence (`pipeline-evidence`); open a card and follow **Site report** / **Watched space** back to the same pitch (`e2e/pipeline-loop.spec.ts`) |
 
@@ -74,6 +77,16 @@ Three stops judges care about: **finished report**, **shareable pitch**, **pipel
 | Sevierville, TN | `125 Collier Dr, Sevierville, TN 37862` |
 
 Manual entry path (two clicks to report): paste a chip address, click **Analyze**. Legacy aliases such as `1574 N Milwaukee Ave, Chicago, IL 60622` still route to the Wicker fixture.
+
+### Live Qloo judge path (hackathon API, server-side key only)
+
+Production Pages at https://leaseup-59m.pages.dev stays **`APP_MODE=demo`** (top bar: **Demo data**; three chips use recorded Qloo JSON). To hit the **live** Qloo `/v2/insights` batch path the worker must run with **`APP_MODE=live`** and **`QLOO_API_KEY`** set as a **Cloudflare Worker secret** (never in the browser, never in Pages env). Confirm with `GET /api/health`: `mode` is `live` and `providers.qloo` is `configured`.
+
+**Example address (40-address eval panel, not a landing chip):** `240 Bedford Ave, Brooklyn, NY 11249` (`packages/fixtures/src/eval/live-qloo-lift/site-table.json`, Williamsburg row). Paste on the landing field, click **Analyze** (not a demo chip). Expect **Live data** in the top bar, slower analyze (often **30 to 90 seconds** on cold cache) while the worker batches brand insights, then the same report surfaces as demo mode.
+
+**Quota guard:** Live analyzes increment a **UTC daily cap** in D1 `rate_limits` (`apps/worker/src/lib/live-qloo-judge-quota.ts`) so judges cannot exhaust the shared key. Configure **`LIVE_QLOO_JUDGE_DAILY_CAP`** on the worker (default **48** cold live analyzes per UTC day). Over limit returns **429** with code **`LIVE_QLOO_JUDGE_QUOTA_EXCEEDED`**; use a demo chip on production demo or retry the next UTC day.
+
+**Local reviewer stack:** Copy `apps/worker/.dev.vars.example` to `.dev.vars`, set `APP_MODE=live` and `QLOO_API_KEY`, run `pnpm dev`, open the Vite URL, and use the Bedford address above (`README.md`).
 
 **Still references (no new capture):** compact report summary before/after in `docs/screenshots/report-summary-design/`; broker comprehension stills in `docs/screenshots/broker-comprehension/after/`; older gallery: `docs/screenshots/report-light-1440.png`, `docs/screenshots/features/pipeline-light-1440.png`.
 
@@ -282,7 +295,7 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 ## What's next
 
-- Re-record the judge walkthrough locally only after Atharv explicitly authorizes recording.
+- **Walkthrough video pending re-record** at integration head after Atharv authorizes recording (hold above).
 - Expand live-address coverage and refresh logistic coefficients on a schedule.
 - More verified brand real-estate URLs in `brand-real-estate.json` for reach lines.
 
@@ -330,4 +343,4 @@ Use **existing** screenshots only (no new capture, no video) until recording is 
 
 - [ ] Gallery images chosen from `docs/devpost/GALLERY_ASSETS.md` with plain captions (no inflated claims)
 - [ ] Link to live demo (deploy32 / integration branch); integration head in `docs/devpost/integration-head.txt` only
-- [ ] Do **not** add `walkthrough.mp4` until owner authorizes recording
+- [ ] **Walkthrough video pending re-record**; do **not** add `walkthrough.mp4` until owner authorizes recording

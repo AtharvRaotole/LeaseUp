@@ -18,6 +18,8 @@
   "mode": "demo",
   "osmSnapshotLabel": "OpenStreetMap snapshot, Oct 24, 2026",
   "osmSnapshotRecordedAt": "2026-10-24T04:32:32.498Z",
+  "storeDistanceDataAsOf": "2026-10-24T04:32:32.498Z",
+  "storeDistancesSnapshotOnly": false,
   "prospects": [
     {
       "prospect": {

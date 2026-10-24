@@ -27,3 +27,9 @@ export const notFoundLine =
   'This link does not match a page in LeaseUp. Head back to search for tenants.';
 export const shareLinkExpiredLine =
   'This shared link is missing or expired. Ask the sender for a fresh link, or run a new site search from home.';
+
+export const watchlistLoadErrorLine =
+  'We could not load your watchlist. Try again in a moment.';
+
+export const watchlistSpaceLoadErrorLine =
+  'We could not load this saved space. Try again or pick another address from the list.';

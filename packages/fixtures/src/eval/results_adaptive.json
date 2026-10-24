@@ -297,7 +297,7 @@
     {
       "id": "annarbor_mi",
       "eval_id": "annarbor_mi",
-      "label": "Potbelly's Sandwich Shop",
+      "label": "300 S State St, Ann Arbor",
       "address": "300 S State St, Ann Arbor, MI 48104",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -312,7 +312,7 @@
     {
       "id": "athens_ga",
       "eval_id": "athens_ga",
-      "label": "200",
+      "label": "200 E Clayton St, Athens",
       "address": "200 E Clayton St, Athens, GA 30601",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -327,7 +327,7 @@
     {
       "id": "austin_soco",
       "eval_id": "austin_soco",
-      "label": "1400",
+      "label": "1400 S Congress Ave, Austin",
       "address": "1400 S Congress Ave, Austin, TX 78704",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -342,7 +342,7 @@
     {
       "id": "bemidji_mn",
       "eval_id": "bemidji_mn",
-      "label": "Tutto Bene",
+      "label": "300 Beltrami Ave NW, Bemidji",
       "address": "300 Beltrami Ave NW, Bemidji, MN 56601",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -357,7 +357,7 @@
     {
       "id": "bethesda_md",
       "eval_id": "bethesda_md",
-      "label": "True Food Kitchen",
+      "label": "7100 Wisconsin Ave, Bethesda",
       "address": "7100 Wisconsin Ave, Bethesda, MD 20814",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -372,7 +372,7 @@
     {
       "id": "boise_id",
       "eval_id": "boise_id",
-      "label": "Eighth & Main",
+      "label": "800 W Main St, Boise",
       "address": "800 W Main St, Boise, ID 83702",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -387,7 +387,7 @@
     {
       "id": "boulder",
       "eval_id": "boulder_co",
-      "label": "Rocky Mountain Chocolate Factory",
+      "label": "1300 Pearl St, Boulder",
       "address": "1300 Pearl St, Boulder, CO 80302",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -402,7 +402,7 @@
     {
       "id": "branson_mo",
       "eval_id": "branson_mo",
-      "label": "Branson Landing",
+      "label": "100 Branson Landing Blvd, Branson",
       "address": "100 Branson Landing Blvd, Branson, MO 65616",
       "stratum": "tourist",
       "adaptive_radius_km": 5,
@@ -417,7 +417,7 @@
     {
       "id": "cary_nc",
       "eval_id": "cary_nc",
-      "label": "300",
+      "label": "300 S Academy St, Cary",
       "address": "300 S Academy St, Cary, NC 27511",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -432,7 +432,7 @@
     {
       "id": "chapelhill_nc",
       "eval_id": "chapelhill_nc",
-      "label": "150",
+      "label": "150 E Franklin St, Chapel Hill",
       "address": "150 E Franklin St, Chapel Hill, NC 27514",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -447,7 +447,7 @@
     {
       "id": "charlotte_se",
       "eval_id": "charlotte_se",
-      "label": "ClipperCole",
+      "label": "2000 South Blvd, Charlotte",
       "address": "2000 South Blvd, Charlotte, NC 28203",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -462,7 +462,7 @@
     {
       "id": "chi_lakeview",
       "eval_id": "chi_lakeview",
-      "label": "3400",
+      "label": "3400 N Southport Ave, Chicago",
       "address": "3400 N Southport Ave, Chicago, IL 60657",
       "stratum": "dense_urban",
       "adaptive_radius_km": 1.5,
@@ -477,7 +477,7 @@
     {
       "id": "wicker-park",
       "eval_id": "chi_wicker",
-      "label": "1560",
+      "label": "1560 N Milwaukee Ave, Chicago",
       "address": "1560 N Milwaukee Ave, Chicago, IL 60622",
       "stratum": "dense_urban",
       "adaptive_radius_km": 1.5,
@@ -492,7 +492,7 @@
     {
       "id": "dc_14th",
       "eval_id": "dc_14th",
-      "label": "United States Post Office",
+      "label": "1400 14th St NW, Washington",
       "address": "1400 14th St NW, Washington, DC 20005",
       "stratum": "dense_urban",
       "adaptive_radius_km": 1.5,
@@ -507,7 +507,7 @@
     {
       "id": "edina_mn",
       "eval_id": "edina_mn",
-      "label": "3911",
+      "label": "3911 W 50th St, Edina",
       "address": "3911 W 50th St, Edina, MN 55424",
       "stratum": "urban",
       "adaptive_radius_km": 15,
@@ -522,7 +522,7 @@
     {
       "id": "elko_nv",
       "eval_id": "elko_nv",
-      "label": "400",
+      "label": "400 Idaho St, Elko",
       "address": "400 Idaho St, Elko, NV 89801",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -537,7 +537,7 @@
     {
       "id": "frisco_tx",
       "eval_id": "frisco_tx",
-      "label": "Dallas Parkway",
+      "label": "3300 Dallas Pkwy, Frisco",
       "address": "3300 Dallas Pkwy, Frisco, TX 75034",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -552,7 +552,7 @@
     {
       "id": "gilbert_az",
       "eval_id": "gilbert_az",
-      "label": "NuView Pools & Landscape",
+      "label": "2218 E Williams Field Rd, Gilbert",
       "address": "2218 E Williams Field Rd, Gilbert, AZ 85295",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -567,7 +567,7 @@
     {
       "id": "greenwich_ct",
       "eval_id": "greenwich_ct",
-      "label": "100",
+      "label": "100 Greenwich Ave, Greenwich",
       "address": "100 Greenwich Ave, Greenwich, CT 06830",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -582,7 +582,7 @@
     {
       "id": "hutchinson_ks",
       "eval_id": "hutchinson_ks",
-      "label": "100",
+      "label": "100 N Main St, Hutchinson",
       "address": "100 N Main St, Hutchinson, KS 67501",
       "stratum": "urban",
       "adaptive_radius_km": 15,
@@ -597,7 +597,7 @@
     {
       "id": "ithaca_ny",
       "eval_id": "ithaca_ny",
-      "label": "200",
+      "label": "200 E State St, Ithaca",
       "address": "200 E State St, Ithaca, NY 14850",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -612,7 +612,7 @@
     {
       "id": "keywest_fl",
       "eval_id": "keywest_fl",
-      "label": "Margaritaville",
+      "label": "500 Duval St, Key West",
       "address": "500 Duval St, Key West, FL 33040",
       "stratum": "tourist",
       "adaptive_radius_km": 15,
@@ -627,7 +627,7 @@
     {
       "id": "laramie_wy",
       "eval_id": "laramie_wy",
-      "label": "WEST Inc.",
+      "label": "200 S 2nd St, Laramie",
       "address": "200 S 2nd St, Laramie, WY 82070",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -642,7 +642,7 @@
     {
       "id": "lasvegas_strip",
       "eval_id": "lasvegas_strip",
-      "label": "The Escape Game Las Vegas",
+      "label": "3500 Las Vegas Blvd S, Las Vegas",
       "address": "3500 Las Vegas Blvd S, Las Vegas, NV 89109",
       "stratum": "tourist",
       "adaptive_radius_km": 1.5,
@@ -657,7 +657,7 @@
     {
       "id": "madison_wi",
       "eval_id": "madison_wi",
-      "label": "500",
+      "label": "500 State St, Madison",
       "address": "500 State St, Madison, WI 53703",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -672,7 +672,7 @@
     {
       "id": "myrtle_sc",
       "eval_id": "myrtle_sc",
-      "label": "1301",
+      "label": "1301 N Ocean Blvd, Myrtle Beach",
       "address": "1301 N Ocean Blvd, Myrtle Beach, SC 29577",
       "stratum": "tourist",
       "adaptive_radius_km": 5,
@@ -687,7 +687,7 @@
     {
       "id": "naperville_il",
       "eval_id": "naperville_il",
-      "label": "100",
+      "label": "100 W Jefferson Ave, Naperville",
       "address": "100 W Jefferson Ave, Naperville, IL 60540",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -702,7 +702,7 @@
     {
       "id": "nashville_12s",
       "eval_id": "nashville_12s",
-      "label": "2400",
+      "label": "2400 12th Ave S, Nashville",
       "address": "2400 12th Ave S, Nashville, TN 37204",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -717,7 +717,7 @@
     {
       "id": "nyc_uws",
       "eval_id": "nyc_uws",
-      "label": "Canine Styles",
+      "label": "2200 Broadway, New York",
       "address": "2200 Broadway, New York, NY 10024",
       "stratum": "dense_urban",
       "adaptive_radius_km": 1.5,
@@ -732,7 +732,7 @@
     {
       "id": "nyc_williamsburg",
       "eval_id": "nyc_williamsburg",
-      "label": "Duane Reade",
+      "label": "250 Bedford Ave, Brooklyn",
       "address": "250 Bedford Ave, Brooklyn, NY 11249",
       "stratum": "dense_urban",
       "adaptive_radius_km": 1.5,
@@ -747,7 +747,7 @@
     {
       "id": "ottumwa_ia",
       "eval_id": "ottumwa_ia",
-      "label": "105",
+      "label": "105 E Main St, Ottumwa",
       "address": "105 E Main St, Ottumwa, IA 52501",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -762,7 +762,7 @@
     {
       "id": "palo_alto_ca",
       "eval_id": "palo_alto_ca",
-      "label": "Union Bank",
+      "label": "400 University Ave, Palo Alto",
       "address": "400 University Ave, Palo Alto, CA 94301",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -777,7 +777,7 @@
     {
       "id": "parkcity_ut",
       "eval_id": "parkcity_ut",
-      "label": "500",
+      "label": "500 Main St, Park City",
       "address": "500 Main St, Park City, UT 84060",
       "stratum": "tourist",
       "adaptive_radius_km": 15,
@@ -792,7 +792,7 @@
     {
       "id": "phl_walnut",
       "eval_id": "phl_walnut",
-      "label": "1600",
+      "label": "1600 Walnut St, Philadelphia",
       "address": "1600 Walnut St, Philadelphia, PA 19103",
       "stratum": "dense_urban",
       "adaptive_radius_km": 1.5,
@@ -807,7 +807,7 @@
     {
       "id": "sea_caphill",
       "eval_id": "sea_caphill",
-      "label": "Mattress Firm",
+      "label": "400 Broadway E, Seattle",
       "address": "400 Broadway E, Seattle, WA 98102",
       "stratum": "dense_urban",
       "adaptive_radius_km": 5,
@@ -822,7 +822,7 @@
     {
       "id": "sedalia_mo",
       "eval_id": "sedalia_mo",
-      "label": "200",
+      "label": "200 S Ohio Ave, Sedalia",
       "address": "200 S Ohio Ave, Sedalia, MO 65301",
       "stratum": "urban",
       "adaptive_radius_km": 5,
@@ -837,7 +837,7 @@
     {
       "id": "sevierville",
       "eval_id": "sevierville_tn",
-      "label": "Chop House",
+      "label": "1645 Parkway, Sevierville",
       "address": "1645 Parkway, Sevierville, TN 37862",
       "stratum": "tourist",
       "adaptive_radius_km": 5,
@@ -852,7 +852,7 @@
     {
       "id": "sf_fillmore",
       "eval_id": "sf_fillmore",
-      "label": "Wells Fargo",
+      "label": "2100 Fillmore St, San Francisco",
       "address": "2100 Fillmore St, San Francisco, CA 94115",
       "stratum": "dense_urban",
       "adaptive_radius_km": 1.5,
@@ -867,7 +867,7 @@
     {
       "id": "sf_mission",
       "eval_id": "sf_mission",
-      "label": "16th Street Mission",
+      "label": "2000 Mission St, San Francisco",
       "address": "2000 Mission St, San Francisco, CA 94110",
       "stratum": "dense_urban",
       "adaptive_radius_km": 1.5,
@@ -882,7 +882,7 @@
     {
       "id": "wellesley_ma",
       "eval_id": "wellesley_ma",
-      "label": "Central Street",
+      "label": "60 Central St, Wellesley",
       "address": "60 Central St, Wellesley, MA 02482",
       "stratum": "urban",
       "adaptive_radius_km": 15,

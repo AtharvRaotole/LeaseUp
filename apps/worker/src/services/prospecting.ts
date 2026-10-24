@@ -23,6 +23,16 @@ import {
 import { rankGeocodeCandidates } from '../lib/geocode-rank';
 import { displayBrandName } from '../lib/brand-display';
 import { getResponseCache } from '../lib/worker-cache';
+import { createQlooRunAccounting, QlooClient } from '../providers/qloo';
+import { runProspectingAgentPlanner } from '../lib/prospecting-agent-planner';
+import {
+  PROSPECTING_AGENT_MAX_QLOO_CALLS,
+  PROSPECTING_AGENT_MAX_STEPS,
+} from '../lib/analysis-step-budget';
+import {
+  consumeLiveQlooJudgeQuota,
+  liveQlooJudgeDailyCap,
+} from '../lib/live-qloo-judge-quota';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -31,6 +41,7 @@ const STALE_RUNNING_MS = 120_000;
 
 const STEP_DEFS: Array<{ id: ProspectingStepId; label: string }> = [
   { id: 'geocode', label: 'Geocode and confirm' },
+  { id: 'agent_plan', label: 'Plan site checks (agent)' },
   { id: 'taste', label: 'Read neighborhood taste' },
   { id: 'scan_stores', label: 'Scan existing stores' },
   { id: 'verify_osm', label: 'Verify against OpenStreetMap' },
@@ -225,6 +236,55 @@ export class ProspectingService {
     };
 
     try {
+      const planStarted = Date.now();
+      await this.patchStep(job, 'agent_plan', { status: 'running', summary: 'Choosing extra site checks…' });
+      await this.save(job);
+      await onStep?.(job);
+
+      if (this.mode === 'live') {
+        const nowSec = Math.floor(Date.now() / 1000);
+        await consumeLiveQlooJudgeQuota(
+          this.db,
+          liveQlooJudgeDailyCap(this.env),
+          nowSec
+        );
+      }
+
+      const qlooAccounting = createQlooRunAccounting();
+      const qloo = new QlooClient(this.env, qlooAccounting);
+      const qlooLogicalBeforePlanner = qloo.getLogicalCallCount();
+      const plan = await runProspectingAgentPlanner({
+        env: this.env,
+        location: job.confirmedLocation!,
+        radiusKm: request.radius,
+        runId,
+        qloo,
+      });
+      const qlooLogicalAfterPlanner = qloo.getLogicalCallCount();
+
+      await this.patchStep(job, 'agent_plan', {
+        status: 'complete',
+        durationMs: Date.now() - planStarted,
+        summary: plan.summary,
+        detail: {
+          mode: plan.mode,
+          fallbackReason: plan.fallbackReason,
+          budget: {
+            maxSteps: PROSPECTING_AGENT_MAX_STEPS,
+            maxQlooCalls: PROSPECTING_AGENT_MAX_QLOO_CALLS,
+          },
+          agentSteps: plan.steps,
+          dagHooksApplied: plan.mode === 'agent',
+          qlooLogicalCalls: {
+            beforePlanner: qlooLogicalBeforePlanner,
+            afterPlanner: qlooLogicalAfterPlanner,
+            plannerDelta: qlooLogicalAfterPlanner - qlooLogicalBeforePlanner,
+          },
+        },
+      });
+      await this.save(job);
+      await onStep?.(job);
+
       const result = await analysisService.analyzeWithSteps(
         request,
         runId,
@@ -241,8 +301,26 @@ export class ProspectingService {
           });
           await this.save(job!);
           await onStep?.(job!);
+        },
+        {
+          ...(plan.mode === 'agent' ? { agentDagHooks: plan.dagHooks } : {}),
+          qlooClient: qloo,
+          judgeQuotaAlreadyConsumed: this.mode === 'live',
         }
       );
+
+      const qlooLogicalAfterFullRun = qloo.getLogicalCallCount();
+      const agentStep = job.steps.find((s) => s.id === 'agent_plan');
+      if (agentStep?.detail) {
+        agentStep.detail = {
+          ...agentStep.detail,
+          qlooLogicalCalls: {
+            ...(agentStep.detail.qlooLogicalCalls as Record<string, number>),
+            afterFullRun: qlooLogicalAfterFullRun,
+          },
+        };
+        await this.save(job);
+      }
 
       job.analysisRunId = runId;
 
