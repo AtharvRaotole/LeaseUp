@@ -250,7 +250,6 @@ describe('False-positive audit (missing-brand prospects)', () => {
   });
 
   it('demo embedded catalog: prospects respect ground truth at adaptive absence radius (demo chips)', async () => {
-    const catalog = loadStoreGroundTruthCatalog(repoRoot);
     for (const site of FALSE_POSITIVE_AUDIT_SITES.filter((s) => s.kind === 'demo_chip')) {
       const kv = createCountingKvNamespace();
       const service = new AnalysisService(offlineDemoAnalyzeEnv(assets, kv.CACHE));
