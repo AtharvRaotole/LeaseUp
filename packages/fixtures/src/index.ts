@@ -45,10 +45,10 @@ export {
   placeFromEvalId,
 } from './eval/adaptive-eval-site-label.js';
 export {
-  WICKER_LANDING_PITCH_TOP,
-  wickerLandingPitchTopNames,
-  wickerLandingPitchTopEntityIds,
-} from './wicker-landing-pitch-order.js';
+  WICKER_LANDING_PROSPECT_TOP,
+  wickerLandingProspectTopNames,
+  wickerLandingProspectTopEntityIds,
+} from './wicker-landing-prospect-order.js';
 export {
   COHORT_EVAL_AGG,
   COHORT_MID_TIER_P5,
@@ -248,3 +248,13 @@ export {
   DEMO_PITCH_BOULDER_ULTA,
   DEMO_PITCH_BOULDER_ULTA_ID,
 } from './demo-pitch-boulder-ulta.js';
+export {
+  brandRealEstateForEntity,
+  brandRealEstateDataset,
+  brandRealEstateContactLine,
+  type BrandRealEstateEntry,
+} from './brand-real-estate.js';
+export {
+  nearestStoreDistanceUnconfirmedLine,
+  nearestChainStoreDistanceUnconfirmedLine,
+} from './nearest-store-display-copy.js';

@@ -7,7 +7,7 @@ export function BrandReachLink({ reach }: { reach: BrandReachContact }) {
         How to reach them:{' '}
         <a
           href={reach.url}
-          className="font-medium text-brand underline-offset-2 hover:underline"
+          className="font-medium text-brand underline underline-offset-2"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -23,7 +23,7 @@ export function BrandReachLink({ reach }: { reach: BrandReachContact }) {
         How to reach them:{' '}
         <a
           href={reach.searchUrl}
-          className="font-medium text-brand underline-offset-2 hover:underline"
+          className="font-medium text-brand underline underline-offset-2"
           target="_blank"
           rel="noopener noreferrer"
         >

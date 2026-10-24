@@ -1,18 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { DEMO_CHIP_ADDRESSES, wickerLandingPitchTopEntityIds } from '@leaseup/fixtures';
+import { DEMO_CHIP_ADDRESSES, wickerLandingProspectTopEntityIds } from '@leaseup/fixtures';
 import { AnalysisService } from '../services/analysis';
+import {
+  createDemoPublicAssetsFetcher,
+  offlineDemoAnalyzeEnv,
+} from './helpers/analysis-test-env';
 import { installWorkersCacheApiStub } from './helpers/kv-counting';
-
-const db = {
-  prepare: () => {
-    const stmt = {
-      bind: () => stmt,
-      run: async () => ({}),
-      first: async () => null,
-    };
-    return stmt;
-  },
-} as unknown as D1Database;
 
 const kv = {
   get: async () => null,
@@ -20,13 +13,11 @@ const kv = {
 } as unknown as KVNamespace;
 
 describe('landing wicker hero parity', () => {
-  it('demo analyze pitch order matches committed wicker landing pitch order', async () => {
+  it('demo analyze prospect order matches committed wicker landing fixture', async () => {
     installWorkersCacheApiStub();
-    const service = new AnalysisService({
-      DB: db,
-      CACHE: kv,
-      APP_MODE: 'demo',
-    } as import('../index').Env);
+    const service = new AnalysisService(
+      offlineDemoAnalyzeEnv(createDemoPublicAssetsFetcher(), kv)
+    );
 
     const results = await service.analyze(
       { address: DEMO_CHIP_ADDRESSES.wicker, radius: 10, storefrontSqFt: 2500 },
@@ -35,6 +26,6 @@ describe('landing wicker hero parity', () => {
     );
 
     const liveIds = results.prospects.slice(0, 10).map((p) => p.brand.entityId);
-    expect(liveIds).toEqual(wickerLandingPitchTopEntityIds(10));
+    expect(liveIds).toEqual(wickerLandingProspectTopEntityIds(10));
   });
 });

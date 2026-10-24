@@ -6,7 +6,7 @@
  *   EXPORT_LANDING_WICKER_PREVIEW=1 pnpm --filter @leaseup/worker exec vitest run src/__tests__/landing-wicker-preview-export.test.ts
  *
  * Writes apps/web/src/data/landing-wicker-preview.ts and
- * packages/fixtures/src/wicker-landing-pitch-order.json
+ * packages/fixtures/src/wicker-landing-prospect-order.json
  */
 import { execSync } from 'node:child_process';
 

@@ -1,7 +1,7 @@
 import type { TradeAreaTasteContext } from '@leaseup/contracts';
 import type { QlooLocation } from '../providers/qloo';
 import type { QlooClient } from '../providers/qloo';
-import { matchDemoFixtureId, PITCH_AUDIENCE_CANDIDATE_MAX } from '@leaseup/fixtures/worker';
+import { BRAND_AUDIENCE_MAX_SHOWN, matchDemoFixtureId } from '@leaseup/fixtures/worker';
 import { loadLiveAudiences } from './live-audiences';
 import { isQlooUnavailableError } from './qloo-chain-fallback';
 
@@ -23,7 +23,7 @@ export async function loadTradeAreaTasteForProspect(
   const demoId = matchDemoFixtureId(location.address);
   if (demoId) {
     const recorded = store.brandExplainabilityForDemo(demoId, brandEntityId, {
-      maxAudiences: PITCH_AUDIENCE_CANDIDATE_MAX,
+      maxAudiences: BRAND_AUDIENCE_MAX_SHOWN,
     });
     if (!recorded || recorded.audiences.length === 0) return undefined;
     return { tags: [], audiences: recorded.audiences };

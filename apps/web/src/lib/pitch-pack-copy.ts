@@ -2,7 +2,10 @@ import type { AnalysisResponse, PitchPackSnapshot, ProspectPack } from '@leaseup
 import { isDemoPitchId } from '@leaseup/contracts';
 import { displayBrandName } from './brand-display';
 import { formatUserFacingDate } from './format-date';
-import { pitchBrandTasteFitSentence } from '@leaseup/fixtures';
+import {
+  nearestStoreDistanceUnconfirmedLine,
+  pitchBrandTasteFitSentence,
+} from '@leaseup/fixtures';
 import { absenceRadiusKm, pitchPackAbsenceRadiusKm } from './absence-radius';
 
 export function pitchBriefKindLabel(snapshot: PitchPackSnapshot): string {
@@ -41,10 +44,13 @@ export function pitchTradeAreaFacts(snapshot: PitchPackSnapshot): string[] {
 }
 
 export function pitchNearestStoreBriefLine(prospect: ProspectPack): string | null {
+  const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
+  if (prospect.nearestExistingStoreUnconfirmed) {
+    return nearestStoreDistanceUnconfirmedLine(name);
+  }
   const km = prospect.nearestExistingStoreKm;
   if (km === undefined) return null;
-  const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
-  return `Nearest ${name} is ${km.toFixed(1)} km away (All The Places store data).`;
+  return `Nearest ${name} is ${km.toFixed(1)} km away (tracked chain store data).`;
 }
 
 export function isPitchRankSummaryLine(line: string): boolean {
@@ -111,6 +117,9 @@ export function pitchProspectFact(
 ): string {
   const absenceKm = results ? absenceRadiusKm(results, searchRadiusKm) : searchRadiusKm;
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
+  if (prospect.nearestExistingStoreUnconfirmed) {
+    return nearestStoreDistanceUnconfirmedLine(name);
+  }
   const km = prospect.nearestExistingStoreKm;
   if (km !== undefined) {
     if (km > absenceKm) {
@@ -118,7 +127,7 @@ export function pitchProspectFact(
     }
     return `Nearest ${name} is ${km.toFixed(1)} km from this pin.`;
   }
-  return `No ${name} store within ${absenceKm} km of this pin in our store data.`;
+  return `No ${name} tracked chain store within ${absenceKm} km of this pin in our store data.`;
 }
 
 export function pitchProspectFactFromSnapshot(
@@ -127,6 +136,9 @@ export function pitchProspectFactFromSnapshot(
 ): string {
   const absenceKm = pitchPackAbsenceRadiusKm(snapshot);
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
+  if (prospect.nearestExistingStoreUnconfirmed) {
+    return nearestStoreDistanceUnconfirmedLine(name);
+  }
   const km = prospect.nearestExistingStoreKm;
   if (km !== undefined) {
     if (km > absenceKm) {
@@ -134,7 +146,7 @@ export function pitchProspectFactFromSnapshot(
     }
     return `Nearest ${name} is ${km.toFixed(1)} km from this pin.`;
   }
-  return `No ${name} store within ${absenceKm} km of this pin in our store data.`;
+  return `No ${name} tracked chain store within ${absenceKm} km of this pin in our store data.`;
 }
 
 /** Matches worker pitch why lines and other nearest-store distance copy. */

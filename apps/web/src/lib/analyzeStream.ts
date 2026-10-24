@@ -3,10 +3,10 @@ import { apiUrl } from './api';
 import {
   apiErrorFromNetworkFailure,
   apiErrorFromUnknown,
+  humanizeApiError,
   parseApiErrorResponse,
   type ApiErrorInfo,
 } from './api-error';
-import { SERVER_BUSY_MESSAGE } from './calm-error-copy';
 import { fetchWithOneRetry, isNetworkFetchError } from './fetch-with-retry';
 
 export async function analyzeWithStream(
@@ -90,15 +90,17 @@ export async function analyzeWithStream(
           );
         }
         if (event === 'error') {
-          const msg = (payload as { message: string }).message;
-          handlers.onError({
-            message: msg.includes('rate limit') || /too many/i.test(msg)
-              ? 'Lots of searches right now. Try again in a minute.'
-              : SERVER_BUSY_MESSAGE,
-            code: /too many/i.test(msg) ? 'RATE_LIMIT_EXCEEDED' : 'SERVER_BUSY',
-            retryAfterSec: /too many/i.test(msg) ? 60 : undefined,
-            autoRetried,
+          const errPayload = payload as {
+            message: string;
+            code?: string;
+            retryAfterSec?: number;
+          };
+          const info = humanizeApiError(502, {
+            error: errPayload.message,
+            code: errPayload.code,
+            retryAfter: errPayload.retryAfterSec,
           });
+          handlers.onError({ ...info, autoRetried });
         }
       }
     }

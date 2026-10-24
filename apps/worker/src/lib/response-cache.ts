@@ -14,9 +14,10 @@ export class ResponseCache {
     try {
       const res = await caches.default.match(cacheUrl(key));
       if (!res) return null;
-      if (type === 'arrayBuffer') return await res.arrayBuffer();
-      if (type === 'json') return await res.json();
-      return await res.text();
+      const body = res.clone();
+      if (type === 'arrayBuffer') return await body.arrayBuffer();
+      if (type === 'json') return await body.json();
+      return await body.text();
     } catch (err) {
       console.warn(
         JSON.stringify({

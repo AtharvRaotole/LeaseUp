@@ -5,7 +5,8 @@ import {
   seviervilleFixture,
   wickerparkFixture,
 } from '@leaseup/fixtures/worker';
-import { GeocodeAmbiguousError } from '../lib/errors';
+import { rejectAddressInput } from '../lib/address-input-validation';
+import { GeocodeAmbiguousError, GeocodeInputError } from '../lib/errors';
 import { candidateToLocation, resolveGeocodeFromCandidates } from '../lib/geocode-resolve';
 import { NominatimClient } from './nominatim';
 import type { ResponseCache } from '../lib/response-cache';
@@ -43,7 +44,15 @@ export class GeocodeService {
     this.mode = mode;
   }
 
+  private assertAddressAllowed(address: string): void {
+    const rejection = rejectAddressInput(address);
+    if (rejection) {
+      throw new GeocodeInputError(rejection.code, rejection.message);
+    }
+  }
+
   async preview(address: string): Promise<GeocodePreviewResponse> {
+    this.assertAddressAllowed(address);
     if (this.mode === 'demo') {
       const location = demoFixtureLocation(address);
       return {
@@ -76,6 +85,7 @@ export class GeocodeService {
 
   async resolveForAnalysis(address: string, confirmed?: Location): Promise<Location> {
     if (confirmed) return confirmed;
+    this.assertAddressAllowed(address);
     if (this.mode === 'demo') {
       return demoFixtureLocation(address);
     }

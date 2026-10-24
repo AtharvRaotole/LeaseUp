@@ -10,7 +10,7 @@ export function BrandReachLine({ reach }: { reach: BrandReachContact }) {
         How to reach them:{' '}
         <a
           href={reach.url}
-          className="text-accent underline-offset-2 hover:underline"
+          className="text-accent underline underline-offset-2"
           target="_blank"
           rel="noopener noreferrer"
         >

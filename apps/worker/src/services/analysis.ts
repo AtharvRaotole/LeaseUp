@@ -46,6 +46,7 @@ import {
   NEARBY_TENANT_LIST_CAP,
   nearbyCategoryTenantReasonLine,
 } from '../lib/nearby-category-tenant-line';
+import { stripFalseAbsenceReasons } from '../lib/nearest-store-reconcile';
 import {
   absenceWarningChains,
   coverageOsmBrandNotInSnapshotNote,
@@ -90,10 +91,7 @@ import {
   osmSnapshotRecordedAt,
 } from './osm-snapshot-catalog';
 import { loadTradeAreaTasteForProspect } from '../lib/trade-area-taste';
-import {
-  applyDistinctPitchAudiencesToProspects,
-  enrichProspectWhyBrandTaste,
-} from '../lib/why-brand-taste-enrichment';
+import { enrichProspectWhyBrandTaste } from '../lib/why-brand-taste-enrichment';
 import { getResponseCache } from '../lib/worker-cache';
 import type { ResponseCache } from '../lib/response-cache';
 import { tryAcquireOverpassRefreshLock } from '../lib/overpass-refresh-lock';
@@ -373,14 +371,23 @@ export class AnalysisService {
               presence
             ),
         buildMapStores(location, insights, request.radius, this.catalog, 10, presence),
-        enrichProspectsWithNearest(prospects, location, this.catalog, presence),
+        enrichProspectsWithNearest(
+          prospects,
+          location,
+          this.catalog,
+          presence,
+          this.osmSnapshot ?? undefined
+        ),
       ]);
 
-      let enrichedProspects = nearestEnriched;
+      const absenceRadiusKm = prospectFunnel?.absenceRadiusKm ?? request.radius;
+      let enrichedProspects = nearestEnriched.map((pack) =>
+        stripFalseAbsenceReasons(pack, absenceRadiusKm)
+      );
       if (!tasteUnavailable) {
         const tasteEnriched = await withSoftTimeout(
           Promise.all(
-            nearestEnriched.map(async (pack) => {
+            enrichedProspects.map(async (pack) => {
               const insight = insights.find((i) => i.entity_id === pack.brand.entityId);
               const signals = insight ? extractQlooSignals(insight) : [];
               const tradeAreaTaste = await loadTradeAreaTasteForProspect(
@@ -402,11 +409,8 @@ export class AnalysisService {
           'trade-area taste enrichment'
         );
         if (tasteEnriched) {
-          const distinctTaste = applyDistinctPitchAudiencesToProspects(tasteEnriched);
           enrichedProspects = await Promise.all(
-            distinctTaste.map((pack) =>
-              enrichProspectWhyBrandTaste(pack, this.openai, this.mode)
-            )
+            tasteEnriched.map((pack) => enrichProspectWhyBrandTaste(pack, this.openai, this.mode))
           );
         }
       }
@@ -721,6 +725,35 @@ export class AnalysisService {
     return { packs: prospectPacks, formatFilteredCount, funnel };
   }
 
+  private demoOverpassConflictStatus(
+    entityId: string,
+    location: Location,
+    radiusKm: number,
+    qlooName?: string,
+    sources: string[] = ['All The Places (CC0)']
+  ): {
+    status: 'conflict - likely present';
+    sources: string[];
+    metroCoverageNote?: string;
+  } | null {
+    if (this.mode !== 'demo') return null;
+    const fixtureId = matchDemoFixtureId(location.address);
+    if (!fixtureId) return null;
+    const demoKm = nearestDemoOverpassMatchKm(
+      fixtureId,
+      entityId,
+      location.latitude,
+      location.longitude,
+      radiusKm,
+      qlooName
+    );
+    if (demoKm === undefined) return null;
+    return {
+      status: 'conflict - likely present',
+      sources: [...sources, 'OpenStreetMap (wikidata cross-check)'],
+    };
+  }
+
   private async verifyFromOsmSnapshot(
     entityId: string,
     location: Location,
@@ -737,6 +770,14 @@ export class AnalysisService {
     const sources: string[] = ['All The Places (CC0)'];
     const snapshotLabel = osmSnapshotDisplayLabel();
     const status = osmSnapshotBrandStatus(entityId);
+    const demoOverpassConflict = this.demoOverpassConflictStatus(
+      entityId,
+      location,
+      radiusKm,
+      qlooName,
+      sources
+    );
+    if (demoOverpassConflict) return demoOverpassConflict;
     if (status === 'failed' || status === 'missing' || !this.osmSnapshot) {
       return {
         status: 'unverified (1 source)',
@@ -771,25 +812,14 @@ export class AnalysisService {
       };
     }
 
-    if (this.mode === 'demo') {
-      const fixtureId = matchDemoFixtureId(location.address);
-      if (fixtureId) {
-        const demoKm = nearestDemoOverpassMatchKm(
-          fixtureId,
-          entityId,
-          location.latitude,
-          location.longitude,
-          radiusKm,
-          qlooName
-        );
-        if (demoKm !== undefined) {
-          return {
-            status: 'conflict - likely present',
-            sources: [...sources, 'OpenStreetMap (wikidata cross-check)'],
-          };
-        }
-      }
-    }
+    const demoConflictAfterSnapshot = this.demoOverpassConflictStatus(
+      entityId,
+      location,
+      radiusKm,
+      qlooName,
+      sources
+    );
+    if (demoConflictAfterSnapshot) return demoConflictAfterSnapshot;
 
     const nationalCount = await this.catalog.getNationalStoreCount(entityId);
     const atpNearby = await this.catalog.findStoresNearby(
@@ -1155,9 +1185,9 @@ export class AnalysisService {
       prospects: [],
       dataQuality: 'insufficient',
       warnings: [
-        'Insufficient Qloo data for this location',
-        'This area may be too small, too new, or outside Qloo\'s coverage',
-        'Try a nearby larger city or well-known neighborhood',
+        'No taste-ranked brands for this pin yet',
+        'Very rural or remote sites often sit outside our store and taste coverage',
+        'Try a nearby town with retail, widen the radius, or pick a demo example on the home page',
       ],
       runId,
       timestamp: this.mode === 'demo' ? DEMO_DATA_RECORDED_AT : new Date().toISOString(),
