@@ -6,6 +6,10 @@ export const portfolioEmptyLine =
   'Add storefront addresses to compare local shopper match and hit rates across your book.';
 export const portfolioEmptyAction = 'Add your first address';
 
+export const watchlistEmptyLine =
+  'No saved spaces yet. Open a site report and choose Watch this space when you want to track changes.';
+export const watchlistEmptyAction = 'Run a site analysis';
+
 export function reportShortListLine(count: number, radiusKm: number): string {
   if (count === 0) {
     return `No brands passed store checks within ${radiusKm} km. Try a wider radius or another category.`;
