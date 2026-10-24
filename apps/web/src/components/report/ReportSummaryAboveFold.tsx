@@ -11,6 +11,8 @@ import { brandMonogram, brandTint } from '../../lib/brand-monogram';
 import { cn } from '../../lib/cn';
 import type { QlooRankingMode } from './QlooRankingToggle';
 import { ReportProspectFunnel } from './ReportProspectFunnel';
+import { ReportVacancyAboveFold } from './ReportVacancyAboveFold';
+import type { VacancyCalculatorDraft } from '../../lib/vacancy-cost';
 
 export function ReportSummaryAboveFold({
   results,
@@ -27,6 +29,8 @@ export function ReportSummaryAboveFold({
   showHeadlineStats = true,
   showBrandPitchDetails = true,
   showPrimaryActions = true,
+  vacancyInput,
+  onVacancyChange,
 }: {
   results: AnalysisResponse;
   request: AnalysisRequest;
@@ -43,6 +47,8 @@ export function ReportSummaryAboveFold({
   /** When false, brand rows render without one-line reasons or per-row pipeline CTAs (mobile LCP/TBT). */
   showBrandPitchDetails?: boolean;
   showPrimaryActions?: boolean;
+  vacancyInput: VacancyCalculatorDraft;
+  onVacancyChange: (next: VacancyCalculatorDraft) => void;
 }) {
   const topFive = pitchProspects.slice(0, 5);
   const pipelineProspect = selected ?? topFive[0] ?? null;
@@ -146,6 +152,8 @@ export function ReportSummaryAboveFold({
           </p>
         </Card>
       )}
+
+      <ReportVacancyAboveFold draft={vacancyInput} onChange={onVacancyChange} />
 
       {showPrimaryActions ? (
         <div

@@ -106,7 +106,12 @@ export function ReportPage() {
       return;
     }
     if (expandDeepSections) {
+      setDeferPostPaint(true);
       setDeferDeepSections(true);
+      if (isMdUp) {
+        setDeferMobileBrandDetails(true);
+      }
+      return;
     }
     let cancelled = false;
     const win = window as Window & {
@@ -338,6 +343,8 @@ export function ReportPage() {
               showHeadlineStats={deferPostPaint}
               showBrandPitchDetails={isMdUp || deferMobileBrandDetails}
               showPrimaryActions={isMdUp || deferPostPaint}
+              vacancyInput={vacancyInput}
+              onVacancyChange={handleVacancyChange}
             />
           {deferPostPaint && (
             <Suspense fallback={null}>

@@ -3,6 +3,8 @@ import {
   computeVacancyCost,
   draftToPitchVacancy,
   isVacancyInputComplete,
+  isVacancyMonthlyRateComplete,
+  monthlyCarryingFromDraft,
   EMPTY_VACANCY_DRAFT,
 } from '../lib/vacancy-cost';
 
@@ -39,6 +41,15 @@ describe('computeVacancyCost', () => {
       expectedMonthsToLeaseWithoutShortlist: 5,
     });
     expect(noDelta.extraMonthsWithoutShortlist).toBeUndefined();
+  });
+});
+
+describe('monthly carrying estimate', () => {
+  it('needs only sq ft and rent for above-fold headline', () => {
+    expect(monthlyCarryingFromDraft(EMPTY_VACANCY_DRAFT)).toBeNull();
+    const draft = { ...EMPTY_VACANCY_DRAFT, squareFeet: 2400, rentPerSqFtYear: 48 };
+    expect(isVacancyMonthlyRateComplete(draft)).toBe(true);
+    expect(monthlyCarryingFromDraft(draft)).toBe(9600);
   });
 });
 

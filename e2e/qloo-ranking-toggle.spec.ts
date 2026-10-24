@@ -2,12 +2,12 @@ import { test, expect } from '@playwright/test';
 import { openReportSection, waitForReportReady } from './report-helpers';
 
 const WICKER =
-  '/r/wicker?address=1574%20N%20Milwaukee%20Ave%2C%20Chicago%2C%20IL%2060622&radius=10';
+  '/r/wicker?address=1574%20N%20Milwaukee%20Ave%2C%20Chicago%2C%20IL%2060622&radius=10&screenshot=1';
 
 test('Qloo vs chain-size toggle reorders proof ranking and nearby-match stat', async ({ page }) => {
   test.setTimeout(120_000);
 
-  await page.goto(WICKER);
+  await page.goto(WICKER, { waitUntil: 'networkidle' });
   await waitForReportReady(page);
 
   const nearbyMatch = page.getByTestId('report-summary').getByText(/\d+ of 10/).first();

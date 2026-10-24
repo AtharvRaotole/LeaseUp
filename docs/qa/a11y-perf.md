@@ -30,7 +30,7 @@ Measured on **GitHub Actions `ubuntu-latest`** (Axe a11y e2e job, production pre
 
 **Source:** **GitHub Actions LHCI median of 3 mobile runs** on `ubuntu-latest` (production preview port 4173 + demo worker, `lighthouserc.cjs`). Raw arrays and medians are printed as `LHCI_MEDIANS:` in the job log after each run.
 
-**Pinned from green CI** ([workflow run 40074283024](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40074283024); `LHCI_MEDIANS` on branch `cursor/report-lh-remeasure-ca63` after merge **ecf55c0**):
+**Pinned from green CI** ([workflow run 40074283024](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40074283024); `LHCI_MEDIANS` on branch `cursor/report-lh-remeasure-ca63` after merge **d5c4040**; scores unchanged until a new green LHCI run):
 
 | URL | Raw performance (3 runs) | Median (perf / a11y / best practices) |
 |-----|--------------------------|----------------------------------------|

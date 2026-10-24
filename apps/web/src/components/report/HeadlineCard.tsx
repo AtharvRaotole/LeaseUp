@@ -56,10 +56,9 @@ export function HeadlineCard({
         {searchVsAbsenceRadiusPlainLine(searchKm, absenceKm)}
       </p>
       {showStats && (
-        <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 md:mt-7 md:gap-4">
+        <div className="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3 md:mt-7 md:gap-4">
           <StatTile
             label="Ranking check"
-            mobileLabel="Rank check"
             value={rankingCheckLabel}
             subtitle={hitTieSubtitle ?? rankingBacktestStatSubtitle()}
             mobileSubtitle="Top 10 vs stores nearby"
@@ -67,7 +66,6 @@ export function HeadlineCard({
           />
           <StatTile
             label="Brands scored"
-            mobileLabel="Scored"
             value={String(analyzed)}
             subtitle="Chains ranked for this address"
             mobileSubtitle="Ranked for this pin"
@@ -75,7 +73,6 @@ export function HeadlineCard({
           />
           <StatTile
             label="Pin confidence"
-            mobileLabel="Pin"
             value={dataConfidenceLabel(results.dataQuality)}
             subtitle={dataConfidenceSubtitle(results.dataQuality, results.location)}
             mobileSubtitle="Address and trade area data"
@@ -89,14 +86,12 @@ export function HeadlineCard({
 
 function StatTile({
   label,
-  mobileLabel,
   value,
   subtitle,
   mobileSubtitle,
   tooltip,
 }: {
   label: string;
-  mobileLabel: string;
   value: string;
   subtitle: string;
   mobileSubtitle: string;
@@ -104,9 +99,8 @@ function StatTile({
 }) {
   return (
     <div className="flex min-w-0 flex-col rounded-control border border-border bg-surface-2 px-2.5 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-3.5">
-      <p className="flex min-h-[1.25rem] items-center gap-0.5 text-[10px] font-medium uppercase leading-tight tracking-wide text-ink-3 sm:text-meta md:text-label">
-        <span className="truncate md:hidden">{mobileLabel}</span>
-        <span className="hidden truncate md:inline">{label}</span>
+      <p className="flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[10px] font-medium uppercase leading-snug tracking-wide text-ink-3 sm:text-meta md:text-label">
+        <span className="min-w-0 flex-1 whitespace-normal">{label}</span>
         <InfoTooltip label={tooltip} />
       </p>
       <p className="mt-0.5 truncate text-body font-semibold tabular-nums text-ink sm:mt-1 sm:text-body-lg md:text-h3">
