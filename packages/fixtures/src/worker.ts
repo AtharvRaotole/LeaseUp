@@ -119,6 +119,11 @@ export {
   type QlooAudienceRow,
 } from './qloo-brand-taste-overlap.js';
 export {
+  sanitizeWhyBrandTasteSummary,
+  pitchBrandTasteFitSentence,
+  WHY_BRAND_TASTE_BANNED_PHRASES,
+} from './why-brand-taste-summary.js';
+export {
   distinctPitchAudienceLists,
   PITCH_AUDIENCE_CANDIDATE_MAX,
 } from './distinct-pitch-audiences.js';
