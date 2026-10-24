@@ -58,9 +58,7 @@ export function AddToPipelineButton({
         {busy
           ? 'Saving…'
           : done
-            ? compact
-              ? 'Added'
-              : 'Added to pipeline'
+            ? 'Added to pipeline'
             : compact
               ? 'Add'
               : 'Add to pipeline'}
