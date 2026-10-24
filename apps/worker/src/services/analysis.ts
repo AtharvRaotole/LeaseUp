@@ -370,7 +370,8 @@ export class AnalysisService {
                 location,
                 pack.brand.entityId,
                 request.radius,
-                runId
+                runId,
+                this.assets
               );
               return {
                 ...pack,

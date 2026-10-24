@@ -6,7 +6,6 @@ import {
   seviervilleFixture,
   parseQlooAudienceRows,
   computeBrandLocalAudienceOverlap,
-  audiencePanelBaseline,
   TRADE_AREA_SHOPPER_TAG_SUBTYPES,
   type TradeAreaTasteRow,
 } from '@leaseup/fixtures/worker';
@@ -273,6 +272,8 @@ export class QlooClient {
     location: QlooLocation;
     brandEntityId: string;
     runId?: string;
+    /** Recorded live brand panel baseline (loadLiveAudiences). */
+    panelBaseline: Record<string, number>;
   }): Promise<{ tags: TradeAreaTasteRow[]; audiences: TradeAreaTasteRow[] } | null> {
     if (this.mode === 'demo') {
       return null;
@@ -287,7 +288,7 @@ export class QlooClient {
       const audiences = computeBrandLocalAudienceOverlap(
         parseQlooAudienceRows(brandJson),
         parseQlooAudienceRows(localJson),
-        { panelBaseline: audiencePanelBaseline() }
+        { panelBaseline: params.panelBaseline }
       );
       if (audiences.length === 0) return null;
       return { tags: [], audiences };
