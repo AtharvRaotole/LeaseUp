@@ -8,7 +8,7 @@ describe('landingEvalProofParagraphs', () => {
     expect(text).toContain('54%');
     expect(text).not.toContain('64%');
     expect(text).toContain('76%');
-    expect(text).toContain('82%');
+    expect(text).toContain('83%');
     expect(text).toContain('Precision at 10');
     expect(text).toContain('already had a store in the trade area');
     expect(text).not.toMatch(/not nearby/i);

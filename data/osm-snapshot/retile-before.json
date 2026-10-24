@@ -1,12 +1,72 @@
 {
-  "totalPoints": 19576,
-  "brandCount": 25,
+  "totalPoints": 142343,
+  "brandCount": 82,
   "top20": [
+    {
+      "id": "8417D6F9-C8C7-40AD-BE49-0987A4663228",
+      "name": "McDonald's",
+      "qid": "Q38076",
+      "count": 13878
+    },
+    {
+      "id": "B13C02E3-BA3C-4B39-85B4-ACF12FEBC892",
+      "name": "Starbucks",
+      "qid": "Q37158",
+      "count": 11352
+    },
+    {
+      "id": "77A843BF-AA9A-4588-A44B-E8AA684A910C",
+      "name": "Dollar General",
+      "qid": "Q145168",
+      "count": 11292
+    },
     {
       "id": "0B47F4FC-A267-4E07-85F4-F64511835C03",
       "name": "7-Eleven",
       "qid": "Q259340",
       "count": 8496
+    },
+    {
+      "id": "74D13B62-2C51-4D99-804F-3D338F7B0406",
+      "name": "Burger King",
+      "qid": "Q177054",
+      "count": 6285
+    },
+    {
+      "id": "8B4368C8-ABC7-4AC4-9B8C-D47495E6EE7D",
+      "name": "Dollar Tree",
+      "qid": "Q5289230",
+      "count": 5544
+    },
+    {
+      "id": "3ADFE43E-4C2A-421A-995B-EE896F73E6FC",
+      "name": "Family Dollar",
+      "qid": "Q5433101",
+      "count": 4307
+    },
+    {
+      "id": "16876F8E-06C7-429D-9F42-713027D90F2C",
+      "name": "Pizza Hut",
+      "qid": "Q191615",
+      "count": 3744
+    },
+    {
+      "id": "2158D476-D2CC-4FAA-BCA2-CD2B373E0CFF",
+      "name": "Dairy Queen",
+      "qid": "Q1141226",
+      "count": 3460
+    },
+    {
+      "id": "36588026-85C4-48C0-B555-85891F815D99",
+      "name": "KFC",
+      "qid": "Q524757",
+      "count": 3330
+    },
+    {
+      "id": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+      "name": "Chipotle Mexican Grill",
+      "qid": "Q465751",
+      "count": 3189
     },
     {
       "id": "CE2A2DDD-3F1D-49A4-8DDF-5665365587CE",
@@ -15,112 +75,52 @@
       "count": 3016
     },
     {
-      "id": "81100467-8F5D-4796-B222-A84983379402",
-      "name": "Academy Sports + Outdoors",
-      "qid": "Q4672981",
-      "count": 2778
-    },
-    {
-      "id": "8227A628-2D77-4EB3-8F1A-2C4238997412",
-      "name": "Applebee's",
-      "qid": "Q621532",
-      "count": 1444
-    },
-    {
-      "id": "8AB653CD-7984-4263-B4B0-F3C4C02519DC",
-      "name": "Anytime Fitness",
-      "qid": "Q4778364",
-      "count": 1162
-    },
-    {
-      "id": "BEF4E5D5-245C-49D5-8D20-7C8A1B3C80F5",
-      "name": "Best Buy",
-      "qid": "Q533415",
-      "count": 962
-    },
-    {
-      "id": "0F6BCED5-19B1-4DFD-B55C-42708EE32A64",
-      "name": "Caribou Coffee",
-      "qid": "Q5039494",
-      "count": 309
-    },
-    {
       "id": "0E011D42-90B2-496E-B285-4EB2181EB0A9",
       "name": "AT&T",
-      "qid": "Q35476",
-      "count": 241
+      "qid": "Q298594",
+      "count": 2925
     },
     {
-      "id": "495FBED3-17C4-484F-A208-73C0018E0463",
-      "name": "Blaze Pizza",
-      "qid": "Q23016666",
-      "count": 193
+      "id": "28C14EC0-E167-413A-9DAB-3C2A54F00072",
+      "name": "Sonic Drive-In",
+      "qid": "Q7561808",
+      "count": 2873
     },
     {
-      "id": "205AF33F-118E-4C49-9721-6BDBAF981DA0",
-      "name": "REI",
-      "qid": "Q3414933",
-      "count": 191
+      "id": "B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7",
+      "name": "Chick-fil-A",
+      "qid": "Q491516",
+      "count": 2807
     },
     {
-      "id": "9B3F03CE-3145-4ABC-A42E-C20945BF60B8",
-      "name": "Bonefish Grill",
-      "qid": "Q4941599",
-      "count": 144
-    },
-    {
-      "id": "FCEA7CA1-1D40-4680-B337-E74594D9BCF1",
-      "name": "Adidas",
-      "qid": "Q3895",
-      "count": 132
-    },
-    {
-      "id": "0BAC80D0-90D5-46A8-A11F-7CC58DE74963",
-      "name": "Barnes & Noble",
-      "qid": "Q795454",
-      "count": 127
-    },
-    {
-      "id": "5318FE99-3ADB-4E62-BFA5-DED63001E3DD",
-      "name": "Brooks Brothers",
-      "qid": "Q929722",
-      "count": 117
-    },
-    {
-      "id": "E00BD9FA-BE47-432E-86D1-4E0046FE73DD",
-      "name": "Aveda",
-      "qid": "Q4827965",
-      "count": 114
-    },
-    {
-      "id": "2D00EBC5-9F4C-46E2-86D5-99E55B8D30D9",
-      "name": "Bass Pro Shops",
-      "qid": "Q4867953",
-      "count": 97
-    },
-    {
-      "id": "86AA27A6-074F-4137-8358-FA16DBD7F34E",
-      "name": "Au Bon Pain",
-      "qid": "Q4818942",
-      "count": 45
+      "id": "BBF22D8D-166F-44A8-8694-3F6FF4F745AB",
+      "name": "Popeyes",
+      "qid": "Q1330910",
+      "count": 2450
     },
     {
       "id": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
       "name": "Aldi",
-      "qid": "Q125054",
-      "count": 8
+      "qid": "Q41171672",
+      "count": 2448
     },
     {
-      "id": "5D03112C-CD2A-41C3-9ED0-D72EED8BB373",
-      "name": "Abercrombie & Fitch",
-      "qid": "Q319618",
-      "count": 0
+      "id": "A7EB849F-73C2-4367-AB4D-467EED8A65D4",
+      "name": "Little Caesars",
+      "qid": "Q1393809",
+      "count": 2442
     },
     {
-      "id": "2D890327-8794-4C5A-898F-FFF0323325CF",
-      "name": "American Eagle Outfitters",
-      "qid": "Q463871",
-      "count": 0
+      "id": "0E00B261-EF66-4F74-B645-040E8C6755D3",
+      "name": "Kroger",
+      "qid": "Q153417",
+      "count": 2308
+    },
+    {
+      "id": "0E67ECB0-C65D-4221-A0A2-2E5CD84B9322",
+      "name": "Panda Express",
+      "qid": "Q1358690",
+      "count": 2168
     }
   ]
 }

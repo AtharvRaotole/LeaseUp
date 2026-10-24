@@ -1,19 +1,19 @@
 {
-  "recordedAt": "2026-10-23T22:03:49.163Z",
+  "recordedAt": "2026-10-24T04:34:21.039Z",
   "siteCount": 40,
   "siteCountTarget": 40,
   "rawQlooPrecisionAt10": 0.5375,
-  "chainSizePrecisionAt10": 0.755,
+  "chainSizePrecisionAt10": 0.76,
   "legacyBlendPrecisionAt10": 0.5900000000000001,
   "sameSizeAuc": {
-    "value": 0.6670294642091228,
-    "ciLow": 0.6461676947462455,
-    "ciHigh": 0.6885277968924622
+    "value": 0.664183201507667,
+    "ciLow": 0.6418974526577219,
+    "ciHigh": 0.6873149130922253
   },
-  "logisticBlendPrecisionAt10": 0.8174999999999999,
-  "logisticBlendLiftVsChainPp": 6.249999999999998,
-  "logisticBlendLiftCiLowPp": 2.7500000000000027,
-  "logisticBlendLiftCiHighPp": 9.25,
+  "logisticBlendPrecisionAt10": 0.825,
+  "logisticBlendLiftVsChainPp": 6.5,
+  "logisticBlendLiftCiLowPp": 3.2500000000000013,
+  "logisticBlendLiftCiHighPp": 9.256249999999971,
   "heatmapAddsLift": false,
   "fixed10kmSaturates": true,
   "notes": [
