@@ -65,6 +65,7 @@ export function ReportSummaryAboveFold({
         backtestOverride={backtestOverride}
         showStats={showHeadlineStats}
         headlineActions={<ReportTourHintChip />}
+        headingLevel="h1"
       />
 
       {results.prospectFunnel && (

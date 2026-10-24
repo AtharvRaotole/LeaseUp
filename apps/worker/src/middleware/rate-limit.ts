@@ -28,10 +28,19 @@ export function rateLimiter(options: RateLimitOptions): MiddlewareHandler<{ Bind
 
     const db = c.env.DB;
 
-    const existing = await db
-      .prepare('SELECT count FROM rate_limits WHERE id = ?')
-      .bind(key)
-      .first<{ count: number }>();
+    let existing: { count: number } | null;
+    try {
+      existing = await db
+        .prepare('SELECT count FROM rate_limits WHERE id = ?')
+        .bind(key)
+        .first<{ count: number }>();
+    } catch (err) {
+      // Fail open: a transient D1 error in the limiter must not turn a read into a 500.
+      console.warn(
+        JSON.stringify({ event: 'rate_limit_db_failed', message: (err as Error).message })
+      );
+      return next();
+    }
 
     if (existing && existing.count >= options.maxRequests) {
       const retrySec = Math.max(1, Math.ceil((windowStart + options.windowMs - now) / 1000));
@@ -48,13 +57,19 @@ export function rateLimiter(options: RateLimitOptions): MiddlewareHandler<{ Bind
 
     const count = existing ? existing.count + 1 : 1;
     
-    await db
-      .prepare(
-        'INSERT INTO rate_limits (id, count, window_start, created_at) VALUES (?, ?, ?, ?) ' +
-        'ON CONFLICT(id) DO UPDATE SET count = ?'
-      )
-      .bind(key, count, windowStart, Math.floor(now / 1000), count)
-      .run();
+    try {
+      await db
+        .prepare(
+          'INSERT INTO rate_limits (id, count, window_start, created_at) VALUES (?, ?, ?, ?) ' +
+          'ON CONFLICT(id) DO UPDATE SET count = ?'
+        )
+        .bind(key, count, windowStart, Math.floor(now / 1000), count)
+        .run();
+    } catch (err) {
+      console.warn(
+        JSON.stringify({ event: 'rate_limit_db_failed', message: (err as Error).message })
+      );
+    }
 
     c.header('X-RateLimit-Limit', options.maxRequests.toString());
     c.header('X-RateLimit-Remaining', Math.max(0, options.maxRequests - count).toString());

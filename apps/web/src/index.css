@@ -258,6 +258,13 @@ html.screenshot-capture [class*='backdrop-blur'] {
   object-position: center;
 }
 
+/* The stored map snapshot uses light tiles. Darken it on screen in dark mode; print keeps it light. */
+@media screen {
+  [data-theme='dark'] .pitch-map-image {
+    filter: invert(0.9) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+  }
+}
+
 @media print {
   body {
     background: white;

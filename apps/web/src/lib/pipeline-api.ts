@@ -5,6 +5,7 @@ import type {
   PipelineUpdateCard,
 } from '@leaseup/contracts';
 import { apiUrl } from './api';
+import { browserWorkspaceHeaders } from './browser-workspace-id';
 
 async function pipelineFetch(path: string, init?: RequestInit) {
   const res = await fetch(apiUrl(path), {
@@ -12,6 +13,7 @@ async function pipelineFetch(path: string, init?: RequestInit) {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
+      ...browserWorkspaceHeaders(),
       ...(init?.headers ?? {}),
     },
   });

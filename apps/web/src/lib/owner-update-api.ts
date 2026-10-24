@@ -1,8 +1,9 @@
 import type { OwnerUpdateSnapshot } from '@leaseup/contracts';
 import { apiUrl } from './api';
+import { browserWorkspaceHeaders } from './browser-workspace-id';
 
 export async function fetchOwnerUpdateProperties(): Promise<string[]> {
-  const res = await fetch(apiUrl('/api/owner-update/properties'), { credentials: 'include' });
+  const res = await fetch(apiUrl('/api/owner-update/properties'), { credentials: 'include', headers: browserWorkspaceHeaders() });
   if (!res.ok) return [];
   const data = (await res.json()) as { properties: string[] };
   return data.properties ?? [];
@@ -10,7 +11,7 @@ export async function fetchOwnerUpdateProperties(): Promise<string[]> {
 
 export async function fetchOwnerUpdatePreview(propertyAddress: string): Promise<OwnerUpdateSnapshot> {
   const q = new URLSearchParams({ propertyAddress });
-  const res = await fetch(apiUrl(`/api/owner-update/preview?${q}`), { credentials: 'include' });
+  const res = await fetch(apiUrl(`/api/owner-update/preview?${q}`), { credentials: 'include', headers: browserWorkspaceHeaders() });
   if (!res.ok) throw new Error('Preview failed');
   return (await res.json()) as OwnerUpdateSnapshot;
 }
@@ -19,7 +20,7 @@ export async function shareOwnerUpdate(propertyAddress: string): Promise<{ id: s
   const res = await fetch(apiUrl('/api/owner-update/share'), {
     method: 'POST',
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...browserWorkspaceHeaders() },
     body: JSON.stringify({ propertyAddress }),
   });
   if (!res.ok) throw new Error('Share failed');

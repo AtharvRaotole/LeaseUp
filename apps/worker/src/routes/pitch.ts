@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import type { Env } from '../index';
 import { PitchCreateSchema } from '@leaseup/contracts';
-import { PitchService } from '../services/pitch';
+import { PITCH_READ_UNAVAILABLE, PitchService } from '../services/pitch';
 import { SHARE_PERSIST_UNAVAILABLE } from '../lib/kv-persistent';
 
 export const pitchRouter = new Hono<{ Bindings: Env }>();
@@ -22,7 +22,16 @@ pitchRouter.post('/pitch', async (c) => {
 
 pitchRouter.get('/pitch/:id', async (c) => {
   const service = new PitchService(c.env);
-  const snapshot = await service.get(c.req.param('id'));
+  let snapshot;
+  try {
+    snapshot = await service.get(c.req.param('id'));
+  } catch (err) {
+    if (err instanceof Error && err.message === PITCH_READ_UNAVAILABLE) {
+      c.header('Retry-After', '2');
+      return c.json({ error: PITCH_READ_UNAVAILABLE, code: 'PITCH_TEMPORARILY_UNAVAILABLE' }, 503);
+    }
+    throw err;
+  }
   if (!snapshot) {
     return c.json({ error: 'Pitch not found', code: 'NOT_FOUND' }, 404);
   }
