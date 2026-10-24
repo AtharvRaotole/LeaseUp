@@ -8,6 +8,7 @@ import {
   loadLiveQlooLiftAggregates,
   loadResultsAdaptive,
   formatP10PercentExact,
+  formatP10PercentRounded,
   adaptiveEvalSiteDisplayLabel,
 } from '@leaseup/fixtures';
 import { TopBar } from '../components/layout/TopBar';
@@ -24,7 +25,8 @@ import {
   methodologyTasteRankTooltip,
 } from '../lib/broker-copy';
 import { brokerMetricCatalogShortLabel } from '../lib/eval-display';
-import { methodologySiteTableBridgeLine } from '../lib/landing-eval-copy';
+import { methodologyEvalCatalogIntro } from '../lib/landing-eval-copy';
+import { METHODOLOGY_SOURCE_FILES } from '../lib/methodology-source-files';
 
 const evalBundle = loadEvalRunBundle();
 const evalManifest = getEvalManifest();
@@ -146,23 +148,11 @@ export function MethodologyPage() {
             <h2 id="strict-eval-heading" className="font-serif text-title text-ink">
               Evaluation metric catalog
             </h2>
-            <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
-              Recorded {qlooLift.siteCount}-neighborhood cohort. Production blend top-10 hit rate{' '}
-              {formatP10PercentExact(qlooLift.logisticBlendPrecisionAt10)} vs{' '}
-              {formatP10PercentExact(qlooLift.chainSizePrecisionAt10)} for chain size only (about{' '}
-              {qlooLift.logisticBlendLiftVsChainPp.toFixed(1)} percentage points higher). Rank match among
-              similar-sized chains was about {(qlooLift.sameSizeAuc.value * 100).toFixed(0)}% on this study.
-              Rows below are per-site sanity checks on demo chips; the landing page proof section uses the same
-              recorded bundle.
-            </p>
-            {evalBundle.recordingNote && (
-              <p className="mt-3 text-sm text-ink-2">{evalBundle.recordingNote}</p>
-            )}
             <p
-              className="mt-4 max-w-[720px] text-sm leading-relaxed text-ink-2"
+              className="mt-2 max-w-[720px] text-sm leading-relaxed text-ink-2"
               data-testid="methodology-site-table-bridge"
             >
-              {methodologySiteTableBridgeLine()}
+              {methodologyEvalCatalogIntro()}
             </p>
             <MethodologyTableScroll className="mt-6">
               <table className="w-full min-w-[1000px] border-collapse text-left text-sm">
@@ -218,11 +208,6 @@ export function MethodologyPage() {
                 </tbody>
               </table>
             </MethodologyTableScroll>
-            <p className="mt-3 text-xs text-ink-3">
-              Demo-chip sanity checks: <code className="rounded bg-surface-2 px-1">node scripts/strict-eval.mjs</code>.
-              Preregistered 40-site bundle:{' '}
-              <code className="rounded bg-surface-2 px-1">packages/fixtures/src/eval/results_adaptive.json</code>.
-            </p>
           </section>
 
           <section className="mt-14" aria-labelledby="adaptive-eval-heading">
@@ -230,22 +215,16 @@ export function MethodologyPage() {
               Adaptive-radius evaluation ({adaptiveEval.agg.n_sites} US addresses)
             </h2>
             <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
-              Live Qloo study with{' '}
+              Preregistered {adaptiveEval.agg.n_sites} US storefront addresses with{' '}
               <span className="inline-flex items-center gap-1">
-                tighter store search circles in busy areas
+                adaptive search radius by neighborhood density
                 <InfoTooltip label={methodologyDensityRadiusTooltip()} />
               </span>
-              . On average, mean top-10 presence was{' '}
-              {formatP10PercentExact(adaptiveEval.agg.p10_blend)} with our taste blend vs{' '}
-              {formatP10PercentExact(adaptiveEval.agg.p10_chain)} when sorted by chain size only, about{' '}
-              {(adaptiveEval.agg.blend_lift_vs_chain_pp ?? qlooLift.logisticBlendLiftVsChainPp).toFixed(1)}{' '}
-              percentage points higher, and{' '}
-              {formatP10PercentExact(adaptiveEval.agg.p10_raw)} with taste order only. Rank match among
-              similar-sized chains was {(adaptiveEval.agg.same_size_auc * 100).toFixed(1)}% (likely range{' '}
-              {(adaptiveEval.agg.same_size_auc_ci[0] * 100).toFixed(0)}% to{' '}
-              {(adaptiveEval.agg.same_size_auc_ci[1] * 100).toFixed(0)}%
+              . Per-address top-10 hit rates and rank match are in the table; cohort means match the headline
+              figures in Evaluation metric catalog above. Likely range on rank match uses the same method as
+              the landing proof block
               <InfoTooltip label={methodologyLikelyRangeTooltip()} />
-              ). Taste scores can still reflect brands that already operate nearby.
+              . Taste scores can still reflect brands that already operate nearby.
             </p>
             <MethodologyTableScroll className="mt-6">
               <table className="w-full min-w-[960px] border-collapse text-left text-sm">
@@ -304,10 +283,6 @@ export function MethodologyPage() {
                 </tbody>
               </table>
             </MethodologyTableScroll>
-            <p className="mt-3 text-xs text-ink-3">
-              Source table:{' '}
-              <code className="rounded bg-surface-2 px-1">packages/fixtures/src/eval/tables.md</code>
-            </p>
           </section>
 
           <section className="mt-14" aria-labelledby="qloo-lift-heading">
@@ -315,20 +290,10 @@ export function MethodologyPage() {
               Qloo lift study (cohort aggregates)
             </h2>
             <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
-              Committed headline metrics from the preregistered study ({qlooLift.siteCount} sites): raw Qloo{' '}
-              {formatP10PercentExact(qlooLift.rawQlooPrecisionAt10)}, chain size{' '}
-              {formatP10PercentExact(qlooLift.chainSizePrecisionAt10)}, logistic blend{' '}
-              {formatP10PercentExact(qlooLift.logisticBlendPrecisionAt10)} (
-              +{qlooLift.logisticBlendLiftVsChainPp} pp vs chain). Same-size tier rank match{' '}
-              {(qlooLift.sameSizeAuc.value * 100).toFixed(1)}%. Legacy 0.75/0.25 blend{' '}
-              {formatP10PercentExact(qlooLift.legacyBlendPrecisionAt10)} mean top-10 presence. Heatmap features
+              Additional committed aggregates from the preregistered study: same-size tier rank match{' '}
+              {(qlooLift.sameSizeAuc.value * 100).toFixed(1)}%; legacy 0.75/0.25 taste/chain blend mean
+              top-10 presence {formatP10PercentRounded(qlooLift.legacyBlendPrecisionAt10)}. Heatmap features
               did not add ranking lift; fixed 10 km presence saturates in dense trade areas.
-            </p>
-            <p className="mt-3 text-xs text-ink-3">
-              Write-up:{' '}
-              <code className="rounded bg-surface-2 px-1">
-                packages/fixtures/src/eval/live-qloo-lift/QLOO_LIFT_EVAL.md
-              </code>
             </p>
           </section>
 
@@ -359,6 +324,23 @@ export function MethodologyPage() {
               </li>
             </ul>
           </section>
+
+          <details
+            className="mt-14 rounded-card border border-border bg-surface-2 px-5 py-4"
+            data-testid="methodology-source-files"
+          >
+            <summary className="cursor-pointer text-sm font-semibold text-ink">Source files</summary>
+            <ul className="mt-4 space-y-3 text-sm text-ink-2">
+              {METHODOLOGY_SOURCE_FILES.map((entry) => (
+                <li key={entry.path}>
+                  <span className="font-medium text-ink">{entry.label}</span>
+                  <code className="mt-1 block rounded bg-surface px-2 py-1 text-xs text-ink-3">
+                    {entry.path}
+                  </code>
+                </li>
+              ))}
+            </ul>
+          </details>
         </div>
       </main>
       <SiteFooter />
