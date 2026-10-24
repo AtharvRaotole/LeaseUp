@@ -4,6 +4,10 @@ import {
   findAdaptiveEvalRowByAddress,
   p10ToCountOf10,
 } from '../eval/load-results-adaptive.js';
+import {
+  adaptiveEvalSiteDisplayLabel,
+  isPurelyNumericSiteLabel,
+} from '../eval/adaptive-eval-site-label.js';
 
 describe('results_adaptive.json', () => {
   it('matches committed cohort headline metrics', () => {
@@ -37,5 +41,21 @@ describe('results_adaptive.json', () => {
     expect(row!.eval_id).toBe('boulder_co');
     expect(p10ToCountOf10(row!.p10_blend)).toBe(9);
     expect(p10ToCountOf10(row!.p10_chain)).toBe(8);
+  });
+
+  it('uses street address and city for display labels (not numeric geocode junk)', () => {
+    const athens = loadResultsAdaptive().per_address.find((r) => r.eval_id === 'athens_ga');
+    expect(athens).toBeDefined();
+    expect(adaptiveEvalSiteDisplayLabel(athens!)).toBe('200 E Clayton St, Athens');
+
+    const austin = loadResultsAdaptive().per_address.find((r) => r.eval_id === 'austin_soco');
+    expect(adaptiveEvalSiteDisplayLabel(austin!)).toBe('1400 S Congress Ave, Austin');
+  });
+
+  it('no adaptive eval site display label is purely numeric', () => {
+    for (const row of loadResultsAdaptive().per_address) {
+      const display = adaptiveEvalSiteDisplayLabel(row);
+      expect(isPurelyNumericSiteLabel(display)).toBe(false);
+    }
   });
 });
