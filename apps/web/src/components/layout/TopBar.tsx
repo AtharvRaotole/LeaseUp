@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Logo } from '../brand/Logo';
 import { Badge } from '../ui/Badge';
+import { ThemeToggle } from '../ui/ThemeToggle';
 import { useHealth } from '../../hooks/useHealth';
 
 const NAV_LINKS = [
@@ -19,8 +20,8 @@ export function TopBar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-surface/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between px-4 md:px-6">
+    <header className="sticky top-0 z-30 border-b border-border bg-bg backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-content items-center justify-between px-4 md:px-6">
         <Link
           to="/"
           className="inline-flex min-h-11 min-w-11 items-center rounded-control py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
@@ -28,12 +29,12 @@ export function TopBar() {
         >
           <Logo size="sm" hideWordmarkFromA11y />
         </Link>
-        <nav className="hidden items-center gap-4 text-sm text-ink-2 md:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-5 text-sm font-medium tracking-wide text-ink-3 md:flex" aria-label="Primary">
           {NAV_LINKS.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                className="hover:text-ink focus-visible:ring-2 focus-visible:ring-accent rounded-control px-1"
+                className="hover:text-ink focus-visible:ring-2 focus-visible:ring-accent rounded-control px-1 transition-colors"
               >
                 {item.label}
               </Link>
@@ -46,12 +47,14 @@ export function TopBar() {
           >
             GitHub
           </a>
+          <ThemeToggle />
           <Badge tone={isLive ? 'success' : 'warn'}>
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-current opacity-80" aria-hidden />
             {isLive ? 'Live data' : 'Demo data'}
           </Badge>
         </nav>
         <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
           <Badge tone={isLive ? 'success' : 'warn'}>
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-current opacity-80" aria-hidden />
             {isLive ? 'Live' : 'Demo'}

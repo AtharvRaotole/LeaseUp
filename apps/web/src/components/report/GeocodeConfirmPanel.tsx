@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { GeocodeCandidate, Location } from '@leaseup/contracts';
+import { mapMarkerColor } from '../../lib/map-accent';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { cn } from '../../lib/cn';
@@ -13,12 +14,7 @@ import {
   geocodeCandidateTitle,
 } from '../../lib/geocode-display';
 
-function mapStyle() {
-  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
-  }
-  return 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
-}
+import { mapBasemapStyleUrl } from '../../lib/theme';
 
 export function GeocodeConfirmPanel({
   address,
@@ -60,14 +56,14 @@ export function GeocodeConfirmPanel({
     if (!containerRef.current || mapRef.current) return;
     const map = new maplibregl.Map({
       container: containerRef.current,
-      style: mapStyle(),
+      style: mapBasemapStyleUrl(),
       center: [pin.lng, pin.lat],
       zoom: 13,
       touchZoomRotate: true,
       touchPitch: false,
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
-    const marker = new maplibregl.Marker({ color: '#0f6b4f', draggable: true })
+    const marker = new maplibregl.Marker({ color: mapMarkerColor(), draggable: true })
       .setLngLat([pin.lng, pin.lat])
       .addTo(map);
     marker.on('dragend', () => {

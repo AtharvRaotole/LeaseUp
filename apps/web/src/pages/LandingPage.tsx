@@ -74,12 +74,12 @@ export function LandingPage() {
     <div className="min-h-screen bg-bg">
       <TopBar />
       <main id="main-content" className="outline-none">
-        <section className="relative overflow-hidden border-b border-border bg-[radial-gradient(ellipse_at_top,_var(--surface-2)_0%,_var(--bg)_58%)]">
-          <div className="mx-auto max-w-[1120px] px-4 pb-16 pt-[12vh] md:px-6 md:pb-20 md:pt-[14vh]">
-            <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(320px,600px)] lg:items-start lg:gap-10 xl:grid-cols-[minmax(0,1fr)_640px] xl:gap-14">
-              <div className="min-w-0">
+        <section className="premium-hero-glow border-b border-border bg-bg">
+          <div className="mx-auto max-w-content px-4 pb-16 pt-[12vh] md:px-6 md:pb-20 md:pt-[14vh]">
+            <div className="lg:grid lg:grid-cols-[minmax(0,1.12fr)_minmax(280px,0.88fr)] lg:items-start lg:gap-8 xl:grid-cols-[minmax(0,1.15fr)_minmax(300px,520px)] xl:gap-10">
+              <div className="min-w-0 lg:pr-2">
             <div className="mx-auto max-w-[640px] text-center lg:mx-0 lg:text-left">
-              <h1 className="font-display font-semibold text-[clamp(2rem,5vw,3.25rem)] leading-[1.12] tracking-tight text-ink">
+              <h1 className="font-display font-medium text-[clamp(1.75rem,4.5vw,2.5rem)] leading-[1.15] tracking-tight text-ink">
                 {LANDING_HEADLINE}
               </h1>
               <p className="mt-5 text-body-lg text-ink-2" data-testid="landing-plain-summary">
@@ -88,57 +88,37 @@ export function LandingPage() {
             </div>
 
             <form
-              className="mx-auto mt-10 max-w-[640px] rounded-card border border-border bg-surface p-5 shadow-sm md:p-6 lg:mx-0"
+              className="frame-corner-ticks mx-auto mt-8 w-full max-w-[640px] rounded-card border border-border bg-surface p-3 md:p-3.5 lg:mx-0 lg:max-w-none"
               onSubmit={(e) => {
                 e.preventDefault();
                 submit(address);
               }}
             >
-              <div className="flex flex-col gap-3">
-                <div className="relative w-full min-w-[240px]">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+                <div className="relative min-w-0 flex-1">
                   <MapPin
-                    className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-3"
+                    className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-3"
                     aria-hidden
                   />
                   <Input
                     data-testid="landing-address-input"
-                    className="w-full min-w-[240px] pl-12"
+                    className="w-full min-w-0 pl-11"
                     placeholder={LANDING_ADDRESS_PLACEHOLDER}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     aria-label={LANDING_ADDRESS_PLACEHOLDER}
                   />
                 </div>
-                <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="w-full sm:w-auto sm:min-w-[128px]"
-                    data-testid="landing-analyze-button"
-                  >
-                    Analyze
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="lg"
-                    className="w-full sm:w-auto"
-                    data-testid="landing-run-prospecting"
-                    onClick={() => {
-                      const trimmed = address.trim();
-                      if (!trimmed) return;
-                      void startProspectingJob({
-                        address: trimmed,
-                        radius: Number(radiusKm),
-                        categoryTags: categoryToTags(category),
-                      }).then((id) => navigate(`/prospect/${id}`));
-                    }}
-                  >
-                    Run full prospecting
-                  </Button>
-                </div>
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full shrink-0 sm:w-auto sm:min-w-[132px]"
+                  data-testid="landing-analyze-button"
+                >
+                  Analyze
+                </Button>
               </div>
-              <div className="mt-4 flex flex-wrap items-end gap-4">
+              <div className="mt-2.5 flex flex-wrap items-end gap-x-3 gap-y-2">
                 <SegmentedControl
                   label="Trade area"
                   value={radiusKm}
@@ -154,12 +134,28 @@ export function LandingPage() {
                   value={category}
                   onChange={(v) => setCategory(v as CategoryKey)}
                   options={CATEGORY_OPTIONS.map((c) => ({ value: c.key, label: c.label }))}
-                  className="min-w-[160px]"
+                  className="min-w-[140px] max-w-full shrink-0 sm:min-w-[148px]"
                 />
               </div>
+              <button
+                type="button"
+                data-testid="landing-run-prospecting"
+                className="mt-1 inline-flex min-h-11 w-full items-center justify-start text-small font-medium text-accent-muted underline decoration-accent/70 underline-offset-2 transition-colors hover:text-accent hover:decoration-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface rounded-control sm:w-auto"
+                onClick={() => {
+                  const trimmed = address.trim();
+                  if (!trimmed) return;
+                  void startProspectingJob({
+                    address: trimmed,
+                    radius: Number(radiusKm),
+                    categoryTags: categoryToTags(category),
+                  }).then((id) => navigate(`/prospect/${id}`));
+                }}
+              >
+                Run full prospecting
+              </button>
             </form>
 
-            <div className="mx-auto mt-8 flex max-w-[640px] flex-wrap gap-2 lg:mx-0">
+            <div className="mx-auto mt-6 flex w-full max-w-[640px] flex-wrap gap-2 lg:mx-0 lg:max-w-none">
               {LANDING_DEMO_CHIPS.map((chip) => (
                 <button
                   key={chip.id}
@@ -184,12 +180,15 @@ export function LandingPage() {
               ))}
             </div>
 
-            <p className="mx-auto mt-8 max-w-[640px] text-center text-meta text-ink-3 lg:mx-0 lg:text-left">
-              Need the reverse question?{' '}
-              <Link to="/brand" className="text-accent hover:underline">
+            <div className="mx-auto mt-8 max-w-[640px] text-center text-meta lg:mx-0 lg:text-left">
+              <p className="text-ink-3">Need the reverse question?</p>
+              <Link
+                to="/brand"
+                className="mt-1 inline-flex min-h-11 items-center font-medium text-ink underline decoration-accent underline-offset-2 hover:decoration-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
+              >
                 Find sites for a brand
               </Link>
-            </p>
+            </div>
               </div>
 
               <div className="mt-12 min-w-0 lg:mt-4 lg:pt-2">

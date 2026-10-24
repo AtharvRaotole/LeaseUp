@@ -1,9 +1,10 @@
 import type { Plugin } from 'vite';
 
-/** Critical text weights (latin) — preloaded from /public/fonts. */
-const PRELOAD_FONT_HREFS = ['/fonts/schibsted-grotesk/schibsted-grotesk-latin-600-normal.woff2'];
+const PRELOAD_FONT_HREFS = [
+  '/fonts/source-sans-3/source-sans-3-latin-400-normal.woff2',
+  '/fonts/source-sans-3/source-sans-3-latin-600-normal.woff2',
+];
 
-/** Inject font preloads for LCP headline and UI semibold. */
 export function fontPreloadPlugin(): Plugin {
   return {
     name: 'leaseup-font-preload',
