@@ -22,7 +22,7 @@ describe('fixture generator', () => {
   it.skip('writes boulder ulta demo pitch json', async () => {
     const service = new AnalysisService({
       DB: db,
-      CACHE: { get: async () => null, put: async () => undefined } as KVNamespace,
+      CACHE: { get: async () => null, put: async () => undefined } as unknown as KVNamespace,
       APP_MODE: 'demo',
       ASSETS: liveAudiencesOnlyAssets(),
     } as import('../index').Env);
