@@ -56,6 +56,11 @@ const PitchErrorPreviewPage = lazy(() =>
     default: m.PitchErrorPreviewPage,
   }))
 );
+const ProspectingReceiptPreviewPage = lazy(() =>
+  import('./pages/ProspectingReceiptPreviewPage').then((m) => ({
+    default: m.ProspectingReceiptPreviewPage,
+  }))
+);
 
 export default function App() {
   return (
@@ -70,6 +75,10 @@ export default function App() {
           <Route path="/__preview/wicker-why-card" element={<WickerWhyCardCapturePage />} />
           <Route path="/__preview/watchlist-empty" element={<WatchlistEmptyPreviewPage />} />
           <Route path="/__preview/pitch-unavailable" element={<PitchErrorPreviewPage />} />
+          <Route
+            path="/__preview/prospecting-receipt"
+            element={<ProspectingReceiptPreviewPage />}
+          />
           <Route path="/methodology" element={<MethodologyPage />} />
           <Route path="/methodology/qloo" element={<HowLeaseUpUsesQlooPage />} />
           <Route path="/brand" element={<BrandPage />} />

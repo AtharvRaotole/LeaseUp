@@ -1,0 +1,85 @@
+import type { ProspectingJob } from '@leaseup/contracts';
+
+/** Static completed job for receipt screenshots (no API). */
+export const DEMO_PROSPECTING_RECEIPT_JOB: ProspectingJob = {
+  id: '00000000-0000-4000-8000-00000000a001',
+  status: 'complete',
+  createdAt: '2026-10-24T12:00:00.000Z',
+  mode: 'demo',
+  input: {
+    address: '1574 N Milwaukee Ave, Chicago, IL 60622',
+    radius: 10,
+    storefrontSqFt: 2500,
+  },
+  confirmedLocation: {
+    address: '1574 N Milwaukee Ave, Chicago, IL 60622',
+    latitude: 41.9097,
+    longitude: -87.6774,
+    resolvedAddress: 'Chicago, Illinois',
+    neighborhood: 'Wicker Park',
+    city: 'Chicago',
+  },
+  pitchId: 'demo-boulder-ulta',
+  analysisRunId: 'demo-receipt-run',
+  steps: [
+    {
+      id: 'geocode',
+      label: 'Geocode and confirm',
+      status: 'complete',
+      durationMs: 420,
+      summary: 'Resolved Wicker Park',
+      reason: 'Demo chip address maps to a fixed storefront pin.',
+      detail: { location: { neighborhood: 'Wicker Park' } },
+    },
+    {
+      id: 'taste',
+      label: 'Read neighborhood taste',
+      status: 'complete',
+      durationMs: 1800,
+      summary: 'Loaded taste profile for Wicker Park',
+    },
+    {
+      id: 'scan_stores',
+      label: 'Scan existing stores',
+      status: 'complete',
+      durationMs: 2400,
+      summary: 'Found 42 brands with no store in 10 km',
+    },
+    {
+      id: 'verify_osm',
+      label: 'Verify against OpenStreetMap',
+      status: 'complete',
+      durationMs: 3100,
+      summary: '18 verified (2 sources), 24 single source',
+    },
+    {
+      id: 'rank_backtest',
+      label: 'Rank and backtest',
+      status: 'complete',
+      durationMs: 5200,
+      summary: 'Ranked prospects and ran backtest',
+    },
+    {
+      id: 'explain_top5',
+      label: 'Explain top 5 prospects',
+      status: 'complete',
+      durationMs: 900,
+      summary: 'Ulta, Sephora, Lululemon, Warby Parker, Sweetgreen',
+    },
+    {
+      id: 'draft_outreach',
+      label: 'Draft outreach emails',
+      status: 'complete',
+      durationMs: 4500,
+      summary: 'Drafted 3 outreach emails (not sent)',
+    },
+    {
+      id: 'pitch_pack',
+      label: 'Assemble pitch pack',
+      status: 'complete',
+      durationMs: 600,
+      summary: 'Pitch pack ready',
+      detail: { pitchId: 'demo-boulder-ulta' },
+    },
+  ],
+};
