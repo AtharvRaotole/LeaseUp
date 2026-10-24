@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
 import { execSync } from 'node:child_process';
+import { writeFileSync, unlinkSync } from 'node:fs';
+import { join } from 'node:path';
+
+const devVarsPath = join(process.cwd(), 'apps/worker/.dev.vars');
 
 function run(cmd, opts = {}) {
   execSync(cmd, { stdio: 'inherit', ...opts });
@@ -11,7 +15,7 @@ run('pnpm --filter @leaseup/fixtures build');
 run('pnpm --filter @leaseup/worker build');
 
 const WORKER_PORT = process.env.ROBUSTNESS_E2E_WORKER_PORT || '8795';
-const PREVIEW_PORT = process.env.ROBUSTNESS_E2E_PREVIEW_PORT || '4173';
+const PREVIEW_PORT = process.env.ROBUSTNESS_E2E_PREVIEW_PORT || '4193';
 const previewOrigin = `http://127.0.0.1:${PREVIEW_PORT}`;
 
 run('pnpm --filter @leaseup/web build', {
@@ -25,6 +29,15 @@ run(
   'pnpm --filter @leaseup/worker exec wrangler d1 execute leaseup_db --local --file=schema.sql'
 );
 
+writeFileSync(devVarsPath, 'FORCE_QLOO_DOWN=1\n', 'utf8');
+
+try {
+  execSync(`fuser -k ${PREVIEW_PORT}/tcp 2>/dev/null || true`, { stdio: 'ignore' });
+  execSync(`fuser -k ${WORKER_PORT}/tcp 2>/dev/null || true`, { stdio: 'ignore' });
+} catch {
+  /* ignore */
+}
+
 const worker = spawn(
   'pnpm',
   [
@@ -36,6 +49,8 @@ const worker = spawn(
     '--port',
     WORKER_PORT,
     '--local',
+    '--var',
+    'FORCE_QLOO_DOWN:1',
   ],
   {
     cwd: process.cwd(),
@@ -91,10 +106,17 @@ try {
   await waitFor(`http://127.0.0.1:${WORKER_PORT}/api/health`);
   await waitFor(`${previewOrigin}/`);
   run(
-    `PLAYWRIGHT_BASE_URL=${previewOrigin} pnpm exec playwright test e2e/analyze-robustness.spec.ts`
+    `PLAYWRIGHT_BASE_URL=${previewOrigin} PLAYWRIGHT_QLOO_DOWN=1 pnpm exec playwright test e2e/analyze-robustness.spec.ts`
   );
-  run(`SCREENSHOT_BASE=${previewOrigin} node scripts/analyze-robustness-screenshots.mjs`);
+  run(
+    `SCREENSHOT_BASE=${previewOrigin} PLAYWRIGHT_QLOO_DOWN=1 node scripts/analyze-robustness-screenshots.mjs`
+  );
 } finally {
   preview.kill('SIGTERM');
   worker.kill('SIGTERM');
+  try {
+    unlinkSync(devVarsPath);
+  } catch {
+    /* ignore */
+  }
 }

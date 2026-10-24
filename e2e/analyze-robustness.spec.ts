@@ -1,8 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { waitForReportReady } from './report-helpers';
 
 const BASE = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:4173';
 const AMBIGUOUS = '1574 N Milwaukee Ave, Chicago';
 const CONFIRMED_RURAL = '1 Main St, Chicken, AK 99732';
+const WICKER = '1574 N Milwaukee Ave, Chicago, IL 60622';
 
 function corsHeaders() {
   return {
@@ -134,51 +136,15 @@ test.describe('Analyze robustness (typed addresses)', () => {
     await expect(page.getByText(/fabricated|chain size only/i)).toHaveCount(0);
   });
 
-  test('Qloo timeout on analyze shows taste error, not server busy', async ({ page }) => {
-    await page.route('**/api/geocode', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        headers: corsHeaders(),
-        body: JSON.stringify({
-          needsConfirmation: false,
-          candidates: [],
-          location: {
-            address: '500 W 2nd St, Austin, TX 78701',
-            latitude: 30.27,
-            longitude: -97.74,
-            city: 'Austin',
-            resolvedAddress: '500 W 2nd St, Austin, TX 78701',
-          },
-        }),
-      });
-    });
-
-    await page.route('**/api/analyze/stream', async (route) => {
-      if (route.request().method() !== 'POST') {
-        await route.continue();
-        return;
-      }
-      const sse = `event: error\ndata: ${JSON.stringify({
-        message: 'Taste data is slow right now. Try again in a moment.',
-        code: 'QLOO_UNAVAILABLE',
-        retryAfterSec: 30,
-      })}\n\n`;
-      await route.fulfill({
-        status: 200,
-        headers: {
-          ...corsHeaders(),
-          'Content-Type': 'text/event-stream; charset=utf-8',
-        },
-        body: sse,
-      });
-    });
-
-    await page.goto(
-      `${BASE}/r/run?address=${encodeURIComponent('500 W 2nd St, Austin, TX 78701')}&radius=10`
-    );
-    await expect(page.getByTestId('report-error')).toBeVisible({ timeout: 25_000 });
-    await expect(page.getByText('Taste data is slow', { exact: true })).toBeVisible();
-    await expect(page.getByText(/servers are busy/i)).toHaveCount(0);
+  test('Qloo down uses chain-size fallback with banner and pitch list', async ({ page }) => {
+    test.skip(process.env.PLAYWRIGHT_QLOO_DOWN !== '1', 'Requires worker FORCE_QLOO_DOWN=1');
+    await page.goto(`${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`);
+    const banner = page.getByTestId('taste-unavailable-banner');
+    await expect(banner).toBeVisible({ timeout: 90_000 });
+    await expect(banner).toContainText(/ranked by chain size only/i);
+    await waitForReportReady(page);
+    await expect(page.getByText(/taste fit/i)).toHaveCount(0);
+    await expect(page.getByTestId('brands-to-pitch').locator('li').first()).toBeVisible();
+    await expect(page.getByTestId('report-error')).toHaveCount(0);
   });
 });

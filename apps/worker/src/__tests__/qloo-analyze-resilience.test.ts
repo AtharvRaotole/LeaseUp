@@ -97,7 +97,7 @@ describe('analyze Qloo resilience (fixtures only)', () => {
     expect(result.prospects.some((p) => p.tradeAreaTaste === undefined)).toBe(true);
   });
 
-  it('fails analyze when main Qloo insights time out (no chain-size ranking)', async () => {
+  it('falls back to chain-size ranking when main Qloo insights time out', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn(async (input: string | URL | Request) => {
@@ -124,9 +124,15 @@ describe('analyze Qloo resilience (fixtures only)', () => {
     );
 
     const service = new AnalysisService(liveEnv());
-    await expect(
-      service.analyze({ address: COLD_ANALYZE_ADDRESS, radius: 10 }, 'slow-main-qloo', 'ip')
-    ).rejects.toMatchObject({ code: 'QLOO_UNAVAILABLE' });
+    const result = await service.analyze(
+      { address: COLD_ANALYZE_ADDRESS, radius: 10 },
+      'slow-main-qloo',
+      'ip'
+    );
+
+    expect(result.tasteDataStatus).toBe('unavailable');
+    expect(result.rankingNotice).toBe(TASTE_UNAVAILABLE_RANKING_NOTICE);
+    expect(result.prospects.length).toBeGreaterThan(0);
   });
 
   it('analyzeStreamErrorPayload preserves QLOO_UNAVAILABLE code', async () => {

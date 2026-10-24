@@ -5,6 +5,7 @@ import { join } from 'node:path';
 const BASE = (process.env.SCREENSHOT_BASE || 'http://127.0.0.1:4173').replace(/\/$/, '');
 const OUT = process.env.SCREENSHOT_OUT || join(process.cwd(), 'docs/screenshots/analyze-robustness');
 const AMBIGUOUS = '1574 N Milwaukee Ave, Chicago';
+const WICKER = '1574 N Milwaukee Ave, Chicago, IL 60622';
 
 function corsHeaders() {
   return {
@@ -150,35 +151,12 @@ await shot('rural-empty-1440.png');
 await page.setViewportSize({ width: 390, height: 844 });
 await shot('rural-empty-390.png');
 
-// Qloo timeout
+// Qloo down: chain-size fallback with banner (worker FORCE_QLOO_DOWN=1)
+await page.unroute('**/api/geocode').catch(() => undefined);
 await page.unroute('**/api/analyze/stream').catch(() => undefined);
-await page.route('**/api/geocode', async (route) => {
-  await mockGeocode(route, {
-    needsConfirmation: false,
-    candidates: [],
-    location: {
-      address: '500 W 2nd St, Austin, TX 78701',
-      latitude: 30.27,
-      longitude: -97.74,
-      city: 'Austin',
-      resolvedAddress: '500 W 2nd St, Austin, TX 78701',
-    },
-  });
-});
-await page.route('**/api/analyze/stream', async (route) => {
-  const sse = `event: error\ndata: ${JSON.stringify({
-    message: 'Taste data is slow right now. Try again in a moment.',
-    code: 'QLOO_UNAVAILABLE',
-    retryAfterSec: 30,
-  })}\n\n`;
-  await route.fulfill({
-    status: 200,
-    headers: { ...corsHeaders(), 'Content-Type': 'text/event-stream; charset=utf-8' },
-    body: sse,
-  });
-});
-await openRun('500 W 2nd St, Austin, TX 78701');
-await page.getByTestId('report-error').waitFor({ timeout: 25_000 });
+await page.goto(`${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`);
+await page.getByTestId('taste-unavailable-banner').waitFor({ timeout: 90_000 });
+await page.getByTestId('brands-to-pitch').locator('li').first().waitFor({ timeout: 90_000 });
 await page.setViewportSize({ width: 1440, height: 900 });
 await shot('qloo-timeout-1440.png');
 await page.setViewportSize({ width: 390, height: 844 });
