@@ -77,15 +77,35 @@ describe('pairingCandidates', () => {
 });
 
 describe('pickPairingsForReport', () => {
-  it('caps how many brands one incumbent is named for', () => {
-    const base = [0.12, 0.125, 0.125, 0.125, 0.125, 0.125, 0.13, 0.125];
-    const strong = (v: number) => shares([v, ...base.slice(1)]);
-    const lists = [strong(0.17), strong(0.165), strong(0.16), shares(base), shares(base), shares(base)];
+  const base = [0.12, 0.125, 0.125, 0.125, 0.125, 0.125, 0.13, 0.125];
+  const strongAt = (i: number, v: number) => shares(base.map((b, j) => (j === i ? v : b)));
+
+  it('drops an incumbent that would pair with more than one brand, for all of them', () => {
+    const lists = [strongAt(0, 0.17), strongAt(0, 0.165), shares(base), shares(base), shares(base)];
     const picked = pickPairingsForReport(lists);
-    const named = picked.filter((rows) => rows.some((r) => r.entityId === IDS[0])).length;
-    expect(named).toBe(2);
-    expect(picked[0]?.[0]?.entityId).toBe(IDS[0]);
-    expect(picked[2]).toEqual([]);
+    expect(picked.every((rows) => rows.length === 0)).toBe(true);
+  });
+
+  it('keeps an incumbent that stands out for exactly one brand', () => {
+    const lists = [strongAt(0, 0.17), strongAt(2, 0.17), shares(base), shares(base), shares(base)];
+    const picked = pickPairingsForReport(lists);
+    expect(picked[0]?.map((r) => r.entityId)).toEqual([IDS[0]]);
+    expect(picked[1]?.map((r) => r.entityId)).toEqual([IDS[2]]);
+    expect(picked.slice(2).every((rows) => rows.length === 0)).toBe(true);
+  });
+
+  it('drops only the shared incumbent and keeps a brand\'s distinct one', () => {
+    const both = shares(base.map((b, j) => (j === 0 ? 0.17 : j === 3 ? 0.165 : b)));
+    const lists = [both, strongAt(0, 0.17), shares(base), shares(base), shares(base)];
+    const picked = pickPairingsForReport(lists);
+    expect(picked[0]?.map((r) => r.entityId)).toEqual([IDS[3]]);
+    expect(picked[1]).toEqual([]);
+  });
+
+  it('a brand left with nothing gets no line', () => {
+    const lists = [strongAt(0, 0.17), strongAt(0, 0.165), shares(base), shares(base), shares(base)];
+    const picked = pickPairingsForReport(lists);
+    expect(coTenancyLineFromPicked(picked[0] ?? [], [])).toBeUndefined();
   });
 });
 

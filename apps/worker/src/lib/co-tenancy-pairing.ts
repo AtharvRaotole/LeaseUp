@@ -22,7 +22,8 @@ import { sha256Short } from './cache-key';
  * - with 3+ other pitched brands on the report, share must beat this
  *   incumbent's mean share across them by 5%, so a popular chain that tops
  *   every brand is not shown as a pairing for all of them;
- * - one incumbent is named for at most 2 pitched brands per report.
+ * - an incumbent that qualifies for 2+ pitched brands on a report is dropped
+ *   for all of them (see pickPairingsForReport).
  */
 
 export type IncumbentAffinity = {
@@ -118,15 +119,14 @@ export function pairingCandidates(
 }
 
 /**
- * Report-level pick: guards per brand, then cap how often one incumbent is
- * named so the list does not pair every brand with the same popular chain.
- * When an incumbent qualifies for more brands than the cap, it is kept for the
- * brands where it stands out most (highest cross-pitch lift).
+ * Report-level pick (distinctiveness guard): guards per brand, then any
+ * incumbent that qualifies for more than one pitched brand at this location is
+ * dropped for all of them, since that reflects the chain's popularity rather
+ * than co-tenancy with a specific brand. Brands left with nothing get no line.
  */
 export function pickPairingsForReport(
   lists: IncumbentAffinity[][],
-  maxNames = 2,
-  maxRepeat = 2
+  maxNames = 2
 ): IncumbentAffinity[][] {
   const candidates = lists.map((list, idx) =>
     pairingCandidates(
@@ -134,19 +134,10 @@ export function pickPairingsForReport(
       lists.filter((other, j) => j !== idx && other.length > 0)
     )
   );
-  const hits = candidates
-    .flatMap((rows, idx) => rows.map((r) => ({ id: r.entityId, idx, lift: r.crossLift })))
-    .sort((x, y) => y.lift - x.lift);
-  const used = new Map<string, number>();
-  const keep = new Set<string>();
-  for (const h of hits) {
-    const n = used.get(h.id) ?? 0;
-    if (n >= maxRepeat) continue;
-    used.set(h.id, n + 1);
-    keep.add(`${h.idx}:${h.id}`);
-  }
-  return candidates.map((rows, idx) =>
-    rows.filter((r) => keep.has(`${idx}:${r.entityId}`)).slice(0, maxNames)
+  const brands = new Map<string, number>();
+  for (const r of candidates.flat()) brands.set(r.entityId, (brands.get(r.entityId) ?? 0) + 1);
+  return candidates.map((rows) =>
+    rows.filter((r) => brands.get(r.entityId) === 1).slice(0, maxNames)
   );
 }
 
