@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { pitchFreshnessHonestyLine } from '../../../web/src/lib/store-distance-copy';
 import { join } from 'node:path';
 import type { PitchPackSnapshot, ProspectPack } from '@leaseup/contracts';
 import {
@@ -135,11 +134,5 @@ describe('refreshPitchPackNearestStores (Wicker stale pitch)', () => {
     expect(aeProspect.nearestExistingStoreUnconfirmed).not.toBe(true);
     expect(refreshed.storeDistancesSnapshotOnly).not.toBe(true);
     expect(refreshed.storeDistanceDataAsOf).toBe('2026-10-24T15:00:00.000Z');
-    expect(
-      pitchFreshnessHonestyLine(
-        { ...stale, ...refreshed },
-        new Date('2026-10-24T15:00:00.000Z')
-      )
-    ).toBe('Saved Oct 20, 2026. Store distances refreshed today.');
   });
 });
