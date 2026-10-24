@@ -1,4 +1,5 @@
 import type { BrandRankingRow } from '@leaseup/contracts';
+import { rankTopPercentFromOrder } from '@leaseup/fixtures';
 
 export function affinitiesAllIdentical(rows: BrandRankingRow[]): boolean {
   if (rows.length < 2) return false;
@@ -6,55 +7,29 @@ export function affinitiesAllIdentical(rows: BrandRankingRow[]): boolean {
   return rows.every((r) => Math.abs(r.affinity - first) < 1e-9);
 }
 
-/** Shared top-percentile (1-99) from Qloo rank among brands scored for this pin (lower rank is better). */
+/** Top X% among brands scored at this pin (rank 1 is best). */
 export function fitTopPercent(rank: number, totalScored: number): number {
-  if (totalScored <= 0) return 1;
-  return Math.max(1, Math.min(99, Math.round((rank / totalScored) * 100)));
+  return rankTopPercentFromOrder(rank, totalScored);
 }
 
-/**
- * tasteFitBeyondChainPercentile is higher when taste fit is stronger within the chain-size tier
- * (see packages/fixtures tasteFitPercentileWithinTier).
- */
-export function tasteFitTopBucketFromBeyondChainPercentile(percentile: number): number {
-  return Math.max(1, Math.min(99, 100 - Math.round(percentile)));
-}
-
-export function tasteFitMatchHerePhrase(
-  rank: number,
-  totalScored: number,
-  tasteFitBeyondChainPercentile?: number
-): string {
-  if (tasteFitBeyondChainPercentile !== undefined) {
-    const top = tasteFitTopBucketFromBeyondChainPercentile(tasteFitBeyondChainPercentile);
-    return `Top ${top}% local match here`;
-  }
+export function tasteFitMatchHerePhrase(rank: number, totalScored: number): string {
   if (totalScored > 0 && rank > 0) {
-    return `Top ${fitTopPercent(rank, totalScored)}% taste match here`;
+    return `Top ${fitTopPercent(rank, totalScored)}% local match here`;
   }
   return '';
 }
 
-export function fitPercentileLabel(
-  rank: number,
-  totalScored: number,
-  tasteFitBeyondChainPercentile?: number
-): string {
-  if (tasteFitBeyondChainPercentile !== undefined) {
-    const top = tasteFitTopBucketFromBeyondChainPercentile(tasteFitBeyondChainPercentile);
-    return `Top ${top}% local match`;
-  }
-  return `Top ${fitTopPercent(rank, totalScored)}%`;
+export function fitPercentileLabel(rank: number, totalScored: number): string {
+  if (totalScored <= 0 || rank <= 0) return '';
+  return `Top ${fitTopPercent(rank, totalScored)}% local match`;
 }
 
-export function fitTopPercentPhrase(
-  rank: number,
-  totalScored: number,
-  tasteFitBeyondChainPercentile?: number
-): string {
-  if (tasteFitBeyondChainPercentile !== undefined) {
-    const top = tasteFitTopBucketFromBeyondChainPercentile(tasteFitBeyondChainPercentile);
-    return `top ${top}% fit among brands we scored here`;
-  }
+export function fitTopPercentPhrase(rank: number, totalScored: number): string {
+  if (totalScored <= 0 || rank <= 0) return '';
   return `top ${fitTopPercent(rank, totalScored)}% of brands scored here`;
+}
+
+/** @deprecated tier percentile is not shown in broker copy; use fitTopPercent(rank, total). */
+export function tasteFitTopBucketFromBeyondChainPercentile(percentile: number): number {
+  return Math.max(1, Math.min(99, 100 - Math.round(percentile)));
 }

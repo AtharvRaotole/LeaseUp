@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { AnalysisService } from '../services/analysis';
 import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
+import { rankTopPercentFromOrder } from '@leaseup/fixtures/worker';
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { installWorkersCacheApiStub } from './helpers/kv-counting';
 
@@ -45,6 +46,14 @@ function assertNoUnicodeDashesInResponse(response: AnalysisResponse): void {
   expect(offenders).toEqual([]);
 }
 
+function assertTopPercentClaimsMatchRank(text: string, rank: number, total: number): void {
+  const expected = rankTopPercentFromOrder(rank, total);
+  const matches = [...text.matchAll(/top (\d+)%/gi)];
+  for (const m of matches) {
+    expect(Number(m[1])).toBe(expected);
+  }
+}
+
 function assertReasonRanksMatchFields(response: AnalysisResponse): void {
   const rankedCount = response.rankings?.length ?? 0;
   for (const pack of response.prospects) {
@@ -52,6 +61,7 @@ function assertReasonRanksMatchFields(response: AnalysisResponse): void {
     expect(pack.reasons[0]).toContain(`LeaseUp rank #${leaseUpRank}`);
     if (rankedCount > 0) {
       expect(pack.reasons[0]).toMatch(/of \d+ brands/);
+      assertTopPercentClaimsMatchRank(pack.reasons[0], leaseUpRank, rankedCount);
     }
     const row = response.rankings?.find((r) => r.entityId === pack.brand.entityId);
     if (row && row.qlooRank !== leaseUpRank) {
