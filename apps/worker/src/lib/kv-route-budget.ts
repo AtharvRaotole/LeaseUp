@@ -15,7 +15,7 @@ export const KV_ROUTE_BUDGET = {
   prospectingCreate: { gets: 0, puts: 0 },
   pipelineBoardCreate: { gets: 0, puts: 0 },
   watchlistSave: { gets: 0, puts: 0 },
-  watchlistRecheck: { gets: 0, puts: 0 },
+  watchlistRecheck: { gets: 2, puts: 1 },
   ownerUpdateShare: { gets: 0, puts: 0 },
   ownerUpdateGet: { gets: 0, puts: 0 },
   shareReportMeta: { gets: 0, puts: 0 },

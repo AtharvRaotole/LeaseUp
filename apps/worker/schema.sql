@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS watch_spaces (
 );
 
 CREATE INDEX IF NOT EXISTS idx_watch_spaces_workspace ON watch_spaces(workspace_id);
+CREATE INDEX IF NOT EXISTS idx_watch_spaces_workspace_updated ON watch_spaces(workspace_id, updated_at DESC);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_watch_spaces_workspace_address ON watch_spaces(workspace_id, address_key, radius_km);
 
 CREATE TABLE IF NOT EXISTS watch_snapshots (

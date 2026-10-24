@@ -1,12 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Bookmark } from 'lucide-react';
 import type { WatchSpaceDetail, WatchSpaceSummary } from '@leaseup/contracts';
 import { TopBar } from '../components/layout/TopBar';
 import { Button } from '../components/ui/Button';
 import { PageEmptyState } from '../components/ui/PageEmptyState';
 import { WatchDiffPanel } from '../components/watchlist/WatchDiffPanel';
-import { fetchWatchDetail, fetchWatchlist, recheckWatchSpace } from '../lib/watchlist-api';
+import {
+  fetchWatchDetail,
+  fetchWatchlist,
+  recheckWatchSpace,
+  removeWatchSpace,
+  WatchlistApiError,
+} from '../lib/watchlist-api';
 import { formatUserFacingDate } from '../lib/format-date';
 import {
   watchlistEmptyAction,
@@ -17,10 +23,12 @@ import {
 
 export function WatchlistPage() {
   const { watchId } = useParams();
+  const navigate = useNavigate();
   const [spaces, setSpaces] = useState<WatchSpaceSummary[]>([]);
   const [detail, setDetail] = useState<WatchSpaceDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [rechecking, setRechecking] = useState(false);
+  const [removing, setRemoving] = useState(false);
 
   const loadList = useCallback(async () => {
     try {
@@ -50,6 +58,21 @@ export function WatchlistPage() {
     else setDetail(null);
   }, [watchId, loadDetail]);
 
+  const onRemove = async (id: string) => {
+    setRemoving(true);
+    try {
+      await removeWatchSpace(id);
+      setDetail(null);
+      await loadList();
+      setError(null);
+      navigate('/watchlist', { replace: true });
+    } catch (err) {
+      setError(err instanceof WatchlistApiError ? err.message : 'Could not remove this space.');
+    } finally {
+      setRemoving(false);
+    }
+  };
+
   const onRecheck = async (id: string) => {
     setRechecking(true);
     try {
@@ -58,8 +81,11 @@ export function WatchlistPage() {
       await loadList();
       setError(null);
     } catch (err) {
-      const message = err instanceof Error ? err.message : '';
-      setError(message.includes('10 minutes') ? message : 'Recheck did not finish. Try again in a moment.');
+      if (err instanceof WatchlistApiError) {
+        setError(err.message);
+      } else {
+        setError('Recheck did not finish. Try again in a moment.');
+      }
     } finally {
       setRechecking(false);
     }
@@ -72,8 +98,8 @@ export function WatchlistPage() {
         <p className="text-label uppercase tracking-wide text-ink-3">Broker tools</p>
         <h1 className="mt-1 font-display font-semibold text-display text-ink">Watchlist</h1>
         <p className="mt-2 text-sm text-ink-2">
-          Saved storefront addresses from your reports. Run a manual recheck to compare the latest analyze
-          run with your last saved snapshot.
+          Saved addresses from your reports on this browser. Recheck runs a fresh analyze and compares it to
+          your last saved snapshot.
         </p>
 
         {error && <p className="mt-4 text-sm text-ink-2" role="alert">{error}</p>}
@@ -90,15 +116,25 @@ export function WatchlistPage() {
                 {formatUserFacingDate(detail.lastCheckedAt)} · {detail.snapshotCount} saved run
                 {detail.snapshotCount === 1 ? '' : 's'}
               </p>
-              <div className="mt-4">
+              <div className="mt-4 flex flex-wrap gap-2">
                 <Button
                   type="button"
                   size="sm"
                   data-testid="watch-recheck"
-                  disabled={rechecking}
+                  disabled={rechecking || removing}
                   onClick={() => void onRecheck(detail.watchId)}
                 >
                   {rechecking ? 'Running analyze…' : 'Recheck now'}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  data-testid="watch-remove"
+                  disabled={rechecking || removing}
+                  onClick={() => void onRemove(detail.watchId)}
+                >
+                  {removing ? 'Removing…' : 'Remove'}
                 </Button>
               </div>
               {detail.diff && (
