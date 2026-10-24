@@ -1,4 +1,5 @@
 import type { AnalysisStep, AnalysisStepId } from '@leaseup/contracts';
+import { ANALYZE_STEP_TIMEOUT_MS, withTimeout } from './analysis-step-budget';
 
 export const STEP_DEFINITIONS: Array<{ id: AnalysisStepId; label: string }> = [
   { id: 'locate', label: 'Locate storefront' },
@@ -19,17 +20,23 @@ export function initialSteps(): AnalysisStep[] {
 
 export type StepEmitter = (step: AnalysisStep) => void | Promise<void>;
 
+export async function emitAnalyzeKickoff(emitter: StepEmitter): Promise<void> {
+  const locate = STEP_DEFINITIONS[0]!;
+  await emitter({ id: locate.id, label: locate.label, status: 'running' });
+}
+
 export async function runStep<T>(
   emitter: StepEmitter,
   id: AnalysisStepId,
   label: string,
-  work: () => Promise<{ summary: string; detail?: Record<string, unknown>; result: T }>
+  work: () => Promise<{ summary: string; detail?: Record<string, unknown>; result: T }>,
+  timeoutMs = ANALYZE_STEP_TIMEOUT_MS[id]
 ): Promise<T> {
   const started = Date.now();
   await emitter({ id, label, status: 'running' });
 
   try {
-    const { summary, detail, result } = await work();
+    const { summary, detail, result } = await withTimeout(work(), timeoutMs, `analyze step ${id}`);
     await emitter({
       id,
       label,

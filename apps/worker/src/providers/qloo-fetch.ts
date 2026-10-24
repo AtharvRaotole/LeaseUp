@@ -1,8 +1,33 @@
 import { UpstreamError } from '../lib/errors';
 
-export const QLOO_FETCH_TOTAL_BUDGET_MS = 8_000;
+/** Default / main brand-ranking insights (cold Qloo can exceed a few seconds). */
+export const QLOO_FETCH_TOTAL_BUDGET_MS = 22_000;
 export const QLOO_FETCH_MAX_RETRIES = 1;
-export const QLOO_FETCH_PER_ATTEMPT_TIMEOUT_MS = 4_000;
+export const QLOO_FETCH_PER_ATTEMPT_TIMEOUT_MS = 12_000;
+
+/** Optional per-brand explainability and shoppers (fail soft — omit context, not whole report). */
+export const QLOO_FETCH_ENRICHMENT_BUDGET_MS = 6_000;
+export const QLOO_FETCH_ENRICHMENT_PER_ATTEMPT_MS = 5_000;
+export const QLOO_FETCH_ENRICHMENT_MAX_RETRIES = 0;
+
+export type QlooFetchRetryOptions = {
+  totalBudgetMs?: number;
+  maxRetries?: number;
+  perAttemptTimeoutMs?: number;
+  sleep?: (ms: number) => Promise<void>;
+};
+
+export const QLOO_FETCH_RANKING_OPTIONS: QlooFetchRetryOptions = {
+  totalBudgetMs: QLOO_FETCH_TOTAL_BUDGET_MS,
+  maxRetries: QLOO_FETCH_MAX_RETRIES,
+  perAttemptTimeoutMs: QLOO_FETCH_PER_ATTEMPT_TIMEOUT_MS,
+};
+
+export const QLOO_FETCH_ENRICHMENT_OPTIONS: QlooFetchRetryOptions = {
+  totalBudgetMs: QLOO_FETCH_ENRICHMENT_BUDGET_MS,
+  maxRetries: QLOO_FETCH_ENRICHMENT_MAX_RETRIES,
+  perAttemptTimeoutMs: QLOO_FETCH_ENRICHMENT_PER_ATTEMPT_MS,
+};
 
 export const QLOO_UNAVAILABLE_USER_MESSAGE =
   'Taste data is slow right now. Try again in a moment.';
@@ -40,12 +65,7 @@ export async function fetchQlooWithRetry(
   url: string,
   apiKey: string,
   fetchImpl: QlooFetchFn = globalThis.fetch.bind(globalThis),
-  options: {
-    totalBudgetMs?: number;
-    maxRetries?: number;
-    perAttemptTimeoutMs?: number;
-    sleep?: (ms: number) => Promise<void>;
-  } = {}
+  options: QlooFetchRetryOptions = {}
 ): Promise<Response> {
   const totalBudgetMs = options.totalBudgetMs ?? QLOO_FETCH_TOTAL_BUDGET_MS;
   const maxRetries = options.maxRetries ?? QLOO_FETCH_MAX_RETRIES;
