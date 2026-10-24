@@ -1,9 +1,11 @@
 import type { ProspectingJob, ProspectingStep, ProspectingStepId } from '@leaseup/contracts';
 import {
-  plainPlannerToolResult,
+  plainPlannerToolId,
   plainProspectingStepResult,
   receiptStepLabel,
   receiptStepResult,
+  sanitizePlannerReasonText,
+  sanitizePlannerResultSummary,
   sortPipelineReceiptSteps,
 } from './prospecting-receipt-copy';
 
@@ -61,12 +63,12 @@ function formatDurationSec(durationMs?: number): string | null {
 }
 
 function receiptToolReason(plannerLabel: 'Rule' | 'Agent', raw: string): string {
-  const plain = plainProspectingStepResult(raw);
+  let plain = sanitizePlannerReasonText(raw);
   if (plannerLabel === 'Rule' && /^rule:\s*/i.test(plain)) {
-    return plain.replace(/^rule:\s*/i, '').trim();
+    plain = plain.replace(/^rule:\s*/i, '').trim();
   }
   if (plannerLabel === 'Agent' && /^agent:\s*/i.test(plain)) {
-    return plain.replace(/^agent:\s*/i, '').trim();
+    plain = plain.replace(/^agent:\s*/i, '').trim();
   }
   return plain;
 }
@@ -82,8 +84,8 @@ export function parseAgentToolDecisions(step: ProspectingStep): AgentReceiptTool
     const row = entry as Record<string, unknown>;
     const plannerLabel: 'Rule' | 'Agent' = row.planner === 'model' ? 'Agent' : 'Rule';
     const reason = receiptToolReason(plannerLabel, String(row.reason ?? ''));
-    const resultSummary = plainPlannerToolResult(String(row.resultSummary ?? ''));
-    const tool = plainPlannerToolResult(String(row.tool ?? '').trim());
+    const resultSummary = sanitizePlannerResultSummary(String(row.resultSummary ?? ''));
+    const tool = plainPlannerToolId(String(row.tool ?? '').trim());
     if (!reason && !resultSummary) continue;
     decisions.push({ plannerLabel, reason, tool, resultSummary });
   }
@@ -96,30 +98,46 @@ function agentPlanDetail(job: ProspectingJob): Record<string, unknown> | undefin
   return step.detail as Record<string, unknown>;
 }
 
+function plannerDetailMode(detail?: Record<string, unknown>): string | undefined {
+  const mode = detail?.plannerMode ?? detail?.mode;
+  return typeof mode === 'string' ? mode : undefined;
+}
+
+export function buildPlannerUnavailableLine(detail?: Record<string, unknown>): string {
+  const reason = detail?.fallbackReason;
+  if (typeof reason === 'string' && reason.trim()) {
+    const human =
+      reason.trim() === 'no_planner'
+        ? 'the planner was not available on this server'
+        : sanitizePlannerReasonText(reason.trim());
+    return `Planner unavailable (${human}). Used the standard steps.`;
+  }
+  return PLANNER_UNAVAILABLE_LINE;
+}
+
 export function buildPlannerReceiptSection(job: ProspectingJob): PlannerReceiptSection {
   const planStep = job.steps.find((s) => s.id === 'agent_plan');
   if (!planStep || planStep.status === 'pending') {
-    return { decisions: [], fallbackLine: PLANNER_UNAVAILABLE_LINE, planSummary: null };
+    return { decisions: [], fallbackLine: buildPlannerUnavailableLine(), planSummary: null };
   }
 
   const detail = agentPlanDetail(job);
-  const mode = detail?.mode;
+  const mode = plannerDetailMode(detail);
   const isFallback = mode === 'dag_fallback' || Boolean(detail?.fallbackReason);
   const decisions = parseAgentToolDecisions(planStep);
+  const unavailableLine = buildPlannerUnavailableLine(detail);
 
   if (decisions.length === 0) {
     return {
       decisions: [],
-      fallbackLine: PLANNER_UNAVAILABLE_LINE,
-      planSummary: isFallback
-        ? plainProspectingStepResult(planStep.summary)
-        : plainProspectingStepResult(planStep.summary) || null,
+      fallbackLine: unavailableLine,
+      planSummary: plainProspectingStepResult(planStep.summary) || null,
     };
   }
 
   return {
     decisions,
-    fallbackLine: isFallback ? PLANNER_UNAVAILABLE_LINE : null,
+    fallbackLine: isFallback ? unavailableLine : null,
     planSummary: plainProspectingStepResult(planStep.summary) || null,
   };
 }
@@ -174,7 +192,18 @@ export function agentReceiptExport(job: ProspectingJob): AgentReceiptExport {
 }
 
 export function agentReceiptJson(job: ProspectingJob): string {
-  return JSON.stringify(agentReceiptExport(job), null, 2);
+  const planStep = job.steps.find((s) => s.id === 'agent_plan');
+  return JSON.stringify(
+    {
+      ...agentReceiptExport(job),
+      raw: {
+        agentPlanDetail: planStep?.detail ?? null,
+        steps: job.steps,
+      },
+    },
+    null,
+    2
+  );
 }
 
 export function agentReceiptMarkdown(job: ProspectingJob): string {

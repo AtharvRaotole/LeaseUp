@@ -25,6 +25,17 @@ describe('prospecting receipt copy', () => {
     expect(receiptStepResult(step, job)).toBe('224 brands ranked for Wicker Park (10 km trade area)');
   });
 
+  it('pluralizes verify directory copy', () => {
+    expect(receiptStepResult(
+      { id: 'verify_osm', label: 'Verify', status: 'complete', summary: '5 single source' },
+      job
+    )).toBe('5 brands checked in one directory only');
+    expect(receiptStepResult(
+      { id: 'verify_osm', label: 'Verify', status: 'complete', summary: '1 single source' },
+      job
+    )).toBe('1 brand checked in one directory only');
+  });
+
   it('honestly describes a small-sample 10/10 backtest', () => {
     const step: ProspectingStep = {
       id: 'rank_backtest',

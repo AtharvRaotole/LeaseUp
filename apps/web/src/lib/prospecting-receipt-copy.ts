@@ -71,13 +71,24 @@ function receiptTasteSummary(summary: string, job: ProspectingJob): string {
     .replace(/\(\d+km\)/i, `(${job.input.radius} km trade area)`);
 }
 
+function brandsPhrase(count: number, singular: string, plural: string): string {
+  const n = Number(count);
+  if (n === 1) return `1 ${singular}`;
+  return `${n} ${plural}`;
+}
+
 function receiptVerifySummary(summary: string): string {
   let plain = plainProspectingStepResult(summary);
-  plain = plain.replace(
-    /(\d+)\s+verified\s*\(\s*2 sources\s*\)/gi,
-    '$1 brand confirmed in both directories'
+  plain = plain.replace(/(\d+)\s+verified\s*\(\s*2 sources\s*\)/gi, (_match, n: string) =>
+    brandsPhrase(Number(n), 'brand confirmed in both directories', 'brands confirmed in both directories')
   );
-  plain = plain.replace(/(\d+)\s+single source/gi, '$1 brand checked in one directory only');
+  plain = plain.replace(/(\d+)\s+single source/gi, (_match, n: string) =>
+    brandsPhrase(
+      Number(n),
+      'brand checked in one directory only',
+      'brands checked in one directory only'
+    )
+  );
   return plain;
 }
 
@@ -152,9 +163,54 @@ export function sortPipelineReceiptSteps(steps: ProspectingStep[]): ProspectingS
   return [...steps].sort((a, b) => (rank.get(a.id) ?? 99) - (rank.get(b.id) ?? 99));
 }
 
+export const PLANNER_TOOL_PLAIN_NAMES: Record<string, string> = {
+  qloo_brand_insights: 'brand taste panel',
+  store_presence_lookup: 'store presence lookup',
+  nearest_store_check: 'nearest store check',
+  chain_size_fallback: 'chain size fallback',
+  enrich_site_stratum: 'site context',
+};
+
+const UUID_RE =
+  /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi;
+
+export function plainPlannerToolId(toolId: string): string {
+  const key = toolId.trim();
+  if (!key) return '';
+  return PLANNER_TOOL_PLAIN_NAMES[key] ?? key.replace(/_/g, ' ');
+}
+
+/** Replace snake_case tool ids only; do not paraphrase surrounding model text. */
+export function replacePlannerToolIdsInText(text: string): string {
+  let out = text;
+  for (const [id, label] of Object.entries(PLANNER_TOOL_PLAIN_NAMES)) {
+    out = out.replace(new RegExp(id, 'gi'), label);
+  }
+  return out;
+}
+
+export function stripPlannerUuidsFromText(text: string): string {
+  return text
+    .replace(UUID_RE, '')
+    .replace(/\bfor brand\s*[.,]?/gi, 'for that brand.')
+    .replace(/\bbrand\s*[.,]?\s*$/gi, 'that brand.')
+    .replace(/\s+,/g, ',')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+export function sanitizePlannerReasonText(raw: string): string {
+  return stripPlannerUuidsFromText(replacePlannerToolIdsInText(plainProspectingStepResult(raw)));
+}
+
+export function sanitizePlannerResultSummary(raw: string): string {
+  let text = sanitizePlannerReasonText(raw);
+  text = text.replace(/\bQloo returned\b/gi, 'Taste data returned');
+  text = text.replace(/\btaste data returned\b/gi, 'Taste data returned');
+  return text;
+}
+
+/** @deprecated Use sanitizePlannerResultSummary */
 export function plainPlannerToolResult(summary: string): string {
-  return plainProspectingStepResult(summary)
-    .replace(/qloo_brand_insights/gi, 'brand taste panel')
-    .replace(/nearest_store_check/gi, 'nearest store check')
-    .replace(/enrich_site_stratum/gi, 'site context');
+  return sanitizePlannerResultSummary(summary);
 }

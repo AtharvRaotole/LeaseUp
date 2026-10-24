@@ -11,6 +11,8 @@ import {
   PLANNER_UNAVAILABLE_LINE,
 } from '../lib/agent-receipt';
 import { DEMO_PROSPECTING_RECEIPT_JOB } from '../lib/demo-prospecting-receipt-fixture';
+import { LIVE_AGENT_PLAN_STEP } from './live-prospecting-receipt.fixture';
+import { buildPlannerUnavailableLine, parseAgentToolDecisions } from '../lib/agent-receipt';
 import { findBrokerJargonViolations } from '../lib/broker-visible-jargon';
 
 describe('agent receipt', () => {
@@ -39,6 +41,27 @@ describe('agent receipt', () => {
     expect(pipeline.some((r) => r.label === 'Check stores in two directories')).toBe(true);
   });
 
+  it('uses fallbackReason in the planner unavailable line', () => {
+    expect(buildPlannerUnavailableLine({ fallbackReason: 'no_planner' })).toContain(
+      'planner was not available on this server'
+    );
+    expect(buildPlannerUnavailableLine({ fallbackReason: 'OpenAI timeout' })).toContain('OpenAI timeout');
+  });
+
+  it('sanitizes live planner result summaries (no UUIDs or raw tool ids)', () => {
+    const decisions = parseAgentToolDecisions(LIVE_AGENT_PLAN_STEP);
+    expect(decisions).toHaveLength(1);
+    expect(decisions[0]?.resultSummary).not.toMatch(/2C5054E1/i);
+    expect(decisions[0]?.resultSummary).toMatch(/audience overlap/i);
+    expect(decisions[0]?.tool).toBe('site context');
+    const json = agentReceiptJson({
+      ...DEMO_PROSPECTING_RECEIPT_JOB,
+      steps: [LIVE_AGENT_PLAN_STEP, ...DEMO_PROSPECTING_RECEIPT_JOB.steps.filter((s) => s.id !== 'agent_plan')],
+    });
+    expect(json).toContain('2C5054E1-8691-4F52-83CD-310D029BA6A3');
+    expect(json).toContain('enrich_site_stratum');
+  });
+
   it('shows planner fallback when agent plan has no tool steps', () => {
     const job = {
       ...DEMO_PROSPECTING_RECEIPT_JOB,
@@ -53,7 +76,7 @@ describe('agent receipt', () => {
     };
     const planner = buildPlannerReceiptSection(job);
     expect(planner.decisions).toHaveLength(0);
-    expect(planner.fallbackLine).toBe(PLANNER_UNAVAILABLE_LINE);
+    expect(planner.fallbackLine).toContain('planner was not available on this server');
   });
 
   it('exports JSON and Markdown with planner and run sections', () => {
