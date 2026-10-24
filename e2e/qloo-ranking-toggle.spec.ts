@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { openReportSection, waitForReportReady } from './report-helpers';
+import { openReportSection, waitForDeepSections, waitForReportReady } from './report-helpers';
 
 const WICKER =
   '/r/wicker?address=1574%20N%20Milwaukee%20Ave%2C%20Chicago%2C%20IL%2060622&radius=10';
@@ -9,6 +9,7 @@ test('Qloo vs chain-size toggle reorders proof ranking and nearby-match stat', a
 
   await page.goto(WICKER);
   await waitForReportReady(page);
+  await waitForDeepSections(page);
 
   const nearbyMatch = page.getByTestId('report-summary').getByText(/\d+ of 10/).first();
   const nearbyQloo = (await nearbyMatch.innerText()).trim();
