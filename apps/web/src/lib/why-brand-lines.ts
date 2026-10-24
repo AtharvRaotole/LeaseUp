@@ -1,5 +1,5 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
-import { rankTopPercentFromOrder } from '@leaseup/fixtures';
+import { whyBrandRankSummaryLine as whyBrandRankSummaryLineFromFixtures } from '@leaseup/fixtures';
 import { displayBrandName } from './brand-display';
 import { absenceVerificationSummary } from './absence-verification-copy';
 import { formatTradeAreaTasteRow } from './trade-area-taste-copy';
@@ -7,8 +7,7 @@ import { shopperInterestHighlight } from './broker-copy';
 import { brandReachPlainLine } from './brand-reach-copy';
 
 export function whyBrandRankSummaryLine(rank: number, total: number): string {
-  const top = rankTopPercentFromOrder(rank, total);
-  return `#${rank} of ${total} brands we scored (top ${top}% for local shopper taste).`;
+  return whyBrandRankSummaryLineFromFixtures(rank, total);
 }
 
 export function whyBrandBulletLines(

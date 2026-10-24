@@ -32,7 +32,7 @@ import {
   demoAnalyzeBacktests,
   adaptiveEvalRadiusKm,
   expectedRandomPresentInTop10,
-  rankTopPercentFromOrder,
+  leaseUpRankReasonHead,
 } from '@leaseup/fixtures/worker';
 import { tasteLocationLabel, formatBacktestStepSummary } from '../lib/analyze-step-copy';
 import { NearbyPresenceCache } from '../lib/nearby-presence-cache';
@@ -79,6 +79,7 @@ import {
   METRO_COVERAGE_SCAN_KM,
   metroStoreCoverageIncomplete,
 } from '../lib/verification-coverage';
+import { nearestDemoOverpassMatchKm } from '../lib/osm-wikidata-absence-crosscheck';
 import {
   buildChainSizeInsightsFromCatalog,
   chainRankedInsights,
@@ -560,7 +561,8 @@ export class AnalysisService {
       const verification = await this.verifyFromOsmSnapshot(
         candidate.entity_id,
         location,
-        radius
+        radius,
+        candidate.name
       );
 
       if (verification.status === 'conflict - likely present') {
@@ -637,7 +639,8 @@ export class AnalysisService {
   private async verifyFromOsmSnapshot(
     entityId: string,
     location: Location,
-    radiusKm: number
+    radiusKm: number,
+    qlooName?: string
   ): Promise<{
     status:
       | 'verified (2 sources)'
@@ -681,6 +684,26 @@ export class AnalysisService {
         status: 'conflict - likely present',
         sources: [...sources, `${snapshotLabel} (store found)`],
       };
+    }
+
+    if (this.mode === 'demo') {
+      const fixtureId = matchDemoFixtureId(location.address);
+      if (fixtureId) {
+        const demoKm = nearestDemoOverpassMatchKm(
+          fixtureId,
+          entityId,
+          location.latitude,
+          location.longitude,
+          radiusKm,
+          qlooName
+        );
+        if (demoKm !== undefined) {
+          return {
+            status: 'conflict - likely present',
+            sources: [...sources, 'OpenStreetMap (wikidata cross-check)'],
+          };
+        }
+      }
     }
 
     const nationalCount = await this.catalog.getNationalStoreCount(entityId);
@@ -961,8 +984,7 @@ export class AnalysisService {
     if (tasteUnavailable) {
       reasons.push(TASTE_UNAVAILABLE_RANKING_NOTICE);
     } else if (affinity > 0 && rankedCount > 0) {
-      const topPct = rankTopPercentFromOrder(leaseUpRank, rankedCount);
-      let head = `${displayName}: LeaseUp rank #${leaseUpRank} (top ${topPct}% of ${rankedCount} brands) for ${area}`;
+      let head = leaseUpRankReasonHead(displayName, leaseUpRank, rankedCount, area);
       if (qlooTasteRank !== leaseUpRank) {
         head += `; Qloo taste rank #${qlooTasteRank} of ${rankedCount}`;
       }
