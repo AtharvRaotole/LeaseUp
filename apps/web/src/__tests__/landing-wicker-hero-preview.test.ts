@@ -16,10 +16,13 @@ describe('landing hero Wicker preview', () => {
     expect(LANDING_WICKER_PREVIEW.prospects.length).toBeGreaterThanOrEqual(HERO_TOP_N);
   });
 
-  it('recorded preview omits the ATP acronym and Wikidata QID coverage jargon', () => {
+  it('recorded preview omits the ATP acronym and uses one-line OSM coverage copy', () => {
     const blob = JSON.stringify(LANDING_WICKER_PREVIEW);
     expect(blob).not.toMatch(/\bATP\b/);
     expect(blob).not.toContain('Wikidata QID');
-    expect(blob).toContain('All The Places store data');
+    expect(blob).toContain(
+      'Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.'
+    );
+    expect(blob).not.toContain('showing All The Places store data only. Store locations');
   });
 });
