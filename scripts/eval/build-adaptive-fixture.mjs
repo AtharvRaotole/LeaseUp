@@ -29,6 +29,18 @@ function tastePercentileRank(stratAuc, allValues) {
   return Math.round((100 * (lo + 0.5)) / sorted.length);
 }
 
+function streetAddressPlusCity(recordedAddress) {
+  const trimmed = String(recordedAddress ?? '').trim();
+  if (!trimmed) return undefined;
+  const parts = trimmed.split(',').map((part) => part.trim()).filter(Boolean);
+  if (parts.length === 0) return undefined;
+  const street = parts[0];
+  if (!street) return undefined;
+  const city = parts.length >= 2 ? parts[1] : undefined;
+  if (!city) return street;
+  return `${street}, ${city}`;
+}
+
 function mapStratum(cat) {
   if (cat === 'dense_urban') return 'dense_urban';
   if (cat === 'college_town') return 'urban';
@@ -57,7 +69,7 @@ async function main() {
     per_address.push({
       id: demo?.fixtureKey ?? id,
       eval_id: id,
-      label: g?.display?.split(',')[0] ?? id,
+      label: streetAddressPlusCity(g?.addr ?? '') ?? g?.display?.split(',')[0] ?? id,
       address: g?.addr ?? '',
       stratum: mapStratum(row.cat ?? g?.cat ?? 'urban'),
       adaptive_radius_km: row.r,

@@ -39,6 +39,12 @@ export {
   formatAdaptiveP10Count,
 } from './eval/load-results-adaptive.js';
 export {
+  adaptiveEvalSiteDisplayLabel,
+  streetAddressPlusCity,
+  isPurelyNumericSiteLabel,
+  placeFromEvalId,
+} from './eval/adaptive-eval-site-label.js';
+export {
   COHORT_EVAL_AGG,
   COHORT_MID_TIER_P5,
   formatP10PercentExact,
@@ -167,6 +173,10 @@ export {
   audiencePanelBaseline,
   audiencePanelSize,
 } from './brand-explainability-loader.js';
+export {
+  distinctPitchAudienceLists,
+  PITCH_AUDIENCE_CANDIDATE_MAX,
+} from './distinct-pitch-audiences.js';
 export {
   createBrandExplainabilityStore,
   type BrandExplainabilityStore,

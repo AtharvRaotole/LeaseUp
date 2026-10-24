@@ -40,6 +40,27 @@ export function pitchTradeAreaFacts(snapshot: PitchPackSnapshot): string[] {
   return lines;
 }
 
+export function pitchNearestStoreBriefLine(prospect: ProspectPack): string | null {
+  const km = prospect.nearestExistingStoreKm;
+  if (km === undefined) return null;
+  const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
+  return `Nearest ${name} is ${km.toFixed(1)} km away (All The Places store data).`;
+}
+
+export function isPitchRankSummaryLine(line: string): boolean {
+  const trimmed = line.trim();
+  if (/^#\d+ of \d+ brands we scored/i.test(trimmed)) return true;
+  if (/\btop \d+% for local shopper taste/i.test(trimmed)) return true;
+  return false;
+}
+
+export function isStoredAbsencePitchLine(line: string): boolean {
+  const lower = line.toLowerCase();
+  if (lower.includes('atp catalog')) return true;
+  if (/no .+ store within \d+ km/i.test(lower)) return true;
+  return false;
+}
+
 export function pitchBrandFitLines(
   prospect: ProspectPack,
   snapshot: PitchPackSnapshot
@@ -60,15 +81,21 @@ export function pitchBrandFitLines(
       verifiedCount: 0,
     },
   } as AnalysisResponse;
-  const lines = whyBrandBulletLines(prospect, stubResults, snapshot.radiusKm);
-  if (prospect.nearestExistingStoreKm !== undefined) {
-    const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
-    lines.push(`Nearest ${name} is ${prospect.nearestExistingStoreKm.toFixed(1)} km away.`);
-  }
-  for (const reason of prospect.reasons.slice(0, 3)) {
-    if (shouldShowStoredWhyLine(reason)) lines.push(reason.trim());
+  const lines = whyBrandBulletLines(prospect, stubResults, snapshot.radiusKm).filter(
+    (line) => !isPitchRankSummaryLine(line)
+  );
+  const nearest = pitchNearestStoreBriefLine(prospect);
+  if (nearest) lines.push(nearest);
+  for (const reason of prospect.reasons) {
+    if (shouldShowStoredWhyLine(reason)) {
+      lines.push(reason.trim());
+    }
   }
   return lines;
+}
+
+export function pitchListOrderLabel(listIndex: number): string {
+  return `Your list #${listIndex + 1}`;
 }
 
 export function pitchNextStepLine(brandName: string): string {
@@ -137,5 +164,7 @@ export function shouldShowStoredWhyLine(whyLine: string): boolean {
   if (lower.includes('taste-aware blend')) return false;
   if (/\btop \d+%\b/.test(lower) && lower.includes('rank')) return false;
   if (isNearestStoreDistanceLine(whyLine)) return false;
+  if (isPitchRankSummaryLine(whyLine)) return false;
+  if (isStoredAbsencePitchLine(whyLine)) return false;
   return whyLine.trim().length > 0;
 }

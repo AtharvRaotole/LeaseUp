@@ -61,7 +61,7 @@ describe('pitchCheckedSourcesLabel', () => {
 });
 
 describe('pitchBrandFitLines', () => {
-  it('includes rank, nearest store, and reasons', () => {
+  it('includes nearest store line and reasons without duplicating rank bullets', () => {
     const snapshot = {
       radiusKm: 10,
       rankingsTotal: 40,
@@ -83,8 +83,8 @@ describe('pitchBrandFitLines', () => {
       },
       snapshot as never
     );
-    expect(lines[0]).toContain('#3 of 40');
-    expect(lines.some((l) => l.includes('4.2 km'))).toBe(true);
+    expect(lines.some((l) => l.includes('#3 of 40'))).toBe(false);
+    expect(lines.some((l) => l.includes('4.2 km') && l.includes('All The Places'))).toBe(true);
     expect(lines.some((l) => l.includes('co-tenancy'))).toBe(true);
   });
 });

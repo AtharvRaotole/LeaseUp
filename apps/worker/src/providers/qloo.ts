@@ -6,6 +6,7 @@ import {
   seviervilleFixture,
   parseQlooAudienceRows,
   computeBrandLocalAudienceOverlap,
+  PITCH_AUDIENCE_CANDIDATE_MAX,
   TRADE_AREA_SHOPPER_TAG_SUBTYPES,
   type TradeAreaTasteRow,
 } from '@leaseup/fixtures/worker';
@@ -284,11 +285,14 @@ export class QlooClient {
         this.fetchAudienceInsights({ brandEntityId: params.brandEntityId, runId: params.runId }),
         this.fetchAudienceInsights({ location: params.location, runId: params.runId }),
       ]);
-      // Ranked by lift over the recorded brand panel; sensitive categories excluded; at most 2 rows.
+      // Ranked by lift over the recorded brand panel; sensitive categories excluded; trimmed per report later.
       const audiences = computeBrandLocalAudienceOverlap(
         parseQlooAudienceRows(brandJson),
         parseQlooAudienceRows(localJson),
-        { panelBaseline: params.panelBaseline }
+        {
+          panelBaseline: params.panelBaseline,
+          maxAudiences: PITCH_AUDIENCE_CANDIDATE_MAX,
+        }
       );
       if (audiences.length === 0) return null;
       return { tags: [], audiences };
