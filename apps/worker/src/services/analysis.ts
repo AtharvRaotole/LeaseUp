@@ -43,8 +43,10 @@ import { createStoreCatalog, type StoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
 import { brandCategoryLabel } from '../lib/brand-category';
 
-/** Live Qloo recording instant (Oct 22, 2026 ~11:36 PM US Eastern). */
-const DEMO_DATA_RECORDED_AT = '2026-10-23T03:36:00.000Z';
+import { OSM_SNAPSHOT_RECORDED_AT } from '../data/osm-snapshot-meta';
+
+/** Demo taste + store bundle timestamp (aligned with OSM snapshot meta). */
+const DEMO_DATA_RECORDED_AT = OSM_SNAPSHOT_RECORDED_AT;
 import { toOverpassSearchBrand } from '../lib/osm-brand-hints';
 import { OSM_WIKIDATA_BY_ENTITY } from '../data/osm-wikidata-map';
 import { overpassBrandMatchesSearch } from '../lib/osm-brand-match';
@@ -514,8 +516,10 @@ export class AnalysisService {
     const siteStratum = fixtureId ? demoFixtureStratum(fixtureId) : densityToDefaultStratum(siteDensity);
     const absenceRadiusKm = prospectAbsenceRadiusKm(siteStratum, radius);
     const presence = new NearbyPresenceCache(this.catalog, location);
+    const catalogBrandIds = new Set(this.catalog.getBrandIds());
     let alreadyNearbyCount = 0;
     for (const insight of insights) {
+      if (!catalogBrandIds.has(insight.entity_id)) continue;
       const nearby = await presence.storesNearby(insight.entity_id, absenceRadiusKm);
       if (nearby.length > 0) alreadyNearbyCount += 1;
     }

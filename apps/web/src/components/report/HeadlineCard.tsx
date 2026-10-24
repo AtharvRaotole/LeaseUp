@@ -4,8 +4,9 @@ import { InfoTooltip } from '../ui/InfoTooltip';
 import { dataConfidenceLabel, dataConfidenceSubtitle } from '../../lib/copy';
 import { placeHeadlineLabel } from '../../lib/location-label';
 import {
-  alreadyNearbyStatLabel,
-  alreadyNearbyStatTooltip,
+  rankingBacktestStatLabel,
+  rankingBacktestStatSubtitle,
+  rankingBacktestStatTooltip,
   brandsScoredStatTooltip,
   dataConfidenceStatTooltip,
 } from '../../lib/broker-copy';
@@ -27,7 +28,7 @@ export function HeadlineCard({
   const area = placeHeadlineLabel(results.location, chipSlug);
   const absenceKm = absenceRadiusKm(results, radiusKm);
   const activeBacktest = backtestOverride ?? results.backtest;
-  const hitLabel = alreadyNearbyStatLabel(activeBacktest);
+  const rankingCheckLabel = rankingBacktestStatLabel(activeBacktest);
   const analyzed = results.rankings?.length ?? 0;
   const baseline = results.backtestBaseline;
   const blendBacktest = results.backtestBlended ?? results.backtest;
@@ -45,12 +46,12 @@ export function HeadlineCard({
       </h2>
       <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 md:mt-7 md:gap-4">
         <StatTile
-          label="Nearby match"
-          mobileLabel="Nearby"
-          value={hitLabel}
-          subtitle={hitTieSubtitle ?? 'Top picks with a store in your radius'}
-          mobileSubtitle="Stores already in radius"
-          tooltip={alreadyNearbyStatTooltip(absenceKm)}
+          label="Ranking check"
+          mobileLabel="Rank check"
+          value={rankingCheckLabel}
+          subtitle={hitTieSubtitle ?? rankingBacktestStatSubtitle()}
+          mobileSubtitle="Top 10 vs stores nearby"
+          tooltip={rankingBacktestStatTooltip(absenceKm)}
         />
         <StatTile
           label="Brands scored"
