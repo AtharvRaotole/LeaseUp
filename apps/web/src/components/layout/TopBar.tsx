@@ -23,7 +23,7 @@ export function TopBar() {
       <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between px-4 md:px-6">
         <Link
           to="/"
-          className="rounded-control focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="inline-flex min-h-11 min-w-11 items-center rounded-control py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           aria-label="LeaseUp home"
         >
           <Logo size="sm" hideWordmarkFromA11y />
@@ -87,7 +87,7 @@ export function TopBar() {
             <li>
               <a
                 href="https://github.com/AtharvRaotole/LeaseUp"
-                className="block rounded-control px-2 py-2 text-ink hover:bg-surface-2"
+                className="flex min-h-11 items-center rounded-control px-3 text-ink hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 target="_blank"
                 rel="noreferrer"
               >

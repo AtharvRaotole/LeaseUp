@@ -130,7 +130,10 @@ export function BrandPage() {
       <main className="mx-auto max-w-[1280px] px-4 py-6 md:px-6">
         <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
           <div className="flex flex-col lg:col-span-5 lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto lg:pr-1">
-            <Link to="/brand" className="text-sm text-accent hover:underline">
+            <Link
+              to="/brand"
+              className="inline-flex min-h-11 items-center text-sm font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
+            >
               Change brand
             </Link>
             <h1 className="mt-2 font-display font-semibold text-h2 text-ink">
@@ -185,7 +188,7 @@ export function BrandPage() {
                         >
                           <div className="flex gap-3">
                             <span
-                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-white"
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-on-accent"
                               aria-hidden
                             >
                               {row.rank}
@@ -206,7 +209,7 @@ export function BrandPage() {
                               </p>
                               <Link
                                 to={row.reportPath}
-                                className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline"
+                                className="mt-2 inline-flex min-h-11 items-center gap-1 text-sm font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
                               >
                                 Site report
                                 <ArrowRight className="h-4 w-4" aria-hidden />
@@ -222,9 +225,9 @@ export function BrandPage() {
             </ErrorBoundary>
           </div>
 
-          <div className="lg:col-span-7 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)]">
+          <div className="max-lg:max-h-[min(52vh,400px)] lg:col-span-7 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:max-h-none">
             <ErrorBoundary>
-              <Card className="flex h-full flex-col overflow-hidden p-0">
+              <Card className="flex h-full min-h-[280px] flex-col overflow-hidden p-0 lg:min-h-0">
                 {isLoading ? (
                   <Skeleton className="min-h-[360px] flex-1 w-full" />
                 ) : data ? (

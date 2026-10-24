@@ -1,0 +1,389 @@
+{
+  "light": [
+    {
+      "label": "light-landing",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        },
+        {
+          "w": 160,
+          "h": 40,
+          "tid": "AllApparelFood and drinkBeautyFitnessHom"
+        }
+      ]
+    },
+    {
+      "label": "light-report-wicker",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        },
+        {
+          "w": 55,
+          "h": 18,
+          "tid": "Dismiss demo notice"
+        },
+        {
+          "w": 102,
+          "h": 34,
+          "tid": "Trade area: 10 km area"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        },
+        {
+          "w": 36,
+          "h": 36,
+          "tid": "More actions"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        }
+      ]
+    },
+    {
+      "label": "light-report-boulder",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        },
+        {
+          "w": 55,
+          "h": 18,
+          "tid": "Dismiss demo notice"
+        },
+        {
+          "w": 102,
+          "h": 34,
+          "tid": "Trade area: 10 km area"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        },
+        {
+          "w": 36,
+          "h": 36,
+          "tid": "More actions"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        }
+      ]
+    },
+    {
+      "label": "light-demo-pitch",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        }
+      ]
+    },
+    {
+      "label": "light-methodology",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        }
+      ]
+    },
+    {
+      "label": "light-pipeline",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        }
+      ]
+    },
+    {
+      "label": "light-watchlist",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        }
+      ]
+    },
+    {
+      "label": "light-portfolio",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        }
+      ]
+    },
+    {
+      "label": "light-brand",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        },
+        {
+          "w": 358,
+          "h": 20,
+          "tid": "Change brand"
+        },
+        {
+          "w": 358,
+          "h": 40,
+          "tid": "ChicagoNew York CityLos AngelesDallasDen"
+        },
+        {
+          "w": 90,
+          "h": 20,
+          "tid": "Site report"
+        },
+        {
+          "w": 90,
+          "h": 20,
+          "tid": "Site report"
+        },
+        {
+          "w": 90,
+          "h": 20,
+          "tid": "Site report"
+        }
+      ]
+    }
+  ],
+  "dark": [
+    {
+      "label": "dark-landing",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        },
+        {
+          "w": 160,
+          "h": 40,
+          "tid": "AllApparelFood and drinkBeautyFitnessHom"
+        }
+      ]
+    },
+    {
+      "label": "dark-report-wicker",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        },
+        {
+          "w": 55,
+          "h": 18,
+          "tid": "Dismiss demo notice"
+        },
+        {
+          "w": 102,
+          "h": 34,
+          "tid": "Trade area: 10 km area"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        },
+        {
+          "w": 36,
+          "h": 36,
+          "tid": "More actions"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        }
+      ]
+    },
+    {
+      "label": "dark-report-boulder",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        },
+        {
+          "w": 55,
+          "h": 18,
+          "tid": "Dismiss demo notice"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        },
+        {
+          "w": 24,
+          "h": 24,
+          "tid": "info-tooltip-trigger"
+        }
+      ]
+    },
+    {
+      "label": "dark-demo-pitch",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        }
+      ]
+    },
+    {
+      "label": "dark-methodology",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        }
+      ]
+    },
+    {
+      "label": "dark-pipeline",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        }
+      ]
+    },
+    {
+      "label": "dark-watchlist",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        }
+      ]
+    },
+    {
+      "label": "dark-portfolio",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        }
+      ]
+    },
+    {
+      "label": "dark-brand",
+      "overflow": false,
+      "smallTargets": [
+        {
+          "w": 89,
+          "h": 26,
+          "tid": "LeaseUp home"
+        },
+        {
+          "w": 358,
+          "h": 20,
+          "tid": "Change brand"
+        },
+        {
+          "w": 358,
+          "h": 40,
+          "tid": "ChicagoNew York CityLos AngelesDallasDen"
+        },
+        {
+          "w": 90,
+          "h": 20,
+          "tid": "Site report"
+        },
+        {
+          "w": 90,
+          "h": 20,
+          "tid": "Site report"
+        },
+        {
+          "w": 90,
+          "h": 20,
+          "tid": "Site report"
+        }
+      ]
+    }
+  ]
+}

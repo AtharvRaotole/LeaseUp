@@ -33,8 +33,8 @@ Preregistered adaptive-radius study on `/methodology` (see `packages/fixtures/sr
 
 | Claim | Value |
 | --- | --- |
-| Same-size tier AUC (mean per-address stratified) | **0.667** [0.646, 0.689] |
-| Mean top-10 presence, taste-aware logistic blend | **82%** (+6.2 pp vs chain, 95% CI 2.8 to 9.3) |
+| Same-size tier AUC (mean per-address stratified) | **0.664** [0.642, 0.687] |
+| Mean top-10 presence, taste-aware logistic blend | **83%** (82.5% exact; +6.5 pp vs chain, 95% CI 3.3 to 9.3) |
 | Mean top-10 presence, chain size alone | **76%** |
 | Raw Qloo affinity order (mean top-10) | **54%** (does **not** beat chain size) |
 | Random baseline P@10 (adaptive radius) | **29%** |
