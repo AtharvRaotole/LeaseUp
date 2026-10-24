@@ -243,6 +243,18 @@ export const StrictEvalSnapshotSchema = z.object({
 
 export type StrictEvalSnapshot = z.infer<typeof StrictEvalSnapshotSchema>;
 
+export const ProspectFunnelSchema = z.object({
+  brandsScored: z.number().int(),
+  searchRadiusKm: z.number(),
+  absenceRadiusKm: z.number(),
+  alreadyNearbyCount: z.number().int(),
+  strongFitAbsentCount: z.number().int(),
+  pitchedCount: z.number().int(),
+  verifiedCount: z.number().int(),
+});
+
+export type ProspectFunnel = z.infer<typeof ProspectFunnelSchema>;
+
 export const AnalysisResponseSchema = z.object({
   location: LocationSchema,
   backtest: BacktestResultSchema,
@@ -269,6 +281,7 @@ export const AnalysisResponseSchema = z.object({
   tasteDataStatus: z.enum(['ok', 'unavailable']).optional(),
   /** Plain-language ranking disclaimer when tasteDataStatus is unavailable. */
   rankingNotice: z.string().optional(),
+  prospectFunnel: ProspectFunnelSchema.optional(),
 });
 
 export type AnalysisResponse = z.infer<typeof AnalysisResponseSchema>;
