@@ -35,6 +35,9 @@ const body = `/** Auto-generated */\nexport const BRAND_DISPLAY_BY_ID: Record<st
 const workerOut = join(root, 'apps/worker/src/data/brand-display-map.ts');
 const webOut = join(root, 'apps/web/src/data/brand-display-map.ts');
 writeFileSync(workerOut, body);
-writeFileSync(webOut, body);
+// Web keeps a committed copy; do not write during worker build (parallel web tsc races on this file).
+if (process.env.WRITE_WEB_BRAND_DISPLAY === '1') {
+  writeFileSync(webOut, body);
+  console.log('Wrote', webOut);
+}
 console.log('Wrote', workerOut);
-console.log('Wrote', webOut);
