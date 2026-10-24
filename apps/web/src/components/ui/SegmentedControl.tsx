@@ -22,7 +22,7 @@ export function SegmentedControl<T extends string>({
             data-testid={opt.testId}
             onClick={() => onChange(opt.value)}
             className={cn(
-              'ui-transition min-h-11 min-w-[2.75rem] px-3 rounded-[6px] text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-2',
+              'ui-transition min-h-11 min-w-[2.75rem] whitespace-nowrap px-2.5 sm:px-3 rounded-[6px] text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-2',
               value === opt.value
                 ? 'border border-border-strong bg-surface text-ink'
                 : 'border border-transparent text-ink-2 hover:text-ink'

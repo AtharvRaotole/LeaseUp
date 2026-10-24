@@ -176,6 +176,28 @@
   z-index: 1;
 }
 
+@media (max-width: 767px) {
+  .premium-hero-glow::before {
+    top: 0;
+    width: 130vw;
+    height: 72%;
+    background: radial-gradient(
+      ellipse 92% 58% at 50% 14%,
+      color-mix(in srgb, var(--glow-steel) 68%, transparent) 0%,
+      color-mix(in srgb, var(--glow-indigo) 50%, transparent) 34%,
+      color-mix(in srgb, var(--glow-mauve) 40%, transparent) 54%,
+      transparent 74%
+    );
+  }
+
+  .premium-hero-glow::after {
+    top: 0;
+    width: 130vw;
+    height: 68%;
+    mask-image: radial-gradient(ellipse 90% 56% at 50% 16%, black 0%, transparent 72%);
+  }
+}
+
 .frame-hairline {
   border: 1px solid var(--border);
 }

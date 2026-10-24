@@ -104,9 +104,9 @@ function StatTile({
   tooltip: string;
 }) {
   return (
-    <div className="flex min-w-0 flex-col rounded-control border border-border bg-surface-2 px-2.5 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-3.5">
-      <p className="flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[10px] font-medium uppercase leading-snug tracking-wide text-ink-3 sm:text-meta md:text-label">
-        <span className="min-w-0 flex-1 whitespace-normal">{label}</span>
+    <div className="flex min-w-[8.5rem] flex-col rounded-control border border-border bg-surface-2 px-2.5 py-2.5 sm:min-w-0 sm:px-3 sm:py-3 md:px-4 md:py-3.5">
+      <p className="flex items-center gap-x-1 text-[10px] font-medium uppercase leading-none tracking-[0.04em] text-ink-3 sm:text-meta sm:tracking-wide md:text-label">
+        <span className="whitespace-nowrap">{label}</span>
         <InfoTooltip label={tooltip} />
       </p>
       <p className="mt-0.5 truncate text-body font-semibold tabular-nums text-ink sm:mt-1 sm:text-body-lg md:text-h3">

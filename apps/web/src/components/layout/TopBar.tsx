@@ -20,7 +20,7 @@ export function TopBar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-bg/85 backdrop-blur-md">
+    <header className="sticky top-0 z-30 border-b border-border bg-bg backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-content items-center justify-between px-4 md:px-6">
         <Link
           to="/"

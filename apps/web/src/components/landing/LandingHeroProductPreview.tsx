@@ -9,7 +9,7 @@ import {
 export function LandingHeroProductPreview() {
   return (
     <div
-      className="mx-auto w-full min-w-0 max-w-[600px] overflow-hidden lg:mx-0 xl:max-w-[640px]"
+      className="mx-auto w-full min-w-0 max-w-[min(100%,520px)] overflow-hidden lg:mx-0 lg:max-w-full xl:max-w-[500px]"
       data-testid="landing-hero-product-preview"
     >
       <Link

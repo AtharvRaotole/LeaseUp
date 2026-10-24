@@ -76,8 +76,8 @@ export function LandingPage() {
       <main id="main-content" className="outline-none">
         <section className="premium-hero-glow border-b border-border bg-bg">
           <div className="mx-auto max-w-content px-4 pb-16 pt-[12vh] md:px-6 md:pb-20 md:pt-[14vh]">
-            <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(300px,560px)] lg:items-center lg:gap-8 xl:grid-cols-[minmax(0,1fr)_600px] xl:gap-12">
-              <div className="min-w-0">
+            <div className="lg:grid lg:grid-cols-[minmax(0,1.12fr)_minmax(280px,0.88fr)] lg:items-start lg:gap-8 xl:grid-cols-[minmax(0,1.15fr)_minmax(300px,520px)] xl:gap-10">
+              <div className="min-w-0 lg:pr-2">
             <div className="mx-auto max-w-[640px] text-center lg:mx-0 lg:text-left">
               <h1 className="font-display font-medium text-[clamp(1.75rem,4.5vw,2.5rem)] leading-[1.15] tracking-tight text-ink">
                 {LANDING_HEADLINE}
@@ -118,7 +118,7 @@ export function LandingPage() {
                   Analyze
                 </Button>
               </div>
-              <div className="mt-2.5 flex flex-wrap items-end gap-x-3 gap-y-2 lg:flex-nowrap">
+              <div className="mt-2.5 flex flex-wrap items-end gap-x-3 gap-y-2">
                 <SegmentedControl
                   label="Trade area"
                   value={radiusKm}
@@ -134,28 +134,28 @@ export function LandingPage() {
                   value={category}
                   onChange={(v) => setCategory(v as CategoryKey)}
                   options={CATEGORY_OPTIONS.map((c) => ({ value: c.key, label: c.label }))}
-                  className="min-w-[148px] shrink-0"
+                  className="min-w-[140px] max-w-full shrink-0 sm:min-w-[148px]"
                 />
-                <button
-                  type="button"
-                  data-testid="landing-run-prospecting"
-                  className="mb-0.5 inline-flex min-h-11 shrink-0 items-center text-small font-medium text-accent-muted underline decoration-accent/70 underline-offset-2 transition-colors hover:text-accent hover:decoration-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface rounded-control lg:ml-auto"
-                  onClick={() => {
-                    const trimmed = address.trim();
-                    if (!trimmed) return;
-                    void startProspectingJob({
-                      address: trimmed,
-                      radius: Number(radiusKm),
-                      categoryTags: categoryToTags(category),
-                    }).then((id) => navigate(`/prospect/${id}`));
-                  }}
-                >
-                  Run full prospecting
-                </button>
               </div>
+              <button
+                type="button"
+                data-testid="landing-run-prospecting"
+                className="mt-1 inline-flex min-h-11 w-full items-center justify-start text-small font-medium text-accent-muted underline decoration-accent/70 underline-offset-2 transition-colors hover:text-accent hover:decoration-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface rounded-control sm:w-auto"
+                onClick={() => {
+                  const trimmed = address.trim();
+                  if (!trimmed) return;
+                  void startProspectingJob({
+                    address: trimmed,
+                    radius: Number(radiusKm),
+                    categoryTags: categoryToTags(category),
+                  }).then((id) => navigate(`/prospect/${id}`));
+                }}
+              >
+                Run full prospecting
+              </button>
             </form>
 
-            <div className="mx-auto mt-6 flex w-full max-w-[640px] flex-nowrap gap-2 overflow-x-auto pb-0.5 lg:mx-0 lg:max-w-none lg:overflow-visible">
+            <div className="mx-auto mt-6 flex w-full max-w-[640px] flex-wrap gap-2 lg:mx-0 lg:max-w-none">
               {LANDING_DEMO_CHIPS.map((chip) => (
                 <button
                   key={chip.id}
