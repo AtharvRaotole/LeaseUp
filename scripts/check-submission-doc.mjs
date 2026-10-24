@@ -118,6 +118,16 @@ const checks = [
     'walkthrough pending re-record',
     submission.includes('pending re-record') || submission.includes('Walkthrough video pending re-record'),
   ],
+  ['deploy34 production label', submission.includes('deploy34')],
+  [
+    'agent receipt documented',
+    submission.includes('Agent receipt') && submission.includes('agent-receipt'),
+  ],
+  [
+    'prospecting planner budgets',
+    submission.includes('PROSPECTING_AGENT_MAX_STEPS') ||
+      (submission.includes('6') && submission.includes('3') && submission.includes('gpt-4o-mini')),
+  ],
 ];
 
 let failed = 0;
