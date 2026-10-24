@@ -1,11 +1,16 @@
 import type { ProspectPack } from '@leaseup/contracts';
 import type { BacktestResult } from '@leaseup/contracts';
-import { DEMO_ADAPTIVE_PROOF_AGG } from '@leaseup/fixtures';
+import {
+  COHORT_EVAL_AGG,
+  cohortSiteCount,
+  formatP10PercentRounded,
+  cohortBlendLiftPpLabel,
+} from '@leaseup/fixtures';
 import { presentInTop10Count } from './hit-rate';
 
-const RANKING_EVAL_BLEND_PCT = Math.round(DEMO_ADAPTIVE_PROOF_AGG.p10_blend * 100);
-const RANKING_EVAL_CHAIN_PCT = Math.round(DEMO_ADAPTIVE_PROOF_AGG.p10_chain * 100);
-const RANKING_EVAL_SITE_COUNT = DEMO_ADAPTIVE_PROOF_AGG.n_sites;
+const RANKING_EVAL_BLEND_PCT = formatP10PercentRounded(COHORT_EVAL_AGG.p10_blend);
+const RANKING_EVAL_CHAIN_PCT = formatP10PercentRounded(COHORT_EVAL_AGG.p10_chain);
+const RANKING_EVAL_SITE_COUNT = cohortSiteCount();
 
 /** Plain-English line shown on landing and at the top of every report. */
 export const REPORT_PLAIN_SUMMARY =
@@ -151,9 +156,9 @@ export function proofSectionLead(present: number, radiusKm: number): string {
 
 export function rankingModeExplainerSentence(mode: 'qloo' | 'baseline'): string {
   if (mode === 'baseline') {
-    return `Ranked by national chain size only, without the local taste blend. In our ${RANKING_EVAL_SITE_COUNT}-neighborhood test, ${RANKING_EVAL_CHAIN_PCT}% of top-10 picks already had a store in similar areas.`;
+    return `Ranked by national chain size only, without the local taste blend. In our ${RANKING_EVAL_SITE_COUNT}-neighborhood test, ${RANKING_EVAL_CHAIN_PCT} of top-10 picks already had a store in similar areas.`;
   }
-  return `Ranked by local taste plus chain size. In our ${RANKING_EVAL_SITE_COUNT}-neighborhood test, ${RANKING_EVAL_BLEND_PCT}% of top-10 picks already had a store in similar areas, vs ${RANKING_EVAL_CHAIN_PCT}% using chain size alone.`;
+  return `Ranked by local taste plus chain size. In our ${RANKING_EVAL_SITE_COUNT}-neighborhood test, ${RANKING_EVAL_BLEND_PCT} of top-10 picks already had a store in similar areas, vs ${RANKING_EVAL_CHAIN_PCT} using chain size alone (${cohortBlendLiftPpLabel()} vs chain on the cohort).`;
 }
 
 export function rankingModeTooltip(mode: 'qloo' | 'baseline'): string {
