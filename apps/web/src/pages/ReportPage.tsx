@@ -282,6 +282,11 @@ export function ReportPage() {
     return reportShareHead(results, request.radius, canonicalPath, searchParams.toString());
   }, [results, request, slug, searchParams]);
 
+  const pitchProspects = useMemo(
+    () => (results ? orderProspectsForRankingMode(results, rankingMode) : []),
+    [results, rankingMode]
+  );
+
   if (!request) return null;
 
   const displayError: ApiErrorInfo | null = simulateError
@@ -296,11 +301,6 @@ export function ReportPage() {
     (rankingMode === 'baseline' && results.backtestBaseline
       ? results.backtestBaseline
       : results.backtest);
-
-  const pitchProspects = useMemo(
-    () => (results ? orderProspectsForRankingMode(results, rankingMode) : []),
-    [results, rankingMode]
-  );
 
   const reportSections = results && (
     <div className="report-content-enter space-y-8 text-body">
