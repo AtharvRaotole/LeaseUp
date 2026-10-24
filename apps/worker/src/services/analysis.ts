@@ -75,6 +75,7 @@ import {
   osmSnapshotRecordedAt,
 } from './osm-snapshot-catalog';
 import { loadTradeAreaTasteForProspect } from '../lib/trade-area-taste';
+import { enrichProspectWhyBrandTaste } from '../lib/why-brand-taste-enrichment';
 import { getResponseCache } from '../lib/worker-cache';
 import type { ResponseCache } from '../lib/response-cache';
 import { tryAcquireOverpassRefreshLock } from '../lib/overpass-refresh-lock';
@@ -377,7 +378,13 @@ export class AnalysisService {
           ANALYZE_ENRICHMENT_QLOO_BUDGET_MS,
           'trade-area taste enrichment'
         );
-        if (tasteEnriched) enrichedProspects = tasteEnriched;
+        if (tasteEnriched) {
+          enrichedProspects = await Promise.all(
+            tasteEnriched.map((pack) =>
+              enrichProspectWhyBrandTaste(pack, this.openai, this.mode)
+            )
+          );
+        }
       }
 
       const tradeAreaShoppers = await withSoftTimeout(

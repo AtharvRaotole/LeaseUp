@@ -1,0 +1,266 @@
+{
+  "chip": "sevierville",
+  "location": {
+    "latitude": 35.8365438,
+    "longitude": -83.5589482
+  },
+  "radiusKm": 10,
+  "audiences": [
+    {
+      "entityId": "604A723B-3E2C-4795-89AA-DF5BA0C3B3C5",
+      "name": "Arts Crafts",
+      "affinity": 0.9985208844682151
+    },
+    {
+      "entityId": "31C1423A-6A88-4028-ADEC-C3042BE765B9",
+      "name": "American Football",
+      "affinity": 0.9976029803958399
+    },
+    {
+      "entityId": "9D25E87E-030C-4EE7-B049-F24967AAD596",
+      "name": "Racial Justice",
+      "affinity": 0.9949838690661208
+    },
+    {
+      "entityId": "2EE4FA44-9A90-470F-839F-2CF54A273E59",
+      "name": "Fair Wages",
+      "affinity": 0.994148168376702
+    },
+    {
+      "entityId": "9130A837-ED3C-4BA9-9825-5D0D57D119CD",
+      "name": "Home Organization",
+      "affinity": 0.9934297259348975
+    },
+    {
+      "entityId": "E8694D82-FE70-4EA5-A87B-53B90607EA75",
+      "name": "Baseball",
+      "affinity": 0.9885390137386424
+    },
+    {
+      "entityId": "53E66B25-2B9E-4821-8257-65F66B62DD80",
+      "name": "Basketball",
+      "affinity": 0.9859900655732756
+    },
+    {
+      "entityId": "803132BB-07E8-4D55-A37D-8B9EFB3E095F",
+      "name": "Video Gamer",
+      "affinity": 0.9789880263977946
+    },
+    {
+      "entityId": "8F0407D3-64F3-47BF-A6B1-BA4C30465F71",
+      "name": "Health And Beauty",
+      "affinity": 0.9762436266687315
+    },
+    {
+      "entityId": "5F4CF648-08CD-4031-A17E-491E90A4DD4C",
+      "name": "Astrology",
+      "affinity": 0.9758839858948113
+    },
+    {
+      "entityId": "B48DAA8A-7398-4C76-9DB0-80E12669ABFD",
+      "name": "Mental Health",
+      "affinity": 0.9746725069285854
+    },
+    {
+      "entityId": "555258C9-2696-496A-B1C1-C46A6F7795C8",
+      "name": "Politically Conservative",
+      "affinity": 0.9745165811862403
+    },
+    {
+      "entityId": "1B095F7B-1A06-4F65-AE32-BB9E9EAC26D6",
+      "name": "Dance",
+      "affinity": 0.9709529640007304
+    },
+    {
+      "entityId": "2A7B1369-BF0D-46E2-AAEE-780817162FF4",
+      "name": "Christianity",
+      "affinity": 0.9686341824991223
+    },
+    {
+      "entityId": "0E757BF5-3C77-41AF-AAB7-790AEB0505B7",
+      "name": "Finance Professional",
+      "affinity": 0.9644261996377239
+    },
+    {
+      "entityId": "6BED625C-E312-47E9-A4B5-F978C7778269",
+      "name": "LGBTQ",
+      "affinity": 0.9631181272211006
+    },
+    {
+      "entityId": "A8A43978-5291-46DC-8952-D58EDC7FF82B",
+      "name": "Black",
+      "affinity": 0.9621162971783992
+    },
+    {
+      "entityId": "ED9B04EF-C693-44C8-82DE-C2B138710601",
+      "name": "Jewellery",
+      "affinity": 0.9618002336573811
+    },
+    {
+      "entityId": "439B29E4-F9B2-4FA7-8095-123F6833DE5F",
+      "name": "Spirituality",
+      "affinity": 0.961119455389537
+    },
+    {
+      "entityId": "965CD575-A0AD-4128-88B6-DE0C599D644F",
+      "name": "Tattoos",
+      "affinity": 0.9608355930931736
+    },
+    {
+      "entityId": "EEFA88EB-0D5D-4290-B0AB-F7840DE970DB",
+      "name": "Running",
+      "affinity": 0.9570842131212554
+    },
+    {
+      "entityId": "DBDCB7B7-B015-425F-9C3E-619C9C4245EB",
+      "name": "Adventuring",
+      "affinity": 0.9570138052568432
+    },
+    {
+      "entityId": "D4B24E84-C439-4D7C-B2DC-92F7C704DE76",
+      "name": "Sneakerheads",
+      "affinity": 0.9557122798743823
+    },
+    {
+      "entityId": "14F62034-5661-4B52-822B-D2D88A3D1B02",
+      "name": "Wine Enthusiast",
+      "affinity": 0.9552299595922786
+    },
+    {
+      "entityId": "D1F0EE4A-FDB3-48DC-919C-5A94F3D4EC85",
+      "name": "Cooking",
+      "affinity": 0.9506497280411864
+    },
+    {
+      "entityId": "A2F107FD-2A38-4100-AFFB-037A6A2DF338",
+      "name": "Politically Center",
+      "affinity": 0.948822338867762
+    },
+    {
+      "entityId": "566BE3C4-C712-4B76-916D-2EFC0D26BD81",
+      "name": "Golf",
+      "affinity": 0.9471269788529352
+    },
+    {
+      "entityId": "539308D1-B0B5-4C9D-8B67-E7B565B59B09",
+      "name": "Political Junkie",
+      "affinity": 0.9469410567406226
+    },
+    {
+      "entityId": "3A9990DA-AA86-4934-AC8D-4088E91700AA",
+      "name": "News Junkie",
+      "affinity": 0.9445854066913133
+    },
+    {
+      "entityId": "E7EC95B5-91D3-4B36-90CD-868680D13C93",
+      "name": "Casual Escapists",
+      "affinity": 0.9432568603591999
+    },
+    {
+      "entityId": "DA61B8AD-6D79-4B0C-BEA0-EC966C93902E",
+      "name": "AAPI",
+      "affinity": 0.9431152301598599
+    },
+    {
+      "entityId": "F854077D-E466-4181-A7E4-4CDA52981EA2",
+      "name": "Healthy Eating",
+      "affinity": 0.9415856547229874
+    },
+    {
+      "entityId": "AFA24856-F432-40E3-AADF-C939A033F77E",
+      "name": "Coffee",
+      "affinity": 0.9413578923675495
+    },
+    {
+      "entityId": "F488B2E4-21FE-4AFA-8B2E-0DA5A0F4E756",
+      "name": "Yoga",
+      "affinity": 0.9397314011940107
+    },
+    {
+      "entityId": "784D31A2-99A5-4E8C-8B89-047B01760CC2",
+      "name": "Animal Issues",
+      "affinity": 0.9357684521914702
+    },
+    {
+      "entityId": "8371AF94-2F4C-4139-BC87-E3FBEA695D88",
+      "name": "Museums",
+      "affinity": 0.9348686991315016
+    },
+    {
+      "entityId": "B374F423-E1E6-4783-AA1E-48A6B2B5635F",
+      "name": "Discount Shoppers",
+      "affinity": 0.9328824531881371
+    },
+    {
+      "entityId": "689CB6FD-E1A9-4B06-9932-3093B8F61A97",
+      "name": "Tennis",
+      "affinity": 0.9318456676939882
+    },
+    {
+      "entityId": "61D4EAAB-8591-4CCC-BEFC-5F0D18C4F3BD",
+      "name": "Music Festivals",
+      "affinity": 0.9317891938820352
+    },
+    {
+      "entityId": "D3839B31-2A5F-4DA3-8C04-528D9611039E",
+      "name": "Organic Ingredients",
+      "affinity": 0.9293347195575515
+    },
+    {
+      "entityId": "2EFF1AB9-814F-48D2-B2DE-D418ED8385AE",
+      "name": "Avid Reader",
+      "affinity": 0.925042069046828
+    },
+    {
+      "entityId": "9D36D8C6-B39C-48AE-87A6-F63E59328577",
+      "name": "Racing",
+      "affinity": 0.9243651072636323
+    },
+    {
+      "entityId": "F86C9FE1-16D1-4CFA-8E33-77AD4FEDBB60",
+      "name": "Foodie",
+      "affinity": 0.9232437844235934
+    },
+    {
+      "entityId": "73B662F7-7DB7-4D0C-A36B-2E8E75ACDF49",
+      "name": "Hiking",
+      "affinity": 0.9230109647477465
+    },
+    {
+      "entityId": "1D7AF41D-8ECF-414C-B6C9-7CA9FA276DBD",
+      "name": "Adrenaline Rushers",
+      "affinity": 0.9184867934024948
+    },
+    {
+      "entityId": "B3A035FD-0D99-4980-98FD-A5B81D7E402A",
+      "name": "Politically Progressive",
+      "affinity": 0.9176667687035776
+    },
+    {
+      "entityId": "1C3735D4-FE2D-4CDE-811A-9B2BFE767DAD",
+      "name": "Meditation",
+      "affinity": 0.9164767438085568
+    },
+    {
+      "entityId": "7553AEF3-0213-4419-8C17-E4CDF28B2BB0",
+      "name": "Vintage Apparel",
+      "affinity": 0.9151866579491742
+    },
+    {
+      "entityId": "7F86E72A-AF3C-4AA9-B125-7155E9261466",
+      "name": "Home Decor",
+      "affinity": 0.911328095692344
+    },
+    {
+      "entityId": "E47478B9-8ED2-449B-B854-6344059742E3",
+      "name": "Latino",
+      "affinity": 0.9095525957720244
+    }
+  ],
+  "provenance": {
+    "recordedAt": "2026-10-24T07:01:35.368Z",
+    "host": "https://hackathon.api.qloo.com",
+    "url": "https://hackathon.api.qloo.com/v2/insights?filter.type=urn%3Aaudience&signal.location=POINT%28-83.5589482+35.8365438%29&signal.location.radius=10000&take=50",
+    "live": true
+  }
+}

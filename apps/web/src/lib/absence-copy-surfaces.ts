@@ -1,5 +1,6 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
-import { absenceVerificationSummary } from './absence-verification-copy';
+import { absenceVerificationSummary, whyCardStoreCheckLine } from './absence-verification-copy';
+import { analysisStoreDataDateLabel } from './store-data-dates';
 import { brandsToPitchDistanceLine } from './brands-to-pitch-copy';
 import { reportHeadlineLine } from './report-headline-copy';
 import { placeHeadlineLabel } from './location-label';
@@ -18,6 +19,7 @@ export function absenceClaimTextsForProspect(
     reportHeadlineLine(results, area, searchRadiusKm),
     brandsToPitchDistanceLine(prospect, results, searchRadiusKm),
     absenceVerificationSummary(prospect, searchRadiusKm, results),
+    whyCardStoreCheckLine(prospect, searchRadiusKm, results, analysisStoreDataDateLabel(results)),
     ...pitchExpandedLines(prospect, results, searchRadiusKm),
     ...prospect.reasons,
   ];

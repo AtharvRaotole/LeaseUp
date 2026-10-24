@@ -72,6 +72,13 @@ function entityIdBlocked(entityId: string): boolean {
   );
 }
 
+/** True when a Qloo tag or audience is a known non-retail theme (hotel, self help, politics...). */
+export function isNonRetailTasteName(row: Pick<TasteRowInput, 'name'> & { entityId?: string }): boolean {
+  const raw = row.name?.trim();
+  if (!raw) return true;
+  return entityIdBlocked(row.entityId ?? '') || NON_RETAIL_NAMES.has(normalizeKey(raw));
+}
+
 /**
  * Map one Qloo tag or audience name to a retail-relevant shopper label, or null to omit.
  */
