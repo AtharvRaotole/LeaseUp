@@ -1,3 +1,5 @@
+import { cohortExplainerHowRankedBody, cohortExplainerLimitsBody } from '@leaseup/fixtures';
+
 /** Plain-language Qloo explainer for brokers (no em or en dashes in strings). */
 export const QLOO_BROKER_EXPLAINER = {
   title: 'How LeaseUp uses Qloo',
@@ -16,8 +18,7 @@ export const QLOO_BROKER_EXPLAINER = {
     },
     {
       heading: 'How brands get ranked',
-      body:
-        'Raw Qloo scores alone repeat similar lifestyle brands in every city and do not beat sorting by chain size on mean P@10 (54% vs 76% on 40 US addresses). LeaseUp ships a fitted taste blend (83% vs 76%) and highlights lift when you order within a chain-size tier (for example mid-size P@5 53% vs 23%).',
+      body: cohortExplainerHowRankedBody(),
     },
     {
       heading: 'What we show on the report',
@@ -26,8 +27,7 @@ export const QLOO_BROKER_EXPLAINER = {
     },
     {
       heading: 'Limits you should know',
-      body:
-        'Raw Qloo order alone is weaker than sorting by national chain size on our 40-address backtest (about 54% vs 76% top-10 presence per ATP/OSM). The product leans on the taste blend (about 83% vs 76%) and on ranking within similar chain sizes. Map checks are helpful but not perfect: we corrected four mistaken absence labels found across 13 audited sites, yet a store can still be missing if it is not in All The Places or our OpenStreetMap snapshot (OSM covers 25 of 227 chains on demo chips).',
+      body: cohortExplainerLimitsBody(),
     },
     {
       heading: 'If Qloo is temporarily down',

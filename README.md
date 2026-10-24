@@ -112,7 +112,7 @@ Demo mode serves recorded responses for the three chip addresses only; other add
 ## Accuracy and honesty
 
 - **Backtest:** Among brands Qloo returns that we also track in All The Places, we count how many of the top 10 already have a store within your radius. Demo hit rates on the homepage are computed from fixtures (`packages/fixtures`), not hand-edited.
-- **40-address live eval (Oct 2026, OSM-retiled ground truth):** raw Qloo **P@10 0.54**, chain size **0.76**, logistic blend **0.82** (**+6.2** pp vs chain), same-size tier AUC **0.667** [0.646, 0.689]. Raw Qloo does not beat chain size on mean top-10 presence. Write-up: `data/qloo-eval-40/QLOO_LIFT_EVAL.md`.
+- **40-address live eval (Oct 2026, OSM-retiled ground truth):** raw Qloo **P@10 0.54**, chain size **0.76**, logistic blend **0.825** (**+6.5** pp vs chain), same-size tier AUC **0.664** [0.642, 0.687]. Raw Qloo does not beat chain size on mean top-10 presence. Write-up: `data/qloo-eval-40/QLOO_LIFT_EVAL.md`.
 - **Verification labels** on the report reflect ATP matches and OSM snapshot checks where recorded; single-source rows are marked accordingly.
 - **Limits:** We track on the order of 200 major chains in the embedded ATP snapshot, not every retailer. Cross-batch Qloo affinity ordering is an assumption when more than 45 brand IDs are requested. Heatmaps appear only when Qloo returns cells in live mode.
 

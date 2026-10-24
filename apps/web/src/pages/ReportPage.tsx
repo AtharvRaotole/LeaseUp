@@ -64,9 +64,10 @@ import { pipelineCardFromProspect } from '../lib/build-pipeline-card';
 import { activeBacktestForRankingMode } from '../lib/ranking-production';
 import { orderProspectsForRankingMode } from '../lib/ranking-mode';
 
-const ReportFirstRunTour = lazy(() =>
-  import('../components/report/ReportFirstRunTour').then((m) => ({ default: m.ReportFirstRunTour }))
-);
+import {
+  ReportFirstRunTourProvider,
+  ReportTourHintInline,
+} from '../components/report/ReportFirstRunTour';
 
 type MobilePane = 'report' | 'map';
 
@@ -306,24 +307,26 @@ export function ReportPage() {
     results && activeBacktestForRankingMode(results, rankingMode);
 
   const reportSections = results && (
-    <div className="report-content-enter space-y-8 text-body">
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <div className="print-pitch-block space-y-6">
-          <ReportSummaryAboveFold
-            results={results}
-            request={request}
-            slug={slug ?? 'run'}
-            radiusKm={request.radius}
-            chipSlug={slug}
-            backtestOverride={activeBacktest ?? undefined}
-            pitchProspects={pitchProspects}
-            rankingMode={rankingMode}
-            selected={selected}
-            onSelectBrand={selectProspect}
-            onSharePitch={() => setSharePitchOpen(true)}
-            vacancyInput={vacancyInput}
-            onVacancyChange={handleVacancyChange}
-          />
+    <ReportFirstRunTourProvider ready={deferPostPaint && results.prospects.length > 0}>
+      <div className="report-content-enter space-y-8 text-body">
+        {deferPostPaint && <ReportTourHintInline />}
+        <ErrorBoundary fallback={<SectionUnavailable />}>
+          <div className="print-pitch-block space-y-6">
+            <ReportSummaryAboveFold
+              results={results}
+              request={request}
+              slug={slug ?? 'run'}
+              radiusKm={request.radius}
+              chipSlug={slug}
+              backtestOverride={activeBacktest ?? undefined}
+              pitchProspects={pitchProspects}
+              rankingMode={rankingMode}
+              selected={selected}
+              onSelectBrand={selectProspect}
+              onSharePitch={() => setSharePitchOpen(true)}
+              vacancyInput={vacancyInput}
+              onVacancyChange={handleVacancyChange}
+            />
           {deferPostPaint && (
             <Suspense fallback={null}>
               <WatchSpaceButton
@@ -379,7 +382,8 @@ export function ReportPage() {
           />
         </Suspense>
       )}
-    </div>
+      </div>
+    </ReportFirstRunTourProvider>
   );
 
   return (
@@ -524,7 +528,7 @@ export function ReportPage() {
                       pitchBrandIds={results.prospects.map((p) => p.brand.entityId)}
                       radiusKm={request.radius}
                       captureRef={mapCaptureRef}
-                      className="h-[min(72vh,640px)] min-h-[360px] w-full xl:h-[min(78vh,720px)]"
+                      className="h-[min(56vh,520px)] min-h-[280px] w-full md:h-[min(72vh,640px)] md:min-h-[360px] xl:h-[min(78vh,720px)]"
                     />
                   </Suspense>
                   <WhyThisBrandCard
@@ -582,11 +586,6 @@ export function ReportPage() {
             prospect={outreach}
             results={results}
           />
-        </Suspense>
-      )}
-      {results && deferPostPaint && (
-        <Suspense fallback={null}>
-          <ReportFirstRunTour ready={results.prospects.length > 0} />
         </Suspense>
       )}
       <footer className="no-print py-8 text-center text-meta text-ink-3">

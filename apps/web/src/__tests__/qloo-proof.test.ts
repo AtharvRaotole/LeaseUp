@@ -27,6 +27,7 @@ describe('qlooProofBrokerBanner', () => {
     expect(copy.headline).not.toMatch(/AUC/);
     expect(copy.cohortLine).toMatch(/Across 40 US neighborhoods/);
     expect(copy.cohortLine).toMatch(/83% vs 76%/);
+    expect(copy.cohortLine).toMatch(/\+6\.5 pp/);
   });
 });
 

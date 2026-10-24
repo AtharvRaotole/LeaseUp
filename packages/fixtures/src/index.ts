@@ -38,6 +38,22 @@ export {
   p10ToCountOf10,
   formatAdaptiveP10Count,
 } from './eval/load-results-adaptive.js';
+export {
+  COHORT_EVAL_AGG,
+  COHORT_MID_TIER_P5,
+  formatP10PercentExact,
+  formatP10PercentRounded,
+  cohortSiteCount,
+  cohortRawVsChainRounded,
+  cohortBlendVsChainRounded,
+  cohortBlendLiftPpLabel,
+  cohortBlendVsChainExactWithLift,
+  cohortMidTierP5Rounded,
+  methodologyAdaptiveEvalLead,
+  cohortExplainerHowRankedBody,
+  cohortExplainerLimitsBody,
+  cohortCohortLineMarketing,
+} from './eval/cohort-eval-display.js';
 export type { ResultsAdaptive, AdaptiveEvalAddressRow } from './eval/results-adaptive-types.js';
 export { rankTopPercentFromOrder } from './rank-top-percent.js';
 export {

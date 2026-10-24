@@ -7,7 +7,7 @@ import {
   formatMetricValue,
   loadLiveQlooLiftAggregates,
   loadResultsAdaptive,
-  p10ToCountOf10,
+  formatP10PercentExact,
 } from '@leaseup/fixtures';
 import { TopBar } from '../components/layout/TopBar';
 import { SiteFooter } from '../components/layout/SiteFooter';
@@ -219,11 +219,12 @@ export function MethodologyPage() {
                 tighter store search circles in busy areas
                 <InfoTooltip label={methodologyDensityRadiusTooltip()} />
               </span>
-              . On average,{' '}
-              {p10ToCountOf10(adaptiveEval.agg.p10_blend)} of the top 10 picks already had a store nearby with
-              our taste blend, {p10ToCountOf10(adaptiveEval.agg.p10_chain)} of 10 when sorted by chain size
-              alone, and {p10ToCountOf10(adaptiveEval.agg.p10_raw)} of 10 with taste order only. Rank match
-              among similar-sized chains was {(adaptiveEval.agg.same_size_auc * 100).toFixed(0)}% (likely range{' '}
+              . On average, mean top-10 presence was{' '}
+              {formatP10PercentExact(adaptiveEval.agg.p10_blend)} with our taste blend vs{' '}
+              {formatP10PercentExact(adaptiveEval.agg.p10_chain)} when sorted by chain size alone (
+              +{adaptiveEval.agg.blend_lift_vs_chain_pp} pp), and{' '}
+              {formatP10PercentExact(adaptiveEval.agg.p10_raw)} with taste order only. Rank match among
+              similar-sized chains was {(adaptiveEval.agg.same_size_auc * 100).toFixed(1)}% (likely range{' '}
               {(adaptiveEval.agg.same_size_auc_ci[0] * 100).toFixed(0)}% to{' '}
               {(adaptiveEval.agg.same_size_auc_ci[1] * 100).toFixed(0)}%
               <InfoTooltip label={methodologyLikelyRangeTooltip()} />
@@ -265,13 +266,13 @@ export function MethodologyPage() {
                         {row.adaptive_radius_km}
                       </td>
                       <td className="px-3 py-3 text-right tabular-nums text-ink">
-                        {p10ToCountOf10(row.p10_blend)} of 10
+                        {formatP10PercentExact(row.p10_blend)}
                       </td>
                       <td className="px-3 py-3 text-right tabular-nums text-ink-2">
-                        {p10ToCountOf10(row.p10_chain)} of 10
+                        {formatP10PercentExact(row.p10_chain)}
                       </td>
                       <td className="px-3 py-3 text-right tabular-nums text-ink-2">
-                        {p10ToCountOf10(row.p10_raw)} of 10
+                        {formatP10PercentExact(row.p10_raw)}
                       </td>
                       <td className="px-3 py-3 text-right tabular-nums text-ink-2">
                         {row.same_size_auc !== undefined && row.same_size_auc_ci
@@ -297,9 +298,14 @@ export function MethodologyPage() {
               Qloo lift study (cohort aggregates)
             </h2>
             <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
-              Committed headline metrics from the preregistered study ({qlooLift.siteCount} sites). Legacy
-              0.75/0.25 blend {(qlooLift.legacyBlendPrecisionAt10 * 100).toFixed(0)}% mean top-10 presence.
-              Heatmap features did not add ranking lift; fixed 10 km presence saturates in dense trade areas.
+              Committed headline metrics from the preregistered study ({qlooLift.siteCount} sites): raw Qloo{' '}
+              {formatP10PercentExact(qlooLift.rawQlooPrecisionAt10)}, chain size{' '}
+              {formatP10PercentExact(qlooLift.chainSizePrecisionAt10)}, logistic blend{' '}
+              {formatP10PercentExact(qlooLift.logisticBlendPrecisionAt10)} (
+              +{qlooLift.logisticBlendLiftVsChainPp} pp vs chain). Same-size tier rank match{' '}
+              {(qlooLift.sameSizeAuc.value * 100).toFixed(1)}%. Legacy 0.75/0.25 blend{' '}
+              {formatP10PercentExact(qlooLift.legacyBlendPrecisionAt10)} mean top-10 presence. Heatmap features
+              did not add ranking lift; fixed 10 km presence saturates in dense trade areas.
             </p>
             <p className="mt-3 text-xs text-ink-3">
               Write-up:{' '}

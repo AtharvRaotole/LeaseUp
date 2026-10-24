@@ -14,6 +14,11 @@ const PREVIEW_PORT = process.env.VQA_PREVIEW_PORT || '4185';
 const BASE = `http://127.0.0.1:${PREVIEW_PORT}`;
 const BOULDER = `/r/boulder?address=${encodeURIComponent('1300 Pearl St, Boulder, CO 80302')}&radius=10&screenshot=1`;
 
+const VIEWPORTS = [
+  { suffix: '1440', width: 1440, height: 900 },
+  { suffix: '390', width: 390, height: 844 },
+];
+
 function run(cmd, opts = {}) {
   execSync(cmd, { stdio: 'inherit', ...opts });
 }
@@ -29,6 +34,22 @@ async function waitFor(url) {
     await new Promise((r) => setTimeout(r, 500));
   }
   throw new Error(`Timed out ${url}`);
+}
+
+async function captureViewport(browser, { suffix, width, height }) {
+  const page = await browser.newPage({ viewport: { width, height } });
+  await page.goto(`${BASE}${BOULDER}`, { waitUntil: 'networkidle' });
+  await page.getByTestId('brands-to-pitch').waitFor({ timeout: 120_000 });
+  const vacancy = page.getByTestId('vacancy-above-fold');
+  await vacancy.scrollIntoViewIfNeeded();
+  await vacancy.screenshot({ path: join(OUT, `vacancy-prompt-${suffix}.png`) });
+
+  await page.getByTestId('vacancy-above-sqft').fill('2500');
+  await page.getByTestId('vacancy-above-rent').fill('48');
+  await page.getByTestId('vacancy-monthly-headline').waitFor();
+  await vacancy.scrollIntoViewIfNeeded();
+  await vacancy.screenshot({ path: join(OUT, `vacancy-headline-${suffix}.png`) });
+  await page.close();
 }
 
 run('pnpm --filter @leaseup/contracts build');
@@ -73,19 +94,9 @@ try {
   await mkdir(OUT, { recursive: true });
 
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  await page.goto(`${BASE}${BOULDER}`, { waitUntil: 'networkidle' });
-  await page.getByTestId('brands-to-pitch').waitFor({ timeout: 120_000 });
-  await page.getByTestId('vacancy-above-fold').screenshot({
-    path: join(OUT, 'vacancy-prompt-1440.png'),
-  });
-
-  await page.getByTestId('vacancy-above-sqft').fill('2500');
-  await page.getByTestId('vacancy-above-rent').fill('48');
-  await page.getByTestId('vacancy-monthly-headline').waitFor();
-  await page.getByTestId('vacancy-above-fold').screenshot({
-    path: join(OUT, 'vacancy-headline-1440.png'),
-  });
+  for (const vp of VIEWPORTS) {
+    await captureViewport(browser, vp);
+  }
 
   await browser.close();
   console.log(`Wrote screenshots to ${OUT}`);
