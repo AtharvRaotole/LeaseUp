@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { WhyThisBrandCard } from '../components/report/WhyThisBrandCard';
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
+import { expectTopPercentsMatchRank } from '../lib/rank-top-percent-copy';
 
 const prospect: ProspectPack = {
   brand: {
@@ -43,6 +44,37 @@ describe('WhyThisBrandCard', () => {
     );
     expect(html).toContain('Why REI?');
     expect(html).toContain('All The Places');
+  });
+
+  it('uses one top percent consistent with rank and total scored', () => {
+    const ultaRank = 26;
+    const total = 224;
+    const rankedProspect: ProspectPack = {
+      ...prospect,
+      brand: { ...prospect.brand, affinityRank: ultaRank },
+      reasons: [
+        `Ulta Beauty: LeaseUp rank #${ultaRank} (top 12% of ${total} brands) for Boulder`,
+      ],
+    };
+    const rankedResults = {
+      ...results,
+      rankings: Array.from({ length: total }, (_, i) => ({
+        entityId: i === ultaRank - 1 ? rankedProspect.brand.entityId : `e-${i}`,
+        name: 'Brand',
+        affinity: 0.5,
+        qlooRank: i + 1,
+        blendedRank: i + 1,
+        presentInRadius: false,
+      })),
+    } as AnalysisResponse;
+
+    const html = renderToStaticMarkup(
+      <WhyThisBrandCard prospect={rankedProspect} results={rankedResults} radiusKm={10} />
+    );
+    expectTopPercentsMatchRank(html, ultaRank, total);
+    expect(html).toContain('top 12%');
+    expect(html).not.toContain('top 15%');
+    expect(html).not.toContain('top 8%');
   });
 
   it('renders nothing without a prospect', () => {

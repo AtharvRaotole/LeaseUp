@@ -42,7 +42,7 @@ describe('prospectOneLineReason', () => {
       baseResults,
       10
     );
-    expect(line).toContain('Top 6% taste match here');
+    expect(line).toContain('Top 6% local match here');
     expect(line).toContain('Nearest store is 12 km away');
     expect(line).toContain('Apparel');
     expect(line).not.toContain('taste-aware blend');
@@ -76,7 +76,7 @@ describe('prospectOneLineReason', () => {
     );
     expect(a).not.toBe(b);
     expect(a).toContain('Streetwear');
-    expect(b).toContain('Top 18% local match here');
+    expect(b).toContain('Top 20% local match here');
     expect(b).toContain('Coffee');
   });
 });

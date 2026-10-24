@@ -215,11 +215,7 @@ export function BrandsToPitch({
             const open = expanded === prospect.brand.entityId;
             const selected = selectedId === prospect.brand.entityId;
             const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
-            const fitLabel = fitPercentileLabel(
-              prospect.brand.affinityRank,
-              totalScored,
-              prospect.brand.tasteFitBeyondChainPercentile
-            );
+            const fitLabel = fitPercentileLabel(prospect.brand.affinityRank, totalScored);
             const category =
               prospect.tenantMixScore?.categoryFit ?? brandCategoryLabel(prospect.brand.entityId);
             const distanceLine = prospect.nearestExistingStoreKm !== undefined

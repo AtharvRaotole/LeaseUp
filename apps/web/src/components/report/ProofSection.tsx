@@ -125,7 +125,7 @@ export function ProofSection({
                 </td>
                 {!hideFit && rankingMode === 'qloo' && (
                   <td className="px-4 py-3 tabular-nums text-ink-2">
-                    {fitPercentileLabel(row.qlooRank, totalScored, row.tasteFitBeyondChainPercentile)}
+                    {fitPercentileLabel(row.blendedRank, totalScored)}
                   </td>
                 )}
                 <td className="px-4 py-3 text-xs text-ink-2">

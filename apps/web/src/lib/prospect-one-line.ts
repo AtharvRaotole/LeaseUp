@@ -13,11 +13,7 @@ export function prospectOneLineReason(
   const totalScored = results.rankings?.length ?? 0;
   const rank = prospect.brand.affinityRank;
 
-  const tasteLine = tasteFitMatchHerePhrase(
-    rank,
-    totalScored,
-    prospect.brand.tasteFitBeyondChainPercentile
-  );
+  const tasteLine = tasteFitMatchHerePhrase(rank, totalScored);
   if (tasteLine) parts.push(tasteLine);
 
   if (prospect.nearestExistingStoreKm !== undefined) {
