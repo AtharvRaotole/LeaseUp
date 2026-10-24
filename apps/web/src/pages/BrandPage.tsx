@@ -72,7 +72,7 @@ export function BrandPage() {
           <div className="mx-auto max-w-[720px] text-center">
             <h1 className="font-display font-semibold text-display text-ink">Find sites for a brand</h1>
             <p className="mt-4 text-lg text-ink-2">
-              Pick one of 227 tracked chains. Qloo heatmaps show where taste is strongest, layered on existing stores.
+              Pick one of 227 tracked chains. Shopper taste maps show where demand is strongest, layered on existing stores.
             </p>
           </div>
           <Card className="mx-auto mt-10 max-w-[720px] p-5">

@@ -80,7 +80,10 @@ try {
   await waitFor(`http://127.0.0.1:${WORKER_PORT}/api/health`);
   await waitFor(`http://127.0.0.1:${PREVIEW_PORT}/`);
   run(
-    `PLAYWRIGHT_BASE_URL=http://127.0.0.1:${PREVIEW_PORT} PLAYWRIGHT_API_URL=http://127.0.0.1:${WORKER_PORT} pnpm exec playwright test e2e/pipeline-crm.spec.ts`
+    `PLAYWRIGHT_BASE_URL=http://127.0.0.1:${PREVIEW_PORT} PLAYWRIGHT_API_URL=http://127.0.0.1:${WORKER_PORT} pnpm exec playwright test e2e/pipeline-crm.spec.ts e2e/pipeline-keyboard-a11y.spec.ts`
+  );
+  run(
+    `PLAYWRIGHT_BASE_URL=http://127.0.0.1:${PREVIEW_PORT} PLAYWRIGHT_API_URL=http://127.0.0.1:${WORKER_PORT} pnpm exec playwright test e2e/broker-jargon.spec.ts -g "broker jargon pipeline CRM"`
   );
 } finally {
   worker.kill('SIGTERM');

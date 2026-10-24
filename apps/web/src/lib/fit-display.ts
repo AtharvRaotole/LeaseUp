@@ -27,7 +27,7 @@ export function tasteFitMatchHerePhrase(
 ): string {
   if (tasteFitBeyondChainPercentile !== undefined) {
     const top = tasteFitTopBucketFromBeyondChainPercentile(tasteFitBeyondChainPercentile);
-    return `Top ${top}% for taste fit here`;
+    return `Top ${top}% local match here`;
   }
   if (totalScored > 0 && rank > 0) {
     return `Top ${fitTopPercent(rank, totalScored)}% taste match here`;
@@ -42,7 +42,7 @@ export function fitPercentileLabel(
 ): string {
   if (tasteFitBeyondChainPercentile !== undefined) {
     const top = tasteFitTopBucketFromBeyondChainPercentile(tasteFitBeyondChainPercentile);
-    return `Top ${top}% fit`;
+    return `Top ${top}% local match`;
   }
   return `Top ${fitTopPercent(rank, totalScored)}%`;
 }

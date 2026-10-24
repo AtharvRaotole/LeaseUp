@@ -6,7 +6,7 @@ import type {
   ProspectPack,
 } from '@leaseup/contracts';
 import { prospectOneLineReason } from './prospect-one-line';
-import { verificationShortLabel } from './copy';
+import { verificationBrokerLabel } from './broker-copy';
 import { coTenantBrandNames } from './co-tenancy-mix';
 import { displayBrandName } from './brand-display';
 
@@ -21,7 +21,7 @@ export function pipelineEvidenceFromProspect(
     reasons: prospect.reasons,
     affinityRank: prospect.brand.affinityRank,
     nearestStoreKm: prospect.nearestExistingStoreKm,
-    verification: verificationShortLabel(prospect.brand.verified),
+    verification: verificationBrokerLabel(prospect.brand.verified),
     runId: results.runId,
     radiusKm,
   };
@@ -41,7 +41,7 @@ export function pipelineCardFromProspect(
     propertyNeighborhood:
       results.location.neighborhood ?? results.location.city ?? undefined,
     affinityRank: prospect.brand.affinityRank,
-    verification: verificationShortLabel(prospect.brand.verified),
+    verification: verificationBrokerLabel(prospect.brand.verified),
     pitchId: options?.pitchId,
     pitchLink: options?.pitchLink,
     reportPath: options?.reportPath,
@@ -51,7 +51,7 @@ export function pipelineCardFromProspect(
       nearestStoreKm: prospect.nearestExistingStoreKm,
       runId: results.runId,
       coTenantBrands: coTenantBrandNames(results),
-      verificationLabel: verificationShortLabel(prospect.brand.verified),
+      verificationLabel: verificationBrokerLabel(prospect.brand.verified),
     },
     evidenceSnapshot: pipelineEvidenceFromProspect(prospect, results, radiusKm),
     radiusKm,
@@ -71,7 +71,7 @@ export function pipelineCardFromPitchProspect(
     propertyNeighborhood:
       snapshot.neighborhood ?? snapshot.location.neighborhood ?? snapshot.location.city,
     affinityRank: prospect.brand.affinityRank,
-    verification: verificationShortLabel(prospect.brand.verified),
+    verification: verificationBrokerLabel(prospect.brand.verified),
     pitchId: snapshot.id,
     pitchLink,
     outreachContext: {
