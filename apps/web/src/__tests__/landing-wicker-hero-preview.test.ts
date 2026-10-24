@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { wickerLandingProspectTopNames } from '@leaseup/fixtures';
 import { LANDING_WICKER_PREVIEW } from '../data/landing-wicker-preview';
+import { prospectOneLineReason } from '../lib/prospect-one-line';
 
 const HERO_TOP_N = 3;
 
@@ -27,6 +28,18 @@ describe('landing hero Wicker preview', () => {
 
   it('recorded preview includes at least hero depth of prospects', () => {
     expect(LANDING_WICKER_PREVIEW.prospects.length).toBeGreaterThanOrEqual(HERO_TOP_N);
+  });
+
+  it('hero audience lines follow combined-overlap logic (no Sneakerheads on Victoria Secret)', () => {
+    const vs = LANDING_WICKER_PREVIEW.prospects.find((p) => p.brand.name === "Victoria's Secret");
+    expect(vs).toBeDefined();
+    const line = prospectOneLineReason(vs!, LANDING_WICKER_PREVIEW, 10);
+    expect(line).not.toContain('Sneakerheads');
+    expect(line).not.toContain('Shared local audience');
+    const tj = LANDING_WICKER_PREVIEW.prospects.find((p) => p.brand.name === 'TJ Maxx');
+    expect(prospectOneLineReason(tj!, LANDING_WICKER_PREVIEW, 10)).toContain(
+      'Shared local audience: Arts & Crafts'
+    );
   });
 
   it('recorded preview omits the ATP acronym and uses one-line OSM coverage copy', () => {

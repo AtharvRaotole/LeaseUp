@@ -7,7 +7,8 @@ The pairing uses `query.explainability["signal.interests.entities"]` on the pitc
 Lines are shown only when an incumbent clearly stands out (see `apps/worker/src/lib/co-tenancy-pairing.ts`).
 
 When no co-tenancy line qualifies, the pitch row may show `Shared local audience: {audience}` only when
-that audience comes from verified brand x location overlap in `whyBrandTaste` (live-audiences recordings).
+that audience comes from the top verified brand x location overlap in `whyBrandTaste` (live-audiences
+recordings), ranked by combined Qloo affinity and limited to audiences characteristic of the brand.
 
 Record with a live API key (no mocks). Pitches and incumbents come from the local demo worker so
 fixture keys match the report:

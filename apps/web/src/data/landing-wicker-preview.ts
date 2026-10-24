@@ -2984,13 +2984,15 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
             "entityId": "604A723B-3E2C-4795-89AA-DF5BA0C3B3C5",
             "name": "Arts & Crafts",
             "affinity": 0.7960951924324036,
-            "affinityRank": 4
+            "affinityRank": 4,
+            "localAffinity": 0.9976394944290307
           },
           {
             "entityId": "9130A837-ED3C-4BA9-9825-5D0D57D119CD",
             "name": "Home Organization",
             "affinity": 0.7158567905426025,
-            "affinityRank": 3
+            "affinityRank": 3,
+            "localAffinity": 0.9980798872594354
           }
         ]
       },
@@ -3047,41 +3049,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "qlooSignals": [
         "affinity rank 0.9997519239550274",
         "tier taste fit (not raw affinity)"
-      ],
-      "tradeAreaTaste": {
-        "tags": [],
-        "audiences": [
-          {
-            "entityId": "D4B24E84-C439-4D7C-B2DC-92F7C704DE76",
-            "name": "Sneakerheads",
-            "affinity": 0.8051401376724243,
-            "affinityRank": 13
-          },
-          {
-            "entityId": "ED9B04EF-C693-44C8-82DE-C2B138710601",
-            "name": "Jewelry",
-            "affinity": 0.8061163425445557,
-            "affinityRank": 19
-          }
-        ]
-      },
-      "whyBrandTaste": {
-        "signals": [
-          {
-            "kind": "audience",
-            "name": "Sneakerheads",
-            "affinity": 0.8051401376724243,
-            "affinityRank": 13
-          },
-          {
-            "kind": "audience",
-            "name": "Jewelry",
-            "affinity": 0.8061163425445557,
-            "affinityRank": 19
-          }
-        ],
-        "summary": "Qloo's Victoria's Secret audience leans toward Sneakerheads and Jewelry, which also rank among the top audiences near this pin."
-      }
+      ]
     },
     {
       "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
@@ -3119,41 +3087,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "qlooSignals": [
         "affinity rank 0.9993615902584512",
         "tier taste fit (not raw affinity)"
-      ],
-      "tradeAreaTaste": {
-        "tags": [],
-        "audiences": [
-          {
-            "entityId": "F488B2E4-21FE-4AFA-8B2E-0DA5A0F4E756",
-            "name": "Yoga",
-            "affinity": 0.7951967716217041,
-            "affinityRank": 8
-          },
-          {
-            "entityId": "D4B24E84-C439-4D7C-B2DC-92F7C704DE76",
-            "name": "Sneakerheads",
-            "affinity": 0.7739622592926025,
-            "affinityRank": 13
-          }
-        ]
-      },
-      "whyBrandTaste": {
-        "signals": [
-          {
-            "kind": "audience",
-            "name": "Yoga",
-            "affinity": 0.7951967716217041,
-            "affinityRank": 8
-          },
-          {
-            "kind": "audience",
-            "name": "Sneakerheads",
-            "affinity": 0.7739622592926025,
-            "affinityRank": 13
-          }
-        ],
-        "summary": "Qloo's J.Crew audience leans toward Yoga and Sneakerheads, which also rank among the top audiences near this pin."
-      }
+      ]
     },
     {
       "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
@@ -3190,41 +3124,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "qlooSignals": [
         "affinity rank 0.9994126793111553",
         "tier taste fit (not raw affinity)"
-      ],
-      "tradeAreaTaste": {
-        "tags": [],
-        "audiences": [
-          {
-            "entityId": "ED9B04EF-C693-44C8-82DE-C2B138710601",
-            "name": "Jewelry",
-            "affinity": 0.8005615472793579,
-            "affinityRank": 19
-          },
-          {
-            "entityId": "D4B24E84-C439-4D7C-B2DC-92F7C704DE76",
-            "name": "Sneakerheads",
-            "affinity": 0.8033778071403503,
-            "affinityRank": 13
-          }
-        ]
-      },
-      "whyBrandTaste": {
-        "signals": [
-          {
-            "kind": "audience",
-            "name": "Jewelry",
-            "affinity": 0.8005615472793579,
-            "affinityRank": 19
-          },
-          {
-            "kind": "audience",
-            "name": "Sneakerheads",
-            "affinity": 0.8033778071403503,
-            "affinityRank": 13
-          }
-        ],
-        "summary": "Qloo's H&M audience leans toward Jewelry and Sneakerheads, which also rank among the top audiences near this pin."
-      }
+      ]
     },
     {
       "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
@@ -3270,13 +3170,15 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
             "entityId": "D4B24E84-C439-4D7C-B2DC-92F7C704DE76",
             "name": "Sneakerheads",
             "affinity": 0.8157919645309448,
-            "affinityRank": 13
+            "affinityRank": 13,
+            "localAffinity": 0.9905139384330823
           },
           {
             "entityId": "ED9B04EF-C693-44C8-82DE-C2B138710601",
             "name": "Jewelry",
             "affinity": 0.8082069754600525,
-            "affinityRank": 19
+            "affinityRank": 19,
+            "localAffinity": 0.9847447923547805
           }
         ]
       },
@@ -3339,16 +3241,18 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
         "tags": [],
         "audiences": [
           {
-            "entityId": "5F4CF648-08CD-4031-A17E-491E90A4DD4C",
-            "name": "Astrology",
-            "affinity": 0.8044231534004211,
-            "affinityRank": 6
-          },
-          {
             "entityId": "F488B2E4-21FE-4AFA-8B2E-0DA5A0F4E756",
             "name": "Yoga",
             "affinity": 0.8159388303756714,
-            "affinityRank": 8
+            "affinityRank": 8,
+            "localAffinity": 0.99459197604263
+          },
+          {
+            "entityId": "5F4CF648-08CD-4031-A17E-491E90A4DD4C",
+            "name": "Astrology",
+            "affinity": 0.8044231534004211,
+            "affinityRank": 6,
+            "localAffinity": 0.9965385123530189
           }
         ]
       },
@@ -3356,18 +3260,18 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
         "signals": [
           {
             "kind": "audience",
-            "name": "Astrology",
-            "affinity": 0.8044231534004211,
-            "affinityRank": 6
-          },
-          {
-            "kind": "audience",
             "name": "Yoga",
             "affinity": 0.8159388303756714,
             "affinityRank": 8
+          },
+          {
+            "kind": "audience",
+            "name": "Astrology",
+            "affinity": 0.8044231534004211,
+            "affinityRank": 6
           }
         ],
-        "summary": "Qloo's Express audience leans toward Astrology and Yoga, which also rank among the top audiences near this pin."
+        "summary": "Qloo's Express audience leans toward Yoga and Astrology, which also rank among the top audiences near this pin."
       }
     },
     {
@@ -3411,16 +3315,18 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
         "tags": [],
         "audiences": [
           {
-            "entityId": "1B095F7B-1A06-4F65-AE32-BB9E9EAC26D6",
-            "name": "Dance",
-            "affinity": 0.797365128993988,
-            "affinityRank": 20
-          },
-          {
             "entityId": "F488B2E4-21FE-4AFA-8B2E-0DA5A0F4E756",
             "name": "Yoga",
             "affinity": 0.8175284266471863,
-            "affinityRank": 8
+            "affinityRank": 8,
+            "localAffinity": 0.99459197604263
+          },
+          {
+            "entityId": "5F4CF648-08CD-4031-A17E-491E90A4DD4C",
+            "name": "Astrology",
+            "affinity": 0.8086821436882019,
+            "affinityRank": 6,
+            "localAffinity": 0.9965385123530189
           }
         ]
       },
@@ -3428,18 +3334,18 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
         "signals": [
           {
             "kind": "audience",
-            "name": "Dance",
-            "affinity": 0.797365128993988,
-            "affinityRank": 20
-          },
-          {
-            "kind": "audience",
             "name": "Yoga",
             "affinity": 0.8175284266471863,
             "affinityRank": 8
+          },
+          {
+            "kind": "audience",
+            "name": "Astrology",
+            "affinity": 0.8086821436882019,
+            "affinityRank": 6
           }
         ],
-        "summary": "Qloo's Aerie audience leans toward Dance and Yoga, which also rank among the top audiences near this pin."
+        "summary": "Qloo's Aerie audience leans toward Yoga and Astrology, which also rank among the top audiences near this pin."
       }
     },
     {
@@ -3477,41 +3383,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "qlooSignals": [
         "affinity rank 0.9988062401433718",
         "tier taste fit (not raw affinity)"
-      ],
-      "tradeAreaTaste": {
-        "tags": [],
-        "audiences": [
-          {
-            "entityId": "D4B24E84-C439-4D7C-B2DC-92F7C704DE76",
-            "name": "Sneakerheads",
-            "affinity": 0.8033605217933655,
-            "affinityRank": 13
-          },
-          {
-            "entityId": "ED9B04EF-C693-44C8-82DE-C2B138710601",
-            "name": "Jewelry",
-            "affinity": 0.7983499765396118,
-            "affinityRank": 19
-          }
-        ]
-      },
-      "whyBrandTaste": {
-        "signals": [
-          {
-            "kind": "audience",
-            "name": "Sneakerheads",
-            "affinity": 0.8033605217933655,
-            "affinityRank": 13
-          },
-          {
-            "kind": "audience",
-            "name": "Jewelry",
-            "affinity": 0.7983499765396118,
-            "affinityRank": 19
-          }
-        ],
-        "summary": "Qloo's Coach audience leans toward Sneakerheads and Jewelry, which also rank among the top audiences near this pin."
-      }
+      ]
     }
   ],
   "dataQuality": "high",

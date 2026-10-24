@@ -1,7 +1,7 @@
 import type { ProspectPack, TradeAreaTasteContext, WhyBrandTaste } from '@leaseup/contracts';
 import {
   deterministicWhyBrandTasteSummary,
-  distinctPitchAudienceLists,
+  BRAND_AUDIENCE_MAX_SHOWN,
   sanitizeWhyBrandTasteSummary,
   topBrandTasteOverlapSignals,
 } from '@leaseup/fixtures/worker';
@@ -12,7 +12,7 @@ export function buildWhyBrandTasteFromContext(
   tradeAreaTaste: TradeAreaTasteContext | undefined,
   summary?: string
 ): WhyBrandTaste | undefined {
-  const signals = topBrandTasteOverlapSignals(tradeAreaTaste, 3);
+  const signals = topBrandTasteOverlapSignals(tradeAreaTaste, BRAND_AUDIENCE_MAX_SHOWN);
   if (signals.length === 0) return undefined;
   const raw = summary?.trim() || deterministicWhyBrandTasteSummary(brandName, signals);
   const text = raw ? sanitizeWhyBrandTasteSummary(raw) : '';
@@ -20,26 +20,6 @@ export function buildWhyBrandTasteFromContext(
     signals,
     summary: text || undefined,
   };
-}
-
-/** Pick distinct primary audiences across pitched brands, then rebuild whyBrandTaste from trimmed rows. */
-export function applyDistinctPitchAudiencesToProspects(prospects: ProspectPack[]): ProspectPack[] {
-  const pools = prospects.map((pack) => pack.tradeAreaTaste?.audiences ?? []);
-  const trimmed = distinctPitchAudienceLists(pools);
-  return prospects.map((pack, index) => {
-    const audiences = trimmed[index] ?? [];
-    if (audiences.length === 0) return pack;
-    const tradeAreaTaste: TradeAreaTasteContext = {
-      tags: pack.tradeAreaTaste?.tags ?? [],
-      audiences,
-    };
-    const whyBrandTaste = buildWhyBrandTasteFromContext(
-      pack.brand.name,
-      tradeAreaTaste,
-      pack.whyBrandTaste?.summary
-    );
-    return { ...pack, tradeAreaTaste, whyBrandTaste };
-  });
 }
 
 export async function enrichProspectWhyBrandTaste(
