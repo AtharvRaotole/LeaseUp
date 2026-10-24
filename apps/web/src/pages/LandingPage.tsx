@@ -184,12 +184,15 @@ export function LandingPage() {
               ))}
             </div>
 
-            <p className="mx-auto mt-8 max-w-[640px] text-center text-meta text-ink-3 lg:mx-0 lg:text-left">
-              Need the reverse question?{' '}
-              <Link to="/brand" className="text-accent hover:underline">
+            <div className="mx-auto mt-8 max-w-[640px] text-center text-meta lg:mx-0 lg:text-left">
+              <p className="text-ink-3">Need the reverse question?</p>
+              <Link
+                to="/brand"
+                className="mt-1 inline-flex min-h-11 items-center font-medium text-ink underline decoration-accent underline-offset-2 hover:decoration-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
+              >
                 Find sites for a brand
               </Link>
-            </p>
+            </div>
               </div>
 
               <div className="mt-12 min-w-0 lg:mt-4 lg:pt-2">
