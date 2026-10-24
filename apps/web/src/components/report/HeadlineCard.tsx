@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { InfoTooltip } from '../ui/InfoTooltip';
@@ -21,6 +22,7 @@ export function HeadlineCard({
   chipSlug,
   backtestOverride,
   showStats = true,
+  headlineActions,
 }: {
   results: AnalysisResponse;
   radiusKm: number;
@@ -28,6 +30,7 @@ export function HeadlineCard({
   backtestOverride?: AnalysisResponse['backtest'];
   /** When false, only the headline renders (stats deferred for faster LCP). */
   showStats?: boolean;
+  headlineActions?: ReactNode;
 }) {
   const area = placeHeadlineLabel(results.location, chipSlug);
   const searchKm = results.prospectFunnel?.searchRadiusKm ?? radiusKm;
@@ -46,9 +49,12 @@ export function HeadlineCard({
 
   return (
     <Card>
-      <h2 className="font-display font-semibold text-h2 leading-snug text-ink md:text-title">
-        {reportHeadlineLine(results, area, radiusKm)}
-      </h2>
+      <div className="flex items-start justify-between gap-2">
+        <h2 className="min-w-0 flex-1 font-display font-semibold text-h2 leading-snug text-ink md:text-title">
+          {reportHeadlineLine(results, area, radiusKm)}
+        </h2>
+        {headlineActions ? <div className="shrink-0">{headlineActions}</div> : null}
+      </div>
       <p
         className="mt-3 text-small leading-snug text-ink-3"
         data-testid="report-search-absence-radius-line"
