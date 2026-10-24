@@ -148,6 +148,12 @@ export {
   listDemoExplainabilityRecordings,
 } from './brand-explainability-loader.js';
 export {
+  pickRetailShopperTasteLabel,
+  retailShopperTasteLabel,
+  BLEECKER_LIKE_NON_RETAIL_TASTE,
+  type TasteRowInput,
+} from './retail-taste-tag-filter.js';
+export {
   wickerLandingTasteSnippet,
   type LandingTasteRow,
 } from './landing-taste-snippet.js';
