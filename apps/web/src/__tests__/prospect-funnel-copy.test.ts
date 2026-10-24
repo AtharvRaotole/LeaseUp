@@ -5,21 +5,19 @@ import type { ProspectFunnel } from '@leaseup/contracts';
 const sample: ProspectFunnel = {
   brandsScored: 224,
   searchRadiusKm: 10,
-  absenceRadiusKm: 1.5,
+  absenceRadiusKm: 3,
   alreadyNearbyCount: 42,
   strongFitAbsentCount: 10,
-  pitchedCount: 4,
+  pitchedCount: 10,
   verifiedCount: 4,
 };
 
 describe('prospectFunnelPlainLine', () => {
-  it('states scored, nearby, absent, and pitched counts in plain words', () => {
+  it('is one short broker sentence', () => {
     const line = prospectFunnelPlainLine(sample);
-    expect(line).toContain('224 brands scored');
-    expect(line).toContain('42 already have a store nearby');
-    expect(line).toContain('10 strong local fits have none');
-    expect(line).toContain('pitching 4');
-    expect(line).toContain('4 verified in two sources');
+    expect(line).toBe(
+      '224 brands scored. 42 already have a store within 3 km. These 10 fit local taste and have none.'
+    );
     expect(line).not.toMatch(/[\u2013\u2014]/);
   });
 });

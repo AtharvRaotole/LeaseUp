@@ -31,6 +31,7 @@ import {
   demoFixtureDensity,
   demoFixtureStratum,
   densityToDefaultStratum,
+  prospectAbsenceRadiusKm,
   demoAnalyzeBacktests,
   adaptiveEvalRadiusKm,
   expectedRandomPresentInTop10,
@@ -51,7 +52,6 @@ import type { QlooLocation } from '../providers/qloo';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
   buildBrandRankings,
-  presenceRadiusKm,
   buildMapStores,
   buildTripleBacktest,
   enrichProspectsWithNearest,
@@ -512,7 +512,7 @@ export class AnalysisService {
     const fixtureId = matchDemoFixtureId(location.address);
     const siteDensity = fixtureId ? demoFixtureDensity(fixtureId) : 'urban';
     const siteStratum = fixtureId ? demoFixtureStratum(fixtureId) : densityToDefaultStratum(siteDensity);
-    const absenceRadiusKm = presenceRadiusKm(siteStratum, radius);
+    const absenceRadiusKm = prospectAbsenceRadiusKm(siteStratum, radius);
     const presence = new NearbyPresenceCache(this.catalog, location);
     let alreadyNearbyCount = 0;
     for (const insight of insights) {

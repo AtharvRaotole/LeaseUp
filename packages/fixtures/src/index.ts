@@ -148,6 +148,8 @@ export {
 } from './landing-random-baseline.js';
 export {
   adaptiveRadiusKmForStratum,
+  prospectAbsenceRadiusKm,
+  PROSPECT_TRADE_AREA_FLOOR_KM,
   densityToDefaultStratum,
   demoFixtureStratum,
   type EvalDensityStratum,

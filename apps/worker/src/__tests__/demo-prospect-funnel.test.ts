@@ -42,7 +42,7 @@ describe('demo prospect funnel', () => {
     );
 
     expect(wicker.prospectFunnel).toBeDefined();
-    expect(wicker.prospectFunnel!.absenceRadiusKm).toBe(1.5);
+    expect(wicker.prospectFunnel!.absenceRadiusKm).toBe(3);
     expect(wicker.prospectFunnel!.searchRadiusKm).toBe(10);
     expect(wicker.prospectFunnel!.brandsScored).toBe(224);
     expect(wicker.prospects.length).toBeGreaterThan(4);
