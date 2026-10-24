@@ -39,6 +39,7 @@ export {
   formatAdaptiveP10Count,
 } from './eval/load-results-adaptive.js';
 export type { ResultsAdaptive, AdaptiveEvalAddressRow } from './eval/results-adaptive-types.js';
+export { rankTopPercentFromOrder } from './rank-top-percent.js';
 
 export { wickerparkFixture } from './wicker-park.js';
 export { boulderFixture } from './boulder.js';

@@ -9,6 +9,7 @@ import { pipelineCardFromProspect } from '../../lib/build-pipeline-card';
 import { buildReportPath } from '../../lib/report-params';
 import { brandMonogram, brandTint } from '../../lib/brand-monogram';
 import { cn } from '../../lib/cn';
+import type { QlooRankingMode } from './QlooRankingToggle';
 
 export function ReportSummaryAboveFold({
   results,
@@ -17,6 +18,8 @@ export function ReportSummaryAboveFold({
   radiusKm,
   chipSlug,
   backtestOverride,
+  pitchProspects,
+  rankingMode,
   selected,
   onSelectBrand,
   onSharePitch,
@@ -27,11 +30,13 @@ export function ReportSummaryAboveFold({
   radiusKm: number;
   chipSlug?: string | null;
   backtestOverride?: AnalysisResponse['backtest'];
+  pitchProspects: ProspectPack[];
+  rankingMode: QlooRankingMode;
   selected: ProspectPack | null;
   onSelectBrand: (p: ProspectPack) => void;
   onSharePitch: () => void;
 }) {
-  const topFive = results.prospects.slice(0, 5);
+  const topFive = pitchProspects.slice(0, 5);
   const pipelineProspect = selected ?? topFive[0] ?? null;
 
   return (
@@ -47,7 +52,9 @@ export function ReportSummaryAboveFold({
         <Card data-testid="brands-to-pitch" className="print-pitch-block" data-report-section="top-brands">
           <h3 className="font-display text-h3 font-semibold text-ink">Top brands to pitch</h3>
           <p className="mt-2 text-body text-ink-2">
-            Local taste leaders with no store in your trade area yet. Tap a row to highlight it on the map.
+            {rankingMode === 'baseline'
+              ? 'Same pitch list, ordered by national chain size instead of local taste. Tap a row to highlight it on the map.'
+              : 'Local taste leaders with no store in your trade area yet. Tap a row to highlight it on the map.'}
           </p>
           <ol className="mt-4 space-y-2.5" data-testid="report-top-brands-list">
             {topFive.map((prospect, index) => {
