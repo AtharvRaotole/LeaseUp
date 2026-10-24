@@ -91,7 +91,7 @@ export function MethodologyPage() {
             <h2 className="font-semibold text-ink">How LeaseUp uses Qloo</h2>
             <p className="mt-2 text-sm leading-relaxed text-ink-2">
               Short broker-friendly explainer: what we call from Qloo, how ranking works, and what we
-              do not claim. No API jargon required.
+              do not claim.
             </p>
             <Link
               to="/methodology/qloo"
@@ -106,8 +106,8 @@ export function MethodologyPage() {
               Pipeline
             </h2>
             <p className="mt-2 text-sm text-ink-2">
-              Each report run follows the same steps. Numbers below come from recorded evaluation
-              runs, not copy-pasted marketing stats.
+              Each report run follows the same steps. Numbers below come from recorded evaluation runs
+              in the repo (fixtures and evaluation bundles committed with the app).
             </p>
             <ol className="mt-8 space-y-0">
               {PIPELINE.map((step, index) => (

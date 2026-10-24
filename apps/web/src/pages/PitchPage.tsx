@@ -7,6 +7,7 @@ import { VacancyCostCalculator } from '../components/report/VacancyCostCalculato
 import { PitchPackBrief } from '../components/pitch/PitchPackBrief';
 import { PitchPackLoadingSkeleton } from '../components/pitch/PitchPackLoadingSkeleton';
 import { shareLinkExpiredLine } from '../lib/empty-state-copy';
+import { loadDemoPitchSnapshot } from '../lib/demo-pitch-snapshot';
 import { apiUrl } from '../lib/api';
 import { formatUserFacingDate } from '../lib/format-date';
 import {
@@ -29,6 +30,16 @@ export function PitchPage() {
 
   useEffect(() => {
     if (!id) return;
+    const demoSnapshot = loadDemoPitchSnapshot(id);
+    if (demoSnapshot) {
+      setSnapshot(demoSnapshot);
+      if (demoSnapshot.vacancy) {
+        setVacancy(pitchVacancyToDraft(demoSnapshot.vacancy));
+      } else {
+        setVacancy(loadVacancyDraft(demoSnapshot.address));
+      }
+      return;
+    }
     void (async () => {
       try {
         const res = await fetch(apiUrl(`/api/pitch/${id}`));
@@ -57,7 +68,6 @@ export function PitchPage() {
       <div className="min-h-screen bg-bg px-4 py-24 text-center" data-testid="pitch-error">
         <h1 className="font-display font-semibold text-h2 text-ink">Pitch unavailable</h1>
         <p className="mt-3 max-w-md mx-auto text-ink-2">{error}</p>
-        <p className="mt-2 text-sm text-ink-3">Ask the sender for a fresh link, or run a new site search.</p>
         <Link to="/" className="mt-6 inline-block">
           <Button size="lg">Back to home</Button>
         </Link>
