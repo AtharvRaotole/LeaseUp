@@ -25,7 +25,7 @@ export function pitchPackVerificationSummary(
   }
   if (oneSource > 0) {
     parts.push(
-      `${oneSource} brand${oneSource === 1 ? '' : 's'} checked in our store data only (no OpenStreetMap map for that chain)`
+      `${oneSource} brand${oneSource === 1 ? '' : 's'} checked in our store data only (that chain is not in our OpenStreetMap layer)`
     );
   }
   if (checking > 0) {

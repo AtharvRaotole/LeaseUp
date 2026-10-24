@@ -30,7 +30,7 @@ export function PitchPage() {
   useEffect(() => {
     if (!id) return;
     void (async () => {
-      let serverFailed = false;
+      let serverFailed: boolean | undefined;
       try {
         const res = await fetch(apiUrl(`/api/pitch/${id}`));
         if (res.status === 404) {
