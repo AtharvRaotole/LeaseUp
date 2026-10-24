@@ -45,9 +45,13 @@ function ColumnShell({
         isOver && 'ring-2 ring-accent/40'
       )}
       data-testid={`pipeline-column-${status}`}
+      role="group"
+      aria-labelledby={`pipeline-column-title-${status}`}
     >
       <div className="flex items-center justify-between border-b border-border px-3 py-2">
-        <h3 className="text-sm font-semibold text-ink">{prospectStatusLabel(status)}</h3>
+        <h3 id={`pipeline-column-title-${status}`} className="text-sm font-semibold text-ink">
+          {prospectStatusLabel(status)}
+        </h3>
         <span className="rounded-pill bg-surface px-2 py-0.5 text-xs text-ink-3">
           {cards.length}
         </span>
@@ -145,6 +149,8 @@ export function PipelineKanban({
         <div
           className="mt-6 flex gap-3 overflow-x-auto pb-2"
           data-testid="pipeline-board"
+          role="region"
+          aria-label="Pipeline board. Use the move control on each card to drag, or open a card to set status with the keyboard."
         >
           {PIPELINE_STATUSES.map((col) => (
             <ColumnShell
