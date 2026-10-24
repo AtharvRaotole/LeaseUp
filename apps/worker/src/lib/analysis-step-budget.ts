@@ -3,7 +3,7 @@ import type { AnalysisStepId } from '@leaseup/contracts';
 /** Hard caps per pipeline step so one provider cannot block the whole report. */
 export const ANALYZE_STEP_TIMEOUT_MS: Record<AnalysisStepId, number> = {
   locate: 12_000,
-  taste: 10_000,
+  taste: 24_000,
   backtest: 20_000,
   prospects: 30_000,
   verify: 5_000,
