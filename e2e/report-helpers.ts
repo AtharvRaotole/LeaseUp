@@ -1,14 +1,8 @@
 import type { Page } from '@playwright/test';
 
-export async function waitForDeepSections(page: Page) {
-  await page
-    .getByTestId('report-section-how-we-know')
-    .waitFor({ state: 'attached', timeout: 90_000 });
-}
-
 export async function openReportSection(page: Page, testId: string) {
   const section = page.getByTestId(testId);
-  await section.waitFor({ state: 'attached', timeout: 90_000 });
+  await section.waitFor({ state: 'attached', timeout: 60_000 });
   const trigger = section.locator('button').first();
   const expanded = await trigger.getAttribute('aria-expanded');
   if (expanded === 'false') {
