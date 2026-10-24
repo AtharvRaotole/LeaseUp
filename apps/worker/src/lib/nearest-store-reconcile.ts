@@ -12,11 +12,17 @@ export type NearestStoreReconcileResult = {
   unconfirmed: boolean;
 };
 
+export type ReconcileNearestStoreOptions = {
+  /** When either source places a store within this km, confirm the nearer reading. */
+  confirmWithinKm?: number;
+};
+
 export async function reconcileNearestStoreKm(
   entityId: string,
   location: Location,
   presence: NearbyPresenceCache,
-  osmSnapshot?: OsmSnapshotCatalog
+  osmSnapshot?: OsmSnapshotCatalog,
+  options?: ReconcileNearestStoreOptions
 ): Promise<NearestStoreReconcileResult> {
   const atpNearby = await presence.storesNearby(entityId, MAX_SCAN_KM);
   const atpKm = atpNearby[0]?.distance;
@@ -45,8 +51,15 @@ export async function reconcileNearestStoreKm(
   }
 
   const nearer = Math.min(atpKm, osmKm);
-  const unconfirmed = Math.abs(atpKm - osmKm) >= MATERIAL_DISAGREEMENT_KM;
-  return { km: nearer, unconfirmed };
+  const materialDisagreement = Math.abs(atpKm - osmKm) >= MATERIAL_DISAGREEMENT_KM;
+  if (!materialDisagreement) {
+    return { km: nearer, unconfirmed: false };
+  }
+  const withinKm = options?.confirmWithinKm;
+  if (withinKm !== undefined && (atpKm <= withinKm || osmKm <= withinKm)) {
+    return { km: nearer, unconfirmed: false };
+  }
+  return { km: nearer, unconfirmed: true };
 }
 
 const ATP_ABSENCE_REASON_RE = /no .+ store within \d+(?:\.\d+)? km/i;

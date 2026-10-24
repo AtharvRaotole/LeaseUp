@@ -1,14 +1,14 @@
 # Adaptive radius trade-area audit
 
-Generated: 2026-10-24T09:25:55.255Z
+Generated: 2026-10-24T14:34:35.965Z
 
 Prospects after PR #101 (adaptive absence radius for pitching). Flags a pitch when **ground-truth catalog** shows ATP or OSM within the user **search radius** or within **3 km**.
 
 ## Summary
 
-- Sites: 13
-- Pitch rows: 118
-- Flagged (store in search radius or within 3 km ATP/OSM): **43**
+- Sites: 14
+- Pitch rows: 128
+- Flagged (store in search radius or within 3 km ATP/OSM): **45**
 
 ## Wicker Park pitches (nearest store km)
 
@@ -35,6 +35,8 @@ Prospects after PR #101 (adaptive absence radius for pitching). Flags a pitch wh
 - **sevierville** Marshalls: ATP 4.26 km, OSM — km (search 10 km, absence 4 km)
 - **sevierville** Hobby Lobby: ATP 5.30 km, OSM — km (search 10 km, absence 4 km)
 - **sevierville** HomeGoods: ATP 5.88 km, OSM — km (search 10 km, absence 4 km)
+- **bleecker** Marshalls: ATP 2.45 km, OSM — km (search 1.5 km, absence 1.5 km)
+- **bleecker** Foot Locker: ATP 2.30 km, OSM — km (search 1.5 km, absence 1.5 km)
 - **chi_lakeview** Ulta: ATP 1.60 km, OSM — km (search 1.5 km, absence 1.5 km)
 - **chi_lakeview** TJ Maxx: ATP 1.97 km, OSM — km (search 1.5 km, absence 1.5 km)
 - **chi_lakeview** Old Navy: ATP 2.01 km, OSM — km (search 1.5 km, absence 1.5 km)
