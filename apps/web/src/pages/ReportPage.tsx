@@ -521,7 +521,7 @@ export function ReportPage() {
                       pitchBrandIds={results.prospects.map((p) => p.brand.entityId)}
                       radiusKm={request.radius}
                       captureRef={mapCaptureRef}
-                      className="h-[min(72vh,640px)] min-h-[360px] w-full xl:h-[min(78vh,720px)]"
+                      className="h-[min(56vh,520px)] min-h-[280px] w-full md:h-[min(72vh,640px)] md:min-h-[360px] xl:h-[min(78vh,720px)]"
                     />
                   </Suspense>
                   <WhyThisBrandCard
