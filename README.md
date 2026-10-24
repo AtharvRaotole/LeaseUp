@@ -22,7 +22,7 @@ Enter a US storefront address and trade-area radius. LeaseUp returns a **ranked 
 | **Watchlist** (`/watchlist`) | Saved addresses with change alerts |
 | **Full prospecting** (`/prospect/:id`) | Multi-step run from geocode through pitch pack, with an **Agent receipt** after completion (logged steps only, JSON/Markdown export) |
 
-Production demo mode serves **recorded** Qloo and store fixtures for three chip addresses (`packages/fixtures/src/demo-addresses.ts`). Other addresses need the worker in `live` mode with API keys (see [Local setup](#local-setup)).
+**Production API** runs with **`APP_MODE=live`** on the Cloudflare Worker (`GET /api/health` reports `mode: live` and configured Qloo). The repo’s `apps/worker/wrangler.toml` sets `APP_MODE = "demo"` under `[vars]` for local `wrangler dev` only; production overrides that in the dashboard (see `docs/DEPLOY.md`). Any typed **US storefront address** goes through **live** Qloo `/v2/insights` on the server (never in the browser), subject to **`LIVE_QLOO_JUDGE_DAILY_CAP`** (default **48** cold analyzes per UTC day, `apps/worker/src/lib/live-qloo-judge-quota.ts`). The three **landing demo chips** (Wicker, Boulder, Sevierville in `packages/fixtures/src/demo-addresses.ts`) use **committed recordings** for Qloo taste and store context so those demos stay fast and reproducible on the live site. Local development without keys uses `APP_MODE=demo` and is chip-only (see [Local setup](#local-setup)).
 
 ## Screenshots
 
@@ -183,7 +183,7 @@ pnpm verify:ci
 
 - **US retail chains panel** (~227 brands), not every tenant type or international retail.
 - **Store truth** combines an embedded All The Places snapshot and OSM snapshot tiles; brands missing from both cannot be detected. OSM snapshot coverage is partial versus the full chain list (see methodology in app).
-- **Demo mode** is fast and reproducible but does not hit live Qloo for non-chip addresses.
+- **Shared live Qloo budget:** production analyze is capped by **`LIVE_QLOO_JUDGE_DAILY_CAP`** (default **48** per UTC day). **Local `APP_MODE=demo`** (wrangler default) accepts only the three chip addresses and always uses recordings; it does not replace production live analyze for arbitrary US addresses.
 - **Eval metrics** measure in-trade-area store presence, not lease success or broker conversion.
 - **Outreach drafts** use OpenAI only when the broker requests them; nothing is sent automatically.
 - **Planner** is a bounded tool loop ahead of a fixed DAG, not an open-ended autonomous agent.
