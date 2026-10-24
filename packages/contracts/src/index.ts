@@ -316,6 +316,8 @@ export const AnalysisResponseSchema = z.object({
   storeDistanceDataAsOf: z.string().optional(),
   /** When true, some nearest-store km could not be reconciled and came from the saved snapshot. */
   storeDistancesSnapshotOnly: z.boolean().optional(),
+  /** Planner steps captured with a recorded demo chip report (no timings; replayed from recordings). */
+  agentSteps: z.array(AnalysisStepSchema).optional(),
 });
 
 export type AnalysisResponse = z.infer<typeof AnalysisResponseSchema>;

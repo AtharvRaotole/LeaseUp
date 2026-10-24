@@ -7,9 +7,18 @@ import {
   parseApiErrorResponse,
   type ApiErrorInfo,
 } from '../lib/api-error';
-import { fetchWithOneRetry } from '../lib/fetch-with-retry';
+import {
+  fetchWithOneRetry,
+  isNetworkFetchError,
+  isRetryableHttpStatus,
+} from '../lib/fetch-with-retry';
 import { matchDemoFixtureId } from '../lib/demo-chip-addresses';
-import { prefetchDemoReportAnalyze, takePrefetchedDemoAnalyze } from '../lib/report-analyze-prefetch';
+import {
+  recordedDemoReportUrl,
+  takePrefetchedDemoAnalyze,
+} from '../lib/report-analyze-prefetch';
+
+const PREFETCH_RETRY_DELAY_MS = 1600;
 
 export function useAnalysisRun() {
   const [steps, setSteps] = useState<AnalysisStep[]>([]);
@@ -48,52 +57,74 @@ export function useAnalysisRun() {
       window.clearTimeout(slowTimer);
     };
 
+    const recordedUrl = recordedDemoReportUrl(request);
     const demoChip = matchDemoFixtureId(request.address);
+    const onAutoRetry = () => {
+      autoRetried = true;
+      setAutoRetrying(true);
+    };
 
-    try {
-      if (demoChip) {
-        prefetchDemoReportAnalyze(request);
-        const prefetched = takePrefetchedDemoAnalyze(request);
-        if (prefetched) {
-          try {
-            finish(await prefetched);
-            window.clearTimeout(slowTimer);
-            return;
-          } catch {
-            /* fall through to fetch */
-          }
-        }
-        const response = await fetchWithOneRetry(
-          apiUrl('/api/analyze'),
-          {
+    // Demo chips make exactly one request per load. A failure here is final for this run:
+    // it must not fall through to the stream or POST fallback below (that tripled the
+    // POSTs to /api/analyze when the daily cap returned 429).
+    if (recordedUrl || demoChip) {
+      const url = recordedUrl ?? apiUrl('/api/analyze');
+      const init: RequestInit = recordedUrl
+        ? { method: 'GET' }
+        : {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(request),
-          },
-          {
-            onAutoRetry: () => {
-              autoRetried = true;
-              setAutoRetrying(true);
-            },
+          };
+      const fetchOnce = () => fetchWithOneRetry(url, init, { onAutoRetry });
+      /** The boot prefetch already counted as the first try, so this is the one retry. */
+      const retryAfterPrefetch = async () => {
+        onAutoRetry();
+        await new Promise((resolve) => window.setTimeout(resolve, PREFETCH_RETRY_DELAY_MS));
+        return fetch(url, init);
+      };
+      try {
+        const prefetched = recordedUrl ? takePrefetchedDemoAnalyze(request) : null;
+        let response: Response;
+        if (prefetched) {
+          try {
+            response = await prefetched;
+          } catch (err) {
+            if (!isNetworkFetchError(err)) throw err;
+            response = await retryAfterPrefetch();
           }
-        );
+          if (isRetryableHttpStatus(response.status)) {
+            response = await retryAfterPrefetch();
+          }
+        } else {
+          response = await fetchOnce();
+        }
         if (!response.ok) {
           throw await parseApiErrorResponse(response);
         }
-        finish((await response.json()) as AnalysisResponse);
-        window.clearTimeout(slowTimer);
-        return;
+        const payload = (await response.json()) as AnalysisResponse;
+        if (payload.agentSteps?.length) setSteps(payload.agentSteps);
+        finish(payload);
+      } catch (err) {
+        const info =
+          err instanceof Error || !(err && typeof err === 'object' && 'message' in err)
+            ? apiErrorFromUnknown(err, autoRetried)
+            : { ...(err as ApiErrorInfo), autoRetried };
+        setError(info);
+        setLoading(false);
+        setAutoRetrying(false);
       }
+      window.clearTimeout(slowTimer);
+      return;
+    }
 
+    try {
       await analyzeWithStream(request, {
         onStep: (step) => {
           setSteps((prev) => [...prev.filter((s) => s.id !== step.id), step]);
         },
         onComplete: finish,
-        onAutoRetry: () => {
-          autoRetried = true;
-          setAutoRetrying(true);
-        },
+        onAutoRetry,
         onVerification: (payload) => {
           setResults((prev) => (prev ? { ...prev, prospects: payload.prospects } : prev));
           const summary = payload.osmSummary;

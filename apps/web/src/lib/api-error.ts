@@ -1,5 +1,5 @@
 import { isNetworkFetchError, isRetryableHttpStatus } from './fetch-with-retry';
-import { SERVER_BUSY_MESSAGE } from './calm-error-copy';
+import { SERVER_BUSY_MESSAGE, dailyLimitMessage } from './calm-error-copy';
 
 export type ApiErrorInfo = {
   message: string;
@@ -37,6 +37,14 @@ export function humanizeApiError(status: number, body: { error?: string; code?: 
       message: body.error?.trim() || 'Taste data is slow right now. Try again in a moment.',
       code: 'QLOO_UNAVAILABLE',
       retryAfterSec: 30,
+    };
+  }
+  if (code === 'LIVE_QLOO_JUDGE_QUOTA_EXCEEDED' || code === 'DAILY_LIMIT_REACHED') {
+    const retryAfterSec = typeof body.retryAfter === 'number' ? body.retryAfter : undefined;
+    return {
+      message: dailyLimitMessage(),
+      code: 'DAILY_LIMIT_REACHED',
+      retryAfterSec,
     };
   }
   if (status === 429 || code === 'RATE_LIMIT_EXCEEDED') {

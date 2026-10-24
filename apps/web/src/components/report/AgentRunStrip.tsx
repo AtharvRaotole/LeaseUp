@@ -31,7 +31,11 @@ export function AgentRunStrip({
 
   if (loading) {
     return (
-      <div className="rounded-card border border-border bg-surface p-4 no-print" aria-live="polite">
+      <div
+        className="rounded-card border border-border bg-surface p-4 no-print"
+        aria-live="polite"
+        data-testid="agent-run-strip-loading"
+      >
         <p className="text-label uppercase text-ink-3">Progress</p>
         <p className="mt-1 text-sm text-ink-2">{STEP_LABELS[activeId]}…</p>
         <ol className="mt-4 space-y-3">
@@ -75,11 +79,15 @@ export function AgentRunStrip({
   if (!expanded) {
     if (demoMode && recordedAt) {
       return (
-        <div className="rounded-card border border-border bg-surface px-4 py-3 text-sm text-ink-2 no-print">
+        <div
+          className="rounded-card border border-border bg-surface px-4 py-3 text-sm text-ink-2 no-print"
+          data-testid="agent-run-strip-recorded"
+        >
           <button
             type="button"
             className="text-ink underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-accent rounded-control"
             onClick={() => setExpanded(true)}
+            data-testid="agent-run-strip-show-steps"
           >
             Recorded data from {formatUserFacingDate(recordedAt)}. Show steps
           </button>
@@ -103,14 +111,23 @@ export function AgentRunStrip({
   }
 
   return (
-    <div className="rounded-card border border-border bg-surface p-4 no-print">
-      <p className="text-label uppercase text-ink-3">Progress</p>
+    <div className="rounded-card border border-border bg-surface p-4 no-print" data-testid="agent-run-strip">
+      <p className="text-label uppercase text-ink-3">{demoMode ? 'Recorded steps' : 'Progress'}</p>
+      {demoMode && recordedAt && (
+        <p className="mt-1 text-xs text-ink-3" data-testid="agent-run-strip-recorded-note">
+          Replayed from the recording made {formatUserFacingDate(recordedAt)}. No live calls ran for this report.
+        </p>
+      )}
       <ul className="mt-3 space-y-2 text-sm">
         {STEP_ORDER.map((id) => {
           const step = byId.get(id);
           if (!step) return null;
           return (
-            <li key={id} className="flex justify-between gap-4 border-b border-border pb-2 last:border-0">
+            <li
+              key={id}
+              className="flex justify-between gap-4 border-b border-border pb-2 last:border-0"
+              data-testid={`agent-run-step-${id}`}
+            >
               <span className="font-medium text-ink">{step.label}</span>
               <span className="text-right text-ink-2">
                 {step.summary}

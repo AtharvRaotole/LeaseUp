@@ -20,6 +20,18 @@ test.describe('Calm errors and geocode confirm', () => {
         body: JSON.stringify({ error: 'busy', code: 'SERVER_BUSY' }),
       });
     });
+    await page.route('**/api/demo-report/**', async (route) => {
+      hits += 1;
+      await route.fulfill({
+        status: 503,
+        contentType: 'application/json',
+        headers: {
+          'Access-Control-Allow-Origin': 'http://localhost:4173',
+          'Access-Control-Allow-Credentials': 'true',
+        },
+        body: JSON.stringify({ error: 'busy', code: 'SERVER_BUSY' }),
+      });
+    });
     await page.route('**/api/analyze', async (route) => {
       if (route.request().method() === 'POST') {
         hits += 1;
