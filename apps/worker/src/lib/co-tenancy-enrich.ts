@@ -5,11 +5,13 @@ import type { ResponseCache } from './response-cache';
 import { sha256Short } from './cache-key';
 import { encodeGeohash } from './geohash';
 import {
-  buildCoTenancyLineFromAffinities,
+  coTenancyLineFromPicked,
+  compactCoTenancyInsights,
   incumbentEntityIdsForCoAffinity,
   parseCoAffinityFromInsights,
+  pickPairingsForReport,
+  type IncumbentAffinity,
 } from './co-tenancy-pairing';
-import { brandCategoryLabel } from './brand-category';
 
 const MAX_PROSPECTS = 10;
 
@@ -21,7 +23,7 @@ async function coAffinityCacheKey(
 ): Promise<string> {
   const hash = encodeGeohash(location.latitude, location.longitude, 7);
   const inc = await sha256Short(incumbentIds.slice().sort().join(','));
-  return `co-tenancy:v1:${hash}:${radiusKm}:${pitchEntityId}:${inc}`;
+  return `co-tenancy:v2:${hash}:${radiusKm}:${pitchEntityId}:${inc}`;
 }
 
 export async function enrichProspectsWithCoTenancy(params: {
@@ -50,13 +52,13 @@ export async function enrichProspectsWithCoTenancy(params: {
   const targets = params.prospects.slice(0, MAX_PROSPECTS);
   const rest = params.prospects.slice(MAX_PROSPECTS);
 
-  const enriched = await Promise.all(
+  const fetched = await Promise.all(
     targets.map(async (pack) => {
       const incumbentIds = incumbentEntityIdsForCoAffinity(
         params.nearbyTenants,
         pack.brand.entityId
       );
-      if (incumbentIds.length === 0) return pack;
+      if (incumbentIds.length === 0) return { pack, affinities: [] as IncumbentAffinity[] };
 
       let raw: unknown;
       if (demoId) {
@@ -84,40 +86,36 @@ export async function enrichProspectsWithCoTenancy(params: {
             incumbentEntityIds: incumbentIds,
             runId: params.runId,
           });
-          if (raw) {
+          const compact = raw ? compactCoTenancyInsights(raw, pack.brand.entityId) : null;
+          if (compact) {
             await params.responseCache.putTextIfChanged(
               cacheKey,
-              JSON.stringify(raw),
+              JSON.stringify(compact),
               86400
             );
           }
         }
       }
 
-      if (!raw) return pack;
-
-      const affinities = parseCoAffinityFromInsights(raw, incumbentIds);
-      const line = buildCoTenancyLineFromAffinities(affinities, params.nearbyTenants);
-      if (!line) return pack;
-
-      const mean =
-        affinities.length > 0
-          ? affinities.reduce((s, r) => s + r.affinity, 0) / affinities.length
-          : 0;
-      const categoryFit = brandCategoryLabel(pack.brand.entityId) ?? pack.tenantMixScore?.categoryFit;
-
-      return {
-        ...pack,
-        coTenancyLine: line,
-        tenantMixScore: {
-          score: mean,
-          coAffinityMean: mean,
-          categoryFit: categoryFit ?? '',
-          explanation: line,
-        },
-      };
+      const affinities = raw
+        ? parseCoAffinityFromInsights(raw, incumbentIds, pack.brand.entityId)
+        : [];
+      return { pack, affinities };
     })
   );
+
+  const picked = pickPairingsForReport(fetched.map((row) => row.affinities));
+  const enriched = fetched.map(({ pack }, idx) => {
+    const line = coTenancyLineFromPicked(picked[idx] ?? [], params.nearbyTenants);
+    if (!line) return pack;
+    return {
+      ...pack,
+      coTenancyLine: line,
+      tenantMixScore: pack.tenantMixScore
+        ? { ...pack.tenantMixScore, explanation: line }
+        : undefined,
+    };
+  });
 
   return [...enriched, ...rest];
 }

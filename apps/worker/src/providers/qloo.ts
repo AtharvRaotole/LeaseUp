@@ -520,7 +520,7 @@ export class QlooClient {
     url.searchParams.set('filter.results.entities', params.pitchEntityId);
     applyQlooInsightsLocationParams(url, params.location);
     url.searchParams.set('signal.interests.entities', params.incumbentEntityIds.join(','));
-    url.searchParams.set('take', '50');
+    url.searchParams.set('take', '1');
     url.searchParams.set('feature.explainability', 'true');
 
     const start = Date.now();

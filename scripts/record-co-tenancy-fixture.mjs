@@ -1,133 +1,116 @@
 /**
- * Record Qloo co-tenancy insights for demo mode (raw /v2/insights bodies).
+ * Record Qloo co-tenancy insights for demo mode.
+ *
+ * Pitches and incumbents come from the local demo worker so fixture keys match
+ * exactly what the report requests (top 10 prospects x nearest OSM incumbents):
  *
  *   pnpm --filter @leaseup/fixtures build && pnpm --filter @leaseup/worker build
- *   QLOO_API_KEY=... node scripts/record-co-tenancy-fixture.mjs
- *   QLOO_API_KEY=... node scripts/record-co-tenancy-fixture.mjs wicker boulder
+ *   (cd apps/worker && wrangler dev --local --port 8787)   # APP_MODE=demo
+ *   QLOO_API_KEY=... node scripts/record-co-tenancy-fixture.mjs wicker boulder sevierville
  *
- * Writes packages/fixtures/src/co-tenancy-recorded/manifest.json
+ * Stores only the per-incumbent explainability shares for each pitched brand, packed
+ * per chip (incumbent id table + [index, score] pairs, scores rounded to 4 places) to
+ * keep the worker bundle small. See packCoTenancyChip in packages/fixtures.
  * Keys: `${pitchEntityId}:${sha256(incumbents)}` (see coTenancyFixtureKey in worker).
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { createRequire } from 'node:module';
-
-const require = createRequire(import.meta.url);
+import { importWorkerModules } from './lib-worker-bundle.mjs';
 
 const key = process.env.QLOO_API_KEY;
 const baseUrl = process.env.QLOO_BASE_URL || 'https://hackathon.api.qloo.com';
+const apiUrl = process.env.LEASEUP_API_URL || 'http://localhost:8787';
 const RADIUS_KM = Number(process.env.LEASEUP_DEMO_RADIUS_KM || '10');
 const MAX_PITCHES = 10;
 
-const { boulderFixture } = require('../packages/fixtures/dist/boulder.js');
-const { wickerparkFixture } = require('../packages/fixtures/dist/wicker-park.js');
-const { seviervilleFixture } = require('../packages/fixtures/dist/sevierville.js');
+const CHIPS = {
+  wicker: '1574 N Milwaukee Ave, Chicago, IL 60622',
+  boulder: '1125 Pearl St, Boulder, CO 80302',
+  sevierville: '125 Collier Dr, Sevierville, TN 37862',
+};
+
+const root = process.cwd();
+const manifestPath = join(root, 'packages/fixtures/src/co-tenancy-recorded/manifest.json');
 
 const {
   incumbentEntityIdsForCoAffinity,
   coTenancyFixtureKey,
-} = require('../apps/worker/dist/lib/co-tenancy-pairing.js');
-const { OsmSnapshotCatalog } = require('../apps/worker/dist/services/osm-snapshot-catalog.js');
-const { ResponseCache } = require('../apps/worker/dist/lib/response-cache.js');
+  compactCoTenancyInsights,
+  packCoTenancyChip,
+  unpackCoTenancyEntry,
+} = await importWorkerModules(root, {
+  incumbentEntityIdsForCoAffinity: 'apps/worker/src/lib/co-tenancy-pairing.ts',
+  coTenancyFixtureKey: 'apps/worker/src/lib/co-tenancy-pairing.ts',
+  compactCoTenancyInsights: 'apps/worker/src/lib/co-tenancy-pairing.ts',
+  packCoTenancyChip: 'packages/fixtures/src/co-tenancy-recorded-loader.ts',
+  unpackCoTenancyEntry: 'packages/fixtures/src/co-tenancy-recorded-loader.ts',
+});
 
-const CHIPS = {
-  wicker: { fixture: wickerparkFixture },
-  boulder: { fixture: boulderFixture },
-  sevierville: { fixture: seviervilleFixture },
-};
-
-const manifestPath = join(
-  process.cwd(),
-  'packages/fixtures/src/co-tenancy-recorded/manifest.json'
-);
-
-function formatWktPoint(lon, lat) {
-  return `POINT(${lon} ${lat})`;
-}
-
-function loadManifest() {
-  return JSON.parse(readFileSync(manifestPath, 'utf8'));
-}
-
-function pitchEntityIdsFromFixture(fixture) {
-  const seen = new Set();
-  const ids = [];
-  for (const row of fixture.insights ?? []) {
-    const id = String(row.entity_id ?? row.entityId ?? '').toUpperCase();
-    if (!id || seen.has(id)) continue;
-    seen.add(id);
-    ids.push(id);
-    if (ids.length >= MAX_PITCHES) break;
-  }
-  return ids;
-}
+let calls = 0;
 
 async function fetchCoAffinity(site, pitchEntityId, incumbentEntityIds) {
   const url = new URL('/v2/insights', baseUrl);
   url.searchParams.set('filter.type', 'urn:entity:brand');
   url.searchParams.set('filter.results.entities', pitchEntityId);
-  url.searchParams.set('signal.location', formatWktPoint(site.longitude, site.latitude));
+  url.searchParams.set('signal.location', `POINT(${site.longitude} ${site.latitude})`);
   url.searchParams.set('signal.location.radius', String(Math.round(RADIUS_KM * 1000)));
   url.searchParams.set('signal.interests.entities', incumbentEntityIds.join(','));
-  url.searchParams.set('take', '50');
+  url.searchParams.set('take', '1');
   url.searchParams.set('feature.explainability', 'true');
 
-  const res = await fetch(url, {
-    headers: { Accept: 'application/json', 'X-Api-Key': key },
-  });
+  calls += 1;
+  const res = await fetch(url, { headers: { Accept: 'application/json', 'X-Api-Key': key } });
   const text = await res.text();
-  if (!res.ok) {
-    throw new Error(`Qloo co-tenancy ${res.status}: ${text.slice(0, 240)}`);
-  }
+  if (!res.ok) throw new Error(`Qloo co-tenancy ${res.status}: ${text.slice(0, 240)}`);
   return JSON.parse(text);
 }
 
-function makeOsmCatalog() {
-  const publicRoot = join(process.cwd(), 'apps/worker/public');
-  const { readFileSync: read } = require('node:fs');
-  const assets = {
-    fetch: async (url) => {
-      if (!url.includes('osm.local')) return new Response('missing', { status: 404 });
-      const path = url.replace('https://osm.local', '');
-      const file = join(publicRoot, path);
-      try {
-        return new Response(read(file), { status: 200 });
-      } catch {
-        return new Response('missing', { status: 404 });
-      }
-    },
-  };
-  return new OsmSnapshotCatalog(assets, new ResponseCache());
+async function demoAnalysis(address) {
+  const res = await fetch(new URL('/api/analyze', apiUrl), {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ address, radius: RADIUS_KM }),
+  });
+  if (!res.ok) throw new Error(`demo analyze ${res.status} at ${apiUrl}`);
+  return res.json();
 }
 
 async function recordChip(chipId, manifest) {
-  const { fixture } = CHIPS[chipId];
-  const site = fixture.location;
-  const osm = makeOsmCatalog();
-  const nearby = await osm.listNearbyTenants(site.latitude, site.longitude, RADIUS_KM, 24);
-  const pitches = pitchEntityIdsFromFixture(fixture);
-  const bucket = manifest[chipId] ?? {};
+  const analysis = await demoAnalysis(CHIPS[chipId]);
+  const site = analysis.location;
+  const nearby = analysis.nearbyTenants ?? [];
+  const pitches = (analysis.prospects ?? []).slice(0, MAX_PITCHES);
+  const bucket = {};
+  const previousChip = manifest[chipId] ?? { ids: [], entries: {} };
 
   console.log(`\n[${chipId}] nearby=${nearby.length} pitches=${pitches.length}`);
 
-  for (const pitchEntityId of pitches) {
+  for (const pack of pitches) {
+    const pitchEntityId = pack.brand.entityId;
     const incumbentIds = incumbentEntityIdsForCoAffinity(nearby, pitchEntityId);
     if (incumbentIds.length === 0) {
-      console.log('  skip', pitchEntityId, '(no incumbents)');
+      console.log('  skip', pack.brand.name, '(no incumbents)');
       continue;
     }
     const cacheKey = await coTenancyFixtureKey(pitchEntityId, incumbentIds);
-    if (bucket[cacheKey]) {
-      console.log('  keep', pitchEntityId, cacheKey.slice(0, 48) + '...');
+    const previous = unpackCoTenancyEntry(previousChip, cacheKey);
+    if (previous) {
+      bucket[cacheKey] = previous;
+      console.log('  keep', pack.brand.name);
       continue;
     }
-    console.log('  fetch', pitchEntityId, 'incumbents', incumbentIds.length);
+    console.log('  fetch', pack.brand.name, 'incumbents', incumbentIds.length);
     const body = await fetchCoAffinity(site, pitchEntityId, incumbentIds);
-    bucket[cacheKey] = body;
+    const compact = compactCoTenancyInsights(body, pitchEntityId);
+    if (!compact) {
+      console.log('    no pitch row in response; not stored');
+      continue;
+    }
+    bucket[cacheKey] = compact;
     await new Promise((r) => setTimeout(r, 350));
   }
 
-  manifest[chipId] = bucket;
+  manifest[chipId] = packCoTenancyChip(bucket);
 }
 
 async function main() {
@@ -135,17 +118,12 @@ async function main() {
     console.error('Set QLOO_API_KEY to record co-tenancy fixtures (no mock replay).');
     process.exit(1);
   }
-
   const selected = process.argv.slice(2).filter((a) => a in CHIPS);
   const chipIds = selected.length > 0 ? selected : Object.keys(CHIPS);
-  const manifest = loadManifest();
-
-  for (const chipId of chipIds) {
-    await recordChip(chipId, manifest);
-  }
-
-  writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
-  console.log('\nWrote', manifestPath);
+  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+  for (const chipId of chipIds) await recordChip(chipId, manifest);
+  writeFileSync(manifestPath, JSON.stringify(manifest) + '\n');
+  console.log(`\nWrote ${manifestPath} (${calls} Qloo calls)`);
 }
 
 main().catch((err) => {

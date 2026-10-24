@@ -44,7 +44,7 @@ async function main() {
   url.searchParams.set('signal.location', formatWktPoint(longitude, latitude));
   url.searchParams.set('signal.location.radius', String(Math.round(RADIUS_KM * 1000)));
   url.searchParams.set('signal.interests.entities', SAMPLE_INCUMBENTS.join(','));
-  url.searchParams.set('take', '50');
+  url.searchParams.set('take', '1');
   url.searchParams.set('feature.explainability', 'true');
 
   console.log('GET', url.toString().replace(key, '***'));
@@ -60,11 +60,19 @@ async function main() {
 
   const json = JSON.parse(text);
   const entities = json?.results?.entities ?? [];
-  console.log('entities returned:', entities.length);
-  for (const row of entities.slice(0, 6)) {
-    const id = row.entity_id ?? row.id;
-    const affinity = row.query?.affinity ?? row.affinity;
-    console.log(' ', id, row.name, affinity);
+  console.log('entities returned:', entities.length, '(filter.results.entities keeps only the pitched brand)');
+  const row = entities.find((e) => String(e.entity_id).toUpperCase() === PITCH_ENTITY_ID);
+  if (!row) {
+    console.error('Pitched brand row missing: filter.results.entities was not applied.');
+    process.exit(1);
+  }
+  console.log(' ', row.name, 'query.affinity', row.query?.affinity, '(flat across brands, not used)');
+  const explain = row.query?.explainability?.['signal.interests.entities'] ?? [];
+  console.log('  explainability shares per incumbent (used for pairing):');
+  for (const e of explain) console.log('   ', e.entity_id, Number(e.score).toFixed(3));
+  if (explain.length === 0) {
+    console.error('No per-incumbent explainability: pairing lines would be omitted.');
+    process.exit(1);
   }
   console.log('OK: co-tenancy insights params accepted.');
 }
