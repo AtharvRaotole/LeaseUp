@@ -2,6 +2,8 @@
 
 Headline numbers for LeaseUp product copy (committed in `aggregates.json`).
 
+Exact P@10 means: raw 0.5375, chain 0.76, logistic blend 0.825. Broker-facing whole percents use 54% / 76% / 83% (blend is 82.5% before rounding).
+
 ## Cohort metrics
 
 | Metric | Value | Notes |
@@ -9,8 +11,8 @@ Headline numbers for LeaseUp product copy (committed in `aggregates.json`).
 | Raw Qloo P@10 | 0.54 | Same ATP/OSM presence panel; Qloo list order only |
 | Chain size P@10 | 0.76 | Same pool sorted by national store count |
 | Legacy 0.75/0.25 blend P@10 | 0.59 | Deprecated ranking prior |
-| Same-size tier AUC | 0.664 | 95% CI [0.642, 0.687] (mean of per-address stratified AUC) |
-| Logistic blend P@10 | 0.83 | +6.5 pp vs chain; 95% CI [3.3, 9.3] pp |
+| Same-size tier AUC | 0.66 | 95% CI [0.64, 0.69] (mean of per-address stratified AUC) |
+| Logistic blend P@10 | 0.82 | +6.5 pp vs chain; 95% CI [3.3, 9.3] pp |
 | Random P@10 (adaptive radius) | 0.29 | 1000 shuffles per address |
 | Mid-size tier P@5 (439 to 864 stores) | 0.53 vs 0.23 | Qloo order vs chain-size order within tier |
 
