@@ -49,7 +49,7 @@ export function ReportStickyHeader({
           <span className="hidden text-ink-3 md:inline"> · </span>
           <span className="hidden truncate md:inline">{request.address}</span>
         </p>
-        <div className="relative flex shrink-0 items-center gap-0.5">
+        <div className="relative flex shrink-0 items-center gap-2">
           <button
             type="button"
             className="rounded-pill border border-border bg-surface-2 px-3 py-1.5 text-sm tabular-nums text-ink transition-colors duration-150 hover:border-border-strong focus-visible:ring-2 focus-visible:ring-accent"

@@ -1,7 +1,15 @@
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { Link } from 'react-router-dom';
-import { evalHeadlineLabel, formatPanelValues, isHeadlinePanel } from '../../lib/eval-display';
+import {
+  brokerPanelTitle,
+  evalHeadlineLabel,
+  brokerEvalNote,
+  formatPanelValues,
+  isHeadlinePanel,
+} from '../../lib/eval-display';
+import { methodologyRankMatchTooltip } from '../../lib/broker-copy';
+import { InfoTooltip } from '../ui/InfoTooltip';
 import { getEvalManifest, loadLiveQlooLiftAggregates } from '@leaseup/fixtures';
 
 export function StrictEvalCard({ results }: { results: AnalysisResponse }) {
@@ -18,11 +26,12 @@ export function StrictEvalCard({ results }: { results: AnalysisResponse }) {
     <Card className="border-border bg-surface-2" data-testid="strict-eval-card">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <h3 className="text-h3 font-semibold text-ink">Evaluation metrics</h3>
+          <h3 className="text-h3 font-semibold text-ink">How the rankings were tested</h3>
           <p className="mt-1 text-sm text-ink-2">
-            {evalHeadlineLabel(snapshot)}. Companion logistic blend: {blendPct}% P@10 vs {chainPct}%
-            chain-only on the recorded cohort. Data source: {snapshot.dataSource}. Legacy present-in-top-10 can saturate;
-            adaptive radius panels below. Qloo can reflect brands already in the trade area.
+            {evalHeadlineLabel(snapshot)}. Across recorded neighborhoods, {blendPct}% of top picks already had a
+            nearby store when we used local taste plus chain size, vs {chainPct}% when we used chain size alone.
+            Taste can still favor brands that already operate nearby, so always pair this with store checks on your
+            pitch list.
           </p>
         </div>
         <Link to="/methodology#strict-eval-heading" className="text-sm font-medium text-accent">
@@ -49,8 +58,13 @@ export function StrictEvalCard({ results }: { results: AnalysisResponse }) {
               }`}
             >
               <p className="text-label uppercase text-ink-3">
-                {panel.label}
-                {headline ? ' (headline)' : ''}
+                <span className="inline-flex items-center gap-1">
+                  {brokerPanelTitle(panel.id, panel.label)}
+                  {panel.id === 'same_size_auc' && (
+                    <InfoTooltip label={methodologyRankMatchTooltip()} />
+                  )}
+                  {headline ? ' (headline)' : ''}
+                </span>
               </p>
               <p className="mt-1 font-mono text-sm tabular-nums text-ink">{formatPanelValues(panel)}</p>
               {panel.detail && <p className="mt-1 text-xs text-ink-3">{panel.detail}</p>}
@@ -68,7 +82,7 @@ export function StrictEvalCard({ results }: { results: AnalysisResponse }) {
       {snapshot.notes.length > 0 && (
         <ul className="mt-4 list-disc space-y-1 pl-5 text-sm text-ink-2">
           {snapshot.notes.map((note) => (
-            <li key={note}>{note}</li>
+            <li key={note}>{brokerEvalNote(note)}</li>
           ))}
         </ul>
       )}

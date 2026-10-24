@@ -19,7 +19,7 @@ export function HowWeKnowSection({ results }: { results: AnalysisResponse }) {
             title: 'Data sources',
             content: (
               <ul className="list-disc pl-5 space-y-1">
-                <li>Local taste rankings (Qloo, {results.mode ?? 'demo'} mode)</li>
+                <li>Local shopper taste (Qloo, {results.mode ?? 'demo'} mode)</li>
                 <li>All The Places store locations (CC0)</li>
                 <li>
                   {results.osmSnapshotLabel
@@ -54,9 +54,9 @@ export function HowWeKnowSection({ results }: { results: AnalysisResponse }) {
       <ShowMethod>
         <p>
           We rank brands for the pin, then measure how often top-ranked brands already have a real store
-          nearby. Precision at 10 (P@10) counts how many of the top 10 already have a store in your trade area.
-          AUC here is {auc}: the chance a random present store ranks above a random absent one
-          (1.0 is perfect separation).
+          nearby. {(results.backtest.precisionAt10 * 100).toFixed(0)}% of the top 10 already have a store in
+          your trade area. Separation score {auc}: how often a brand with a nearby store ranks above one
+          without (1.0 means the list lines up with stores on the ground).
         </p>
       </ShowMethod>
       </div>

@@ -10,11 +10,15 @@ import { fitPercentileLabel } from '../../lib/fit-display';
 import { buildReportPath } from '../../lib/report-params';
 import { displayBrandName } from '../../lib/brand-display';
 import { brandCategoryLabel } from '../../lib/brand-category';
-import { verificationShortLabel, verificationSourceHelp } from '../../lib/copy';
-import { localFitTooltip } from '../../lib/broker-copy';
+import {
+  localShopperMatchTooltip,
+  verificationBrokerLabel,
+  verificationBrokerTooltip,
+} from '../../lib/broker-copy';
 import { InfoPopover } from '../ui/InfoPopover';
 import { InfoTooltip } from '../ui/InfoTooltip';
 import { pitchExpandedLines } from '../../lib/pitch-detail-copy';
+import { BrandReachLine } from './BrandReachLine';
 import { cn } from '../../lib/cn';
 import { AddToPipelineButton } from '../pipeline/AddToPipelineButton';
 import { pipelineCardFromProspect } from '../../lib/build-pipeline-card';
@@ -36,7 +40,7 @@ function PitchPill({
     <span
       title={tooltip}
       className={cn(
-        'inline-flex min-h-[22px] max-w-full items-center gap-1 rounded-pill px-2 py-0.5 text-[11px] font-medium leading-snug sm:max-w-[10.5rem]',
+        'inline-flex min-h-[22px] max-w-full items-center gap-1 rounded-pill px-2 py-0.5 text-caption font-medium leading-snug sm:max-w-[10.5rem]',
         tone === 'accent' ? 'bg-accent-soft text-accent' : 'border border-border bg-surface text-ink-2'
       )}
     >
@@ -68,8 +72,8 @@ function verificationPillCopy(
     };
   }
   return {
-    label: verificationShortLabel(verified),
-    help: verificationSourceHelp(prospect, radiusKm, results.osmSnapshotLabel, results),
+    label: verificationBrokerLabel(verified),
+    help: verificationBrokerTooltip(verified, radiusKm, results.osmSnapshotLabel),
     spinner: verified === 'verifying...',
   };
 }
@@ -165,9 +169,9 @@ export function BrandsToPitch({
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-surface-2 text-ink-2">
           <Store className="h-6 w-6" aria-hidden />
         </div>
-        <h3 className="mt-4 text-h3 font-semibold text-ink">No pitch list yet</h3>
+        <h3 className="mt-4 text-h3 font-semibold text-ink">No brands to pitch here</h3>
         <p className="mt-2 text-sm text-ink-2">
-          Every top brand already has a store in this radius. Try a wider search or narrow by category.
+          Every strong taste match already has a store in this radius. Widen the radius or pick another category.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Button
@@ -223,20 +227,30 @@ export function BrandsToPitch({
               : `No store within ${radiusKm} km`;
             const subline = category ? `${category} · ${distanceLine}` : distanceLine;
 
+            const pill = verificationPillCopy(
+              prospect,
+              prospect.brand.entityId,
+              osmTimedOut,
+              radiusKm,
+              results
+            );
+
             return (
               <li key={prospect.brand.entityId}>
-                <button
-                  type="button"
+                <div
                   className={cn(
-                    'flex min-h-[56px] w-full flex-col gap-2 px-3 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent sm:flex-row sm:items-center sm:gap-3 sm:py-2',
+                    'flex min-h-[56px] w-full flex-col gap-2 px-3 py-3 sm:flex-row sm:items-center sm:gap-3 sm:py-2',
                     selected ? 'bg-surface-2 border-l-2 border-l-accent pl-[10px]' : 'border-l-2 border-l-transparent'
                   )}
-                  onClick={() => {
-                    onSelect(prospect);
-                    setExpanded(open ? null : prospect.brand.entityId);
-                  }}
                 >
-                  <div className="flex min-w-0 w-full items-start gap-3 sm:flex-1">
+                  <button
+                    type="button"
+                    className="flex min-w-0 flex-1 items-start gap-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
+                    onClick={() => {
+                      onSelect(prospect);
+                      setExpanded(open ? null : prospect.brand.entityId);
+                    }}
+                  >
                     <div
                       className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-xs font-semibold text-ink"
                       style={{ background: brandTint(name) }}
@@ -245,30 +259,22 @@ export function BrandsToPitch({
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="font-medium leading-snug text-ink">{name}</p>
-                      <p className="mt-0.5 text-xs leading-snug text-ink-3">{subline}</p>
+                      <p className="mt-0.5 text-meta leading-snug text-ink-3">{subline}</p>
                     </div>
+                  </button>
+                  <div className="flex flex-wrap items-center justify-end gap-1.5 sm:shrink-0">
+                    <span className="inline-flex items-center gap-0.5">
+                      <PitchPill tone="accent">{fitLabel}</PitchPill>
+                      <InfoPopover label="Local shopper match" body={localShopperMatchTooltip()} />
+                    </span>
+                    <span className="inline-flex items-center gap-0.5">
+                      <PitchPill tone="neutral" tooltip={pill.help} spinner={pill.spinner}>
+                        {pill.label}
+                      </PitchPill>
+                      <InfoPopover label={`Store check: ${pill.label}`} body={pill.help} />
+                    </span>
                   </div>
-                  <div className="flex w-full flex-wrap items-center gap-1.5 sm:w-auto sm:shrink-0 sm:justify-end">
-                    <PitchPill tone="accent" tooltip={localFitTooltip()}>{fitLabel}</PitchPill>
-                    {(() => {
-                      const pill = verificationPillCopy(
-                        prospect,
-                        prospect.brand.entityId,
-                        osmTimedOut,
-                        radiusKm,
-                        results
-                      );
-                      return (
-                        <span className="inline-flex items-center gap-0.5">
-                          <PitchPill tone="neutral" tooltip={pill.help} spinner={pill.spinner}>
-                            {pill.label}
-                          </PitchPill>
-                          <InfoPopover label={`Store check: ${pill.label}`} body={pill.help} />
-                        </span>
-                      );
-                    })()}
-                  </div>
-                </button>
+                </div>
                 {open && (
                   <div className="border-t border-border bg-surface-2/40 px-4 py-3 text-sm text-ink-2">
                     <ul className="space-y-2">
@@ -276,6 +282,11 @@ export function BrandsToPitch({
                         <li key={line}>{line}</li>
                       ))}
                     </ul>
+                    {prospect.brandReach && (
+                      <div className="mt-2">
+                        <BrandReachLine reach={prospect.brandReach} />
+                      </div>
+                    )}
                     {prospect.coverageNote && (
                       <p className="mt-2 text-xs text-warn">{prospect.coverageNote}</p>
                     )}

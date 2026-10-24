@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'media',
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
@@ -33,11 +34,11 @@ export default {
         display: ['var(--font-display)'],
       },
       fontSize: {
-        caption: ['11px', { lineHeight: '16px', letterSpacing: '0.03em' }],
-        label: ['11px', { lineHeight: '16px', letterSpacing: '0.04em' }],
+        caption: ['12px', { lineHeight: '16px', letterSpacing: '0.02em' }],
+        label: ['12px', { lineHeight: '16px', letterSpacing: '0.04em' }],
         meta: ['12px', { lineHeight: '16px', letterSpacing: '0.01em' }],
-        small: ['13px', { lineHeight: '20px', letterSpacing: '0' }],
-        body: ['14px', { lineHeight: '22px', letterSpacing: '0' }],
+        small: ['14px', { lineHeight: '20px', letterSpacing: '0' }],
+        body: ['15px', { lineHeight: '24px', letterSpacing: '0' }],
         'body-lg': ['16px', { lineHeight: '24px', letterSpacing: '-0.005em' }],
         h3: ['20px', { lineHeight: '28px', letterSpacing: '-0.015em' }],
         h2: ['28px', { lineHeight: '34px', letterSpacing: '-0.02em' }],

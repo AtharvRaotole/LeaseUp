@@ -1,7 +1,7 @@
 # LeaseUp 2-minute demo script
 
 **Audience:** Hackathon judges. **Mode:** Demo (`APP_MODE=demo`) at https://leaseup-59m.pages.dev  
-**Numbers below are from recorded fixtures (Oct 2026), not invented.**
+**Headline eval numbers** match `/methodology` (40-site live Qloo study, adaptive radius).
 
 ---
 
@@ -11,16 +11,16 @@
 **0:15 - Site report (45 s)**  
 - Open the site. Click **Wicker Park** (1574 N Milwaukee Ave, Chicago).  
 - Leave radius **10 km**, run **Analyze**.  
-- Point at the headline: brands that fit Wicker Park with **no store in 10 km**.  
-- Stats row: on this recording, **10 of 10** top-ranked tracked brands already have a store in radius (P@10 **1.00** on the fixture backtest).  
-- Scroll the **Brands to pitch** list (above the fold on desktop): ranked prospects with absence checks.  
+- Point at the proof line: taste-aware blend vs store count alone on this pin (from the recorded 40-site eval row, e.g. **9 of 10** vs **7 of 10** at 1.5 km adaptive radius).  
+- Scroll the **Brands to pitch** list: ranked prospects with absence checks.  
 - Toggle **Without taste**: same pool ordered by national chain size; compare the proof line.  
 - Map panel (right): ATP locations; click a brand to sync the map.
 
 **1:00 - Trust + methodology (25 s)**  
 - Nav: **How it works** (`/methodology`).  
-- Pipeline: geocode, Qloo, ATP + OSM, backtest, outreach.  
-- Evaluation table: recorded metros (fixture-backed rows show real backtest counts; pending rows need live Qloo run).
+- Cite the cohort: same-size tier AUC **0.67** [0.65, 0.69]; logistic blend **82%** top-10 presence vs chain size **76%**; raw Qloo order **54%** (does not beat chain size).  
+- Mid-size chain tier (Q3) **53%** vs **23%** at P@5 inside the tier.  
+- Caveat: taste may partly reflect brands already nearby; use absence checks on the pitch list.
 
 **1:25 - Brand + portfolio (30 s)**  
 - **Brand sites:** open Bath & Body Works (or search), Chicago metro heatmap + store overlay.  
@@ -28,10 +28,11 @@
 
 **1:55 - Close (5 s)**  
 - **Pipeline:** drag a card between stages (optional).  
-- "Everything is open source, MIT licensed, with CSP and accessibility checks in CI. Questions?"
+- "Everything is open source, MIT licensed, with CSP, worker smoke tests, and accessibility checks in CI. Questions?"
 
 ---
 
 **Backup lines if something fails**  
+- Taste API slow: message says "Taste data is slow right now. Try again in a moment." (retries run in the worker).  
 - API blocked: mention CSP regression test in CI and same-origin Worker URL.  
 - Slow network: use Wicker demo chip only (recorded JSON, no live Qloo).

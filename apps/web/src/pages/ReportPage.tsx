@@ -3,53 +3,66 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import type { ProspectPack } from '@leaseup/contracts';
 import { TopBar } from '../components/layout/TopBar';
 import { useAnalysisRun } from '../hooks/useAnalysisRun';
+import { useMediaQuery } from '../hooks/useMediaQuery';
+import { ensureMapLibreCss } from '../lib/maplibre-css';
 import { buildReportPath, parseReportSearch } from '../lib/report-params';
-import { DEMO_CHIP_ADDRESSES, matchDemoFixtureId } from '@leaseup/fixtures';
+import { DEMO_CHIP_ADDRESSES, matchDemoFixtureId } from '../lib/demo-chip-addresses';
 import { fetchGeocodePreview } from '../lib/geocode-preview';
-import { demoGeocodePreviewForAddress } from '../lib/demo-geocode-preview';
 import { useHealth } from '../hooks/useHealth';
 const GeocodeConfirmPanel = lazy(() =>
   import('../components/report/GeocodeConfirmPanel').then((m) => ({ default: m.GeocodeConfirmPanel }))
 );
 import type { GeocodeCandidate, Location } from '@leaseup/contracts';
 import { AgentRunStrip } from '../components/report/AgentRunStrip';
-import { HeadlineCard } from '../components/report/HeadlineCard';
-import { BrandsToPitch } from '../components/report/BrandsToPitch';
-import { ProofSection } from '../components/report/ProofSection';
-import { CompareSection, CompareUnavailable } from '../components/report/CompareSection';
+import { ReportDeepSections } from '../components/report/ReportDeepSections';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-import { HowWeKnowSection } from '../components/report/HowWeKnowSection';
-import { ReportMap, type MapBrandSelection } from '../components/report/ReportMap';
-import { OutreachSheet } from '../components/report/OutreachSheet';
+const ReportMap = lazy(() =>
+  import('../components/report/ReportMap').then((m) => ({ default: m.ReportMap }))
+);
+import type { MapBrandSelection, ReportMapCaptureRef } from '../components/report/ReportMap';
+const OutreachSheet = lazy(() =>
+  import('../components/report/OutreachSheet').then((m) => ({ default: m.OutreachSheet }))
+);
 import { DemoBanner } from '../components/report/DemoBanner';
-import { ReportStickyHeader } from '../components/report/ReportStickyHeader';
+import { TasteUnavailableBanner } from '../components/report/TasteUnavailableBanner';
+const ReportStickyHeader = lazy(() =>
+  import('../components/report/ReportStickyHeader').then((m) => ({ default: m.ReportStickyHeader }))
+);
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { ReportErrorBanner } from '../components/report/ReportErrorBanner';
 import { apiErrorFromUnknown, type ApiErrorInfo } from '../lib/api-error';
 import { SERVER_BUSY_MESSAGE } from '../lib/calm-error-copy';
-import { QlooRankingToggle, type QlooRankingMode } from '../components/report/QlooRankingToggle';
-import { QlooProofBanner } from '../components/report/QlooProofBanner';
-import { StrictEvalCard } from '../components/report/StrictEvalCard';
-import { WhyThisBrandCard } from '../components/report/WhyThisBrandCard';
+import { SLOW_LOAD_STATUS } from '../lib/slow-load-copy';
+import { ReportShortListNotice } from '../components/report/ReportShortListNotice';
+const SharePitchDialog = lazy(() =>
+  import('../components/report/SharePitchDialog').then((m) => ({ default: m.SharePitchDialog }))
+);
 import { BrandLoading } from '../components/brand/BrandLoading';
-import { VacancyCostCalculator } from '../components/report/VacancyCostCalculator';
-import { SharePitchDialog } from '../components/report/SharePitchDialog';
-import type { ReportMapCaptureRef } from '../components/report/ReportMap';
 import type { VacancyCalculatorDraft } from '../lib/vacancy-cost';
 import { EMPTY_VACANCY_DRAFT } from '../lib/vacancy-cost';
 import { loadVacancyDraft, saveVacancyDraft } from '../lib/vacancy-cost-storage';
 import { startProspectingJob } from '../lib/start-prospecting';
-import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton';
-import { pipelineCardFromProspect } from '../lib/build-pipeline-card';
-import { StorefrontSizeControl } from '../components/report/StorefrontSizeControl';
-import { CoTenancyMixSection } from '../components/report/CoTenancyMixSection';
-import { ProductExplainer } from '../components/report/ProductExplainer';
-import { ReportFirstRunTour } from '../components/report/ReportFirstRunTour';
-import { ReportLoadingPanel } from '../components/report/ReportLoadingPanel';
-import { ReportMapSkeleton } from '../components/report/ReportMapSkeleton';
-import { ReportSidebarFacts } from '../components/report/ReportSidebarFacts';
+import { ReportSummaryAboveFold } from '../components/report/ReportSummaryAboveFold';
+const WatchSpaceButton = lazy(() =>
+  import('../components/report/WatchSpaceButton').then((m) => ({ default: m.WatchSpaceButton }))
+);
 import { ShareHead } from '../components/seo/ShareHead';
 import { reportShareHead } from '../lib/share-preview';
+import { ReportLoadingPanel } from '../components/report/ReportLoadingPanel';
+import { ReportMapSkeleton } from '../components/report/ReportMapSkeleton';
+const ReportSidebarFacts = lazy(() =>
+  import('../components/report/ReportSidebarFacts').then((m) => ({ default: m.ReportSidebarFacts }))
+);
+const WhoShopsHereCard = lazy(() =>
+  import('../components/report/WhoShopsHereCard').then((m) => ({ default: m.WhoShopsHereCard }))
+);
+import { WhyThisBrandCard } from '../components/report/WhyThisBrandCard';
+import { AddToPipelineButton } from '../components/pipeline/AddToPipelineButton';
+import { pipelineCardFromProspect } from '../lib/build-pipeline-card';
+
+const ReportFirstRunTour = lazy(() =>
+  import('../components/report/ReportFirstRunTour').then((m) => ({ default: m.ReportFirstRunTour }))
+);
 
 type MobilePane = 'report' | 'map';
 
@@ -67,7 +80,61 @@ export function ReportPage() {
   const [mapBrand, setMapBrand] = useState<MapBrandSelection | null>(null);
   const [outreach, setOutreach] = useState<ProspectPack | null>(null);
   const [mobilePane, setMobilePane] = useState<MobilePane>('report');
-  const [rankingMode, setRankingMode] = useState<QlooRankingMode>('qloo');
+  const isMdUp = useMediaQuery('(min-width: 768px)');
+  const mountMapColumn = isMdUp || mobilePane === 'map';
+  const [deferHeavyUi, setDeferHeavyUi] = useState(false);
+
+  useEffect(() => {
+    if (mountMapColumn) ensureMapLibreCss();
+  }, [mountMapColumn]);
+
+  const expandDeepSections = searchParams.get('screenshot') === '1';
+
+  useEffect(() => {
+    if (!results) {
+      setDeferHeavyUi(false);
+      return;
+    }
+    let cancelled = false;
+    const scheduleTour = () => {
+      if (cancelled) return;
+      const win = window as Window & {
+        requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+        cancelIdleCallback?: (id: number) => void;
+      };
+      if (win.requestIdleCallback) {
+        const id = win.requestIdleCallback(() => {
+          if (!cancelled) setDeferHeavyUi(true);
+        }, { timeout: 2500 });
+        return () => win.cancelIdleCallback?.(id);
+      }
+      const t = window.setTimeout(() => {
+        if (!cancelled) setDeferHeavyUi(true);
+      }, 1200);
+      return () => window.clearTimeout(t);
+    };
+    let clearIdle: (() => void) | undefined;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        clearIdle = scheduleTour();
+      });
+    });
+    return () => {
+      cancelled = true;
+      clearIdle?.();
+    };
+  }, [results]);
+
+  const [geocodeCandidates, setGeocodeCandidates] = useState<GeocodeCandidate[] | null>(null);
+  const [geocodeChecking, setGeocodeChecking] = useState(false);
+  const [geocodeAutoRetrying, setGeocodeAutoRetrying] = useState(false);
+  const needsHealthForGeocode =
+    request != null &&
+    !request.confirmedLocation &&
+    !matchDemoFixtureId(request.address) &&
+    !simulateError;
+  const { data: health } = useHealth({ enabled: needsHealthForGeocode });
+  const [rankingMode, setRankingMode] = useState<'qloo' | 'baseline'>('qloo');
   const [sharePitchOpen, setSharePitchOpen] = useState(false);
   const [vacancyEdits, setVacancyEdits] = useState<VacancyCalculatorDraft | null>(null);
   const vacancyBase = useMemo(
@@ -77,10 +144,6 @@ export function ReportPage() {
   const vacancyInput = vacancyEdits ?? vacancyBase;
   const mapCaptureRef = useRef<ReportMapCaptureRef | null>(null);
   const ranKey = useRef('');
-  const [geocodeCandidates, setGeocodeCandidates] = useState<GeocodeCandidate[] | null>(null);
-  const [geocodeChecking, setGeocodeChecking] = useState(false);
-  const [geocodeAutoRetrying, setGeocodeAutoRetrying] = useState(false);
-  const { data: health } = useHealth();
 
   useEffect(() => {
     if (searchParams.get('screenshot') === '1') {
@@ -118,42 +181,52 @@ export function ReportPage() {
       return;
     }
 
-    const demoPreview =
-      health?.mode === 'demo' ? demoGeocodePreviewForAddress(request.address) : null;
-    if (demoPreview?.needsConfirmation && demoPreview.candidates.length > 1) {
-      setGeocodeCandidates(demoPreview.candidates);
-      return;
-    }
-
     let cancelled = false;
-    setGeocodeChecking(true);
-    setGeocodeCandidates(null);
-    setGeocodeError(null);
-    setGeocodeAutoRetrying(false);
-    void fetchGeocodePreview(request.address, {
-      onAutoRetry: () => setGeocodeAutoRetrying(true),
-    })
-      .then((preview) => {
+
+    const runLiveGeocode = () => {
+      setGeocodeChecking(true);
+      setGeocodeCandidates(null);
+      setGeocodeError(null);
+      setGeocodeAutoRetrying(false);
+      void fetchGeocodePreview(request.address, {
+        onAutoRetry: () => setGeocodeAutoRetrying(true),
+      })
+        .then((preview) => {
+          if (cancelled) return;
+          if (preview.needsConfirmation && preview.candidates.length > 1) {
+            setGeocodeCandidates(preview.candidates);
+            return;
+          }
+          const withLoc = preview.location
+            ? { ...request, confirmedLocation: preview.location }
+            : request;
+          ranKey.current = JSON.stringify(withLoc);
+          void run(withLoc);
+        })
+        .catch((err) => {
+          if (!cancelled) setGeocodeError(apiErrorFromUnknown(err));
+        })
+        .finally(() => {
+          if (!cancelled) {
+            setGeocodeChecking(false);
+            setGeocodeAutoRetrying(false);
+          }
+        });
+    };
+
+    if (health?.mode === 'demo') {
+      void import('../lib/demo-geocode-preview').then(({ demoGeocodePreviewForAddress }) => {
         if (cancelled) return;
-        if (preview.needsConfirmation && preview.candidates.length > 1) {
-          setGeocodeCandidates(preview.candidates);
+        const demoPreview = demoGeocodePreviewForAddress(request.address);
+        if (demoPreview?.needsConfirmation && demoPreview.candidates.length > 1) {
+          setGeocodeCandidates(demoPreview.candidates);
           return;
         }
-        const withLoc = preview.location
-          ? { ...request, confirmedLocation: preview.location }
-          : request;
-        ranKey.current = JSON.stringify(withLoc);
-        void run(withLoc);
-      })
-      .catch((err) => {
-        if (!cancelled) setGeocodeError(apiErrorFromUnknown(err));
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setGeocodeChecking(false);
-          setGeocodeAutoRetrying(false);
-        }
+        runLiveGeocode();
       });
+    } else {
+      runLiveGeocode();
+    }
 
     return () => {
       cancelled = true;
@@ -163,11 +236,7 @@ export function ReportPage() {
   const confirmGeocode = (location: Location) => {
     if (!request) return;
     let address = request.address;
-    if (
-      health?.mode === 'demo' &&
-      demoGeocodePreviewForAddress(request.address) &&
-      location.resolvedAddress === DEMO_CHIP_ADDRESSES.wicker
-    ) {
+    if (health?.mode === 'demo' && location.resolvedAddress === DEMO_CHIP_ADDRESSES.wicker) {
       address = DEMO_CHIP_ADDRESSES.wicker;
     }
     const next = { ...request, address, confirmedLocation: location };
@@ -202,10 +271,9 @@ export function ReportPage() {
 
   if (!request) return null;
 
-  const displayError: ApiErrorInfo | null =
-    simulateError
-      ? { message: SERVER_BUSY_MESSAGE, code: 'SERVER_BUSY' }
-      : geocodeError ?? error;
+  const displayError: ApiErrorInfo | null = simulateError
+    ? { message: SERVER_BUSY_MESSAGE, code: 'SERVER_BUSY' }
+    : geocodeError ?? error;
 
   const showErrorBanner =
     Boolean(displayError) || (!simulateError && (autoRetrying || geocodeAutoRetrying));
@@ -217,61 +285,35 @@ export function ReportPage() {
       : results.backtest);
 
   const reportSections = results && (
-    <div className="report-content-enter space-y-6">
+    <div className="report-content-enter space-y-8 text-body">
       <ErrorBoundary fallback={<SectionUnavailable />}>
-        <div className="print-pitch-block space-y-4">
-          <ProductExplainer className="no-print rounded-card border border-border bg-surface-2/80 px-4 py-3" />
-          <ReportFirstRunTour ready={results.prospects.length > 0} />
-          <div className="no-print flex flex-col gap-3 border-b border-border pb-4 lg:flex-row lg:items-center lg:justify-between">
-            <QlooRankingToggle
-              mode={rankingMode}
-              onChange={setRankingMode}
-              compact
-              className="shrink-0"
-            />
-            {results.backtestBaseline && (
-              <div className="min-w-0 flex-1">
-                <QlooProofBanner results={results} compact />
-              </div>
-            )}
-          </div>
-          <HeadlineCard
-            results={results}
-            radiusKm={request.radius}
-            chipSlug={slug}
-            backtestOverride={activeBacktest ?? undefined}
-          />
-        </div>
-      </ErrorBoundary>
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <div className="print-pitch-block">
-          <BrandsToPitch
+        <div className="print-pitch-block space-y-6">
+          <ReportSummaryAboveFold
             results={results}
             request={request}
             slug={slug ?? 'run'}
-            selectedId={selected?.brand.entityId ?? null}
-            onSelect={selectProspect}
-            onDraft={(p) => setOutreach(p)}
             radiusKm={request.radius}
-            forceEmpty={emptyPitch}
+            chipSlug={slug}
+            backtestOverride={activeBacktest ?? undefined}
+            selected={selected}
+            onSelectBrand={selectProspect}
+            onSharePitch={() => setSharePitchOpen(true)}
           />
-          <WhyThisBrandCard
-            className="md:hidden"
-            prospect={selected}
-            results={results}
-            radiusKm={request.radius}
-            actions={
-              selected ? (
-                <AddToPipelineButton
-                  buildPayload={() =>
-                    pipelineCardFromProspect(selected, results, {
-                      reportPath: buildReportPath(request, slug ?? 'run'),
-                    })
-                  }
-                />
-              ) : null
-            }
-          />
+          <Suspense fallback={null}>
+            <WatchSpaceButton
+              address={request.address}
+              radiusKm={request.radius}
+              analysis={results}
+            />
+          </Suspense>
+          {results.prospects.length <= 2 && (
+            <ReportShortListNotice
+              count={results.prospects.length}
+              radiusKm={request.radius}
+              request={request}
+              slug={slug ?? 'run'}
+            />
+          )}
           {(loading || steps.length > 0) && (
             <AgentRunStrip
               steps={steps}
@@ -281,58 +323,30 @@ export function ReportPage() {
               recordedAt={results?.timestamp}
             />
           )}
-          <div className="no-print mt-4 print-pitch-block">
-            <StorefrontSizeControl
-              sqFt={request.storefrontSqFt ?? 2500}
-              onChange={(sqFt) => {
-                ranKey.current = '';
-                navigate(buildReportPath({ ...request, storefrontSqFt: sqFt }, slug ?? 'run'), {
-                  replace: true,
-                });
-              }}
-            />
-          </div>
         </div>
       </ErrorBoundary>
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <div className="no-print print-pitch-block">
-          <VacancyCostCalculator
-            key={request.address}
-            compact
-            initial={vacancyInput}
-            onChange={handleVacancyChange}
-            showPitchOptIn
-          />
-        </div>
-      </ErrorBoundary>
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <CoTenancyMixSection results={results} radiusKm={request.radius} />
-      </ErrorBoundary>
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <div className="no-print mt-8">
-          <StrictEvalCard results={results} />
-        </div>
-      </ErrorBoundary>
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <div className="no-print">
-          <ProofSection
+
+      <ReportDeepSections
             results={results}
-            radiusKm={request.radius}
-            onBrandSelect={selectMapBrand}
+            request={request}
+            slug={slug ?? 'run'}
+            expandDeepSections={expandDeepSections}
+            selected={selected}
+            onSelectProspect={selectProspect}
+            onDraftOutreach={setOutreach}
+            emptyPitch={emptyPitch}
+            vacancyInput={vacancyInput}
+            onVacancyChange={handleVacancyChange}
+            onStorefrontSqFtChange={(sqFt) => {
+              ranKey.current = '';
+              navigate(buildReportPath({ ...request, storefrontSqFt: sqFt }, slug ?? 'run'), {
+                replace: true,
+              });
+            }}
             rankingMode={rankingMode}
+            onRankingModeChange={setRankingMode}
+            onMapBrandSelect={selectMapBrand}
           />
-        </div>
-      </ErrorBoundary>
-      <ErrorBoundary fallback={<CompareUnavailable />}>
-        <div className="no-print">
-          <CompareSection />
-        </div>
-      </ErrorBoundary>
-      <ErrorBoundary fallback={<SectionUnavailable />}>
-        <div className="no-print">
-          <HowWeKnowSection results={results} />
-        </div>
-      </ErrorBoundary>
     </div>
   );
 
@@ -341,19 +355,25 @@ export function ReportPage() {
       {shareHead && <ShareHead {...shareHead} />}
       <TopBar />
       {results?.mode === 'demo' && <DemoBanner />}
-      {results && (
-        <ReportStickyHeader
-          request={request}
-          location={results.location}
-          chipSlug={slug}
-          onRadiusChange={() => { ranKey.current = ''; }}
-          onSharePitch={() => setSharePitchOpen(true)}
-          onRunProspecting={() => {
-            void startProspectingJob(request).then((jobId) => navigate(`/prospect/${jobId}`));
-          }}
-        />
+      {results?.tasteDataStatus === 'unavailable' && results.rankingNotice && (
+        <TasteUnavailableBanner message={results.rankingNotice} />
       )}
-      {!results && (
+      {results ? (
+        <Suspense fallback={null}>
+          <ReportStickyHeader
+            request={request}
+            location={results.location}
+            chipSlug={slug}
+            onRadiusChange={() => {
+              ranKey.current = '';
+            }}
+            onSharePitch={() => setSharePitchOpen(true)}
+            onRunProspecting={() => {
+              void startProspectingJob(request).then((jobId) => navigate(`/prospect/${jobId}`));
+            }}
+          />
+        </Suspense>
+      ) : (
         <div className="sticky top-16 z-20 border-b border-border bg-surface/90 backdrop-blur-md px-4 py-3">
           <p className="mx-auto max-w-[1280px] truncate text-sm text-ink-2">{request.address}</p>
         </div>
@@ -374,7 +394,7 @@ export function ReportPage() {
         </div>
       )}
 
-      <div className="mx-auto max-w-[1280px] px-4 py-6 md:px-6 md:py-8">
+      <main id="main-content" className="mx-auto max-w-[1280px] px-4 py-6 outline-none md:px-6 md:py-8">
         <div className="grid grid-cols-12 gap-6 xl:gap-8">
           <div
             className={`col-span-12 min-w-0 space-y-6 xl:col-span-7 ${
@@ -382,7 +402,9 @@ export function ReportPage() {
             }`}
           >
             {slowHint && loading && (
-              <p className="text-sm text-ink-2">Still working. Large cities take a few extra seconds.</p>
+              <p className="text-sm text-ink-2" data-testid="report-slow-hint" role="status">
+                {SLOW_LOAD_STATUS}
+              </p>
             )}
             {showErrorBanner && (
               <ReportErrorBanner
@@ -425,9 +447,7 @@ export function ReportPage() {
                   candidates={geocodeCandidates}
                   onConfirm={confirmGeocode}
                   onCancel={() => navigate('/')}
-                  onNoneOfThese={() =>
-                    navigate(`/?address=${encodeURIComponent(request.address)}`)
-                  }
+                  onNoneOfThese={() => navigate(`/?address=${encodeURIComponent(request.address)}`)}
                 />
               </Suspense>
             )}
@@ -449,17 +469,19 @@ export function ReportPage() {
             {!results && (loading || geocodeChecking) && !geocodeCandidates && (
               <ReportMapSkeleton />
             )}
-            {results && (
+            {results && mountMapColumn && (
               <ErrorBoundary fallback={<SectionUnavailable label="Map unavailable right now." />}>
                 <div className="flex flex-col gap-4 md:sticky md:top-[7.5rem]">
-                  <ReportMap
-                    results={results}
-                    selectedBrand={mapBrand}
-                    pitchBrandIds={results.prospects.map((p) => p.brand.entityId)}
-                    radiusKm={request.radius}
-                    captureRef={mapCaptureRef}
-                    className="h-[min(72vh,640px)] min-h-[360px] w-full xl:h-[min(78vh,720px)]"
-                  />
+                  <Suspense fallback={<ReportMapSkeleton />}>
+                    <ReportMap
+                      results={results}
+                      selectedBrand={mapBrand}
+                      pitchBrandIds={results.prospects.map((p) => p.brand.entityId)}
+                      radiusKm={request.radius}
+                      captureRef={mapCaptureRef}
+                      className="h-[min(72vh,640px)] min-h-[360px] w-full xl:h-[min(78vh,720px)]"
+                    />
+                  </Suspense>
                   <WhyThisBrandCard
                     className="hidden md:block"
                     prospect={selected}
@@ -477,34 +499,50 @@ export function ReportPage() {
                       ) : null
                     }
                   />
-                  <ReportSidebarFacts
-                    results={results}
-                    radiusKm={request.radius}
-                    chipSlug={slug}
-                  />
+                  <Suspense fallback={null}>
+                    <ReportSidebarFacts
+                      results={results}
+                      radiusKm={request.radius}
+                      chipSlug={slug}
+                    />
+                  </Suspense>
+                  {results.tradeAreaShoppers && (
+                    <Suspense fallback={null}>
+                      <WhoShopsHereCard snapshot={results.tradeAreaShoppers} />
+                    </Suspense>
+                  )}
                 </div>
               </ErrorBoundary>
             )}
           </div>
         </div>
-      </div>
-      {results && (
-        <SharePitchDialog
-          open={sharePitchOpen}
-          onOpenChange={setSharePitchOpen}
-          results={results}
-          request={request}
-          mapCaptureRef={mapCaptureRef}
-          vacancy={vacancyInput}
-        />
+      </main>
+      {results && sharePitchOpen && (
+        <Suspense fallback={null}>
+          <SharePitchDialog
+            open={sharePitchOpen}
+            onOpenChange={setSharePitchOpen}
+            results={results}
+            request={request}
+            mapCaptureRef={mapCaptureRef}
+            vacancy={vacancyInput}
+          />
+        </Suspense>
       )}
-      {results && (
-        <OutreachSheet
-          open={!!outreach}
-          onOpenChange={(o) => !o && setOutreach(null)}
-          prospect={outreach}
-          results={results}
-        />
+      {results && outreach && (
+        <Suspense fallback={null}>
+          <OutreachSheet
+            open
+            onOpenChange={(o) => !o && setOutreach(null)}
+            prospect={outreach}
+            results={results}
+          />
+        </Suspense>
+      )}
+      {results && deferHeavyUi && (
+        <Suspense fallback={null}>
+          <ReportFirstRunTour ready={results.prospects.length > 0} />
+        </Suspense>
       )}
       <footer className="no-print py-8 text-center text-meta text-ink-3">
         <Link to="/" className="text-accent hover:underline">Back to search</Link>

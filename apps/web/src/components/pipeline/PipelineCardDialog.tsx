@@ -1,9 +1,15 @@
 import { useEffect, useState, type KeyboardEvent } from 'react';
-import type { PipelineCard, PipelineColumn, PipelineOutreachStatus } from '@leaseup/contracts';
+import { Link } from 'react-router-dom';
+import type { PipelineCard, PipelineProspectStatus } from '@leaseup/contracts';
 import * as Dialog from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
 import { Button } from '../ui/Button';
-import { PIPELINE_COLUMNS, columnLabel, nextColumn, prevColumn } from '../../lib/pipeline-columns';
+import {
+  PIPELINE_STATUSES,
+  nextProspectStatus,
+  prevProspectStatus,
+  prospectStatusLabel,
+} from '../../lib/pipeline-status';
 import {
   generatePipelineOutreach,
   updatePipelineCard,
@@ -29,7 +35,7 @@ export function PipelineCardDialog({
   const [busy, setBusy] = useState(false);
   const [draftBusy, setDraftBusy] = useState(false);
   const [localDraft, setLocalDraft] = useState(card?.outreachDraft);
-  const [outreachStatus, setOutreachStatus] = useState<PipelineOutreachStatus>('none');
+  const [prospectStatus, setProspectStatus] = useState<PipelineProspectStatus>('to_pitch');
 
   useEffect(() => {
     if (!card) return;
@@ -37,8 +43,8 @@ export function PipelineCardDialog({
     setRecipient(card.recipientEmail ?? '');
     setFollowUp(card.followUpAt?.slice(0, 10) ?? '');
     setLocalDraft(card.outreachDraft);
-    setOutreachStatus(card.outreachStatus ?? 'none');
-  }, [card, card?.notes, card?.recipientEmail, card?.followUpAt, card?.outreachDraft, card?.outreachStatus]);
+    setProspectStatus(card.prospectStatus);
+  }, [card, card?.notes, card?.recipientEmail, card?.followUpAt, card?.outreachDraft, card?.prospectStatus]);
 
   if (!card) return null;
 
@@ -52,19 +58,25 @@ export function PipelineCardDialog({
     }
   };
 
-  const moveTo = async (column: PipelineColumn) => {
-    await savePatch({ column });
+  const moveTo = async (status: PipelineProspectStatus) => {
+    await savePatch({ prospectStatus: status });
   };
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (readOnly) return;
     if (e.key === 'ArrowRight') {
-      const n = nextColumn(card.column);
-      if (n) void moveTo(n);
+      const n = nextProspectStatus(prospectStatus);
+      if (n) {
+        setProspectStatus(n);
+        void moveTo(n);
+      }
     }
     if (e.key === 'ArrowLeft') {
-      const p = prevColumn(card.column);
-      if (p) void moveTo(p);
+      const p = prevProspectStatus(prospectStatus);
+      if (p) {
+        setProspectStatus(p);
+        void moveTo(p);
+      }
     }
   };
 
@@ -100,8 +112,8 @@ export function PipelineCardDialog({
 
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
             <div className="flex flex-wrap gap-2 text-sm">
-              <span className="text-ink-3">Stage</span>
-              <span className="font-medium text-ink">{columnLabel(card.column)}</span>
+              <span className="text-ink-3">Status</span>
+              <span className="font-medium text-ink">{prospectStatusLabel(prospectStatus)}</span>
               <span className="text-ink-3">·</span>
               <span className="text-ink-3">Rank #{card.affinityRank}</span>
               <span className="text-ink-3">·</span>
@@ -110,14 +122,19 @@ export function PipelineCardDialog({
 
             {!readOnly && (
               <div className="flex flex-wrap gap-2">
-                {PIPELINE_COLUMNS.map((col) => (
+                {PIPELINE_STATUSES.map((col) => (
                   <Button
                     key={col.id}
                     type="button"
                     size="sm"
-                    variant={card.column === col.id ? 'primary' : 'secondary'}
-                    disabled={busy || card.column === col.id}
-                    onClick={() => void moveTo(col.id)}
+                    variant={prospectStatus === col.id ? 'primary' : 'secondary'}
+                    disabled={busy}
+                    aria-current={prospectStatus === col.id ? 'true' : undefined}
+                    onClick={() => {
+                      setProspectStatus(col.id);
+                      void moveTo(col.id);
+                    }}
+                    aria-label={`Set status to ${col.label}`}
                   >
                     {col.label}
                   </Button>
@@ -125,17 +142,60 @@ export function PipelineCardDialog({
               </div>
             )}
 
-            {(card.pitchLink || card.reportPath) && (
+            {(card.pitchLink || card.reportPath || card.watchId) && (
               <div className="flex flex-wrap gap-3 text-sm">
-                {card.pitchLink && (
-                  <a href={card.pitchLink} className="text-accent hover:underline" target="_blank" rel="noreferrer">
-                    Pitch pack
-                  </a>
-                )}
                 {card.reportPath && (
                   <a href={card.reportPath} className="text-accent hover:underline">
-                    Report
+                    Site report
                   </a>
+                )}
+                {card.pitchLink && (
+                  <a href={card.pitchLink} className="text-accent hover:underline" target="_blank" rel="noreferrer">
+                    Shared pitch pack
+                  </a>
+                )}
+                {card.watchId && (
+                  <Link to={`/watchlist/${card.watchId}`} className="text-accent hover:underline">
+                    Watched space
+                  </Link>
+                )}
+              </div>
+            )}
+
+            {card.tradeAreaAlert && (
+              <div
+                className="rounded-card border border-warn/30 bg-warn/10 p-3 text-sm"
+                data-testid="pipeline-trade-area-alert-detail"
+              >
+                <p className="font-medium text-ink">Trade area update</p>
+                <p className="mt-1 text-ink-2">{card.tradeAreaAlert}</p>
+                {!readOnly && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    className="mt-3"
+                    onClick={() => void savePatch({ tradeAreaAlert: null })}
+                  >
+                    Dismiss
+                  </Button>
+                )}
+              </div>
+            )}
+
+            {card.evidenceSnapshot && (
+              <div
+                className="rounded-card border border-border bg-surface-2/50 p-3"
+                data-testid="pipeline-evidence"
+              >
+                <p className="text-sm font-semibold text-ink">Evidence when you saved</p>
+                <p className="mt-1 text-sm text-ink-2">{card.evidenceSnapshot.oneLineReason}</p>
+                {card.evidenceSnapshot.reasons.length > 0 && (
+                  <ul className="mt-2 list-disc pl-5 text-xs text-ink-3">
+                    {card.evidenceSnapshot.reasons.slice(0, 4).map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
+                  </ul>
                 )}
               </div>
             )}
@@ -146,6 +206,24 @@ export function PipelineCardDialog({
 
             {!readOnly && (
               <>
+                <label className="block text-sm">
+                  <span className="text-label uppercase text-ink-3">Status (you set)</span>
+                  <select
+                    className="mt-1 w-full rounded-control border border-border bg-surface-2 px-3 py-2 text-sm text-ink"
+                    value={prospectStatus}
+                    onChange={(e) => {
+                      const v = e.target.value as PipelineProspectStatus;
+                      setProspectStatus(v);
+                      void savePatch({ prospectStatus: v });
+                    }}
+                    data-testid="pipeline-prospect-status"
+                  >
+                    {PIPELINE_STATUSES.map((s) => (
+                      <option key={s.id} value={s.id}>{s.label}</option>
+                    ))}
+                  </select>
+                </label>
+
                 <label className="block text-sm">
                   <span className="text-label uppercase text-ink-3">Recipient email (you enter)</span>
                   <input
@@ -160,7 +238,7 @@ export function PipelineCardDialog({
                 </label>
 
                 <label className="block text-sm">
-                  <span className="text-label uppercase text-ink-3">Follow-up reminder</span>
+                  <span className="text-label uppercase text-ink-3">Next step reminder</span>
                   <input
                     type="date"
                     className="mt-1 w-full rounded-control border border-border bg-surface-2 px-3 py-2 text-sm text-ink"
@@ -169,6 +247,7 @@ export function PipelineCardDialog({
                     onBlur={() =>
                       void savePatch({ followUpAt: followUp ? `${followUp}T12:00:00.000Z` : null })
                     }
+                    data-testid="pipeline-next-step-reminder"
                   />
                 </label>
 
@@ -179,26 +258,8 @@ export function PipelineCardDialog({
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     onBlur={() => void savePatch({ notes })}
+                    data-testid="pipeline-notes"
                   />
-                </label>
-
-                <label className="block text-sm">
-                  <span className="text-label uppercase text-ink-3">Outreach status (you set)</span>
-                  <select
-                    className="mt-1 w-full rounded-control border border-border bg-surface-2 px-3 py-2 text-sm text-ink"
-                    value={outreachStatus}
-                    onChange={(e) => {
-                      const v = e.target.value as PipelineOutreachStatus;
-                      setOutreachStatus(v);
-                      void savePatch({ outreachStatus: v });
-                    }}
-                    data-testid="pipeline-outreach-status"
-                  >
-                    <option value="none">Not drafted</option>
-                    <option value="drafted">Drafted</option>
-                    <option value="sent">Sent</option>
-                    <option value="replied">Replied</option>
-                  </select>
                 </label>
 
                 <div className="rounded-card border border-border bg-surface-2/50 p-3">
@@ -220,7 +281,7 @@ export function PipelineCardDialog({
                     </Button>
                   </div>
                   <p className="mt-1 text-xs text-ink-3">
-                    Grounded in saved report facts only. Never sent automatically.
+                    Grounded in saved report facts only. LeaseUp never sends email. Copy or open in your mail app when you are ready.
                   </p>
                   {localDraft && (
                     <div className="mt-3 space-y-2 text-sm">
@@ -260,7 +321,7 @@ export function PipelineCardDialog({
 
           {!readOnly && (
             <p className="border-t border-border px-4 py-2 text-xs text-ink-3">
-              Tip: with this dialog focused, use ← → arrow keys to move stages.
+              Keyboard: use the status buttons or the Status menu. Left and right arrow keys also move status when this dialog is focused.
             </p>
           )}
         </Dialog.Content>

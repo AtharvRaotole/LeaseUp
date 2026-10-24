@@ -6,6 +6,7 @@ import type { FeatureCollection, Point } from 'geojson';
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { apiUrl } from '../../lib/api';
 import { heatmapWeightsFromAffinity } from '../../lib/heatmap-scale';
+import { HEATMAP_COLOR_EXPRESSION } from '../../lib/heatmap-map-paint';
 import { Switch } from '../ui/Switch';
 import { cn } from '../../lib/cn';
 import type { MapBrandSelection, ReportMapCaptureRef } from './ReportMap';
@@ -60,6 +61,31 @@ export default function ReportMapInner({
       .setLngLat([results.location.longitude, results.location.latitude])
       .addTo(map);
     map.on('load', () => {
+      const pin: FeatureCollection<Point> = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'Point',
+              coordinates: [results.location.longitude, results.location.latitude],
+            },
+          },
+        ],
+      };
+      map.addSource('site-pin', { type: 'geojson', data: pin });
+      map.addLayer({
+        id: 'site-pin',
+        type: 'circle',
+        source: 'site-pin',
+        paint: {
+          'circle-radius': 8,
+          'circle-color': '#0f6b4f',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+        },
+      });
       map.resize();
       setMapReady(true);
     });
@@ -71,20 +97,98 @@ export default function ReportMapInner({
     };
   }, [results.location.latitude, results.location.longitude]);
 
+  const loadHeatmapForEntity = useCallback(
+    async (entityId: string): Promise<boolean> => {
+      if (results.heatmapAvailable !== true) return false;
+      const map = mapRef.current;
+      if (!map || !mapReady) return false;
+      const params = new URLSearchParams({
+        entityId,
+        lat: String(results.location.latitude),
+        lng: String(results.location.longitude),
+        radius: String(radiusKm),
+        address: results.location.address,
+      });
+      try {
+        const data = await fetch(apiUrl(`/api/heatmap?${params}`)).then((r) => r.json());
+        if (!data.available || !data.cells?.length) return false;
+        const affinities = data.cells.map(
+          (c: { affinity?: number; affinityRank?: number }) => c.affinity ?? c.affinityRank ?? 0
+        );
+        const weights = heatmapWeightsFromAffinity(affinities);
+        const features = data.cells.map(
+          (c: { latitude: number; longitude: number }, i: number) => ({
+            type: 'Feature' as const,
+            properties: { weight: weights[i] ?? 0 },
+            geometry: { type: 'Point' as const, coordinates: [c.longitude, c.latitude] },
+          })
+        );
+        const geojson: FeatureCollection<Point> = { type: 'FeatureCollection', features };
+        if (map.getSource('heatmap')) {
+          (map.getSource('heatmap') as maplibregl.GeoJSONSource).setData(geojson);
+        } else {
+          map.addSource('heatmap', { type: 'geojson', data: geojson });
+          map.addLayer({
+            id: 'heatmap',
+            type: 'heatmap',
+            source: 'heatmap',
+            paint: {
+              'heatmap-weight': ['get', 'weight'],
+              'heatmap-intensity': 0.5,
+              'heatmap-color': [...HEATMAP_COLOR_EXPRESSION],
+            },
+          });
+        }
+        map.setLayoutProperty('heatmap', 'visibility', 'visible');
+        resizeMap();
+        await new Promise<void>((resolve) => {
+          map.once('idle', () => resolve());
+          window.setTimeout(() => resolve(), 1200);
+        });
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    [mapReady, radiusKm, resizeMap, results]
+  );
+
+  const readCanvasSnapshot = useCallback((): string | null => {
+    const canvas = mapRef.current?.getCanvas();
+    if (!canvas || !mapReady) return null;
+    try {
+      return canvas.toDataURL('image/jpeg', 0.85);
+    } catch {
+      return null;
+    }
+  }, [mapReady]);
+
   useImperativeHandle(
     captureRef,
     () => ({
-      captureSnapshot: () => {
-        const canvas = mapRef.current?.getCanvas();
-        if (!canvas || !mapReady) return null;
-        try {
-          return canvas.toDataURL('image/jpeg', 0.85);
-        } catch {
-          return null;
+      captureSnapshot: readCanvasSnapshot,
+      capturePitchSnapshot: async () => {
+        const map = mapRef.current;
+        setShowStores(true);
+        setShowHeatmap(true);
+        const entityId = selectedBrand?.entityId ?? pitchBrandIds[0];
+        if (entityId && results.heatmapAvailable === true) {
+          await loadHeatmapForEntity(entityId);
+          if (map?.getLayer('heatmap')) {
+            map.setLayoutProperty('heatmap', 'visibility', 'visible');
+          }
         }
+        if (map) {
+          await new Promise<void>((resolve) => {
+            map.once('idle', () => resolve());
+            window.setTimeout(() => resolve(), 1500);
+          });
+        }
+        await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+        return readCanvasSnapshot();
       },
     }),
-    [mapReady]
+    [loadHeatmapForEntity, pitchBrandIds, readCanvasSnapshot, selectedBrand?.entityId]
   );
 
   useEffect(() => {
@@ -162,60 +266,8 @@ export default function ReportMapInner({
 
   useEffect(() => {
     if (!heatmapAllowed || !showHeatmap || !selectedBrand) return;
-    const params = new URLSearchParams({
-      entityId: selectedBrand.entityId,
-      lat: String(results.location.latitude),
-      lng: String(results.location.longitude),
-      radius: String(radiusKm),
-      address: results.location.address,
-    });
-    void fetch(apiUrl(`/api/heatmap?${params}`))
-      .then((r) => r.json())
-      .then((data) => {
-        const map = mapRef.current;
-        if (!map || !data.available || !data.cells?.length) return;
-        const affinities = data.cells.map(
-          (c: { affinity?: number; affinityRank?: number }) => c.affinity ?? c.affinityRank ?? 0
-        );
-        const weights = heatmapWeightsFromAffinity(affinities);
-        const features = data.cells.map(
-          (c: { latitude: number; longitude: number }, i: number) => ({
-            type: 'Feature' as const,
-            properties: { weight: weights[i] ?? 0 },
-            geometry: { type: 'Point' as const, coordinates: [c.longitude, c.latitude] },
-          })
-        );
-        const geojson: FeatureCollection<Point> = { type: 'FeatureCollection', features };
-        if (map.getSource('heatmap')) {
-          (map.getSource('heatmap') as maplibregl.GeoJSONSource).setData(geojson);
-        } else {
-          map.addSource('heatmap', { type: 'geojson', data: geojson });
-          map.addLayer({
-            id: 'heatmap',
-            type: 'heatmap',
-            source: 'heatmap',
-            paint: {
-              'heatmap-weight': ['get', 'weight'],
-              'heatmap-intensity': 0.5,
-              'heatmap-color': [
-                'interpolate',
-                ['linear'],
-                ['heatmap-density'],
-                0,
-                'rgba(255,244,214,0)',
-                0.4,
-                '#fdba74',
-                1,
-                '#c2410c',
-              ],
-            },
-          });
-        }
-        map.setLayoutProperty('heatmap', 'visibility', 'visible');
-        resizeMap();
-      })
-      .catch(() => undefined);
-  }, [selectedBrand, results, radiusKm, showHeatmap, heatmapAllowed, resizeMap]);
+    void loadHeatmapForEntity(selectedBrand.entityId);
+  }, [selectedBrand, showHeatmap, heatmapAllowed, loadHeatmapForEntity]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -282,7 +334,7 @@ export default function ReportMapInner({
       </div>
       <div
         ref={containerRef}
-        className="h-full min-h-[520px] w-full rounded-card border border-border overflow-hidden"
+        className="!absolute inset-0 w-full rounded-card border border-border overflow-hidden"
       />
     </div>
   );

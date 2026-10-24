@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';
+import { useOnEscape } from '../../hooks/useOnEscape';
 import type { AnalysisRequest, AnalysisResponse } from '@leaseup/contracts';
 import { draftToPitchVacancy, type VacancyCalculatorDraft } from '../../lib/vacancy-cost';
 import { Button } from '../ui/Button';
@@ -7,6 +8,7 @@ import { VacancyCostCalculator } from './VacancyCostCalculator';
 import { apiUrl } from '../../lib/api';
 import type { ReportMapCaptureRef } from './ReportMap';
 import { copyPitchLinkToClipboard } from '../../lib/share-pitch-copy';
+import { attachPipelinePitchLink } from '../../lib/pipeline-api';
 
 export function SharePitchDialog({
   open,
@@ -36,6 +38,9 @@ export function SharePitchDialog({
   const [copyHint, setCopyHint] = useState<string | null>(null);
   const linkInputRef = useRef<HTMLInputElement>(null);
 
+  const close = useCallback(() => onOpenChange(false), [onOpenChange]);
+  useOnEscape(close, open);
+
   if (!open) return null;
 
   const selectLink = () => {
@@ -50,7 +55,11 @@ export function SharePitchDialog({
     setError(null);
     setCopyHint(null);
     try {
-      const mapImage = mapCaptureRef.current?.captureSnapshot() ?? undefined;
+      const capture = mapCaptureRef.current;
+      const mapImage =
+        (capture ? await capture.capturePitchSnapshot() : null) ??
+        capture?.captureSnapshot() ??
+        undefined;
       const res = await fetch(apiUrl('/api/pitch'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -72,6 +81,14 @@ export function SharePitchDialog({
       const snapshot = (await res.json()) as { id: string };
       const url = `${window.location.origin}/pitch/${snapshot.id}`;
       setPitchUrl(url);
+      void attachPipelinePitchLink({
+        pitchId: snapshot.id,
+        pitchLink: url,
+        propertyAddress: results.location.address,
+        brandEntityIds: results.prospects.map((p) => p.brand.entityId),
+      }).catch(() => {
+        /* pipeline link is optional if board is empty */
+      });
       const copy = await copyPitchLinkToClipboard(url);
       if (copy.copied) {
         setCopyHint('Link copied to your clipboard.');
@@ -99,8 +116,17 @@ export function SharePitchDialog({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 sm:items-center" role="dialog" aria-modal="true" aria-labelledby="share-pitch-title">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-card border border-border bg-surface p-5 shadow-pop">
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 sm:items-center"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="share-pitch-title"
+      onClick={() => close()}
+    >
+      <div
+        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-card border border-border bg-surface p-5 shadow-pop"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h2 id="share-pitch-title" className="font-display font-semibold text-2xl text-ink">Share pitch pack</h2>
         <p className="mt-1 text-sm text-ink-2">
           Creates a frozen snapshot with today&apos;s rankings and map. The link stays read only.
@@ -164,7 +190,7 @@ export function SharePitchDialog({
               Open pitch
             </Button>
           )}
-          <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+          <Button type="button" variant="ghost" onClick={() => close()}>
             Close
           </Button>
         </div>

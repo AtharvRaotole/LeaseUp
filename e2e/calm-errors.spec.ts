@@ -57,6 +57,6 @@ test.describe('Calm errors and geocode confirm', () => {
     await expect(page.getByText('Bucktown')).toBeVisible();
     await page.getByTestId('geocode-none-of-these').click();
     await expect(page).toHaveURL(/address=1574/);
-    await expect(page.getByLabel('Storefront address')).toHaveValue(AMBIGUOUS);
+    await expect(page.getByLabel('Street address')).toHaveValue(AMBIGUOUS);
   });
 });

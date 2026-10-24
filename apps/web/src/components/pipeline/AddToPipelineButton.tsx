@@ -9,11 +9,13 @@ export function AddToPipelineButton({
   size = 'sm',
   variant = 'secondary',
   className,
+  wrapperTestId,
 }: {
   buildPayload: () => PipelineAddCard;
   size?: 'sm' | 'md';
   variant?: 'primary' | 'secondary' | 'ghost';
   className?: string;
+  wrapperTestId?: string;
 }) {
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
@@ -36,7 +38,7 @@ export function AddToPipelineButton({
   };
 
   return (
-    <div className={className}>
+    <div className={className} data-testid={wrapperTestId}>
       <Button
         type="button"
         size={size}

@@ -1,0 +1,210 @@
+{
+  "totalMismatches": 381,
+  "bucketCounts": {
+    "atp_gap": 14,
+    "osm_gap": 35,
+    "osm_snapshot_gap": 332
+  },
+  "sample": [
+    {
+      "site": "Sevierville",
+      "brandId": "F6A198C3-A7F2-4637-95C0-F89234B788DE",
+      "name": "Red Lobster",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 3.923812656242656,
+      "atpNearestKm": 3.923812656242656,
+      "osmUsable": false
+    },
+    {
+      "site": "350 Bleecker",
+      "brandId": "25FFE815-A824-4029-9BA5-10E70CD8EE26",
+      "name": "Build-A-Bear Workshop",
+      "risk": "atp_false_absence",
+      "bucket": "atp_gap",
+      "osmKm": 2.209552713765981,
+      "atpNearestKm": 22.00884234887573,
+      "osmUsable": true
+    },
+    {
+      "site": "350 Bleecker",
+      "brandId": "F524E022-2389-4EA8-BF4C-8D001C6129D3",
+      "name": "Carter's",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 3.0607229540326157,
+      "atpNearestKm": 3.0607229540326157,
+      "osmUsable": false
+    },
+    {
+      "site": "1600 Pearl",
+      "brandId": "0BAC80D0-90D5-46A8-A11F-7CC58DE74963",
+      "name": "Barnes & Noble",
+      "risk": "osm_false_absence",
+      "bucket": "osm_gap",
+      "atpKm": 2.077427181887485,
+      "atpNearestKm": 2.077427181887485,
+      "osmUsable": true
+    },
+    {
+      "site": "1600 Pearl",
+      "brandId": "7C4CC0B9-1C3C-4C5C-A732-5991046EBB03",
+      "name": "Crumbl",
+      "risk": "atp_false_absence",
+      "bucket": "atp_gap",
+      "osmKm": 1.7588613797972787,
+      "atpNearestKm": 19.01314794691855,
+      "osmUsable": true
+    },
+    {
+      "site": "350 Bleecker",
+      "brandId": "25D4DDDD-BB86-455F-A270-816468B75651",
+      "name": "Insomnia Cookies",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 0.1707734858916123,
+      "atpNearestKm": 0.1707734858916123,
+      "osmUsable": false
+    },
+    {
+      "site": "1600 Pearl",
+      "brandId": "C2FBC3D3-1A7E-4DFA-8824-BEDC0EB86C57",
+      "name": "Crunch Fitness",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 2.0027412249743826,
+      "atpNearestKm": 2.0027412249743826,
+      "osmUsable": false
+    },
+    {
+      "site": "Sevierville",
+      "brandId": "46ACDCB4-D58F-49E7-B5CE-80E44B78E5E1",
+      "name": "Sunglass Hut",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 3.9722989762099803,
+      "atpNearestKm": 3.9722989762099803,
+      "osmUsable": false
+    },
+    {
+      "site": "350 Bleecker",
+      "brandId": "3D47E593-FAD0-41F6-A289-CEDD54BCD8CC",
+      "name": "Wawa",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 7.846675772514619,
+      "atpNearestKm": 7.846675772514619,
+      "osmUsable": false
+    },
+    {
+      "site": "350 Bleecker",
+      "brandId": "C70CE2B8-0AD1-4150-BF18-5A6347F2E860",
+      "name": "Nike",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 0.964730136165526,
+      "atpNearestKm": 0.964730136165526,
+      "osmUsable": false
+    },
+    {
+      "site": "350 Bleecker",
+      "brandId": "C7CDAEC5-8939-4754-941D-0FFFE70A2172",
+      "name": "Paper Source",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 0.9050234036129733,
+      "atpNearestKm": 0.9050234036129733,
+      "osmUsable": false
+    },
+    {
+      "site": "350 Bleecker",
+      "brandId": "16C4C92D-D525-419F-9D45-DE87FA5BD757",
+      "name": "IHOP",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 1.4091477555327805,
+      "atpNearestKm": 1.4091477555327805,
+      "osmUsable": false
+    },
+    {
+      "site": "350 Bleecker",
+      "brandId": "757FC619-DB5C-44D9-B600-115E64082B42",
+      "name": "Smashburger",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 4.531658158041428,
+      "atpNearestKm": 4.531658158041428,
+      "osmUsable": false
+    },
+    {
+      "site": "Sevierville",
+      "brandId": "A8861362-99E1-4513-82EA-45F9421A130A",
+      "name": "Talbots",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 4.118062930514941,
+      "atpNearestKm": 4.118062930514941,
+      "osmUsable": false
+    },
+    {
+      "site": "350 Bleecker",
+      "brandId": "CF7D11E7-DA78-47D9-9AE1-030366F4507B",
+      "name": "Gap",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 1.221717556915316,
+      "atpNearestKm": 1.221717556915316,
+      "osmUsable": false
+    },
+    {
+      "site": "350 Bleecker",
+      "brandId": "0D2EF24C-80B5-4841-A2F4-47CBC9471CC1",
+      "name": "Wingstop",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 0.5383684694319836,
+      "atpNearestKm": 0.5383684694319836,
+      "osmUsable": false
+    },
+    {
+      "site": "350 Bleecker",
+      "brandId": "C3195799-34B7-4AEB-92DB-7C595190B240",
+      "name": "Tropical Smoothie Cafe",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 6.650091408420436,
+      "atpNearestKm": 6.650091408420436,
+      "osmUsable": false
+    },
+    {
+      "site": "350 Bleecker",
+      "brandId": "47C8C56F-D079-451D-855A-D694B53C5A83",
+      "name": "Dave & Buster's",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 2.8549159486099933,
+      "atpNearestKm": 2.8549159486099933,
+      "osmUsable": false
+    },
+    {
+      "site": "350 Bleecker",
+      "brandId": "5BE78DDD-DFD2-40FF-8C43-502A68D0759F",
+      "name": "Yard House",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 2.730637886710839,
+      "atpNearestKm": 2.730637886710839,
+      "osmUsable": false
+    },
+    {
+      "site": "Sevierville",
+      "brandId": "29271B4D-CAD2-4DD4-A766-7338AEE5533D",
+      "name": "Taco Bell",
+      "risk": "osm_false_absence",
+      "bucket": "osm_snapshot_gap",
+      "atpKm": 1.6675102406552438,
+      "atpNearestKm": 1.6675102406552438,
+      "osmUsable": false
+    }
+  ]
+}

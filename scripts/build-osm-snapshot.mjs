@@ -16,6 +16,7 @@ import {
 } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { osmTagsMatchBrand } from './lib/osm-brand-match.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const rawDir = join(root, 'data/osm-snapshot/raw');
@@ -77,10 +78,6 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-function normalizeLabel(s) {
-  return s.trim().toLowerCase().replace(/\s+/g, ' ');
-}
-
 function loadTrackedIds() {
   const text = readFileSync(trackedPath, 'utf8');
   const ids = [];
@@ -110,35 +107,21 @@ function loadWikidataOverrides() {
   return map;
 }
 
-async function wbSearchExactQid(brandName) {
-  const url =
-    `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(brandName)}` +
-    '&language=en&format=json&limit=5';
-  const res = await fetch(url, { headers: { 'User-Agent': 'LeaseUp-OSM-Snapshot/1.0' } });
-  if (!res.ok) return null;
-  const data = await res.json();
-  const target = normalizeLabel(brandName);
-  for (const hit of data.search ?? []) {
-    if (normalizeLabel(hit.label) === target) {
-      return { qid: hit.id, source: 'exact_wbsearch' };
-    }
-  }
-  return null;
-}
-
 function buildQuery(qid) {
   return `[out:json][timeout:180];area["ISO3166-1"="US"][admin_level=2]->.us;nwr["brand:wikidata"="${qid}"](area.us);out center tags;`;
 }
 
 async function postOverpass(query) {
   let delay = 4000;
-  for (let attempt = 0; attempt < 8; attempt++) {
+  const maxAttempts = Number(process.env.OSM_OVERPASS_ATTEMPTS || '5');
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
     for (const endpoint of ENDPOINTS) {
       const host = new URL(endpoint).host;
       const started = Date.now();
       try {
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 180_000);
+        const timeoutMs = Number(process.env.OSM_OVERPASS_TIMEOUT_MS || '120000');
+        const timer = setTimeout(() => controller.abort(), timeoutMs);
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: {
@@ -195,10 +178,11 @@ function parseElements(elements) {
 async function main() {
   const args = new Set(process.argv.slice(2));
   const dryRun = args.has('--dry-run');
+  const retileOnly = args.has('--retile-only');
+  const preferRaw = retileOnly || process.env.OSM_PREFER_RAW === '1';
   const limit = Number(process.env.OSM_SNAPSHOT_LIMIT || '0');
 
   const tracked = loadTrackedIds();
-  const resolvedRows = JSON.parse(readFileSync(resolvedPath, 'utf8'));
   const nameById = loadNameById();
   const overrides = loadWikidataOverrides();
 
@@ -212,41 +196,19 @@ async function main() {
     brands: {},
     failedBrands: [],
     missingWikidata: [],
-    wikidataEnriched: [],
   };
 
-  const wikidataByBrand = new Map(overrides);
   const toFetch = [];
 
   for (const brandId of tracked) {
-    const row = resolvedRows.find((r) => r.qloo_entity_id === brandId);
     const name = nameById.get(brandId) ?? brandId;
-    const altNames = [name, row?.qloo_name].filter(Boolean);
-    let qid = wikidataByBrand.get(brandId);
-    let wikidataSource = qid ? 'override' : null;
-    if (!qid) {
-      for (const candidate of altNames) {
-        const resolved = await wbSearchExactQid(candidate);
-        await sleep(250);
-        if (resolved) {
-          qid = resolved.qid;
-          wikidataSource = resolved.source;
-          wikidataByBrand.set(brandId, qid);
-          manifest.wikidataEnriched.push({ brandId, name, qid, source: wikidataSource });
-          break;
-        }
-      }
-    }
+    const qid = overrides.get(brandId);
+    const wikidataSource = qid ? 'atp' : null;
     if (!qid) {
       manifest.missingWikidata.push({ brandId, name });
       continue;
     }
     toFetch.push({ brandId, name, qid, wikidataSource });
-  }
-
-  if (!dryRun && args.has('--write-wikidata')) {
-    const out = Object.fromEntries(wikidataByBrand.entries());
-    writeFileSync(wikidataPath, JSON.stringify(out, null, 2) + '\n');
   }
 
   const slice = limit > 0 ? toFetch.slice(0, limit) : toFetch;
@@ -268,9 +230,25 @@ async function main() {
 
     if (existsSync(rawPath) && !args.has('--force')) {
       const cached = JSON.parse(readFileSync(rawPath, 'utf8'));
-      manifest.brands[brandId] = cached.meta;
-      totalElements += cached.meta.elementCount ?? 0;
-      console.log(JSON.stringify({ event: 'osm_snapshot_skip', brandId, i: i + 1, total: slice.length }));
+      const cacheOk =
+        cached.meta?.status === 'ok' && (preferRaw || cached.meta?.qid === qid);
+      if (cacheOk) {
+        manifest.brands[brandId] = cached.meta;
+        totalElements += cached.meta.elementCount ?? 0;
+        console.log(JSON.stringify({ event: 'osm_snapshot_skip', brandId, i: i + 1, total: slice.length }));
+        continue;
+      }
+    }
+
+    if (retileOnly) {
+      manifest.brands[brandId] = {
+        status: 'missing_raw',
+        name,
+        qid,
+        wikidataSource,
+        elementCount: 0,
+      };
+      console.log(JSON.stringify({ event: 'osm_snapshot_no_raw', brandId, i: i + 1, total: slice.length }));
       continue;
     }
 
@@ -334,18 +312,32 @@ async function main() {
   }
 
   const tiles = new Map();
+  const perBrandCounts = new Map();
   let pointCount = 0;
   for (const brandId of brands.map((b) => b.id)) {
     const rawPath = join(rawDir, `${brandId}.json`);
     if (!existsSync(rawPath)) continue;
     const { points } = JSON.parse(readFileSync(rawPath, 'utf8'));
     const bIdx = brandIndex.get(brandId);
+    const brandMeta = manifest.brands[brandId];
+    const matchSpec = {
+      expectedQid: brandMeta?.qid,
+      names: [brandMeta?.name ?? brandId],
+    };
     for (const p of points) {
+      if (!osmTagsMatchBrand(p.tags ?? {}, matchSpec)) continue;
       const gh = encodeGeohash(p.lat, p.lon, 3);
       if (!tiles.has(gh)) tiles.set(gh, []);
       tiles.get(gh).push([bIdx, p.lat, p.lon]);
+      perBrandCounts.set(bIdx, (perBrandCounts.get(bIdx) ?? 0) + 1);
       pointCount += 1;
     }
+  }
+
+  for (const row of brands) {
+    const idx = brandIndex.get(row.id);
+    if (idx === undefined) continue;
+    row.count = perBrandCounts.get(idx) ?? 0;
   }
 
   writeFileSync(
@@ -398,6 +390,12 @@ export const OSM_SNAPSHOT_BRAND_STATUS: Record<string, 'ok' | 'failed' | 'missin
   for (const file of readdirSync(tilesDir)) {
     writeFileSync(join(publicDir, file), readFileSync(join(tilesDir, file)));
   }
+
+  const { spawnSync } = await import('node:child_process');
+  spawnSync(process.execPath, [join(root, 'scripts/apply-store-supplements.mjs')], {
+    stdio: 'inherit',
+    cwd: root,
+  });
 
   console.log(JSON.stringify(manifest.tiles, null, 2));
   console.log(

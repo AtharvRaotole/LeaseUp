@@ -13,8 +13,9 @@ import {
   localFitTooltip,
 } from '../../lib/broker-copy';
 import { InfoTooltip } from '../ui/InfoTooltip';
+import { InfoPopover } from '../ui/InfoPopover';
 import { displayBrandName } from '../../lib/brand-display';
-import { rankMovementLabel, rankMovementLabelTechnical } from '../../lib/qloo-proof';
+import { rankMovementLabel } from '../../lib/qloo-proof';
 
 export function ProofSection({
   results,
@@ -41,18 +42,34 @@ export function ProofSection({
   const present = presentInTop10Count(backtest);
   const totalScored = results.rankings?.length ?? top10.length;
   const hideFit = useMemo(() => affinitiesAllIdentical(top10), [top10]);
+  const adaptiveKm = results.strictEval?.adaptiveRadiusKm;
+  const randomPanel = results.strictEval?.panels?.find(
+    (p) => p.randomExpected !== undefined || p.randomMonteCarlo !== undefined
+  );
+  const randomValue = randomPanel?.randomExpected ?? randomPanel?.randomMonteCarlo;
+  const randomLine =
+    randomValue !== undefined
+      ? `Random baseline ~${randomValue.toFixed(1)} of 10${
+          adaptiveKm ? ` at ${adaptiveKm} km adaptive radius` : ''
+        }.`
+      : null;
 
   return (
     <section>
       <h3 className="text-h3 font-semibold text-ink">Do the rankings match what is on the ground?</h3>
-      <p className="mt-2 text-sm text-ink-2">{proofSectionLead(present, radiusKm)}</p>
+      <p className="mt-2 text-sm text-ink-2">
+        {proofSectionLead(present, adaptiveKm ?? radiusKm)}
+        {randomLine ? ` ${randomLine}` : ''}
+      </p>
       <ShowMethod>
         <p>
           We compare taste-ordered (or chain-size-ordered) rankings with All The Places store
-          locations inside your radius. Precision at 10: {(backtest.precisionAt10 * 100).toFixed(0)}%.
-          {backtest.auc !== undefined && ` Separation score (AUC): ${backtest.auc.toFixed(3)}.`}
+          locations inside your radius. {(backtest.precisionAt10 * 100).toFixed(0)}% of the top 10
+          already have a store nearby.
+          {backtest.auc !== undefined &&
+            ` Separation score ${backtest.auc.toFixed(2)}: how often a brand with a nearby store ranks above one without (1.0 is a perfect match).`}
           {' '}
-          When legacy P@10 saturates, the evaluation card uses adaptive radius scoring.
+          When the top-10 match rate maxes out, we also score at an adaptive radius.
         </p>
       </ShowMethod>
       <Card className="mt-4 overflow-hidden p-0">
@@ -110,17 +127,18 @@ export function ProofSection({
                     {fitPercentileLabel(row.qlooRank, totalScored, row.tasteFitBeyondChainPercentile)}
                   </td>
                 )}
-                <td
-                  className="px-4 py-3 text-xs text-ink-2"
-                  title={
-                    row.baselineRank !== undefined
-                      ? rankMovementLabelTechnical(row.qlooRank, row.baselineRank)
-                      : undefined
-                  }
-                >
-                  {row.baselineRank !== undefined
-                    ? rankMovementLabel(row.qlooRank, row.baselineRank)
-                    : 'n/a'}
+                <td className="px-4 py-3 text-xs text-ink-2">
+                  <span className="inline-flex items-center gap-1">
+                    {row.baselineRank !== undefined
+                      ? rankMovementLabel(row.qlooRank, row.baselineRank)
+                      : 'n/a'}
+                    {row.baselineRank !== undefined && (
+                      <InfoPopover
+                        label="Rank change with taste"
+                        body={movementColumnTooltip()}
+                      />
+                    )}
+                  </span>
                 </td>
                 <td className="px-4 py-3">
                   {row.presentInRadius && row.nearestStoreKm !== undefined ? (

@@ -5,9 +5,20 @@ import {
   boulderFixture,
   seviervilleFixture,
   parseQlooExplainabilityRows,
+  TRADE_AREA_SHOPPER_TAG_SUBTYPES,
 } from '@leaseup/fixtures/worker';
 import { ConfigurationError, UpstreamError } from '../lib/errors';
+import {
+  fetchQlooWithRetry,
+  qlooUnavailableError,
+  QLOO_UNAVAILABLE_USER_MESSAGE,
+  QLOO_FETCH_RANKING_OPTIONS,
+  QLOO_FETCH_ENRICHMENT_OPTIONS,
+} from './qloo-fetch.js';
+import { isQlooUnavailableError } from '../lib/qloo-chain-fallback';
 import { sha256Short } from '../lib/cache-key';
+import type { ResponseCache } from '../lib/response-cache';
+import { getResponseCache } from '../lib/worker-cache';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
   applyQlooInsightsLocationParams,
@@ -98,14 +109,15 @@ export function normalizeHeatmapCells(raw: RawHeatmapCell[]): QlooHeatmapCell[] 
 export class QlooClient {
   private baseUrl: string;
   private apiKey: string;
-  private cache: KVNamespace;
+  private cache: ResponseCache;
   private db: D1Database;
   private mode: 'live' | 'demo';
+  private forceQlooDown: boolean;
 
   constructor(env: Env) {
     this.baseUrl = env.QLOO_BASE_URL || 'https://hackathon.api.qloo.com';
     this.apiKey = env.QLOO_API_KEY || '';
-    this.cache = env.CACHE;
+    this.cache = getResponseCache();
     this.db = env.DB;
 
     if (env.APP_MODE === 'live' && !this.apiKey) {
@@ -115,6 +127,7 @@ export class QlooClient {
     }
 
     this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
+    this.forceQlooDown = env.FORCE_QLOO_DOWN === '1';
   }
 
   async getBrandInsights(params: {
@@ -124,6 +137,10 @@ export class QlooClient {
     take?: number;
     runId?: string;
   }): Promise<QlooInsight[]> {
+    if (this.forceQlooDown) {
+      throw qlooUnavailableError('Qloo forced unavailable');
+    }
+
     if (this.mode === 'demo') {
       if (params.location.kind !== 'query') {
         throw new DemoModeRequiredError();
@@ -137,8 +154,8 @@ export class QlooClient {
     const brandKey = brandIds.length ? await sha256Short(brandIds.join(',')) : 'all';
     const cacheKey = `insights:${locationKey}:${params.tags?.join(',') || 'all'}:${brandKey}:take=${take}`;
 
-    const cached = await this.cache.get(cacheKey);
-    if (cached) {
+    const cached = await this.cache.get(cacheKey, 'text');
+    if (typeof cached === 'string') {
       await recordApiMetric(this.db, {
         runId: params.runId,
         provider: 'qloo',
@@ -153,14 +170,20 @@ export class QlooClient {
     const batches = brandIds.length > 0 ? chunkBrandIds(brandIds) : [[]];
     const merged: QlooInsight[] = [];
 
-    for (const batch of batches) {
-      const batchInsights = await this.fetchInsightsBatch({
-        location: params.location,
-        brandIds: batch,
-        tags: params.tags,
-        take,
-        runId: params.runId,
-      });
+    const batchResults = await Promise.all(
+      batches.map((batch) =>
+        this.fetchInsightsBatch({
+          location: params.location,
+          brandIds: batch,
+          tags: params.tags,
+          take,
+          runId: params.runId,
+        })
+      )
+    );
+    for (let i = 0; i < batchResults.length; i++) {
+      const batchInsights = batchResults[i]!;
+      const batch = batches[i]!;
       merged.push(...batchInsights);
       assertQlooInsightsValid(batchInsights, batch.length > 0 ? batch : undefined);
     }
@@ -171,9 +194,7 @@ export class QlooClient {
       );
     }
 
-    await this.cache.put(cacheKey, JSON.stringify(merged), {
-      expirationTtl: 86400,
-    });
+    await this.cache.putJsonIfChanged(cacheKey, merged, 86400);
 
     return merged;
   }
@@ -201,7 +222,12 @@ export class QlooClient {
     url.searchParams.set('feature.explainability', 'true');
 
     const start = Date.now();
-    const response = await this.fetchWithRetry(url.toString());
+    const response = await fetchQlooWithRetry(
+      url.toString(),
+      this.apiKey,
+      undefined,
+      QLOO_FETCH_RANKING_OPTIONS
+    );
     const latency = Date.now() - start;
 
     if (!response.ok) {
@@ -240,26 +266,106 @@ export class QlooClient {
       return null;
     }
 
-    const take = 25;
-    const tagJson = await this.fetchExplainabilityInsights({
-      location: params.location,
-      brandEntityId: params.brandEntityId,
-      filterType: 'urn:tag',
-      take,
-      runId: params.runId,
-    });
-    const audienceJson = await this.fetchExplainabilityInsights({
-      location: params.location,
-      brandEntityId: params.brandEntityId,
-      filterType: 'urn:audience',
-      take,
-      runId: params.runId,
-    });
+    try {
+      const take = 25;
+      const [tagJson, audienceJson] = await Promise.all([
+        this.fetchExplainabilityInsights({
+          location: params.location,
+          brandEntityId: params.brandEntityId,
+          filterType: 'urn:tag',
+          take,
+          runId: params.runId,
+        }),
+        this.fetchExplainabilityInsights({
+          location: params.location,
+          brandEntityId: params.brandEntityId,
+          filterType: 'urn:audience',
+          take,
+          runId: params.runId,
+        }),
+      ]);
 
-    const tags = parseQlooExplainabilityRows(tagJson, 'tag');
-    const audiences = parseQlooExplainabilityRows(audienceJson, 'audience');
-    if (tags.length === 0 && audiences.length === 0) return null;
-    return { tags, audiences };
+      const tags = parseQlooExplainabilityRows(tagJson, 'tag');
+      const audiences = parseQlooExplainabilityRows(audienceJson, 'audience');
+      if (tags.length === 0 && audiences.length === 0) return null;
+      return { tags, audiences };
+    } catch (err) {
+      if (isQlooUnavailableError(err)) return null;
+      throw err;
+    }
+  }
+
+  /** Location-level tag insights for trade-area shopper snapshot (no brand signal). */
+  async getTradeAreaShopperTagInsights(params: {
+    location: QlooLocation;
+    runId?: string;
+  }): Promise<unknown | null> {
+    if (this.mode === 'demo') {
+      return null;
+    }
+
+    const take = 12;
+    const tagTypes = TRADE_AREA_SHOPPER_TAG_SUBTYPES.join(',');
+    const locationKey = this.locationCacheKey(params.location);
+    const cacheKey = `trade-area-tags:${locationKey}:take=${take}:${tagTypes}`;
+
+    const cached = await this.cache.get(cacheKey, 'text');
+    if (typeof cached === 'string') {
+      await recordApiMetric(this.db, {
+        runId: params.runId,
+        provider: 'qloo',
+        endpoint: '/v2/insights',
+        statusCode: 200,
+        latencyMs: 0,
+        cached: true,
+      });
+      return JSON.parse(cached) as unknown;
+    }
+
+    const url = new URL('/v2/insights', this.baseUrl);
+    url.searchParams.set('filter.type', 'urn:tag');
+    applyQlooInsightsLocationParams(url, params.location);
+    url.searchParams.set('take', take.toString());
+    url.searchParams.set('filter.tag.types', tagTypes);
+
+    const start = Date.now();
+    try {
+      const response = await fetchQlooWithRetry(
+        url.toString(),
+        this.apiKey,
+        undefined,
+        QLOO_FETCH_ENRICHMENT_OPTIONS
+      );
+      const latency = Date.now() - start;
+
+      if (!response.ok) {
+        await recordApiMetric(this.db, {
+          runId: params.runId,
+          provider: 'qloo',
+          endpoint: '/v2/insights',
+          statusCode: response.status,
+          latencyMs: latency,
+          cached: false,
+        });
+        throw this.mapQlooHttpError(response.status, response.statusText, 'urn:tag');
+      }
+
+      const data = await response.json();
+      await recordApiMetric(this.db, {
+        runId: params.runId,
+        provider: 'qloo',
+        endpoint: '/v2/insights',
+        statusCode: 200,
+        latencyMs: latency,
+        cached: false,
+      });
+
+      await this.cache.putJsonIfChanged(cacheKey, data, 86400);
+      return data;
+    } catch (err) {
+      if (isQlooUnavailableError(err)) return null;
+      throw err;
+    }
   }
 
   private async fetchExplainabilityInsights(params: {
@@ -272,8 +378,8 @@ export class QlooClient {
     const locationKey = this.locationCacheKey(params.location);
     const cacheKey = `explain:${params.filterType}:${locationKey}:${params.brandEntityId}:take=${params.take}`;
 
-    const cached = await this.cache.get(cacheKey);
-    if (cached) {
+    const cached = await this.cache.get(cacheKey, 'text');
+    if (typeof cached === 'string') {
       return JSON.parse(cached) as unknown;
     }
 
@@ -285,7 +391,12 @@ export class QlooClient {
     url.searchParams.set('feature.explainability', 'true');
 
     const start = Date.now();
-    const response = await this.fetchWithRetry(url.toString());
+    const response = await fetchQlooWithRetry(
+      url.toString(),
+      this.apiKey,
+      undefined,
+      QLOO_FETCH_ENRICHMENT_OPTIONS
+    );
     const latency = Date.now() - start;
 
     if (!response.ok) {
@@ -310,7 +421,7 @@ export class QlooClient {
       cached: false,
     });
 
-    await this.cache.put(cacheKey, JSON.stringify(data), { expirationTtl: 86400 });
+    await this.cache.putJsonIfChanged(cacheKey, data, 86400);
     return data;
   }
 
@@ -326,8 +437,8 @@ export class QlooClient {
     const locationKey = this.locationCacheKey(params.location);
     const cacheKey = `heatmap:${locationKey}:${params.entityId || 'all'}`;
 
-    const cached = await this.cache.get(cacheKey);
-    if (cached) {
+    const cached = await this.cache.get(cacheKey, 'text');
+    if (typeof cached === 'string') {
       await recordApiMetric(this.db, {
         runId: params.runId,
         provider: 'qloo',
@@ -348,7 +459,7 @@ export class QlooClient {
     }
 
     const start = Date.now();
-    const response = await this.fetchWithRetry(url.toString());
+    const response = await fetchQlooWithRetry(url.toString(), this.apiKey);
     const latency = Date.now() - start;
 
     if (!response.ok) {
@@ -375,9 +486,7 @@ export class QlooClient {
       cached: false,
     });
 
-    await this.cache.put(cacheKey, JSON.stringify(cells), {
-      expirationTtl: 86400,
-    });
+    await this.cache.putJsonIfChanged(cacheKey, cells, 86400);
 
     return cells;
   }
@@ -446,64 +555,23 @@ export class QlooClient {
     return `q:${location.query}`;
   }
 
-  private mapQlooHttpError(statusCode: number, statusText: string, kind = 'insights'): UpstreamError {
+  private mapQlooHttpError(statusCode: number, _statusText: string, kind = 'insights'): UpstreamError {
     if (statusCode === 401) {
-      return new UpstreamError(
+      const err = new UpstreamError(
         'Upstream auth failed: Qloo API rejected the API key (401). Check QLOO_API_KEY.',
         502
       );
+      err.code = 'QLOO_AUTH_FAILED';
+      err.userMessage =
+        'Taste data is unavailable right now. Check API configuration or try again later.';
+      return err;
     }
-    if (statusCode === 429) {
-      return new UpstreamError(
-        'Qloo API rate limit exceeded (429). Please try again in a few moments.',
-        503
-      );
+    if (statusCode === 429 || statusCode >= 500) {
+      return qlooUnavailableError(`Qloo ${kind} HTTP ${statusCode} after retries`);
     }
-    if (statusCode >= 500) {
-      return new UpstreamError(`Qloo API service unavailable (${statusCode}).`, 502);
-    }
-    return new UpstreamError(`Qloo ${kind} API error (${statusCode}): ${statusText}`, 502);
-  }
-
-  private async fetchWithRetry(url: string, maxRetries = 3): Promise<Response> {
-    let lastResponse: Response | undefined;
-
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
-      const response = await this.fetch(url);
-      if (response.status !== 429) {
-        return response;
-      }
-      lastResponse = response;
-      if (attempt < maxRetries) {
-        const delayMs = Math.min(1000 * 2 ** attempt, 8000);
-        await new Promise((resolve) => setTimeout(resolve, delayMs));
-      }
-    }
-
-    return lastResponse!;
-  }
-
-  private async fetch(url: string): Promise<Response> {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30000);
-
-    try {
-      return await fetch(url, {
-        headers: {
-          'X-Api-Key': this.apiKey,
-          Accept: 'application/json',
-          'User-Agent': 'LeaseUp/1.0',
-        },
-        signal: controller.signal,
-      });
-    } catch (err) {
-      if ((err as Error).name === 'AbortError') {
-        throw new UpstreamError('Qloo API timeout', 502);
-      }
-      throw new UpstreamError('Qloo API fetch error', 502);
-    } finally {
-      clearTimeout(timeout);
-    }
+    const err = qlooUnavailableError(`Qloo ${kind} HTTP ${statusCode}`);
+    err.userMessage = QLOO_UNAVAILABLE_USER_MESSAGE;
+    return err;
   }
 
   private getDemoInsights(fixtureName: string): QlooInsight[] {

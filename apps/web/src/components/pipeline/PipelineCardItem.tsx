@@ -2,9 +2,11 @@ import { useMemo } from 'react';
 import type { PipelineCard } from '@leaseup/contracts';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { GripVertical } from 'lucide-react';
 import { cn } from '../../lib/cn';
 import { brandMonogram, brandTint } from '../../lib/brand-monogram';
 import { formatUserFacingDate } from '../../lib/format-date';
+import { prospectStatusLabel } from '../../lib/pipeline-status';
 
 function isOverdue(followUpAt?: string): boolean {
   if (!followUpAt) return false;
@@ -22,7 +24,15 @@ export function PipelineCardItem({
   readOnly?: boolean;
   onOpen: (card: PipelineCard) => void;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: card.id,
     disabled: readOnly,
   });
@@ -40,17 +50,29 @@ export function PipelineCardItem({
       style={style}
       className={cn(
         'rounded-card border border-border bg-surface p-3 shadow-sm transition-shadow',
-        isDragging && 'z-10 opacity-90 shadow-pop ring-2 ring-accent/30',
-        !readOnly && 'cursor-grab active:cursor-grabbing'
+        isDragging && 'z-10 opacity-90 shadow-pop ring-2 ring-accent/30'
       )}
       data-testid="pipeline-card"
-      {...attributes}
-      {...listeners}
     >
+      <div className="flex gap-2">
+        {!readOnly && (
+          <button
+            type="button"
+            ref={setActivatorNodeRef}
+            className="mt-0.5 shrink-0 rounded-control p-1 text-ink-3 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            aria-label={`Move ${card.brandName}. Press Space to pick up, arrow keys to move column, Space to drop.`}
+            data-testid="pipeline-card-drag-handle"
+            {...attributes}
+            {...listeners}
+          >
+            <GripVertical className="h-4 w-4" aria-hidden />
+          </button>
+        )}
       <button
         type="button"
-        className="w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
+        className="min-w-0 flex-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
         onClick={() => onOpen(card)}
+        aria-label={`Open ${card.brandName} pipeline details`}
       >
         <div className="flex items-start gap-2">
           <div
@@ -71,9 +93,15 @@ export function PipelineCardItem({
           <span className="rounded-pill border border-border px-2 py-0.5 text-ink-2">
             {card.verification}
           </span>
-          {card.outreachStatus && card.outreachStatus !== 'none' && (
-            <span className="rounded-pill border border-border px-2 py-0.5 text-ink-2 capitalize">
-              {card.outreachStatus}
+          <span className="rounded-pill border border-border px-2 py-0.5 text-ink-2">
+            {prospectStatusLabel(card.prospectStatus)}
+          </span>
+          {card.tradeAreaAlert && (
+            <span
+              className="rounded-pill bg-warn/15 px-2 py-0.5 font-medium text-warn"
+              data-testid="pipeline-trade-area-alert"
+            >
+              Trade area update
             </span>
           )}
           {overdue && (
@@ -87,9 +115,10 @@ export function PipelineCardItem({
         </div>
         <p className="mt-2 text-[11px] text-ink-3">
           Touched {formatUserFacingDate(card.lastTouchedAt)}
-          {card.followUpAt ? ` · Follow-up ${formatUserFacingDate(card.followUpAt)}` : ''}
+          {card.followUpAt ? ` · Reminder ${formatUserFacingDate(card.followUpAt)}` : ''}
         </p>
       </button>
+      </div>
     </div>
   );
 }

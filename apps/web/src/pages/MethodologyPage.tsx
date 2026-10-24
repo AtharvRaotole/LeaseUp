@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { EvalRunRow } from '@leaseup/fixtures';
 import {
   loadEvalRunBundle,
@@ -10,6 +11,17 @@ import {
 } from '@leaseup/fixtures';
 import { TopBar } from '../components/layout/TopBar';
 import { SiteFooter } from '../components/layout/SiteFooter';
+import { TableMetricLabel } from '../components/ui/TableMetricLabel';
+import { InfoTooltip } from '../components/ui/InfoTooltip';
+import {
+  methodologyDensityRadiusTooltip,
+  methodologyLikelyRangeTooltip,
+  methodologyCatalogMetricTooltip,
+  methodologyRankMatchTooltip,
+  methodologyTop10HitTooltip,
+  methodologyTasteRankTooltip,
+} from '../lib/broker-copy';
+import { brokerMetricCatalogShortLabel } from '../lib/eval-display';
 
 const evalBundle = loadEvalRunBundle();
 const evalManifest = getEvalManifest();
@@ -68,6 +80,23 @@ export function MethodologyPage() {
             footprints so judges can see where taste data helps and where it does not.
           </p>
 
+          <div
+            className="mt-8 rounded-card border border-border bg-surface-2 p-5"
+            data-testid="methodology-qloo-explainer-link"
+          >
+            <h2 className="font-semibold text-ink">How LeaseUp uses Qloo</h2>
+            <p className="mt-2 text-sm leading-relaxed text-ink-2">
+              Short broker-friendly explainer: what we call from Qloo, how ranking works, and what we
+              do not claim. No API jargon required.
+            </p>
+            <Link
+              to="/methodology/qloo"
+              className="mt-4 inline-flex min-h-11 items-center text-sm font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
+            >
+              Read the Qloo explainer
+            </Link>
+          </div>
+
           <section className="mt-12" aria-labelledby="pipeline-heading">
             <h2 id="pipeline-heading" className="font-display font-semibold text-title text-ink">
               Pipeline
@@ -119,17 +148,23 @@ export function MethodologyPage() {
             {evalBundle.recordingNote && (
               <p className="mt-3 text-sm text-ink-2">{evalBundle.recordingNote}</p>
             )}
-            <div className="mt-6 overflow-x-auto rounded-card border border-border">
+            <div className="mt-6 overflow-x-auto rounded-card border border-border" tabIndex={0}>
               <table className="w-full min-w-[720px] border-collapse text-left text-sm">
                 <caption className="sr-only">Evaluation metrics by site (Qloo / chain)</caption>
                 <thead>
                   <tr className="border-b border-border bg-surface-2 text-label uppercase text-ink-3">
                     <th scope="col" className="px-3 py-3 font-medium">Site</th>
-                    {evalManifest.displayMetricIds.map((metricId) => (
-                      <th key={metricId} scope="col" className="px-3 py-3 font-medium text-right">
-                        {evalMetricDefinition(metricId)?.shortLabel ?? metricId}
-                      </th>
-                    ))}
+                    {evalManifest.displayMetricIds.map((metricId) => {
+                      const def = evalMetricDefinition(metricId);
+                      return (
+                        <th key={metricId} scope="col" className="px-3 py-3 font-medium text-right">
+                          <TableMetricLabel
+                            label={brokerMetricCatalogShortLabel(metricId, def?.shortLabel ?? metricId)}
+                            tip={methodologyCatalogMetricTooltip(metricId, def?.description)}
+                          />
+                        </th>
+                      );
+                    })}
                   </tr>
                 </thead>
                 <tbody>
@@ -179,17 +214,22 @@ export function MethodologyPage() {
               Adaptive-radius evaluation ({adaptiveEval.agg.n_sites} US addresses)
             </h2>
             <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
-              Live Qloo study with density-tightened presence radii. Mean share of top-10 brands that already
-              have a store nearby: taste-aware blend{' '}
-              {(adaptiveEval.agg.p10_blend * 100).toFixed(0)}%, chain size alone{' '}
-              {(adaptiveEval.agg.p10_chain * 100).toFixed(0)}%, raw Qloo order{' '}
-              {(adaptiveEval.agg.p10_raw * 100).toFixed(0)}%. Same-size tier AUC{' '}
-              {adaptiveEval.agg.same_size_auc.toFixed(3)} (95% CI{' '}
-              {adaptiveEval.agg.same_size_auc_ci[0].toFixed(3)} to{' '}
-              {adaptiveEval.agg.same_size_auc_ci[1].toFixed(3)}). Qloo taste may partly reflect brands that
-              already operate nearby.
+              Live Qloo study with{' '}
+              <span className="inline-flex items-center gap-1">
+                tighter store search circles in busy areas
+                <InfoTooltip label={methodologyDensityRadiusTooltip()} />
+              </span>
+              . On average,{' '}
+              {p10ToCountOf10(adaptiveEval.agg.p10_blend)} of the top 10 picks already had a store nearby with
+              our taste blend, {p10ToCountOf10(adaptiveEval.agg.p10_chain)} of 10 when sorted by chain size
+              alone, and {p10ToCountOf10(adaptiveEval.agg.p10_raw)} of 10 with taste order only. Rank match
+              among similar-sized chains was {(adaptiveEval.agg.same_size_auc * 100).toFixed(0)}% (likely range{' '}
+              {(adaptiveEval.agg.same_size_auc_ci[0] * 100).toFixed(0)}% to{' '}
+              {(adaptiveEval.agg.same_size_auc_ci[1] * 100).toFixed(0)}%
+              <InfoTooltip label={methodologyLikelyRangeTooltip()} />
+              ). Taste scores can still reflect brands that already operate nearby.
             </p>
-            <div className="mt-6 overflow-x-auto rounded-card border border-border">
+            <div className="mt-6 overflow-x-auto rounded-card border border-border" tabIndex={0}>
               <table className="w-full min-w-[960px] border-collapse text-left text-sm">
                 <caption className="sr-only">Adaptive-radius eval by address</caption>
                 <thead>
@@ -197,11 +237,21 @@ export function MethodologyPage() {
                     <th scope="col" className="px-3 py-3 font-medium">Site</th>
                     <th scope="col" className="px-3 py-3 font-medium">Stratum</th>
                     <th scope="col" className="px-3 py-3 font-medium text-right">Radius (km)</th>
-                    <th scope="col" className="px-3 py-3 font-medium text-right">Taste blend</th>
-                    <th scope="col" className="px-3 py-3 font-medium text-right">Chain size</th>
-                    <th scope="col" className="px-3 py-3 font-medium text-right">Raw Qloo</th>
-                    <th scope="col" className="px-3 py-3 font-medium text-right">Same-size AUC</th>
-                    <th scope="col" className="px-3 py-3 font-medium text-right">Taste pct</th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">
+                      <TableMetricLabel label="Taste blend" tip={methodologyTop10HitTooltip()} />
+                    </th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">
+                      <TableMetricLabel label="Chain size" tip="Top 10 hit rate when we sort by national store count only." />
+                    </th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">
+                      <TableMetricLabel label="Taste order" tip="Top 10 hit rate when we sort by local shopper taste only." />
+                    </th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">
+                      <TableMetricLabel label="Rank match" tip={methodologyRankMatchTooltip()} />
+                    </th>
+                    <th scope="col" className="px-3 py-3 font-medium text-right">
+                      <TableMetricLabel label="Local taste rank" tip={methodologyTasteRankTooltip()} />
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -225,11 +275,11 @@ export function MethodologyPage() {
                       </td>
                       <td className="px-3 py-3 text-right tabular-nums text-ink-2">
                         {row.same_size_auc !== undefined && row.same_size_auc_ci
-                          ? `${row.same_size_auc.toFixed(3)} [${row.same_size_auc_ci[0].toFixed(2)}, ${row.same_size_auc_ci[1].toFixed(2)}]`
+                          ? `${(row.same_size_auc * 100).toFixed(0)}% (${(row.same_size_auc_ci[0] * 100).toFixed(0)} to ${(row.same_size_auc_ci[1] * 100).toFixed(0)})`
                           : 'n/a'}
                       </td>
                       <td className="px-3 py-3 text-right tabular-nums text-ink-2">
-                        {row.taste_percentile ?? 'n/a'}
+                        {row.taste_percentile !== undefined ? `${row.taste_percentile}` : 'n/a'}
                       </td>
                     </tr>
                   ))}

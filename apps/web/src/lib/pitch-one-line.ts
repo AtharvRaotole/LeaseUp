@@ -1,6 +1,6 @@
 import type { ProspectPack } from '@leaseup/contracts';
 import { displayBrandName } from './brand-display';
-import { verificationShortLabel } from './copy';
+import { verificationBrokerLabel } from './broker-copy';
 import { fitTopPercentPhrase } from './fit-display';
 
 /** Single line for pitch cards, using only fields returned on the prospect pack. */
@@ -8,8 +8,8 @@ export function pitchOneLineWhy(prospect: ProspectPack, rankingsTotal: number): 
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   const rank = prospect.brand.affinityRank;
   const total = rankingsTotal || rank;
-  const fitPhrase = fitTopPercentPhrase(rank, total);
-  const verify = verificationShortLabel(prospect.brand.verified);
+  const fitPhrase = fitTopPercentPhrase(rank, total, prospect.brand.tasteFitBeyondChainPercentile);
+  const verify = verificationBrokerLabel(prospect.brand.verified);
 
   if (prospect.reasons[0]) {
     return prospect.reasons[0];

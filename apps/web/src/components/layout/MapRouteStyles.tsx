@@ -6,7 +6,10 @@ export function MapRouteStyles() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    if (pathname.startsWith('/r/') || pathname.startsWith('/brand')) {
+    if (pathname.startsWith('/brand')) {
+      ensureMapLibreCss();
+    }
+    if (pathname.startsWith('/r/') && typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches) {
       ensureMapLibreCss();
     }
   }, [pathname]);

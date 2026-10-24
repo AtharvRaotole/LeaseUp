@@ -1,0 +1,56 @@
+{
+  "results": {
+    "tags": [
+      {
+        "tag_id": "urn:tag:customer_identity:qloo:beer_enthusiasts",
+        "name": "Beer Enthusiasts",
+        "types": ["urn:entity:place"],
+        "subtype": "urn:tag:customer_identity:qloo",
+        "tag_value": "beer_enthusiasts",
+        "popularity": 0.99987,
+        "query": { "affinity": 0.999957 }
+      },
+      {
+        "tag_id": "urn:tag:customer_identity:qloo:cocktail_enthusiasts",
+        "name": "Cocktail Enthusiasts",
+        "types": ["urn:entity:place"],
+        "subtype": "urn:tag:customer_identity:qloo",
+        "tag_value": "cocktail_enthusiasts",
+        "popularity": 0.99985,
+        "query": { "affinity": 0.999945 }
+      },
+      {
+        "tag_id": "urn:tag:ambience:qloo:social",
+        "name": "Social",
+        "types": ["urn:entity:place"],
+        "subtype": "urn:tag:ambience:qloo",
+        "tag_value": "social",
+        "popularity": 0.99982,
+        "query": { "affinity": 0.99993 }
+      },
+      {
+        "tag_id": "urn:tag:customer_identity:qloo:foodies",
+        "name": "Foodies",
+        "types": ["urn:entity:place"],
+        "subtype": "urn:tag:customer_identity:qloo",
+        "tag_value": "foodies",
+        "popularity": 0.9998,
+        "query": { "affinity": 0.99992 }
+      },
+      {
+        "tag_id": "urn:tag:customer_identity:qloo:regulars",
+        "name": "Regulars",
+        "types": ["urn:entity:place"],
+        "subtype": "urn:tag:customer_identity:qloo",
+        "tag_value": "regulars",
+        "popularity": 0.99978,
+        "query": { "affinity": 0.99991 }
+      }
+    ]
+  },
+  "query": {
+    "geospatial": {
+      "panel_size": { "context": 12450, "target": 11800 }
+    }
+  }
+}

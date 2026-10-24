@@ -1,0 +1,24 @@
+{
+  "snapshotId": "00000000-0000-4000-8000-000000000010",
+  "recordedAt": "2026-10-22T12:00:00.000Z",
+  "runId": "demo-run-before",
+  "brands": [
+    {
+      "entityId": "brand-alpha",
+      "name": "Alpha Coffee",
+      "affinityRank": 1,
+      "nearestExistingStoreKm": 12.5
+    },
+    {
+      "entityId": "brand-beta",
+      "name": "Beta Books",
+      "affinityRank": 2
+    },
+    {
+      "entityId": "brand-gamma",
+      "name": "Gamma Gym",
+      "affinityRank": 3,
+      "nearestExistingStoreKm": 8.2
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { openReportSection, waitForReportReady } from './report-helpers';
 
 const BASE = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:4173';
 const WICKER = '1574 N Milwaukee Ave, Chicago, IL 60622';
@@ -14,20 +15,19 @@ test.describe('Broker journey (demo)', () => {
   test('landing search opens report with explainer', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${BASE}/`);
-    await page.getByPlaceholder(/Storefront address/i).fill(WICKER);
+    await page.getByPlaceholder(/Street address/i).fill(WICKER);
     await page.getByRole('button', { name: 'Analyze' }).click();
     await expect(page).toHaveURL(/\/r\//, { timeout: 30_000 });
-    await expect(page.getByTestId('product-explainer')).toBeVisible({ timeout: 120_000 });
-    await expect(page.getByTestId('brands-to-pitch')).toBeVisible();
+    await expect(page.getByTestId('report-summary')).toBeVisible({ timeout: 120_000 });
+    await expect(page.getByTestId('report-top-brands')).toBeVisible();
   });
 
   test('report to pipeline at 1440', async ({ page }) => {
     test.setTimeout(180_000);
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`);
-    await expect(page.getByTestId('brands-to-pitch')).toBeVisible({ timeout: 120_000 });
-    await page.getByTestId('brands-to-pitch').locator('button').first().click();
-    await page.getByTestId('add-to-pipeline').first().click();
+    await waitForReportReady(page);
+    await page.getByTestId('report-pipeline-cta').getByTestId('add-to-pipeline').click();
     await expect(page.getByRole('button', { name: 'Added to pipeline' })).toBeVisible({
       timeout: 10_000,
     });
@@ -43,7 +43,7 @@ test.describe('Broker journey (demo)', () => {
       localStorage.setItem('leaseup-report-guided-tour-v1', 'done');
     });
     await page.goto(`${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`);
-    await expect(page.getByTestId('brands-to-pitch')).toBeVisible({ timeout: 120_000 });
+    await waitForReportReady(page);
     await page.getByRole('button', { name: 'Map' }).click();
     await expect(page.locator('.maplibregl-map, [data-testid="report-map-skeleton"]').first()).toBeVisible();
     await noHorizontalOverflow(page);
@@ -64,7 +64,7 @@ test.describe('Broker journey (demo)', () => {
     await expect(skeleton).toBeVisible({ timeout: 10_000 });
     await expect(page.getByTestId('report-loading-skeleton')).toBeVisible();
     await expect(page.getByText('Reading local taste')).toBeVisible();
-    await expect(page.getByTestId('brands-to-pitch')).toBeVisible({ timeout: 120_000 });
+    await waitForReportReady(page);
     await expect(skeleton).toBeHidden();
   });
 });

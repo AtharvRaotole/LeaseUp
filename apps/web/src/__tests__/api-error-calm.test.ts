@@ -14,4 +14,22 @@ describe('api-error calm copy', () => {
     expect(info.message).toBe(SERVER_BUSY_MESSAGE);
     expect(info.code).toBe('NETWORK_ERROR');
   });
+
+  it('maps GEOCODE_NOT_FOUND to storefront guidance', () => {
+    const info = humanizeApiError(404, {
+      code: 'GEOCODE_NOT_FOUND',
+      error: 'We could not find that street address.',
+    });
+    expect(info.code).toBe('GEOCODE_NOT_FOUND');
+    expect(info.message).toContain('street address');
+  });
+
+  it('maps QLOO_UNAVAILABLE to calm taste copy', () => {
+    const info = humanizeApiError(503, {
+      code: 'QLOO_UNAVAILABLE',
+      error: 'Taste data is slow right now. Try again in a moment.',
+    });
+    expect(info.message).toContain('Taste data is slow');
+    expect(info.code).toBe('QLOO_UNAVAILABLE');
+  });
 });

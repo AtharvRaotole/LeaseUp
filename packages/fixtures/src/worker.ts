@@ -19,6 +19,7 @@ export {
   demoAnalyzeStrictEval,
   demoAnalyzeBacktests,
 } from './demo-analyze-precomputed.js';
+export { expectedRandomPresentInTop10 } from './landing-random-baseline.js';
 export {
   computeBacktest,
   calculateAUC,
@@ -89,5 +90,29 @@ export {
   listDemoExplainabilityRecordings,
 } from './brand-explainability-loader.js';
 export { overpassDemoByFixture, DEMO_OSM_UNRECORDED_NOTE } from './overpass-demo.js';
+export {
+  BLEECKER_NYC,
+  REI_ENTITY_ID,
+  REI_QID,
+  REI_SOHO_OSM_NODE,
+  REI_NAME_ONLY_TAGS,
+  UNRELATED_REI_NAME_TAGS,
+} from './osm-brand-match-samples.js';
 export { brandReverseFixtures, type BrandReverseDemoFixture } from './brand-reverse-chicago.js';
 export { storeLocationsEmbedded as storeLocations } from './store-locations-data.js';
+export {
+  brandRealEstateForEntity,
+  brandRealEstateDataset,
+  brandRealEstateContactLine,
+  type BrandRealEstateEntry,
+} from './brand-real-estate.js';
+export {
+  tradeAreaShopperFixtureForDemo,
+  type TradeAreaShopperFixture,
+} from './trade-area-shoppers-loader.js';
+export {
+  parseQlooTradeAreaTagInsights,
+  TRADE_AREA_SHOPPER_TAG_SUBTYPES,
+  WICKER_TRADE_AREA_TAG_INSIGHTS_SAMPLE,
+  type ParsedTradeAreaShoppersSnapshot,
+} from './qloo-trade-area-tag-insights.js';

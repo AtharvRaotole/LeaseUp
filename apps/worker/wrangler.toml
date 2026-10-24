@@ -26,6 +26,7 @@ APP_MODE = "demo"
 binding = "DB"
 database_name = "leaseup_db"
 database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
 
 # KV for response caching
 # Run: wrangler kv:namespace create CACHE
@@ -33,12 +34,15 @@ database_id = "00000000-0000-0000-0000-000000000000"
 [[kv_namespaces]]
 binding = "CACHE"
 id = "local-cache-placeholder"
+preview_id = "local-cache-placeholder"
 
 [[env.production.d1_databases]]
 binding = "DB"
 database_name = "leaseup_db_prod"
 database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
 
 [[env.production.kv_namespaces]]
 binding = "CACHE"
 id = "local-cache-placeholder"
+preview_id = "local-cache-placeholder"

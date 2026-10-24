@@ -1,14 +1,12 @@
 import { Hono } from 'hono';
-import { randomUUID } from 'node:crypto';
 import type { Env } from '../index';
 import { AnalysisRequestSchema } from '@leaseup/contracts';
 import {
   analysisRequestFromSearchParams,
   pitchShareMeta,
-  reportShareMeta,
+  reportShareMetaFromRequest,
 } from '../lib/share-preview';
 import { OgImageService } from '../services/og-image';
-import { AnalysisService } from '../services/analysis';
 import { PitchService } from '../services/pitch';
 
 export const shareRouter = new Hono<{ Bindings: Env }>();
@@ -50,9 +48,7 @@ shareRouter.get('/share/report', async (c) => {
   const slug = url.searchParams.get('slug') || 'run';
   const canonicalPath = `/r/${slug}?${url.searchParams.toString()}`;
 
-  const analysis = new AnalysisService(c.env);
-  const results = await analysis.analyze(request, randomUUID(), 'share-meta');
-  const meta = reportShareMeta(results, request.radius, canonicalPath);
+  const meta = reportShareMetaFromRequest(request, canonicalPath);
   return c.json(meta, 200, {
     'Cache-Control': 'public, max-age=3600',
   });

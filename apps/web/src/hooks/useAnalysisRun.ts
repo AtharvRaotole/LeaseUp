@@ -8,6 +8,8 @@ import {
   type ApiErrorInfo,
 } from '../lib/api-error';
 import { fetchWithOneRetry } from '../lib/fetch-with-retry';
+import { matchDemoFixtureId } from '../lib/demo-chip-addresses';
+import { prefetchDemoReportAnalyze, takePrefetchedDemoAnalyze } from '../lib/report-analyze-prefetch';
 
 export function useAnalysisRun() {
   const [steps, setSteps] = useState<AnalysisStep[]>([]);
@@ -31,7 +33,7 @@ export function useAnalysisRun() {
     setSlowHint(false);
     startedRef.current = performance.now();
 
-    const slowTimer = window.setTimeout(() => setSlowHint(true), 6000);
+    const slowTimer = window.setTimeout(() => setSlowHint(true), 8000);
 
     let completed = false;
     let errored = false;
@@ -46,7 +48,43 @@ export function useAnalysisRun() {
       window.clearTimeout(slowTimer);
     };
 
+    const demoChip = matchDemoFixtureId(request.address);
+
     try {
+      if (demoChip) {
+        prefetchDemoReportAnalyze(request);
+        const prefetched = takePrefetchedDemoAnalyze(request);
+        if (prefetched) {
+          try {
+            finish(await prefetched);
+            window.clearTimeout(slowTimer);
+            return;
+          } catch {
+            /* fall through to fetch */
+          }
+        }
+        const response = await fetchWithOneRetry(
+          apiUrl('/api/analyze'),
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(request),
+          },
+          {
+            onAutoRetry: () => {
+              autoRetried = true;
+              setAutoRetrying(true);
+            },
+          }
+        );
+        if (!response.ok) {
+          throw await parseApiErrorResponse(response);
+        }
+        finish((await response.json()) as AnalysisResponse);
+        window.clearTimeout(slowTimer);
+        return;
+      }
+
       await analyzeWithStream(request, {
         onStep: (step) => {
           setSteps((prev) => [...prev.filter((s) => s.id !== step.id), step]);

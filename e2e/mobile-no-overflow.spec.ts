@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { waitForReportReady } from './report-helpers';
 
 const BASE = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:4173';
 const WICKER = '1574 N Milwaukee Ave, Chicago, IL 60622';
@@ -24,7 +25,7 @@ test.describe('Mobile layout (390px) has no horizontal overflow', () => {
 
   test('site report', async ({ page }) => {
     await page.goto(`${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`);
-    await page.getByTestId('brands-to-pitch').waitFor({ timeout: 120000 });
+    await waitForReportReady(page);
     await assertNoHorizontalOverflow(page);
   });
 

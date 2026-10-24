@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseUsAddress } from '../lib/parse-us-address';
+import { parseUsAddress, streetForGeocodeSearch } from '../lib/parse-us-address';
 
 describe('parseUsAddress', () => {
   it('parses Bleecker St NYC', () => {
@@ -26,5 +26,10 @@ describe('parseUsAddress', () => {
       state: 'CO',
       postalCode: '80302',
     });
+  });
+
+  it('strips suite and address ranges for geocode search', () => {
+    expect(streetForGeocodeSearch('5085 Westheimer Rd Ste 2500')).toBe('5085 Westheimer Rd');
+    expect(streetForGeocodeSearch('1600-1630 NE Alberta St')).toBe('1600 NE Alberta St');
   });
 });

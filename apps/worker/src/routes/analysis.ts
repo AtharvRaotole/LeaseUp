@@ -182,6 +182,8 @@ analysisRouter.post('/outreach', async (c) => {
       nearestStoreKm: request.nearestStoreKm,
       coTenantBrands: request.coTenantBrands,
       verificationLabel: request.verificationLabel,
+      brandReach: request.brandReach,
+      brandEntityId: request.brandEntityId,
     }
   );
 

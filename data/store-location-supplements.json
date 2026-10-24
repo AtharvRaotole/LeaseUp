@@ -1,0 +1,14 @@
+{
+  "description": "Curated store points missing from ATP geotiles or OSM snapshot tiles. Each entry must cite a primary source URL.",
+  "stores": [
+    {
+      "brandId": "205AF33F-118E-4C49-9721-6BDBAF981DA0",
+      "name": "REI SoHo",
+      "lat": 40.72483,
+      "lon": -73.99522,
+      "source": "https://www.openstreetmap.org/node/2483671757",
+      "targets": ["atp", "osm", "osmData"],
+      "note": "ATP CC0 has no REI within ~32 km of 350 Bleecker. Cached US Overpass for Q3414933 still omits node 2483671757 (SoHo); this row cites that OSM node until a refetch includes it."
+    }
+  ]
+}
