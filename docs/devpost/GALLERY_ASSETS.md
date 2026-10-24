@@ -1,6 +1,6 @@
-# Devpost gallery (deploy33 production screenshots)
+# Devpost gallery (deploy34 production screenshots)
 
-Captured from **https://leaseup-59m.pages.dev** (integration head **81a0b49**, deploy33). PNGs live in `docs/devpost/gallery/`. Regenerate with `node scripts/capture-devpost-gallery-prod.mjs`. No video; upload stills only.
+Report, pitch, brand, portfolio, and methodology PNGs were captured from **https://leaseup-59m.pages.dev** at integration head **81a0b49** (deploy33). Production is now **deploy34** at **`84971a5`** (prospecting planner + agent receipt); those report stills remain representative of the report UI. Regenerate report captures with `node scripts/capture-devpost-gallery-prod.mjs` when the recording hold lifts. No video; upload stills only.
 
 | Image | Caption |
 | --- | --- |
@@ -25,3 +25,12 @@ Captured from **https://leaseup-59m.pages.dev** (integration head **81a0b49**, d
 7. `methodology-1440.png` (trust and definitions)
 
 Optional eighth: `report-sevierville-1440.png` or `portfolio-1440.png`.
+
+## TODO: agent receipt gallery still (blocked)
+
+**Do not** add `agent-receipt-1440.png` to Devpost until the plain-language receipt copy pass from cloud agent **bc-2041c19b** (`cursor/usability-pass-ca63`) lands on integration. Current production receipt UI can still show internal tool ids (for example `qloo_brand_insights`) under **Rule** / **Agent** lines; that is not gallery-ready.
+
+When unblocked (after merge + recording hold if needed):
+
+1. Run `node scripts/agent-receipt-screenshots.mjs` (preview route `/__preview/prospecting-receipt` with `VITE_PREVIEW_ROUTES=1`; see `ProspectingReceiptPreviewPage.tsx`).
+2. Copy the 1440 PNG into `docs/devpost/gallery/agent-receipt-1440.png` and add a caption here: completed Wicker demo run, **Agent receipt** expanded with logged steps and planner **Rule** / **Agent** labels (no inflated autonomy claims).
