@@ -6,7 +6,7 @@
 
 **On the live landing today:** the same headline appears above a short helper line from the app: "Enter an address to see which brands local shoppers want nearby, then check real store locations before you pitch." (`LANDING_PLAIN_SUMMARY` in `apps/web/src/lib/broker-copy.ts`).
 
-**Production reference:** Cloudflare Pages tracks branch **`cursor/leaseup-v1-c429`** (integration). Live production is labeled **deploy32** on that branch. The current integration head short SHA is in `docs/devpost/integration-head.txt` (CI verifies it is a commit on that branch; see `scripts/check-submission-doc.mjs`). Do not paste stale deploy SHAs in Devpost copy. **Mobile Lighthouse (GitHub Actions LHCI only):** median of **3** mobile runs on `ubuntu-latest` in Actions run [**40074283024**](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40074283024): landing performance **93**; Wicker report performance **89**, accessibility **96** (`docs/qa/a11y-perf.md`, `LHCI_MEDIANS` in the job log). Do not cite local preview Lighthouse scores in Devpost copy.
+**Production reference:** Cloudflare Pages tracks branch **`cursor/leaseup-v1-c429`** (integration). Live production is labeled **deploy34** on that branch (Pages URL `https://leaseup-59m.pages.dev`). The current integration head short SHA is in `docs/devpost/integration-head.txt` (CI verifies it is a commit on that branch; see `scripts/check-submission-doc.mjs`). Do not paste stale deploy SHAs in Devpost copy. **Mobile Lighthouse (GitHub Actions LHCI only):** median of **3** mobile runs on `ubuntu-latest` in Actions run [**40074283024**](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40074283024): landing performance **93**; Wicker report performance **89**, accessibility **96** (`docs/qa/a11y-perf.md`, `LHCI_MEDIANS` in the job log). Do not cite local preview Lighthouse scores in Devpost copy.
 
 Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` (40 US addresses, live Qloo API; metrics refreshed Oct 24, 2026 per PR #103).
 
@@ -18,8 +18,10 @@ Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-
 
 **Store verification honesty (PR #89 false-positive audit):** We removed all **4** known false positives across **13** test sites in that audit. We never claim "zero false positives": stores missing from **both** ATP and OSM cannot be detected, and OSM snapshot coverage applies to only **25** of **227** tracked chains on demo chips. Analyze also runs an **OSM `brand:wikidata` false-absence cross-check** (snapshot tiles plus demo Overpass recordings) so we do not label a top prospect as verified missing when wikidata says a store is in radius (`apps/worker/src/lib/osm-wikidata-absence-crosscheck.ts`, `data/qloo-eval-40/FALSE_ABSENCE_AUDIT.md`, `apps/worker/src/__tests__/false-absence-sweep.test.ts`).
 
-**Shipped on deploy32 (integration head in `integration-head.txt`):**
+**Shipped on deploy34 (integration head in `integration-head.txt`):**
 
+- **Bounded prospecting planner** before the fixed analyze pipeline on **Run full prospecting** (`agent_plan` on `prospecting-timeline`): up to **6** tool steps and **3** Qloo logical API calls per run, **18 s** loop timeout (`PROSPECTING_AGENT_MAX_STEPS`, `PROSPECTING_AGENT_MAX_QLOO_CALLS`, `prospecting-agent-planner.ts`). **Live** workers with `OPENAI_API_KEY` use **gpt-4o-mini** tool calling inside that step; **demo chips** use a deterministic rule planner (no OpenAI). If the planner is missing, times out, or errors, the run **falls back** to the same standard geocode → taste → store scan → verify → rank → outreach → pitch pack steps (`dag_fallback` summary on the job). Planner tool decisions are logged with planner kind **rule** vs **model**; the UI receipt labels those rows **Rule** or **Agent** when `agentSteps` are present (`AgentReceipt.tsx`, `agent-receipt.ts`).
+- **Agent receipt** on completed prospecting jobs (`data-testid="agent-receipt"` on `/prospect/:id`): only steps the server actually logged (no invented rows), plain **Source** labels per step, optional **Why** line, JSON/Markdown download. Not a separate LLM narrative; it mirrors `ProspectingJob.steps` from the worker (`apps/web/src/lib/agent-receipt.ts`, `e2e` coverage in `apps/web/src/__tests__/agent-receipt.test.ts`).
 - **13 verified brand real-estate URLs** in `brand-real-estate.json` (title/h1 content rule; parent-portal map for Gap Inc. brands only). Pitch rows link to official pages when verified, otherwise a Google search fallback (`BrandReachLine`, `scripts/check-brand-real-estate-urls.mjs`).
 - **Nearest store reconciled across ATP and OSM:** `reconcileNearestStoreKm()` picks the closer distance; large ATP/OSM gaps mark distance as unconfirmed (`nearest-store-reconcile.ts`, `nearest-store-display-copy.ts`).
 - **No false absences on the four demo pins (CI):** Wicker, Boulder, Sevierville, and 350 Bleecker Williamsburg fixture; `demo-chip-osm-absence-audit.test.ts` fails if OSM snapshot shows a store inside the absence radius but the report still claims absence (`docs/DEMO_NEAREST_OSM_AUDIT.md`).
@@ -29,7 +31,7 @@ Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-
 
 **Recording hold (owner):** Record **nothing** until Atharv explicitly says capture may start. That means no walkthrough video, no Devpost screenshots, no hero loop, and **no local test recordings** either. A message about "after the deploy" is **not** that signal. Script and doc edits are fine. When authorized, use the local stack (`pnpm record:demo:local`, `pnpm capture:devpost:local`) and set `LEASEUP_RECORDING_AUTHORIZED=1`. Production still requires `MEDIA_CAPTURE_ALLOW_PROD=1` separately.
 
-**Walkthrough video:** **pending re-record** at the current integration head (compare ranking, deploy33 copy). Do not upload a new `walkthrough.mp4` to Devpost until Atharv lifts the recording hold above; `docs/media/recording.json` still points at an older capture.
+**Walkthrough video:** **pending re-record** at the current integration head (compare ranking, deploy34 prospecting planner + agent receipt). Do not upload a new `walkthrough.mp4` to Devpost until Atharv lifts the recording hold above; `docs/media/recording.json` still points at an older capture.
 
 ---
 
@@ -64,7 +66,7 @@ Three stops judges care about: **finished report**, **shareable pitch**, **pipel
 | Stop | Clicks from `/` | What you should see |
 | --- | --- | --- |
 | **1. Report** | **1** (click demo chip **Wicker Park, Chicago**) | Compact summary (`report-summary`): stat tiles, plain funnel (`report-prospect-funnel`, 3 km absence radius on dense Wicker), **Top brands to pitch** (`brands-to-pitch`). Dismiss or take the optional **Quick tour** (`report-first-run-tour-hint`; non-blocking). Open **How we know**, **Compare ranking** (`qloo-ranking-toggle`): **Local taste** vs **Chain size** (83% vs 76% mean top-10 presence; `e2e/qloo-ranking-toggle.spec.ts`). **Why this brand** (`why-this-brand`); full list in **Why these brands** (`brands-to-pitch-full-list`). |
-| **1b. Run full prospecting** | **1** (paste a demo chip address, click **Run full prospecting**, `landing-run-prospecting`) **or +1** from a finished report (**Run full prospecting** in the sticky header, `run-full-prospecting`) | Agent timeline (`prospecting-page`, `prospecting-timeline`) through **Assemble pitch pack**, then **Open pitch pack** (`e2e/features.spec.ts`, `e2e/broker-journey.spec.ts`; allow up to ~4 minutes on demo fixtures). |
+| **1b. Run full prospecting** | **1** (paste a demo chip address, click **Run full prospecting**, `landing-run-prospecting`) **or +1** from a finished report (**Run full prospecting** in the sticky header, `run-full-prospecting`) | Timeline (`prospecting-page`, `prospecting-timeline`) includes **Plan site checks (agent)** then the standard steps through **Assemble pitch pack** and **Open pitch pack** (`e2e/features.spec.ts`, `e2e/broker-journey.spec.ts`; allow up to ~4 minutes on demo fixtures). When the run finishes, expand **Agent receipt** for logged steps; planner tool lines show **Rule** or **Agent** when the server logged `agentSteps`. |
 | **2. Pitch pack** | **+1** open stable demo **`/pitch/demo-boulder-ulta`** (`pitch-page`, `e2e/demo-pitch-smoke.spec.ts`) **or +2** from report (**Share pitch pack** → **Create public link**) | Read-only pitch with leasing brief and vacancy block |
 | **3. Pipeline + watchlist loop** | **+2** on report (**Add to pipeline** on a top brand and/or **Watch this space**, then **Pipeline** or **Watchlist** in the header) | Kanban with saved evidence (`pipeline-evidence`); open a card and follow **Site report** / **Watched space** back to the same pitch (`e2e/pipeline-loop.spec.ts`) |
 
@@ -133,6 +135,8 @@ Eval numbers below are only from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `pack
 | Portfolio batch (up to 10 sites) | ✓ | | ✓ | | `apps/web/src/pages/PortfolioPage.tsx` |
 | Brand sites / heatmap explore (not used to rank pitch list) | ✓ | ✓ | | ✓ | `apps/web/src/pages/BrandPage.tsx`; heatmap lift: `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` (`heatmapAddsLift: false`) |
 | Watchlist + diff | ✓ | ✓ | ✓ | | `apps/web/src/pages/WatchlistPage.tsx`, `packages/fixtures/src/watch-diff.ts` |
+| **Run full prospecting** + bounded planner (`agent_plan`) | ✓ | ✓ | ✓ | ✓ | `apps/worker/src/lib/prospecting-agent-planner.ts`, `apps/worker/src/services/prospecting.ts`, `ProspectingPage.tsx` |
+| **Agent receipt** (logged steps, JSON/Markdown) | ✓ | ✓ | | ✓ | `apps/web/src/components/prospecting/AgentReceipt.tsx`, `apps/web/src/lib/agent-receipt.ts` |
 | Methodology + 40-address tables | ✓ | ✓ | | ✓ | `apps/web/src/pages/MethodologyPage.tsx`, `packages/fixtures/src/eval/results_adaptive.json` |
 | Preregistered 40-address live Qloo eval | ✓ | | | ✓ | `data/qloo-eval-40/QLOO_LIFT_EVAL.md`, `packages/fixtures/src/eval/live-qloo-lift/QLOO_LIFT_EVAL.md` |
 
@@ -231,6 +235,12 @@ LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped o
 - Broker-visible surfaces avoid raw metric jargon; proof and methodology pages define terms inline (`apps/web/src/lib/eval-display.ts`, `StrictEvalCard`, `ProofSection`).
 - **`/methodology/qloo`**: short **How LeaseUp uses Qloo** page linked from the methodology hub (no internal "do not say" editor language).
 
+### Full prospecting run (planner + receipt)
+
+- **`ProspectingPage`** (`data-testid="prospecting-page"`): after geocode, the worker runs **Plan site checks (agent)** then the same analyze steps as a one-click report, optional outreach drafts, and a pitch pack link.
+- **Planner (honest scope):** Not a free-form chat agent. A **bounded** tool loop (max **6** steps, max **3** Qloo calls, **18 s** timeout) may prefetch taste, store checks, or stratum hints that feed the fixed DAG (`analyzeWithSteps` with optional `agentDagHooks`). **Demo chips** use a scripted **rule** planner; **live** mode uses **gpt-4o-mini** only when `OPENAI_API_KEY` is set on the worker. Otherwise the UI shows a **fixed analysis pipeline** fallback and the run still completes.
+- **Agent receipt:** After `status: complete`, the page shows **Agent receipt** with one card per logged step, **Source** line (for example "Neighborhood taste data"), result summary, and nested **Rule** / **Agent** lines for planner tools when present. Downloads export the same fields as JSON or Markdown. The receipt does not claim lease outcomes or fabricate API calls.
+
 ### Still in the flow
 
 - Geocode confirm when needed; ranked list uses the fitted logistic taste blend when Qloo is available; store checks via All The Places (227 tracked chains), OSM snapshot tiles, wikidata false-absence cross-check, and adaptive absence radius (3 km floor in dense areas) on demo chips; Qloo proof under **How we know** cites **54% / 76% / 83%** mean top-10 presence (raw Qloo / chain / blend; exact **0.5375 / 0.760 / 0.825**) per `packages/fixtures/src/eval/live-qloo-lift/aggregates.json`; optional **OutreachSheet** draft (broker clicks, never auto-sent).
@@ -278,7 +288,7 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 ## Accomplishments
 
-- Production on integration branch **`cursor/leaseup-v1-c429`** (deploy32): compact summary with prospect funnel, search vs absence radius explainer, default **fitted taste blend** with **Compare ranking** toggle (**83%** vs **76%** on the 40-address eval), non-blocking tour, stable **`/pitch/demo-boulder-ulta`**, OSM wikidata false-absence cross-check, **`brands-to-pitch`**, pipeline evidence loop, watchlist hardening (#107), **13** verified reach URLs, ATP/OSM nearest-store reconcile, demo-pin absence CI audit, gated **Shared local audience** copy, address validation, and **Qloo-down fallback**.
+- Production on integration branch **`cursor/leaseup-v1-c429`** (deploy34): compact summary with prospect funnel, search vs absence radius explainer, default **fitted taste blend** with **Compare ranking** toggle (**83%** vs **76%** on the 40-address eval), non-blocking tour, stable **`/pitch/demo-boulder-ulta`**, OSM wikidata false-absence cross-check, **`brands-to-pitch`**, pipeline evidence loop, watchlist hardening (#107), **13** verified reach URLs, ATP/OSM nearest-store reconcile, demo-pin absence CI audit, gated **Shared local audience** copy, address validation, **Qloo-down fallback**, bounded **prospecting planner** + **Agent receipt** on full runs (#155, #156).
 - Trade area shopper tags; brand reach lines; vacancy cost on report, share dialog, and pitch snapshot; owner update share links.
 - Plain-language broker pass + **`/methodology/qloo`** explainer; methodology shows exact cohort percents (82.5% vs 76%, +6.5 pp); mobile Lighthouse landing perf **93** / report perf **89** / report a11y **96** (GitHub Actions LHCI medians, run **40074283024**).
 - Preregistered **40-address** live Qloo evaluation (refreshed Oct 24, 2026): mean top-10 presence **54% / 76% / 83%** (raw Qloo / chain / blend; exact **0.5375 / 0.760 / 0.825** in `aggregates.json`) per ATP/OSM; same-size tier AUC **0.664**; mid-size tier **P@5 0.53 vs 0.23**.
@@ -342,5 +352,5 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 Use **existing** screenshots only (no new capture, no video) until recording is authorized. Pick **5 to 7** images from `docs/devpost/GALLERY_ASSETS.md` (paths, captions, and optional alternates). Upload at Devpost's recommended size; source PNGs stay in `docs/screenshots/`.
 
 - [ ] Gallery images chosen from `docs/devpost/GALLERY_ASSETS.md` with plain captions (no inflated claims)
-- [ ] Link to live demo (deploy32 / integration branch); integration head in `docs/devpost/integration-head.txt` only
+- [ ] Link to live demo (deploy34 / integration branch); integration head in `docs/devpost/integration-head.txt` only
 - [ ] **Walkthrough video pending re-record**; do **not** add `walkthrough.mp4` until owner authorizes recording
