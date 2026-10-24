@@ -24,7 +24,7 @@ export function PageEmptyState({
       data-testid={testId}
     >
       <div
-        className="flex h-11 w-11 items-center justify-center rounded-full bg-surface text-ink-3 shadow-sm ring-1 ring-border/70"
+        className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-surface text-ink-3"
         aria-hidden
       >
         <Icon className="h-5 w-5" strokeWidth={1.75} />

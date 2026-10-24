@@ -41,7 +41,7 @@ export function OwnerUpdatePanel({ embedded = false }: { embedded?: boolean }) {
       className={
         embedded
           ? 'px-6 py-6 md:px-8 md:py-7'
-          : 'mt-10 rounded-[1.25rem] bg-surface p-6 ring-1 ring-border/60 md:p-7'
+          : 'mt-10 rounded-[1.25rem] border border-border bg-surface p-6 md:p-7'
       }
       data-testid="owner-update-panel"
     >

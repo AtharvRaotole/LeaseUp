@@ -96,14 +96,14 @@ export function PipelinePage() {
         </header>
 
         {readOnly && (
-          <p className="mt-6 rounded-[1rem] bg-surface-2 px-4 py-3 text-body text-ink-2 ring-1 ring-border/50">
+          <p className="mt-6 rounded-[1rem] border border-border bg-surface-2 px-4 py-3 text-body text-ink-2">
             Cards on this link only. Outreach drafts are not included.
           </p>
         )}
 
         {error && (
           <div
-            className="mx-auto mt-10 max-w-md rounded-[1.25rem] bg-surface px-6 py-6 text-center ring-1 ring-border/60"
+            className="mx-auto mt-10 max-w-md rounded-[1.25rem] border border-border bg-surface px-6 py-6 text-center"
             data-testid="pipeline-error"
             role="alert"
           >
@@ -120,7 +120,7 @@ export function PipelinePage() {
           <>
             <div className="mt-10">
               {emptyPipeline ? (
-                <div className="overflow-hidden rounded-[1.25rem] bg-surface-2 ring-1 ring-border/60">
+                <div className="overflow-hidden rounded-[1.25rem] border border-border bg-surface-2">
                   <PageEmptyState icon={KanbanSquare} title="Nothing in your pipeline yet" testId="pipeline-empty">
                     <p>{pipelineEmptyLine}</p>
                     <Link to="/" className="mt-6 inline-block">

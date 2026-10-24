@@ -248,13 +248,13 @@ export function PortfolioPage() {
         <div className="mt-10 grid min-w-0 gap-6 lg:grid-cols-12 lg:gap-8 lg:items-start">
           <div className="min-w-0 lg:col-span-5">
             {!portfolio && (
-              <div className="rounded-[1.25rem] bg-surface-2 p-6 ring-1 ring-border/60 md:p-7">
+              <div className="rounded-[1.25rem] border border-border bg-surface-2 p-6 md:p-7">
                 <label className="text-label uppercase text-ink-3" htmlFor="portfolio-addresses">
                   Addresses (one per line)
                 </label>
                 <textarea
                   id="portfolio-addresses"
-                  className="mt-3 min-h-[168px] w-full rounded-control border-0 bg-surface px-3 py-3 text-body text-ink shadow-sm ring-1 ring-border/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  className="mt-3 min-h-[168px] w-full rounded-control border border-border bg-surface px-3 py-3 text-body text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   placeholder="1574 N Milwaukee Ave, Chicago, IL"
@@ -291,11 +291,11 @@ export function PortfolioPage() {
             )}
             {portfolio && (
               <ErrorBoundary>
-                <section className="min-w-0 rounded-[1.25rem] bg-surface-2 p-6 ring-1 ring-border/60 md:p-7" aria-label="Progress timeline">
+                <section className="min-w-0 rounded-[1.25rem] border border-border bg-surface-2 p-6 md:p-7" aria-label="Progress timeline">
                   <h2 className="text-label uppercase text-ink-3">Progress</h2>
                   <ol className="mt-4 min-w-0 space-y-2" data-testid="portfolio-timeline">
                     {portfolio.rows.map((row) => (
-                      <li key={row.id} className="min-w-0 rounded-control bg-surface px-3 py-2.5 text-body ring-1 ring-border/60">
+                      <li key={row.id} className="min-w-0 rounded-control border border-border bg-surface px-3 py-2.5 text-body">
                         <p className="break-words font-medium text-ink">{row.inputAddress}</p>
                         <p className="text-small text-ink-3">{statusLabel(row.status)}</p>
                         {row.status === 'ambiguous' && row.geocodeCandidates && (
@@ -304,7 +304,7 @@ export function PortfolioPage() {
                               <button
                                 key={c.resolvedAddress}
                                 type="button"
-                                className="block w-full break-words rounded-control bg-surface-2 px-2 py-1.5 text-left text-small ring-1 ring-border/60 hover:ring-accent/60"
+                                className="block w-full break-words rounded-control border border-border bg-surface-2 px-2 py-1.5 text-left text-small hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                                 onClick={() => void confirmRow(row.id, i)}
                               >
                                 {c.resolvedAddress}
@@ -332,7 +332,7 @@ export function PortfolioPage() {
           <div className="min-w-0 lg:col-span-7">
             <ErrorBoundary>
               {portfolio ? (
-                <div className="overflow-hidden overflow-x-auto rounded-[1.25rem] bg-surface ring-1 ring-border/60">
+                <div className="overflow-hidden overflow-x-auto rounded-[1.25rem] border border-border bg-surface">
                   <table className="w-full text-left text-body" data-testid="portfolio-table">
                     <thead className="border-b border-border/70 bg-surface-2/80 text-label uppercase text-ink-3">
                       <tr>
@@ -383,7 +383,7 @@ export function PortfolioPage() {
                 <PortfolioLoadingSkeleton />
               ) : (
                 <div
-                  className="flex min-h-[360px] items-center justify-center rounded-[1.25rem] bg-surface-2 ring-1 ring-border/60 lg:min-h-[420px]"
+                  className="flex min-h-[360px] items-center justify-center rounded-[1.25rem] border border-border bg-surface-2 lg:min-h-[420px]"
                   data-testid="portfolio-empty-state"
                 >
                   <PageEmptyState icon={Building2} title="No portfolio run yet">
