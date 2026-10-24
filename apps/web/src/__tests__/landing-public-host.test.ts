@@ -9,12 +9,13 @@ describe('landing public host', () => {
     expect(LANDING_PUBLIC_HOST).not.toMatch(/leaseup\.app/i);
   });
 
-  it('marketing step crops reference the Pages host', () => {
+  it('marketing step crops use path-only pitch chrome', () => {
     const stepCrops = readFileSync(
       join(process.cwd(), 'src/components/landing/LandingStepCrops.tsx'),
       'utf8'
     );
-    expect(stepCrops).toContain('LANDING_PUBLIC_HOST');
+    expect(stepCrops).toContain('/pitch/…');
+    expect(stepCrops).not.toMatch(/pages\.dev/);
     expect(stepCrops).not.toMatch(/leaseup\.app/);
   });
 });

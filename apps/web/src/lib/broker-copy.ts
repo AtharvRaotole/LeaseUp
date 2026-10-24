@@ -25,7 +25,7 @@ export const LANDING_PLAIN_SUMMARY =
   'Type in an address. LeaseUp shows which brands people nearby love but can\'t find close by, and helps you pitch them.';
 
 export function tradeAreaLabel(radiusKm: number): string {
-  return `${radiusKm} km area`;
+  return `Searching ${radiusKm} km`;
 }
 
 export function tradeAreaTooltip(searchRadiusKm: number, absenceRadiusKm?: number): string {

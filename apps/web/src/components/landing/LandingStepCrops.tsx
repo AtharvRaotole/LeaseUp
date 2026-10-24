@@ -1,6 +1,5 @@
 import { displayBrandName } from '../../lib/brand-display';
 import { LANDING_WICKER_PREVIEW, LANDING_WICKER_RADIUS_KM } from '../../data/landing-wicker-preview';
-import { LANDING_PUBLIC_HOST } from '../../lib/landing-public-host';
 import { prospectOneLineReason } from '../../lib/prospect-one-line';
 
 /** Static UI crops for "How it works" (fixture data only, no network). */
@@ -61,7 +60,7 @@ export function PitchStepCrop() {
       <p className="mt-1 text-meta text-ink-3">Frozen snapshot with map and top brands</p>
       <div className="mt-3 flex gap-2">
         <div className="h-9 flex-1 rounded-control border border-border bg-surface-2 px-2 text-meta leading-9 text-ink-3">
-          {LANDING_PUBLIC_HOST}/pitch/…
+          /pitch/…
         </div>
         <div className="flex h-9 items-center rounded-control bg-accent px-3 text-meta font-medium text-[var(--on-accent)]">
           Copy link

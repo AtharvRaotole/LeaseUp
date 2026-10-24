@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { landingWickerReportPath } from './LandingReportPreview';
 import { LandingHeroFixtureFrame } from './LandingHeroFixtureFrame';
-import { LANDING_PUBLIC_HOST } from '../../lib/landing-public-host';
+import {
+  LANDING_BROWSER_TAB_TITLE,
+  landingBrowserChromePath,
+} from '../../lib/landing-browser-chrome';
 
 export function LandingHeroProductPreview() {
   return (
@@ -21,11 +24,11 @@ export function LandingHeroProductPreview() {
             <span className="h-2 w-2 rounded-full bg-[#febc2e] sm:h-2.5 sm:w-2.5" aria-hidden />
             <span className="h-2 w-2 rounded-full bg-[#28c840] sm:h-2.5 sm:w-2.5" aria-hidden />
             <div
-              className="ml-2 min-w-0 flex-1 truncate rounded-md border border-border bg-surface px-2 py-0.5 text-[10px] text-ink-3 sm:ml-3 sm:px-3 sm:py-1 sm:text-[11px]"
-              title={`${LANDING_PUBLIC_HOST}${landingWickerReportPath}`}
+              className="ml-2 flex min-w-0 flex-1 items-center gap-2 rounded-md border border-border bg-surface px-2 py-0.5 text-[10px] text-ink-3 sm:ml-3 sm:px-3 sm:py-1 sm:text-[11px]"
+              title={landingWickerReportPath}
             >
-              {LANDING_PUBLIC_HOST}
-              {landingWickerReportPath}
+              <span className="shrink-0 font-medium text-ink-2">{LANDING_BROWSER_TAB_TITLE}</span>
+              <span className="min-w-0 truncate tabular-nums">{landingBrowserChromePath(landingWickerReportPath)}</span>
             </div>
           </div>
           <LandingHeroFixtureFrame />

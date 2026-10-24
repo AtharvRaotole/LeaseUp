@@ -22,6 +22,7 @@ import {
   methodologyTasteRankTooltip,
 } from '../lib/broker-copy';
 import { brokerMetricCatalogShortLabel } from '../lib/eval-display';
+import { methodologySiteTableBridgeLine } from '../lib/landing-eval-copy';
 
 const evalBundle = loadEvalRunBundle();
 const evalManifest = getEvalManifest();
@@ -145,6 +146,12 @@ export function MethodologyPage() {
             {evalBundle.recordingNote && (
               <p className="mt-3 text-sm text-ink-2">{evalBundle.recordingNote}</p>
             )}
+            <p
+              className="mt-4 max-w-[720px] text-sm leading-relaxed text-ink-2"
+              data-testid="methodology-site-table-bridge"
+            >
+              {methodologySiteTableBridgeLine()}
+            </p>
             <div className="mt-6 overflow-x-auto rounded-card border border-border" tabIndex={0}>
               <table className="w-full min-w-[720px] border-collapse text-left text-sm">
                 <caption className="sr-only">Evaluation metrics by site (Qloo / chain)</caption>
