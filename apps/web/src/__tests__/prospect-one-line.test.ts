@@ -37,7 +37,7 @@ describe('prospectOneLineReason', () => {
     const line = prospectOneLineReason(
       prospect({
         nearestExistingStoreKm: 12,
-        tenantMixScore: { score: 1, coAffinityMean: 1, categoryFit: 'Apparel', explanation: '' },
+        tenantMixScore: { categoryFit: 'Apparel' },
       }),
       baseResults,
       10
@@ -101,7 +101,7 @@ describe('prospectOneLineReason', () => {
           tasteFitBeyondChainPercentile: 82,
         },
         nearestExistingStoreKm: 4.2,
-        tenantMixScore: { score: 1, coAffinityMean: 1, categoryFit: 'Coffee', explanation: '' },
+        tenantMixScore: { categoryFit: 'Coffee' },
       }),
       baseResults,
       10

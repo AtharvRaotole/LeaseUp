@@ -675,12 +675,7 @@ export class AnalysisService {
           // categoryFit is the brand retail taxonomy label only (not a site gap score).
           const categoryFit = brandCategoryLabel(candidate.entity_id);
           if (!categoryFit) return undefined;
-          return {
-            score: 0,
-            coAffinityMean: 0,
-            categoryFit,
-            explanation: '',
-          };
+          return { categoryFit };
         })(),
         demographics: undefined,
         outreachDraft: '',
