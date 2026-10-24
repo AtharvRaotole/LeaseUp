@@ -131,3 +131,7 @@ export {
   WICKER_TRADE_AREA_TAG_INSIGHTS_SAMPLE,
   type ParsedTradeAreaShoppersSnapshot,
 } from './qloo-trade-area-tag-insights.js';
+export {
+  DEMO_PITCH_BOULDER_ULTA,
+  DEMO_PITCH_BOULDER_ULTA_ID,
+} from './demo-pitch-boulder-ulta.js';

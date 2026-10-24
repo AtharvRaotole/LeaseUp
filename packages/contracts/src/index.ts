@@ -455,8 +455,16 @@ export const PitchProspectSnapshotSchema = z.object({
 
 export type PitchProspectSnapshot = z.infer<typeof PitchProspectSnapshotSchema>;
 
+/** Stable demo share links (no D1); used in smoke and docs. */
+export const DEMO_PITCH_BOULDER_ULTA_ID = 'demo-boulder-ulta';
+
+export const PitchPackIdSchema = z.union([
+  z.string().uuid(),
+  z.literal(DEMO_PITCH_BOULDER_ULTA_ID),
+]);
+
 export const PitchPackSnapshotSchema = z.object({
-  id: z.string().uuid(),
+  id: PitchPackIdSchema,
   createdAt: z.string(),
   address: z.string(),
   neighborhood: z.string().optional(),
