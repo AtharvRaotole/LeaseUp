@@ -167,14 +167,20 @@ export class QlooClient {
     const batches = brandIds.length > 0 ? chunkBrandIds(brandIds) : [[]];
     const merged: QlooInsight[] = [];
 
-    for (const batch of batches) {
-      const batchInsights = await this.fetchInsightsBatch({
-        location: params.location,
-        brandIds: batch,
-        tags: params.tags,
-        take,
-        runId: params.runId,
-      });
+    const batchResults = await Promise.all(
+      batches.map((batch) =>
+        this.fetchInsightsBatch({
+          location: params.location,
+          brandIds: batch,
+          tags: params.tags,
+          take,
+          runId: params.runId,
+        })
+      )
+    );
+    for (let i = 0; i < batchResults.length; i++) {
+      const batchInsights = batchResults[i]!;
+      const batch = batches[i]!;
       merged.push(...batchInsights);
       assertQlooInsightsValid(batchInsights, batch.length > 0 ? batch : undefined);
     }
@@ -253,20 +259,22 @@ export class QlooClient {
     }
 
     const take = 25;
-    const tagJson = await this.fetchExplainabilityInsights({
-      location: params.location,
-      brandEntityId: params.brandEntityId,
-      filterType: 'urn:tag',
-      take,
-      runId: params.runId,
-    });
-    const audienceJson = await this.fetchExplainabilityInsights({
-      location: params.location,
-      brandEntityId: params.brandEntityId,
-      filterType: 'urn:audience',
-      take,
-      runId: params.runId,
-    });
+    const [tagJson, audienceJson] = await Promise.all([
+      this.fetchExplainabilityInsights({
+        location: params.location,
+        brandEntityId: params.brandEntityId,
+        filterType: 'urn:tag',
+        take,
+        runId: params.runId,
+      }),
+      this.fetchExplainabilityInsights({
+        location: params.location,
+        brandEntityId: params.brandEntityId,
+        filterType: 'urn:audience',
+        take,
+        runId: params.runId,
+      }),
+    ]);
 
     const tags = parseQlooExplainabilityRows(tagJson, 'tag');
     const audiences = parseQlooExplainabilityRows(audienceJson, 'audience');
