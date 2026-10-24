@@ -14,7 +14,9 @@ const GeocodeConfirmPanel = lazy(() =>
 );
 import type { GeocodeCandidate, Location } from '@leaseup/contracts';
 import { AgentRunStrip } from '../components/report/AgentRunStrip';
-import { ReportDeepSections } from '../components/report/ReportDeepSections';
+const ReportDeepSections = lazy(() =>
+  import('../components/report/ReportDeepSections').then((m) => ({ default: m.ReportDeepSections }))
+);
 import { ErrorBoundary } from '../components/ErrorBoundary';
 const ReportMap = lazy(() =>
   import('../components/report/ReportMap').then((m) => ({ default: m.ReportMap }))
@@ -82,7 +84,8 @@ export function ReportPage() {
   const [mobilePane, setMobilePane] = useState<MobilePane>('report');
   const isMdUp = useMediaQuery('(min-width: 768px)');
   const mountMapColumn = isMdUp || mobilePane === 'map';
-  const [deferHeavyUi, setDeferHeavyUi] = useState(false);
+  const [deferPostPaint, setDeferPostPaint] = useState(false);
+  const [deferDeepSections, setDeferDeepSections] = useState(false);
 
   useEffect(() => {
     if (mountMapColumn) ensureMapLibreCss();
@@ -92,36 +95,40 @@ export function ReportPage() {
 
   useEffect(() => {
     if (!results) {
-      setDeferHeavyUi(false);
+      setDeferPostPaint(false);
+      setDeferDeepSections(false);
       return;
     }
     let cancelled = false;
-    const scheduleTour = () => {
-      if (cancelled) return;
-      const win = window as Window & {
-        requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
-        cancelIdleCallback?: (id: number) => void;
-      };
+    const win = window as Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    const schedule = (cb: () => void, timeoutMs: number) => {
+      if (cancelled) return () => undefined;
       if (win.requestIdleCallback) {
         const id = win.requestIdleCallback(() => {
-          if (!cancelled) setDeferHeavyUi(true);
-        }, { timeout: 2500 });
+          if (!cancelled) cb();
+        }, { timeout: timeoutMs });
         return () => win.cancelIdleCallback?.(id);
       }
       const t = window.setTimeout(() => {
-        if (!cancelled) setDeferHeavyUi(true);
-      }, 1200);
+        if (!cancelled) cb();
+      }, Math.min(timeoutMs, 1200));
       return () => window.clearTimeout(t);
     };
-    let clearIdle: (() => void) | undefined;
+    let clearTour: (() => void) | undefined;
+    let clearDeep: (() => void) | undefined;
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        clearIdle = scheduleTour();
+        clearTour = schedule(() => setDeferPostPaint(true), 2500);
+        clearDeep = schedule(() => setDeferDeepSections(true), 5000);
       });
     });
     return () => {
       cancelled = true;
-      clearIdle?.();
+      clearTour?.();
+      clearDeep?.();
     };
   }, [results]);
 
@@ -299,13 +306,15 @@ export function ReportPage() {
             onSelectBrand={selectProspect}
             onSharePitch={() => setSharePitchOpen(true)}
           />
-          <Suspense fallback={null}>
-            <WatchSpaceButton
-              address={request.address}
-              radiusKm={request.radius}
-              analysis={results}
-            />
-          </Suspense>
+          {deferPostPaint && (
+            <Suspense fallback={null}>
+              <WatchSpaceButton
+                address={request.address}
+                radiusKm={request.radius}
+                analysis={results}
+              />
+            </Suspense>
+          )}
           {results.prospects.length <= 2 && (
             <ReportShortListNotice
               count={results.prospects.length}
@@ -326,7 +335,9 @@ export function ReportPage() {
         </div>
       </ErrorBoundary>
 
-      <ReportDeepSections
+      {deferDeepSections && (
+        <Suspense fallback={null}>
+          <ReportDeepSections
             results={results}
             request={request}
             slug={slug ?? 'run'}
@@ -347,6 +358,8 @@ export function ReportPage() {
             onRankingModeChange={setRankingMode}
             onMapBrandSelect={selectMapBrand}
           />
+        </Suspense>
+      )}
     </div>
   );
 
@@ -359,20 +372,32 @@ export function ReportPage() {
         <TasteUnavailableBanner message={results.rankingNotice} />
       )}
       {results ? (
-        <Suspense fallback={null}>
-          <ReportStickyHeader
-            request={request}
-            location={results.location}
-            chipSlug={slug}
-            onRadiusChange={() => {
-              ranKey.current = '';
-            }}
-            onSharePitch={() => setSharePitchOpen(true)}
-            onRunProspecting={() => {
-              void startProspectingJob(request).then((jobId) => navigate(`/prospect/${jobId}`));
-            }}
-          />
-        </Suspense>
+        deferPostPaint ? (
+          <Suspense
+            fallback={
+              <div className="sticky top-16 z-20 border-b border-border bg-surface/90 px-4 py-3">
+                <p className="mx-auto max-w-[1280px] truncate text-sm text-ink-2">{request.address}</p>
+              </div>
+            }
+          >
+            <ReportStickyHeader
+              request={request}
+              location={results.location}
+              chipSlug={slug}
+              onRadiusChange={() => {
+                ranKey.current = '';
+              }}
+              onSharePitch={() => setSharePitchOpen(true)}
+              onRunProspecting={() => {
+                void startProspectingJob(request).then((jobId) => navigate(`/prospect/${jobId}`));
+              }}
+            />
+          </Suspense>
+        ) : (
+          <div className="sticky top-16 z-20 border-b border-border bg-surface/90 px-4 py-3">
+            <p className="mx-auto max-w-[1280px] truncate text-sm text-ink-2">{request.address}</p>
+          </div>
+        )
       ) : (
         <div className="sticky top-16 z-20 border-b border-border bg-surface/90 backdrop-blur-md px-4 py-3">
           <p className="mx-auto max-w-[1280px] truncate text-sm text-ink-2">{request.address}</p>
@@ -539,7 +564,7 @@ export function ReportPage() {
           />
         </Suspense>
       )}
-      {results && deferHeavyUi && (
+      {results && deferPostPaint && (
         <Suspense fallback={null}>
           <ReportFirstRunTour ready={results.prospects.length > 0} />
         </Suspense>

@@ -43,8 +43,8 @@ export function ReportSummaryAboveFold({
         backtestOverride={backtestOverride}
       />
 
-      {topFive.length > 0 && (
-        <Card data-testid="report-top-brands" className="print-pitch-block">
+      {topFive.length > 0 ? (
+        <Card data-testid="brands-to-pitch" className="print-pitch-block" data-report-section="top-brands">
           <h3 className="font-display text-h3 font-semibold text-ink">Top brands to pitch</h3>
           <p className="mt-2 text-body text-ink-2">
             Local taste leaders with no store in your trade area yet. Tap a row to highlight it on the map.
@@ -92,6 +92,13 @@ export function ReportSummaryAboveFold({
               );
             })}
           </ol>
+        </Card>
+      ) : (
+        <Card data-testid="brands-to-pitch" className="print-pitch-block text-center">
+          <h3 className="text-h3 font-semibold text-ink">No brands to pitch here</h3>
+          <p className="mt-2 text-sm text-ink-2">
+            Every strong taste match already has a store in this radius.
+          </p>
         </Card>
       )}
 
