@@ -104,7 +104,7 @@ export function AgentReceipt({ job }: { job: ProspectingJob }) {
                     {(decision.tool || decision.resultSummary) && (
                       <p className="mt-0.5 text-xs text-ink-3">
                         {decision.tool}
-                        {decision.tool && decision.resultSummary ? ' — ' : ''}
+                        {decision.tool && decision.resultSummary ? ': ' : ''}
                         {decision.resultSummary}
                       </p>
                     )}
