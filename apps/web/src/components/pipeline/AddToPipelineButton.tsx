@@ -10,12 +10,18 @@ export function AddToPipelineButton({
   variant = 'secondary',
   className,
   wrapperTestId,
+  compact = false,
+  showPipelineLink = true,
 }: {
   buildPayload: () => PipelineAddCard;
   size?: 'sm' | 'md';
   variant?: 'primary' | 'secondary' | 'ghost';
   className?: string;
   wrapperTestId?: string;
+  /** Shorter label for dense report rows */
+  compact?: boolean;
+  /** Hide "Open pipeline" helper under the button */
+  showPipelineLink?: boolean;
 }) {
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
@@ -46,10 +52,20 @@ export function AddToPipelineButton({
         disabled={busy && !done}
         onClick={() => void onClick()}
         data-testid="add-to-pipeline"
+        title={compact ? 'Add to pipeline' : undefined}
+        aria-label={compact ? 'Add to pipeline' : undefined}
       >
-        {busy ? 'Saving…' : done ? 'Added to pipeline' : 'Add to pipeline'}
+        {busy
+          ? 'Saving…'
+          : done
+            ? compact
+              ? 'Added'
+              : 'Added to pipeline'
+            : compact
+              ? 'Add'
+              : 'Add to pipeline'}
       </Button>
-      {done && (
+      {done && showPipelineLink && (
         <p className="mt-1 text-xs text-ink-3">
           <Link to="/pipeline" className="text-accent hover:underline">Open pipeline</Link>
         </p>
