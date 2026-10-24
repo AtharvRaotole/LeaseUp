@@ -34,11 +34,12 @@ export function prospectOneLineReason(
     parts.push(prospect.coTenancyLine.trim());
   }
 
-  const category =
+  const categoryRaw =
     prospect.tenantMixScore?.categoryFit?.trim() ||
     brandCategoryLabel(prospect.brand.entityId);
-  if (category && !prospect.coTenancyLine?.trim()) {
-    parts.push(category);
+  if (categoryRaw && !prospect.coTenancyLine?.trim()) {
+    const category = categoryRaw.replace(/\.$/, '').trim();
+    if (category) parts.push(`Category fit: ${category}`);
   }
 
   if (parts.length === 0) return '';

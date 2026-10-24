@@ -17,6 +17,8 @@ describe('fitTopPercent from list rank', () => {
   it('writes one local match percent from rank and total', () => {
     expect(tasteFitMatchHerePhrase(26, 224)).toBe('Top 12% local match here');
     expect(fitPercentileLabel(26, 224)).toBe('Top 12% local match');
+    expect(tasteFitMatchHerePhrase(206, 224)).toBe('#206 of 224 for local taste');
+    expect(fitPercentileLabel(206, 224)).toBe('#206 of 224 for local taste');
   });
 
   it('matches why card summary line', () => {
