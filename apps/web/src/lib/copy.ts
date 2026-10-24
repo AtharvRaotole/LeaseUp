@@ -1,5 +1,4 @@
 import type { AnalysisResponse, Location, PitchPackSnapshot, ProspectPack } from '@leaseup/contracts';
-const DEMO_OSM_UNRECORDED_NOTE = 'OSM check not recorded for demo';
 
 export const PITCH_CHECKED_ATP_STORE_DATA_LABEL = 'Checked against All The Places store data';
 export const PITCH_CHECKED_ATP_OSM_STORE_DATA_LABEL =
@@ -26,7 +25,7 @@ export function pitchPackVerificationSummary(
   }
   if (oneSource > 0) {
     parts.push(
-      `${oneSource} brand${oneSource === 1 ? '' : 's'} checked against All The Places only (no OSM snapshot for that chain)`
+      `${oneSource} brand${oneSource === 1 ? '' : 's'} checked against All The Places only (no OpenStreetMap snapshot for that chain)`
     );
   }
   if (checking > 0) {
@@ -71,7 +70,7 @@ export function verificationShortLabel(verified: ProspectPack['brand']['verified
     case 'verified (2 sources)':
       return 'Verified';
     case 'verifying...':
-      return 'Checking OSM';
+      return 'Checking OpenStreetMap';
     case 'unverified (1 source)':
       return 'Checked against All The Places';
     case 'conflict - likely present':
@@ -125,8 +124,6 @@ export function verificationSourceHelp(
   const atpChecked = sourceChecked(sources, 'all the places');
   const osmChecked =
     sourceChecked(sources, 'openstreetmap') && !sources.some((s) => s.includes('store found'));
-  const demoOsmSkipped = prospect.coverageNote?.includes(DEMO_OSM_UNRECORDED_NOTE);
-
   if (verified === 'verified (2 sources)') {
     return `We checked All The Places and ${osmLabel} within ${absenceKm} km and did not find a store.`;
   }
@@ -137,9 +134,6 @@ export function verificationSourceHelp(
 
   if (verified === 'unverified (1 source)') {
     if (atpChecked && !osmChecked) {
-      if (demoOsmSkipped) {
-        return `Checked: All The Places (no store within ${absenceKm} km). Not checked: ${osmLabel} (${DEMO_OSM_UNRECORDED_NOTE}).`;
-      }
       return `Checked against All The Places (no store within ${absenceKm} km). ${osmLabel} is not in our offline snapshot for this chain.`;
     }
     if (osmChecked && !atpChecked) {

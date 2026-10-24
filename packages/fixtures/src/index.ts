@@ -232,11 +232,8 @@ export {
   type StrictEvalSiteMetrics,
   type StrictEvalMetrics,
 } from './strict-eval.js';
-export {
-  overpassDemoByFixture,
-  DEMO_OSM_UNRECORDED_NOTE,
-  type OverpassDemoRecording,
-} from './overpass-demo.js';
+export { DEMO_OSM_UNRECORDED_NOTE } from './demo-osm-constants.js';
+export { overpassDemoByFixture, type OverpassDemoRecording } from './overpass-demo.js';
 export type { OverpassBrand } from './overpass-types.js';
 export {
   brandReverseChicagoDemo,

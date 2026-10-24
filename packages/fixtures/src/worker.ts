@@ -138,7 +138,8 @@ export {
   type BrandExplainabilityStore,
   type LiveAudiencesCompact,
 } from './brand-explainability-store.js';
-export { overpassDemoByFixture, DEMO_OSM_UNRECORDED_NOTE } from './overpass-demo.js';
+export { DEMO_OSM_UNRECORDED_NOTE } from './demo-osm-constants.js';
+export { overpassDemoByFixture } from './overpass-demo.js';
 export {
   nearestStoreDistanceUnconfirmedLine,
   nearestChainStoreDistanceUnconfirmedLine,
