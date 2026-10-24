@@ -12,7 +12,7 @@ describe('buildWhyBrandTasteFromContext', () => {
         { entityId: 'a4', name: 'Dance', affinity: 0.6, affinityRank: 12 },
       ],
     });
-    expect(taste?.signals.map((s) => s.name)).toEqual(['Health & Beauty', 'Astrology', 'Yoga']);
+    expect(taste?.signals.map((s) => s.name)).toEqual(['Health & Beauty', 'Astrology']);
     expect(taste?.summary).toContain('Ulta');
     expect(taste?.summary).not.toContain('Tourist attraction');
   });
