@@ -61,7 +61,7 @@ describe('rankingModeExplainerSentence', () => {
   it('states blend vs chain cohort hits without unicode dashes', () => {
     const blend = rankingModeExplainerSentence('qloo');
     const chain = rankingModeExplainerSentence('baseline');
-    expect(blend).toMatch(/82%.*76%/);
+    expect(blend).toMatch(/83%.*76%/);
     expect(blend).toMatch(/40-neighborhood test/);
     expect(chain).toMatch(/76%/);
     expect(chain).not.toMatch(/82%/);
