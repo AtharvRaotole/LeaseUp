@@ -30,10 +30,14 @@ export function prospectOneLineReason(
     parts.push(audienceOverlapHighlight(tasteSignal.name.trim()));
   }
 
+  if (prospect.coTenancyLine?.trim()) {
+    parts.push(prospect.coTenancyLine.trim());
+  }
+
   const categoryRaw =
     prospect.tenantMixScore?.categoryFit?.trim() ||
     brandCategoryLabel(prospect.brand.entityId);
-  if (categoryRaw) {
+  if (categoryRaw && !prospect.coTenancyLine?.trim()) {
     const category = categoryRaw.replace(/\.$/, '').trim();
     if (category) parts.push(`Category fit: ${category}`);
   }

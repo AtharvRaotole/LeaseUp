@@ -168,6 +168,11 @@ export {
   audiencePanelSize,
 } from './brand-explainability-loader.js';
 export {
+  createBrandExplainabilityStore,
+  type BrandExplainabilityStore,
+  type LiveAudiencesCompact,
+} from './brand-explainability-store.js';
+export {
   isNonRetailTasteName,
   pickRetailShopperTasteLabel,
   retailShopperTasteLabel,

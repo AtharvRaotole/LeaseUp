@@ -1,7 +1,11 @@
 import type { AnalysisResponse } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { buildCoTenancyMix } from '../../lib/co-tenancy-mix';
-import { coTenancyIntroCopy } from '../../lib/co-tenancy-copy';
+import {
+  coTenancyIntroCopy,
+  formatNearbyTenantsList,
+  nearbyTenantsFromResults,
+} from '../../lib/co-tenancy-copy';
 
 export function CoTenancyMixSection({
   results,
@@ -11,7 +15,8 @@ export function CoTenancyMixSection({
   radiusKm: number;
 }) {
   const rows = buildCoTenancyMix(results);
-  if (rows.length === 0) return null;
+  const nearby = nearbyTenantsFromResults(results);
+  if (rows.length === 0 && nearby.length === 0) return null;
 
   const max = Math.max(1, ...rows.map((r) => Math.max(r.nearbyCount, r.prospectCount)));
 
@@ -20,6 +25,11 @@ export function CoTenancyMixSection({
       <h3 className="mb-3 text-h3 font-semibold text-ink">Co-tenancy mix</h3>
       <Card className="space-y-4">
         <p className="text-sm text-ink-2">{coTenancyIntroCopy(radiusKm)}</p>
+        {nearby.length > 0 && (
+          <p className="text-sm text-ink-2" data-testid="co-tenancy-nearby-tenants">
+            {formatNearbyTenantsList(nearby)}
+          </p>
+        )}
         <ul className="space-y-3">
           {rows.map((row) => (
             <li key={row.category}>
