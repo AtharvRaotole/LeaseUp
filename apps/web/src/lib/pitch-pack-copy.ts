@@ -14,7 +14,7 @@ import {
 } from './store-distance-copy';
 
 export function pitchBriefKindLabel(snapshot: PitchPackSnapshot): string {
-  return isDemoPitchId(snapshot.id) ? 'Sample leasing brief' : 'Leasing brief';
+  return isDemoPitchId(snapshot.id) || snapshot.mode === 'demo' ? 'Sample leasing brief' : 'Leasing brief';
 }
 
 export function pitchDateMetaLine(snapshot: PitchPackSnapshot): string {

@@ -9,6 +9,8 @@ import { buildReportPath, parseReportSearch } from '../lib/report-params';
 import { DEMO_CHIP_ADDRESSES, matchDemoFixtureId } from '../lib/demo-chip-addresses';
 import { fetchGeocodePreview } from '../lib/geocode-preview';
 import { useHealth } from '../hooks/useHealth';
+import { reportPageData } from '../lib/data-mode-badge';
+import { recordedDemoChipId } from '../lib/report-analyze-prefetch';
 const GeocodeConfirmPanel = lazy(() =>
   import('../components/report/GeocodeConfirmPanel').then((m) => ({ default: m.GeocodeConfirmPanel }))
 );
@@ -401,10 +403,12 @@ export function ReportPage() {
     </ReportFirstRunTourProvider>
   );
 
+  const pageData = reportPageData(results?.mode, recordedDemoChipId(request) !== null);
+
   return (
     <div className="min-h-screen bg-bg print-pack">
       {shareHead && <ShareHead {...shareHead} />}
-      <TopBar />
+      <TopBar pageData={pageData} />
       {results?.mode === 'demo' && deferPostPaint && <DemoBanner />}
       {results?.tasteDataStatus === 'unavailable' && results.rankingNotice && (
         <TasteUnavailableBanner message={results.rankingNotice} />

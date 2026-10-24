@@ -5,6 +5,7 @@ import {
   ProspectingCreateSchema,
 } from '@leaseup/contracts';
 import { ProspectingService } from '../services/prospecting';
+import { analyzeStreamErrorPayload } from '../lib/analyze-stream-error';
 
 export const prospectingRouter = new Hono<{ Bindings: Env }>();
 
@@ -67,7 +68,8 @@ prospectingRouter.post('/prospecting/:id/run', async (c) => {
       });
       await send('complete', job);
     } catch (error) {
-      await send('error', { message: (error as Error).message });
+      // Same payload as the analyze stream, so the page can tell the daily cap apart.
+      await send('error', analyzeStreamErrorPayload(error));
     } finally {
       try {
         await writer.close();
