@@ -231,7 +231,7 @@ export function PipelineCardDialog({
                     className="mt-1 w-full rounded-control border border-border bg-surface-2 px-3 py-2 text-sm text-ink"
                     value={recipient}
                     onChange={(e) => setRecipient(e.target.value)}
-                    onBlur={() => void savePatch({ recipientEmail: recipient })}
+                    onBlur={(e) => void savePatch({ recipientEmail: e.currentTarget.value })}
                     placeholder="brand.contact@example.com"
                     autoComplete="off"
                   />
@@ -244,9 +244,10 @@ export function PipelineCardDialog({
                     className="mt-1 w-full rounded-control border border-border bg-surface-2 px-3 py-2 text-sm text-ink"
                     value={followUp}
                     onChange={(e) => setFollowUp(e.target.value)}
-                    onBlur={() =>
-                      void savePatch({ followUpAt: followUp ? `${followUp}T12:00:00.000Z` : null })
-                    }
+                    onBlur={(e) => {
+                      const v = e.currentTarget.value;
+                      void savePatch({ followUpAt: v ? `${v}T12:00:00.000Z` : null });
+                    }}
                     data-testid="pipeline-next-step-reminder"
                   />
                 </label>
@@ -257,7 +258,7 @@ export function PipelineCardDialog({
                     className="mt-1 min-h-[88px] w-full rounded-control border border-border bg-surface-2 px-3 py-2 text-sm text-ink"
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    onBlur={() => void savePatch({ notes })}
+                    onBlur={(e) => void savePatch({ notes: e.currentTarget.value })}
                     data-testid="pipeline-notes"
                   />
                 </label>

@@ -13,7 +13,7 @@ export function DemoBanner() {
         </p>
         <button
           type="button"
-          className="shrink-0 text-ink-3 hover:text-ink focus-visible:ring-2 focus-visible:ring-accent rounded-control px-1"
+          className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-control px-3 text-ink-3 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           onClick={() => setOpen(false)}
           aria-label="Dismiss demo notice"
         >

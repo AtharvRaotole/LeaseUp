@@ -83,7 +83,11 @@ export function PitchPage() {
       {shareHead && <ShareHead {...shareHead} />}
       <header className="no-print border-b border-border bg-surface/90 px-4 py-4 backdrop-blur-sm">
         <div className="mx-auto flex max-w-[880px] items-center justify-between gap-4">
-          <Link to="/" className="text-ink" aria-label="LeaseUp home">
+          <Link
+            to="/"
+            className="inline-flex min-h-11 min-w-11 items-center text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
+            aria-label="LeaseUp home"
+          >
             <Logo variant="lockup" size="sm" />
           </Link>
           <Button type="button" variant="secondary" size="sm" onClick={() => window.print()}>

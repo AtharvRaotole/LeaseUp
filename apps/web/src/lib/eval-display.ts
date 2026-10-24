@@ -2,6 +2,7 @@ import type { EvalMetricPanel, StrictEvalSnapshot } from '@leaseup/contracts';
 import {
   catalogForPanel,
   formatMetricValue,
+  formatP10PercentExact,
   getEvalManifest,
   loadLiveQlooLiftAggregates,
   type EvalMetricPanel as FixturePanel,
@@ -71,9 +72,10 @@ export function formatPanelValues(panel: EvalMetricPanel | FixturePanel): string
   if (panel.id === 'same_size_auc') {
     const agg = loadLiveQlooLiftAggregates();
     const auc = agg.sameSizeAuc;
-    const blend = (agg.logisticBlendPrecisionAt10 * 100).toFixed(0);
-    const chain = (agg.chainSizePrecisionAt10 * 100).toFixed(0);
-    return `Rank match ${(auc.value * 100).toFixed(1)}% among similar chains · top-10 hits ${blend}% with taste blend vs ${chain}% chain size only`;
+    const blend = formatP10PercentExact(agg.logisticBlendPrecisionAt10);
+    const chain = formatP10PercentExact(agg.chainSizePrecisionAt10);
+    const lift = agg.logisticBlendLiftVsChainPp;
+    return `Rank match ${(auc.value * 100).toFixed(1)}% among similar chains · top-10 hits ${blend} taste blend vs ${chain} chain size only (+${lift} pp)`;
   }
   const def = catalogForPanel(panel.id);
   const format = def?.format ?? 'decimal';

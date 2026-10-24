@@ -16,7 +16,7 @@ const sizes: Record<Size, string> = {
 };
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-accent text-white hover:opacity-90 focus-visible:ring-2 focus-visible:ring-accent',
+  primary: 'bg-accent text-on-accent hover:opacity-90 focus-visible:ring-2 focus-visible:ring-accent',
   secondary:
     'bg-surface-2 text-ink border border-border hover:border-border-strong focus-visible:ring-2 focus-visible:ring-accent',
   ghost: 'text-ink-2 hover:bg-surface-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-accent',

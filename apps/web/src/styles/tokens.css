@@ -48,6 +48,7 @@
 
 [data-theme='light'] {
   color-scheme: light;
+  --on-accent: #ffffff;
 }
 
 [data-theme='dark'] {
