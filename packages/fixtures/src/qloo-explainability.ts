@@ -3,6 +3,8 @@ export type TradeAreaTasteRow = {
   name: string;
   affinity: number;
   affinityRank: number;
+  /** Location-only Qloo affinity at the pin when overlap was computed. */
+  localAffinity?: number;
 };
 
 /**

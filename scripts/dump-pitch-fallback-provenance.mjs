@@ -30,7 +30,7 @@ for (const site of SITES) {
     const source = co
       ? 'co-tenancy/recorded.json'
       : primary
-        ? 'live-audiences.compact.json (brand x location overlap, distinct primary)'
+        ? 'live-audiences.compact.json (brand x location overlap, top combined affinity)'
         : '(no pairing line)';
     console.log(`- **${name}**: ${co || (primary ? `Shared local audience: ${primary}` : 'no line')} | ${source}`);
     if (sig) {

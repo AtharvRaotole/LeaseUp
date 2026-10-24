@@ -90,10 +90,7 @@ import {
   osmSnapshotRecordedAt,
 } from './osm-snapshot-catalog';
 import { loadTradeAreaTasteForProspect } from '../lib/trade-area-taste';
-import {
-  applyDistinctPitchAudiencesToProspects,
-  enrichProspectWhyBrandTaste,
-} from '../lib/why-brand-taste-enrichment';
+import { enrichProspectWhyBrandTaste } from '../lib/why-brand-taste-enrichment';
 import { getResponseCache } from '../lib/worker-cache';
 import type { ResponseCache } from '../lib/response-cache';
 import { tryAcquireOverpassRefreshLock } from '../lib/overpass-refresh-lock';
@@ -402,11 +399,8 @@ export class AnalysisService {
           'trade-area taste enrichment'
         );
         if (tasteEnriched) {
-          const distinctTaste = applyDistinctPitchAudiencesToProspects(tasteEnriched);
           enrichedProspects = await Promise.all(
-            distinctTaste.map((pack) =>
-              enrichProspectWhyBrandTaste(pack, this.openai, this.mode)
-            )
+            tasteEnriched.map((pack) => enrichProspectWhyBrandTaste(pack, this.openai, this.mode))
           );
         }
       }
