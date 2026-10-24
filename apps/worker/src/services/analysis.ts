@@ -570,7 +570,7 @@ export class AnalysisService {
       const verification = await this.verifyFromOsmSnapshot(
         candidate.entity_id,
         location,
-        absenceRadiusKm,
+        radius,
         candidate.name
       );
 
