@@ -31,7 +31,7 @@ describe('pitchPackVerificationSummary', () => {
       ],
     } as Pick<PitchPackSnapshot, 'prospects'>;
     expect(pitchPackVerificationSummary(snapshot)).toBe(
-      '1 brand checked in All The Places and OpenStreetMap; 4 brands checked against All The Places only (no OpenStreetMap snapshot for that chain).'
+      '1 brand checked in our store data and OpenStreetMap; 4 brands checked in our store data only (no OpenStreetMap map for that chain).'
     );
   });
 });

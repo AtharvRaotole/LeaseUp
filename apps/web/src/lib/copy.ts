@@ -20,12 +20,12 @@ export function pitchPackVerificationSummary(
   const parts: string[] = [];
   if (twoSource > 0) {
     parts.push(
-      `${twoSource} brand${twoSource === 1 ? '' : 's'} checked in All The Places and OpenStreetMap`
+      `${twoSource} brand${twoSource === 1 ? '' : 's'} checked in our store data and OpenStreetMap`
     );
   }
   if (oneSource > 0) {
     parts.push(
-      `${oneSource} brand${oneSource === 1 ? '' : 's'} checked against All The Places only (no OpenStreetMap snapshot for that chain)`
+      `${oneSource} brand${oneSource === 1 ? '' : 's'} checked in our store data only (no OpenStreetMap map for that chain)`
     );
   }
   if (checking > 0) {
