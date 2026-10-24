@@ -29,7 +29,7 @@ describe('prospecting + analyze judge quota', () => {
     const consume = vi.spyOn(quota, 'consumeLiveQlooJudgeQuota').mockResolvedValue();
     const service = new AnalysisService({
       DB: db,
-      CACHE: { get: async () => null, put: async () => undefined } as KVNamespace,
+      CACHE: { get: async () => null, put: async () => undefined } as unknown as KVNamespace,
       APP_MODE: 'live',
       QLOO_API_KEY: 'test-key',
     } as import('../index').Env);
