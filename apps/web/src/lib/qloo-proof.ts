@@ -172,15 +172,15 @@ function topRankMovers(rankings: BrandRankingRow[], take = 3): BrandRankingRow[]
     .filter(
       (row) =>
         row.baselineRank !== undefined &&
-        row.qlooRank !== row.baselineRank &&
-        (row.qlooRank <= 10 || row.baselineRank <= 10)
+        row.blendedRank !== row.baselineRank &&
+        (row.blendedRank <= 10 || row.baselineRank <= 10)
     )
     .sort((a, b) => {
-      const deltaA = Math.abs((a.baselineRank ?? a.qlooRank) - a.qlooRank);
-      const deltaB = Math.abs((b.baselineRank ?? b.qlooRank) - b.qlooRank);
+      const deltaA = Math.abs((a.baselineRank ?? a.blendedRank) - a.blendedRank);
+      const deltaB = Math.abs((b.baselineRank ?? b.blendedRank) - b.blendedRank);
       if (deltaB !== deltaA) return deltaB - deltaA;
-      return Math.min(a.qlooRank, a.baselineRank ?? a.qlooRank) -
-        Math.min(b.qlooRank, b.baselineRank ?? b.qlooRank);
+      return Math.min(a.blendedRank, a.baselineRank ?? a.blendedRank) -
+        Math.min(b.blendedRank, b.baselineRank ?? b.blendedRank);
     })
     .slice(0, take);
 }
@@ -193,7 +193,7 @@ export function qlooProofTieDetail(rankings: BrandRankingRow[] | undefined): str
   }
   const parts = movers.map((row) => {
     const name = displayBrandName(row.entityId, row.name);
-    return `${name} (taste #${row.qlooRank} vs chain size #${row.baselineRank ?? row.qlooRank})`;
+    return `${name} (LeaseUp #${row.blendedRank} vs chain size #${row.baselineRank ?? row.blendedRank})`;
   });
   return `Same nearby-store count, but taste changes who makes the top 10 (e.g. ${parts.join('; ')}).`;
 }
@@ -206,7 +206,7 @@ export function qlooProofTieDetailTechnical(rankings: BrandRankingRow[] | undefi
   }
   const parts = movers.map((row) => {
     const name = displayBrandName(row.entityId, row.name);
-    return `${name} (#${row.qlooRank} taste vs #${row.baselineRank ?? row.qlooRank} chain size)`;
+    return `${name} (#${row.blendedRank} blend vs #${row.baselineRank ?? row.blendedRank} chain size)`;
   });
   return `Same hit count; Qloo reshuffles who makes the top 10 (e.g. ${parts.join('; ')}).`;
 }

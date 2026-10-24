@@ -54,6 +54,18 @@ function assertTopPercentClaimsMatchRank(text: string, rank: number, total: numb
   }
 }
 
+function assertRankHashInReasons(response: AnalysisResponse): void {
+  const total = response.rankings?.length ?? 0;
+  if (total <= 0) return;
+  for (const pack of response.prospects) {
+    const rank = pack.brand.affinityRank;
+    const head = pack.reasons[0];
+    if (!head) continue;
+    expect(head).toContain(`LeaseUp rank #${rank}`);
+    assertTopPercentClaimsMatchRank(head, rank, total);
+  }
+}
+
 function assertReasonRanksMatchFields(response: AnalysisResponse): void {
   const rankedCount = response.rankings?.length ?? 0;
   for (const pack of response.prospects) {
@@ -91,6 +103,7 @@ describe('worker user-facing copy', () => {
       const result = await service.analyze({ address, radius: 10 }, `dash-${address}`, 'ip');
       assertNoUnicodeDashesInResponse(result);
       assertReasonRanksMatchFields(result);
+      assertRankHashInReasons(result);
     }
   });
 });

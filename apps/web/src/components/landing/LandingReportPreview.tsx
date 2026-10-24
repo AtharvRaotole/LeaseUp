@@ -12,6 +12,7 @@ import {
 } from '../../data/landing-wicker-preview';
 import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 import { buildReportPath } from '../../lib/report-params';
+import { activeBacktestForRankingMode } from '../../lib/ranking-production';
 
 const previewRequest: AnalysisRequest = {
   address: DEMO_CHIP_ADDRESSES.wicker,
@@ -28,10 +29,7 @@ export function LandingReportPreview() {
   const [selected, setSelected] = useState<ProspectPack | null>(() => results.prospects[0] ?? null);
 
   const activeBacktest = useMemo(
-    () =>
-      rankingMode === 'baseline' && results.backtestBaseline
-        ? results.backtestBaseline
-        : results.backtest,
+    () => activeBacktestForRankingMode(results, rankingMode),
     [rankingMode, results]
   );
 

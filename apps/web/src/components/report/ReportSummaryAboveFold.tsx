@@ -56,44 +56,63 @@ export function ReportSummaryAboveFold({
               ? 'Same pitch list, ordered by national chain size instead of local taste. Tap a row to highlight it on the map.'
               : 'Local taste leaders with no store in your trade area yet. Tap a row to highlight it on the map.'}
           </p>
-          <ol className="mt-5 space-y-4" data-testid="report-top-brands-list">
+          <ol className="mt-4 space-y-2.5" data-testid="report-top-brands-list">
             {topFive.map((prospect, index) => {
               const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
               const reason = prospectOneLineReason(prospect, results, radiusKm);
               const isSelected = selected?.brand.entityId === prospect.brand.entityId;
               return (
-                <li key={prospect.brand.entityId}>
-                  <button
-                    type="button"
+                <li key={prospect.brand.entityId} className="group">
+                  <div
                     className={cn(
-                      'flex w-full gap-4 rounded-card border border-border bg-surface px-4 py-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
-                      isSelected ? 'border-accent/40 bg-accent-soft/30' : 'hover:bg-surface-2/80'
+                      'flex items-stretch gap-0 overflow-hidden rounded-card border border-border bg-surface transition-colors',
+                      isSelected ? 'border-accent/40 bg-accent-soft/25' : 'hover:bg-surface-2/60'
                     )}
-                    onClick={() => onSelectBrand(prospect)}
                   >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-control text-small font-semibold text-ink" style={{ background: brandTint(name) }}>
-                      {brandMonogram(name)}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="flex flex-wrap items-baseline gap-2">
-                        <span className="text-meta text-ink-3">#{index + 1}</span>
-                        <span className="font-medium text-body-lg text-ink">{name}</span>
+                    <button
+                      type="button"
+                      className="flex min-w-0 flex-1 items-start gap-3 px-3 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent sm:gap-4 sm:px-4"
+                      onClick={() => onSelectBrand(prospect)}
+                    >
+                      <span
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-small font-semibold text-ink sm:h-10 sm:w-10"
+                        style={{ background: brandTint(name) }}
+                      >
+                        {brandMonogram(name)}
                       </span>
-                      <span className="mt-1 block text-body text-ink-2">{reason}</span>
-                    </span>
-                  </button>
-                  <div className="mt-2 pl-14">
-                    <AddToPipelineButton
-                      size="sm"
-                      variant="secondary"
-                      wrapperTestId={`add-pipeline-top-${index}`}
-                      buildPayload={() =>
-                        pipelineCardFromProspect(prospect, results, {
-                          reportPath: buildReportPath(request, slug),
-                          radiusKm,
-                        })
-                      }
-                    />
+                      <span className="min-w-0 flex-1">
+                        <span className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                          <span className="text-meta font-medium text-ink-3">#{index + 1}</span>
+                          <span className="font-medium text-body text-ink sm:text-body-lg">{name}</span>
+                        </span>
+                        <span className="mt-0.5 block text-small leading-snug text-ink-2 sm:text-body">
+                          {reason}
+                        </span>
+                      </span>
+                    </button>
+                    <div
+                      className={cn(
+                        'flex shrink-0 items-center border-l border-border/70 px-2 py-2 sm:px-3',
+                        'opacity-100 transition-opacity',
+                        'md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100'
+                      )}
+                      onPointerDown={(e) => e.stopPropagation()}
+                    >
+                      <AddToPipelineButton
+                        size="sm"
+                        variant="ghost"
+                        compact
+                        showPipelineLink={false}
+                        className="shrink-0"
+                        wrapperTestId={`add-pipeline-top-${index}`}
+                        buildPayload={() =>
+                          pipelineCardFromProspect(prospect, results, {
+                            reportPath: buildReportPath(request, slug),
+                            radiusKm,
+                          })
+                        }
+                      />
+                    </div>
                   </div>
                 </li>
               );
