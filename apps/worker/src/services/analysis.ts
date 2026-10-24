@@ -801,11 +801,12 @@ export class AnalysisService {
             : undefined,
       };
     }
+    const osmPresenceRadiusKm = Math.max(absenceRadiusKm, searchRadiusKm);
     const found = await this.osmSnapshot.hasBrandNearby(
       entityId,
       location.latitude,
       location.longitude,
-      absenceRadiusKm
+      osmPresenceRadiusKm
     );
     if (found) {
       return {
