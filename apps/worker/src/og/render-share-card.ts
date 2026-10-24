@@ -1,6 +1,7 @@
 import type { AnalysisResponse } from '@leaseup/contracts';
 import type { PitchPackSnapshot } from '@leaseup/contracts';
 import { displayBrandName } from '../lib/brand-display';
+import { SHARE_CARD_STORE_CHECK } from '../lib/all-the-places-copy';
 
 const W = 1200;
 const H = 630;
@@ -37,7 +38,7 @@ export function renderReportShareSvg(results: AnalysisResponse, radiusKm: number
     results.location.city?.trim() ||
     results.location.address;
   const headline = `${results.prospects.length} brands to pitch near ${area}`;
-  const sub = `${radiusKm} km radius · Qloo taste + ATP store check`;
+  const sub = `${radiusKm} km radius · ${SHARE_CARD_STORE_CHECK}`;
   const lines = brandLinesFromReport(results);
 
   return wrapCard(headline, sub, lines);

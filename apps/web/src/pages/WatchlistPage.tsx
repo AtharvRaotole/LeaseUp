@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { Bookmark } from 'lucide-react';
 import type { WatchSpaceDetail, WatchSpaceSummary } from '@leaseup/contracts';
 import { TopBar } from '../components/layout/TopBar';
 import { Button } from '../components/ui/Button';
+import { PageEmptyState } from '../components/ui/PageEmptyState';
 import { WatchDiffPanel } from '../components/watchlist/WatchDiffPanel';
 import { fetchWatchDetail, fetchWatchlist, recheckWatchSpace } from '../lib/watchlist-api';
 import { formatUserFacingDate } from '../lib/format-date';
+import { watchlistEmptyAction, watchlistEmptyLine } from '../lib/empty-state-copy';
 
 export function WatchlistPage() {
   const { watchId } = useParams();
@@ -101,12 +104,18 @@ export function WatchlistPage() {
             </div>
           </div>
         ) : (
-          <ul className="mt-8 space-y-3" data-testid="watchlist-spaces">
-            {spaces.length === 0 && !error && (
-              <li className="text-sm text-ink-2">
-                No saved spaces yet. Open a report and choose Watch this space.
-              </li>
-            )}
+          <div className="mt-8">
+            {spaces.length === 0 && !error ? (
+              <div className="overflow-hidden rounded-[1.25rem] border border-border bg-surface-2">
+                <PageEmptyState icon={Bookmark} title="No saved spaces yet" testId="watchlist-empty">
+                  <p>{watchlistEmptyLine}</p>
+                  <Link to="/" className="mt-6 inline-block">
+                    <Button type="button" variant="primary" size="md">{watchlistEmptyAction}</Button>
+                  </Link>
+                </PageEmptyState>
+              </div>
+            ) : (
+          <ul className="space-y-3" data-testid="watchlist-spaces">
             {spaces.map((space) => (
               <li key={space.watchId}>
                 <Link
@@ -123,6 +132,8 @@ export function WatchlistPage() {
               </li>
             ))}
           </ul>
+            )}
+          </div>
         )}
       </div>
     </div>

@@ -26,7 +26,7 @@ describe('whyBrandTasteSection', () => {
         nearbyStoreCount: 0,
       },
       outreachDraft: '',
-      reasons: ['No Ulta store within 3 km (ATP catalog)'],
+      reasons: ['No Ulta store within 3 km (All The Places store data)'],
       whyBrandTaste: {
         signals: [
           { kind: 'audience', name: 'Health & Beauty', affinity: 0.74, affinityRank: 27 },

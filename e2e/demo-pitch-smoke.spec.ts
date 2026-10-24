@@ -23,7 +23,7 @@ test('demo pitch page renders with clean console and plain copy', async ({ page 
   await expect(page.getByTestId('pitch-pack-brief')).toBeVisible();
   await expect(page.getByText('Sample leasing brief')).toBeVisible();
   await expect(page.getByTestId('pitch-date-meta')).toContainText(
-    /Data snapshot of Oct 23, 2026/
+    /Data snapshot of Oct 24, 2026/
   );
   await expect(page.getByText('Your list #1')).toBeVisible();
   await expect(page.getByTestId('pitch-date-meta')).not.toContainText(/^Prepared /);

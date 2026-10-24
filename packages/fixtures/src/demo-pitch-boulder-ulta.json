@@ -12,13 +12,16 @@
     "resolvedAddress": "Boulder, Colorado"
   },
   "radiusKm": 10,
-  "analysisTimestamp": "2026-10-23T03:36:00.000Z",
+  "absenceRadiusKm": 3,
+  "analysisTimestamp": "2026-10-24T04:32:32.498Z",
   "runId": "demo-pitch-gen",
   "mode": "demo",
+  "osmSnapshotLabel": "OpenStreetMap snapshot, Oct 24, 2026",
+  "osmSnapshotRecordedAt": "2026-10-24T04:32:32.498Z",
   "prospects": [
     {
       "prospect": {
-        "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+        "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
         "brand": {
           "entityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
           "name": "Ulta",
@@ -41,7 +44,7 @@
         "outreachDraft": "",
         "reasons": [
           "Ulta: LeaseUp rank #26 (top 12% of 224 brands) for Pearl Street; Qloo taste rank #18 of 224",
-          "No Ulta store within 10 km (ATP catalog)",
+          "No Ulta store within 3 km (All The Places store data)",
           "Established chain with 1556 US locations"
         ],
         "nearestExistingStoreKm": 11.260094416028336,
@@ -49,17 +52,39 @@
           "affinity rank 0.9982782629542255",
           "tier taste fit (not raw affinity)"
         ],
+        "tradeAreaTaste": {
+          "tags": [],
+          "audiences": [
+            {
+              "entityId": "8F0407D3-64F3-47BF-A6B1-BA4C30465F71",
+              "name": "Health & Beauty",
+              "affinity": 0.741367518901825,
+              "affinityRank": 27
+            }
+          ]
+        },
+        "whyBrandTaste": {
+          "signals": [
+            {
+              "kind": "audience",
+              "name": "Health & Beauty",
+              "affinity": 0.741367518901825,
+              "affinityRank": 27
+            }
+          ],
+          "summary": "Qloo's Ulta audience leans toward Health & Beauty, which also ranks among the top audiences near this pin."
+        },
         "brandReach": {
           "status": "verified",
           "url": "https://www.ulta.com/company/real-estate",
           "source": "https://www.ulta.com/company/real-estate"
         }
       },
-      "whyLine": "No Ulta store within 10 km (ATP catalog)"
+      "whyLine": "No Ulta store within 3 km (All The Places store data)"
     },
     {
       "prospect": {
-        "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+        "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
         "brand": {
           "entityId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
           "name": "TJ Maxx",
@@ -82,7 +107,7 @@
         "outreachDraft": "",
         "reasons": [
           "TJ Maxx: LeaseUp rank #32 (top 15% of 224 brands) for Pearl Street; Qloo taste rank #48 of 224",
-          "No TJ Maxx store within 10 km (ATP catalog)",
+          "No TJ Maxx store within 3 km (All The Places store data)",
           "Established chain with 1281 US locations"
         ],
         "nearestExistingStoreKm": 12.231856022718784,
@@ -90,20 +115,55 @@
           "affinity rank 0.9923931806870298",
           "tier taste fit (not raw affinity)"
         ],
+        "tradeAreaTaste": {
+          "tags": [],
+          "audiences": [
+            {
+              "entityId": "604A723B-3E2C-4795-89AA-DF5BA0C3B3C5",
+              "name": "Arts & Crafts",
+              "affinity": 0.7960951924324036,
+              "affinityRank": 20
+            },
+            {
+              "entityId": "9130A837-ED3C-4BA9-9825-5D0D57D119CD",
+              "name": "Home Organization",
+              "affinity": 0.7158567905426025,
+              "affinityRank": 4
+            }
+          ]
+        },
+        "whyBrandTaste": {
+          "signals": [
+            {
+              "kind": "audience",
+              "name": "Arts & Crafts",
+              "affinity": 0.7960951924324036,
+              "affinityRank": 20
+            },
+            {
+              "kind": "audience",
+              "name": "Home Organization",
+              "affinity": 0.7158567905426025,
+              "affinityRank": 4
+            }
+          ],
+          "summary": "Qloo's TJ Maxx audience leans toward Arts & Crafts and Home Organization, which also rank among the top audiences near this pin."
+        },
         "brandReach": {
           "status": "not_yet_found",
           "searchUrl": "https://www.google.com/search?q=TJ%20Maxx%20retail%20real%20estate%20site%20submission"
         }
       },
-      "whyLine": "No TJ Maxx store within 10 km (ATP catalog)"
+      "whyLine": "No TJ Maxx store within 3 km (All The Places store data)"
     },
     {
       "prospect": {
+        "coverageNote": "OpenStreetMap snapshot has no store points for this brand; showing All The Places store data only.",
         "brand": {
           "entityId": "81EC4A41-53FB-47FD-995A-B8AE3EE90652",
           "name": "Old Navy",
           "affinity": 0.9927246988280045,
-          "affinityRank": 39,
+          "affinityRank": 41,
           "nationalStoreCount": 1133,
           "chainSizeTier": "mid",
           "tasteFitBeyondChainPercentile": 86,
@@ -120,8 +180,8 @@
         },
         "outreachDraft": "",
         "reasons": [
-          "Old Navy: LeaseUp rank #39 (top 18% of 224 brands) for Pearl Street; Qloo taste rank #46 of 224",
-          "No Old Navy store within 10 km (ATP catalog)",
+          "Old Navy: LeaseUp rank #41 (top 19% of 224 brands) for Pearl Street; Qloo taste rank #46 of 224",
+          "No Old Navy store within 3 km (All The Places store data)",
           "Established chain with 1133 US locations"
         ],
         "nearestExistingStoreKm": 15.65706957272003,
@@ -129,16 +189,50 @@
           "affinity rank 0.9927246988280045",
           "tier taste fit (not raw affinity)"
         ],
+        "tradeAreaTaste": {
+          "tags": [],
+          "audiences": [
+            {
+              "entityId": "DBDCB7B7-B015-425F-9C3E-619C9C4245EB",
+              "name": "Adventuring",
+              "affinity": 0.7262148261070251,
+              "affinityRank": 9
+            },
+            {
+              "entityId": "604A723B-3E2C-4795-89AA-DF5BA0C3B3C5",
+              "name": "Arts & Crafts",
+              "affinity": 0.7873871326446533,
+              "affinityRank": 20
+            }
+          ]
+        },
+        "whyBrandTaste": {
+          "signals": [
+            {
+              "kind": "audience",
+              "name": "Adventuring",
+              "affinity": 0.7262148261070251,
+              "affinityRank": 9
+            },
+            {
+              "kind": "audience",
+              "name": "Arts & Crafts",
+              "affinity": 0.7873871326446533,
+              "affinityRank": 20
+            }
+          ],
+          "summary": "Qloo's Old Navy audience leans toward Adventuring and Arts & Crafts, which also rank among the top audiences near this pin."
+        },
         "brandReach": {
           "status": "not_yet_found",
           "searchUrl": "https://www.google.com/search?q=Old%20Navy%20retail%20real%20estate%20site%20submission"
         }
       },
-      "whyLine": "No Old Navy store within 10 km (ATP catalog)"
+      "whyLine": "No Old Navy store within 3 km (All The Places store data)"
     },
     {
       "prospect": {
-        "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+        "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
         "brand": {
           "entityId": "423EDCAF-1289-474E-9982-0CC39A5BAEFE",
           "name": "Hobby Lobby",
@@ -161,7 +255,7 @@
         "outreachDraft": "",
         "reasons": [
           "Hobby Lobby: LeaseUp rank #42 (top 19% of 224 brands) for Pearl Street; Qloo taste rank #53 of 224",
-          "No Hobby Lobby store within 10 km (ATP catalog)",
+          "No Hobby Lobby store within 3 km (All The Places store data)",
           "Established chain with 1097 US locations"
         ],
         "nearestExistingStoreKm": 19.738223906209893,
@@ -169,20 +263,55 @@
           "affinity rank 0.9910272817149701",
           "tier taste fit (not raw affinity)"
         ],
+        "tradeAreaTaste": {
+          "tags": [],
+          "audiences": [
+            {
+              "entityId": "9130A837-ED3C-4BA9-9825-5D0D57D119CD",
+              "name": "Home Organization",
+              "affinity": 0.7805624008178711,
+              "affinityRank": 4
+            },
+            {
+              "entityId": "D1F0EE4A-FDB3-48DC-919C-5A94F3D4EC85",
+              "name": "Cooking",
+              "affinity": 0.7175672650337219,
+              "affinityRank": 6
+            }
+          ]
+        },
+        "whyBrandTaste": {
+          "signals": [
+            {
+              "kind": "audience",
+              "name": "Home Organization",
+              "affinity": 0.7805624008178711,
+              "affinityRank": 4
+            },
+            {
+              "kind": "audience",
+              "name": "Cooking",
+              "affinity": 0.7175672650337219,
+              "affinityRank": 6
+            }
+          ],
+          "summary": "Qloo's Hobby Lobby audience leans toward Home Organization and Cooking, which also rank among the top audiences near this pin."
+        },
         "brandReach": {
           "status": "not_yet_found",
           "searchUrl": "https://www.google.com/search?q=Hobby%20Lobby%20retail%20real%20estate%20site%20submission"
         }
       },
-      "whyLine": "No Hobby Lobby store within 10 km (ATP catalog)"
+      "whyLine": "No Hobby Lobby store within 3 km (All The Places store data)"
     },
     {
       "prospect": {
+        "coverageNote": "OpenStreetMap snapshot has no store points for this brand; showing All The Places store data only.",
         "brand": {
           "entityId": "7C4CC0B9-1C3C-4C5C-A732-5991046EBB03",
           "name": "Crumbl",
           "affinity": 0.9989451089871769,
-          "affinityRank": 48,
+          "affinityRank": 49,
           "nationalStoreCount": 890,
           "chainSizeTier": "mid",
           "tasteFitBeyondChainPercentile": 94,
@@ -199,8 +328,8 @@
         },
         "outreachDraft": "",
         "reasons": [
-          "Crumbl: LeaseUp rank #48 (top 22% of 224 brands) for Pearl Street; Qloo taste rank #15 of 224",
-          "No Crumbl store within 10 km (ATP catalog)",
+          "Crumbl: LeaseUp rank #49 (top 22% of 224 brands) for Pearl Street; Qloo taste rank #15 of 224",
+          "No Crumbl store within 3 km (All The Places store data)",
           "Established chain with 890 US locations"
         ],
         "nearestExistingStoreKm": 19.153641297687578,
@@ -213,7 +342,7 @@
           "searchUrl": "https://www.google.com/search?q=Crumbl%20retail%20real%20estate%20site%20submission"
         }
       },
-      "whyLine": "No Crumbl store within 10 km (ATP catalog)"
+      "whyLine": "No Crumbl store within 3 km (All The Places store data)"
     }
   ],
   "rankingsTotal": 224

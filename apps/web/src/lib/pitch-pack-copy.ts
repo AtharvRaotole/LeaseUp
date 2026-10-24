@@ -2,7 +2,7 @@ import type { AnalysisResponse, PitchPackSnapshot, ProspectPack } from '@leaseup
 import { isDemoPitchId } from '@leaseup/contracts';
 import { displayBrandName } from './brand-display';
 import { formatUserFacingDate } from './format-date';
-import { whyBrandBulletLines } from './why-brand-lines';
+import { pitchBrandTasteFitSentence } from '@leaseup/fixtures';
 import { absenceRadiusKm, pitchPackAbsenceRadiusKm } from './absence-radius';
 
 export function pitchBriefKindLabel(snapshot: PitchPackSnapshot): string {
@@ -61,29 +61,18 @@ export function isStoredAbsencePitchLine(line: string): boolean {
   return false;
 }
 
+export function pitchBrandTasteBriefLine(prospect: ProspectPack): string | undefined {
+  const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
+  return pitchBrandTasteFitSentence(name, prospect.whyBrandTaste);
+}
+
 export function pitchBrandFitLines(
   prospect: ProspectPack,
-  snapshot: PitchPackSnapshot
+  _snapshot: PitchPackSnapshot
 ): string[] {
-  const total = snapshot.rankingsTotal ?? prospect.brand.affinityRank;
-  const absenceKm = pitchPackAbsenceRadiusKm(snapshot);
-  const stubResults = {
-    rankings: Array.from({ length: total }, () => ({})),
-    osmSnapshotLabel: snapshot.osmSnapshotLabel,
-    osmSnapshotRecordedAt: snapshot.osmSnapshotRecordedAt,
-    prospectFunnel: {
-      brandsScored: total,
-      searchRadiusKm: snapshot.radiusKm,
-      absenceRadiusKm: absenceKm,
-      alreadyNearbyCount: 0,
-      strongFitAbsentCount: 0,
-      pitchedCount: snapshot.prospects.length,
-      verifiedCount: 0,
-    },
-  } as AnalysisResponse;
-  const lines = whyBrandBulletLines(prospect, stubResults, snapshot.radiusKm).filter(
-    (line) => !isPitchRankSummaryLine(line)
-  );
+  const lines: string[] = [];
+  const tasteLine = pitchBrandTasteBriefLine(prospect);
+  if (tasteLine) lines.push(tasteLine);
   const nearest = pitchNearestStoreBriefLine(prospect);
   if (nearest) lines.push(nearest);
   for (const reason of prospect.reasons) {
@@ -166,5 +155,7 @@ export function shouldShowStoredWhyLine(whyLine: string): boolean {
   if (isNearestStoreDistanceLine(whyLine)) return false;
   if (isPitchRankSummaryLine(whyLine)) return false;
   if (isStoredAbsencePitchLine(whyLine)) return false;
+  if (/^audience:\s*/i.test(whyLine.trim())) return false;
+  if (/^tag:\s*/i.test(whyLine.trim())) return false;
   return whyLine.trim().length > 0;
 }

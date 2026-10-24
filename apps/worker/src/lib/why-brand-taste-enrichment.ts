@@ -2,6 +2,7 @@ import type { ProspectPack, TradeAreaTasteContext, WhyBrandTaste } from '@leaseu
 import {
   deterministicWhyBrandTasteSummary,
   distinctPitchAudienceLists,
+  sanitizeWhyBrandTasteSummary,
   topBrandTasteOverlapSignals,
 } from '@leaseup/fixtures/worker';
 import type { OpenAIClient } from '../providers/openai';
@@ -13,7 +14,8 @@ export function buildWhyBrandTasteFromContext(
 ): WhyBrandTaste | undefined {
   const signals = topBrandTasteOverlapSignals(tradeAreaTaste, 3);
   if (signals.length === 0) return undefined;
-  const text = summary?.trim() || deterministicWhyBrandTasteSummary(brandName, signals);
+  const raw = summary?.trim() || deterministicWhyBrandTasteSummary(brandName, signals);
+  const text = raw ? sanitizeWhyBrandTasteSummary(raw) : '';
   return {
     signals,
     summary: text || undefined,

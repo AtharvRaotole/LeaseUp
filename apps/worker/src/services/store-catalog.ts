@@ -7,6 +7,7 @@ import { TRACKED_BRAND_IDS } from '../data/tracked-brand-ids';
 import { coveringGeohash3 } from '../lib/geohash';
 import type { ResponseCache } from '../lib/response-cache';
 import { getResponseCache } from '../lib/worker-cache';
+import { catalogUnderCountNote, catalogUnderCountNoOsmNote } from '../lib/all-the-places-copy';
 
 export interface NearbyStore {
   lat: number;
@@ -60,7 +61,7 @@ export class DemoStoreCatalog implements StoreCatalog {
 
   getCoverageNote(_brandId: string, nationalCount: number): string | undefined {
     if (nationalCount < LOW_COVERAGE_THRESHOLD) {
-      return `ATP snapshot may under-count this chain (${nationalCount} US points in our extract). Treat absence as preliminary.`;
+      return catalogUnderCountNote(nationalCount);
     }
     return undefined;
   }
@@ -168,7 +169,7 @@ export class GeoTileStoreCatalog implements StoreCatalog {
 
   getCoverageNote(_brandId: string, nationalCount: number): string | undefined {
     if (nationalCount < LOW_COVERAGE_THRESHOLD) {
-      return `ATP snapshot may under-count this chain (${nationalCount} US points). Absence is not confirmed without OpenStreetMap.`;
+      return catalogUnderCountNoOsmNote(nationalCount);
     }
     return undefined;
   }

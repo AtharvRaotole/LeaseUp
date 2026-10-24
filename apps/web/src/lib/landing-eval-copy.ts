@@ -11,10 +11,10 @@ export function landingEvalProofParagraphs(): string[] {
   ];
 }
 
-/** One-line bridge above the methodology per-site metric table. */
-export function methodologySiteTableBridgeLine(): string {
+/** Single intro above the methodology per-site metric catalog table. */
+export function methodologyEvalCatalogIntro(): string {
   const agg = loadLiveQlooLiftAggregates();
   return (
-    `Rows in this table are per-demo-chip sanity checks. The headline proof is the recorded ${agg.siteCount}-site cohort: taste-only top-10 hit rate ${formatP10PercentRounded(agg.rawQlooPrecisionAt10)}, chain-size only ${formatP10PercentRounded(agg.chainSizePrecisionAt10)}, production blend ${formatP10PercentRounded(agg.logisticBlendPrecisionAt10)} (same numbers as the landing proof section).`
+    `Recorded ${agg.siteCount}-neighborhood cohort (same rounding as the landing proof section): taste-only top-10 hit rate ${formatP10PercentRounded(agg.rawQlooPrecisionAt10)}, chain-size only ${formatP10PercentRounded(agg.chainSizePrecisionAt10)}, production blend ${formatP10PercentRounded(agg.logisticBlendPrecisionAt10)}. The table below lists per-demo-chip sanity checks on the metric catalog.`
   );
 }
