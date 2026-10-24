@@ -70,4 +70,7 @@ export const liveQlooLiftAggregates = ${JSON.stringify(headline, null, 2)} as co
 `;
 writeFileSync(join(root, 'packages/fixtures/src/eval/live-qloo-lift/aggregates-data.ts'), aggregatesTs);
 
+execSync('node scripts/eval/sync-qloo-lift-fixtures-md.mjs', { stdio: 'inherit', cwd: root });
+execSync('node scripts/eval/refresh-qloo-lift-eval-md.mjs', { stdio: 'inherit', cwd: root });
+
 console.log(JSON.stringify({ event: 'sync_qloo_eval_done', headline }, null, 2));

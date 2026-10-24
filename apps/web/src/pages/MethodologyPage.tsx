@@ -220,7 +220,11 @@ export function MethodologyPage() {
                 adaptive search radius by neighborhood density
                 <InfoTooltip label={methodologyDensityRadiusTooltip()} />
               </span>
-              . Per-address top-10 hit rates and rank match are in the table; cohort means match the headline
+              . Cohort mean top-10 presence: {formatP10PercentRounded(qlooLift.rawQlooPrecisionAt10)} raw
+              Qloo, {formatP10PercentRounded(qlooLift.chainSizePrecisionAt10)} chain size,{' '}
+              {formatP10PercentRounded(qlooLift.logisticBlendPrecisionAt10)} taste blend (about{' '}
+              {qlooLift.logisticBlendLiftVsChainPp} percentage points higher than chain size alone). Per-address
+              top-10 hit rates and rank match are in the table; cohort means match the headline
               figures in Evaluation metric catalog above. Likely range on rank match uses the same method as
               the landing proof block
               <InfoTooltip label={methodologyLikelyRangeTooltip()} />
@@ -290,10 +294,14 @@ export function MethodologyPage() {
               Qloo lift study (cohort aggregates)
             </h2>
             <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
-              Additional committed aggregates from the preregistered study: same-size tier rank match{' '}
-              {(qlooLift.sameSizeAuc.value * 100).toFixed(1)}%; legacy 0.75/0.25 taste/chain blend mean
-              top-10 presence {formatP10PercentRounded(qlooLift.legacyBlendPrecisionAt10)}. Heatmap features
-              did not add ranking lift; fixed 10 km presence saturates in dense trade areas.
+              Same {qlooLift.siteCount}-address cohort as the evaluation metric catalog above: mean top-10
+              presence {formatP10PercentRounded(qlooLift.rawQlooPrecisionAt10)} /{' '}
+              {formatP10PercentRounded(qlooLift.chainSizePrecisionAt10)} /{' '}
+              {formatP10PercentRounded(qlooLift.logisticBlendPrecisionAt10)} (raw Qloo / chain size / taste
+              blend). Same-size tier rank match{' '}
+              {(qlooLift.sameSizeAuc.value * 100).toFixed(1)}%; legacy 0.75/0.25 blend{' '}
+              {formatP10PercentRounded(qlooLift.legacyBlendPrecisionAt10)}. Heatmap features did not add
+              ranking lift; fixed 10 km presence saturates in dense trade areas.
             </p>
           </section>
 

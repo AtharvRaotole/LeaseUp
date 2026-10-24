@@ -4,7 +4,7 @@ Run on Oct 23, 2026 (ET). Original live Qloo API collection and preregistration 
 
 ## Reproducibility (Oct 24, 2026 refresh)
 
-Integration base: `f94ee23`. Metrics and tiles in this tree: git commit `86e3369`.
+Integration base: `f94ee23`. Metrics and tiles in this tree: git commit `c32a51bde8775934fd6d3b367d2f284b9cbeb6e9`.
 
 ```bash
 node scripts/osm-snapshot-retile-report.mjs
@@ -27,19 +27,19 @@ Uses cached `data/qloo-eval-40/` Qloo insights and `data/osm-snapshot/raw/` Over
 | Ranker | Mean P@10 | Notes |
 |--------|-----------|-------|
 | Raw Qloo | 0.54 [0.46, 0.61] | exact 0.538 |
-| Chain size | 0.76 [0.71, 0.80] | exact 0.760 |
-| Logistic blend | 0.82 [0.77, 0.86] | exact 0.825 (+6.5 pp vs chain [3.3, 9.3]) |
-| Random | 0.29 [0.25, 0.33] | |
+| Chain size | 0.76 [0.71, 0.81] | exact 0.760 |
+| Logistic blend | 0.82 [0.78, 0.87] | exact 0.825 (+6.5 pp vs chain [3.3, 9.3]) |
+| Random | 0.30 [0.26, 0.34] | |
 
 | Lift metric | Value |
 |-------------|-------|
-| Same-size tier AUC (mean per-address) | 0.664 [0.642, 0.687] |
+| Same-size tier AUC (mean per-address) | 0.66 [0.64, 0.69] |
 | Partial Spearman Qloo ~ presence \| log chain size | 0.24 [0.21, 0.28] |
 | Mid-size tier P@5 (439 to 864 stores), Qloo vs chain | 0.53 vs 0.23 |
 
 ## Findings (summary)
 1. Raw Qloo order still underperforms chain size on mean top-10 presence (0.54 vs 0.76).
-2. Same-size tier AUC **0.664** and logistic blend **0.825 vs 0.760** chain P@10 show lift after controlling for footprint.
+2. Same-size tier AUC **0.66** and logistic blend **0.825 vs 0.760** chain P@10 show lift after controlling for footprint.
 3. Mid-size chains: within-tier P@5 **0.53 vs 0.23** (Qloo vs chain order). Small tier (<177 stores): **0.31 vs 0.10**.
 4. Heatmap features do not beat insights for ranking (see tables).
 

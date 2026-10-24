@@ -3,9 +3,21 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  liftPpOneDecimal,
+  p10PercentRounded,
+  p10RateExactNote,
+  p10RateTable,
+} from './qloo-lift-headline-format.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const tables = readFileSync(join(root, 'data/qloo-eval-40/tables.md'), 'utf8');
+const adaptive = JSON.parse(
+  readFileSync(join(root, 'data/qloo-eval-40/results_adaptive.json'), 'utf8')
+);
+const agg = JSON.parse(
+  readFileSync(join(root, 'packages/fixtures/src/eval/live-qloo-lift/aggregates.json'), 'utf8')
+);
 
 function gitHead() {
   try {
@@ -15,7 +27,20 @@ function gitHead() {
   }
 }
 
+function triple(key) {
+  const v = adaptive.agg[key];
+  if (!Array.isArray(v)) return [v, v, v];
+  return v;
+}
+
 const metricsCommit = process.env.EVAL_METRICS_COMMIT?.trim() || gitHead();
+
+const [qMean, qLo, qHi] = triple('qloo.p10');
+const [cMean, cLo, cHi] = triple('chain.p10');
+const [bMean, bLo, bHi] = triple('logit_blend.p10');
+const [rMean, rLo, rHi] = triple('random.p10');
+const [auc, aucLo, aucHi] = triple('strat_auc_qloo_mean');
+const [pr, prLo, prHi] = triple('partial_rho');
 
 const head = `# LeaseUp: does Qloo add signal beyond chain size?
 
@@ -45,25 +70,25 @@ Uses cached \`data/qloo-eval-40/\` Qloo insights and \`data/osm-snapshot/raw/\` 
 
 | Ranker | Mean P@10 | Notes |
 |--------|-----------|-------|
-| Raw Qloo | 0.54 [0.46, 0.61] | exact 0.538 |
-| Chain size | 0.76 [0.71, 0.80] | exact 0.760 |
-| Logistic blend | 0.82 [0.77, 0.86] | exact 0.825 (+6.5 pp vs chain [3.3, 9.3]) |
-| Random | 0.29 [0.25, 0.33] | |
+| Raw Qloo | ${p10RateTable(qMean)} [${p10RateTable(qLo)}, ${p10RateTable(qHi)}] | exact ${p10RateExactNote(agg.rawQlooPrecisionAt10)} |
+| Chain size | ${p10RateTable(cMean)} [${p10RateTable(cLo)}, ${p10RateTable(cHi)}] | exact ${p10RateExactNote(agg.chainSizePrecisionAt10)} |
+| Logistic blend | ${p10RateTable(bMean)} [${p10RateTable(bLo)}, ${p10RateTable(bHi)}] | exact ${p10RateExactNote(agg.logisticBlendPrecisionAt10)} (+${liftPpOneDecimal(agg.logisticBlendLiftVsChainPp)} pp vs chain [${liftPpOneDecimal(agg.logisticBlendLiftCiLowPp)}, ${liftPpOneDecimal(agg.logisticBlendLiftCiHighPp)}]) |
+| Random | ${p10RateTable(rMean)} [${p10RateTable(rLo)}, ${p10RateTable(rHi)}] | |
 
 | Lift metric | Value |
 |-------------|-------|
-| Same-size tier AUC (mean per-address) | 0.664 [0.642, 0.687] |
-| Partial Spearman Qloo ~ presence \\| log chain size | 0.24 [0.21, 0.28] |
+| Same-size tier AUC (mean per-address) | ${p10RateTable(auc)} [${p10RateTable(aucLo)}, ${p10RateTable(aucHi)}] |
+| Partial Spearman Qloo ~ presence \\| log chain size | ${p10RateTable(pr)} [${p10RateTable(prLo)}, ${p10RateTable(prHi)}] |
 | Mid-size tier P@5 (439 to 864 stores), Qloo vs chain | 0.53 vs 0.23 |
 
 ## Findings (summary)
-1. Raw Qloo order still underperforms chain size on mean top-10 presence (0.54 vs 0.76).
-2. Same-size tier AUC **0.664** and logistic blend **0.825 vs 0.760** chain P@10 show lift after controlling for footprint.
+1. Raw Qloo order still underperforms chain size on mean top-10 presence (${p10RateTable(qMean)} vs ${p10RateTable(cMean)}).
+2. Same-size tier AUC **${p10RateTable(auc)}** and logistic blend **${p10RateExactNote(agg.logisticBlendPrecisionAt10)} vs ${p10RateExactNote(agg.chainSizePrecisionAt10)}** chain P@10 show lift after controlling for footprint.
 3. Mid-size chains: within-tier P@5 **0.53 vs 0.23** (Qloo vs chain order). Small tier (<177 stores): **0.31 vs 0.10**.
 4. Heatmap features do not beat insights for ranking (see tables).
 
 ## Strongest honest claim for judges
-> National chain size alone tells you who is probably already here. Qloo adds what chain size cannot. Among similar-size chains, Qloo's local taste score separates present vs absent about two-thirds of the time (AUC 0.66, 95% CI 0.64 to 0.69, 40 US addresses). The shipped logistic blend raises mean top-10 presence from 76% to 83%. For mid-size chains, Qloo-ordered shortlists beat size-ordered ones (53% vs 23% P@5).
+> National chain size alone tells you who is probably already here. Qloo adds what chain size cannot. Among similar-size chains, Qloo's local taste score separates present vs absent about two-thirds of the time (AUC 0.66, 95% CI 0.64 to 0.69, 40 US addresses). The shipped logistic blend raises mean top-10 presence from ${p10PercentRounded(agg.chainSizePrecisionAt10)} to ${p10PercentRounded(agg.logisticBlendPrecisionAt10)}. For mid-size chains, Qloo-ordered shortlists beat size-ordered ones (53% vs 23% P@5).
 
 Do **not** claim that raw Qloo affinity beats chain size.
 

@@ -75,7 +75,7 @@ export function formatPanelValues(panel: EvalMetricPanel | FixturePanel): string
     const blend = formatP10PercentExact(agg.logisticBlendPrecisionAt10);
     const chain = formatP10PercentExact(agg.chainSizePrecisionAt10);
     const lift = agg.logisticBlendLiftVsChainPp;
-    return `Rank match ${(auc.value * 100).toFixed(1)}% among similar chains · top-10 hits ${blend} taste blend vs ${chain} chain size only (+${lift} pp)`;
+    return `Rank match ${(auc.value * 100).toFixed(1)}% among similar chains · top-10 hits ${blend} taste blend vs ${chain} chain size only (+${lift} percentage points)`;
   }
   const def = catalogForPanel(panel.id);
   const format = def?.format ?? 'decimal';
