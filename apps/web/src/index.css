@@ -133,6 +133,7 @@
 .premium-hero-glow {
   position: relative;
   isolation: isolate;
+  overflow-x: clip;
 }
 
 .premium-hero-glow::before {
