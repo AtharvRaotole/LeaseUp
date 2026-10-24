@@ -61,11 +61,12 @@ describe('Demo prospect store guard', () => {
 
     for (const [label, address] of Object.entries(DEMO_CHIP_ADDRESSES)) {
       const result = await service.analyze({ address, radius: 10 }, `guard-${label}`, 'ip');
+      const absenceKm = result.prospectFunnel?.absenceRadiusKm ?? 10;
       for (const pack of result.prospects) {
         if (pack.brand.nearbyStoreCount !== 0) continue;
         const lat = result.location.latitude;
         const lon = result.location.longitude;
-        const { atpKm, osmKm } = catalog.nearestBothKm(pack.brand.entityId, lat, lon, 10);
+        const { atpKm, osmKm } = catalog.nearestBothKm(pack.brand.entityId, lat, lon, absenceKm);
         expect(
           atpKm === undefined && osmKm === undefined,
           `${label}: ${pack.brand.name} pitched with no nearby store but ATP=${atpKm?.toFixed(2)}km OSM=${osmKm?.toFixed(2)}km`

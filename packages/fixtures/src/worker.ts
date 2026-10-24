@@ -3,7 +3,13 @@
  */
 export type { EvalSiteDensity } from './eval/types.js';
 export type { EvalDensityStratum } from './eval-density-stratum.js';
-export { adaptiveRadiusKmForStratum, densityToDefaultStratum, demoFixtureStratum } from './eval-density-stratum.js';
+export {
+  adaptiveRadiusKmForStratum,
+  densityToDefaultStratum,
+  demoFixtureStratum,
+  prospectAbsenceRadiusKm,
+  PROSPECT_TRADE_AREA_FLOOR_KM,
+} from './eval-density-stratum.js';
 export {
   DEMO_CHIP_ADDRESSES,
   matchDemoFixtureId,

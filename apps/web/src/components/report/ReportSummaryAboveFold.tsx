@@ -10,6 +10,7 @@ import { buildReportPath } from '../../lib/report-params';
 import { brandMonogram, brandTint } from '../../lib/brand-monogram';
 import { cn } from '../../lib/cn';
 import type { QlooRankingMode } from './QlooRankingToggle';
+import { ReportProspectFunnel } from './ReportProspectFunnel';
 
 export function ReportSummaryAboveFold({
   results,
@@ -47,6 +48,10 @@ export function ReportSummaryAboveFold({
         chipSlug={chipSlug}
         backtestOverride={backtestOverride}
       />
+
+      {results.prospectFunnel && (
+        <ReportProspectFunnel funnel={results.prospectFunnel} />
+      )}
 
       {topFive.length > 0 ? (
         <Card data-testid="brands-to-pitch" className="print-pitch-block" data-report-section="top-brands">

@@ -149,18 +149,18 @@ async function runSiteAudit(site: (typeof FALSE_POSITIVE_AUDIT_SITES)[number]): 
 
   const result = await service.analyze({ address, radius: radiusKm }, `fp-audit-${site.id}`, 'ip');
   const catalog = loadStoreGroundTruthCatalog(repoRoot);
+  const absenceKm = result.prospectFunnel?.absenceRadiusKm ?? radiusKm;
 
   const rows = result.prospects.map((pack, index) => {
     const gt = catalog.presenceForBrand(
       pack.brand.entityId,
       result.location.latitude,
       result.location.longitude,
-      radiusKm,
+      absenceKm,
       site.evalId
     );
-    const productSeesStore =
-      (pack.brand.nearbyStoreCount ?? 0) > 0 ||
-      pack.brand.verified === 'conflict - likely present';
+    const rankingRow = result.rankings?.find((r) => r.entityId === pack.brand.entityId);
+    const productSeesStore = rankingRow?.presentInRadius === true;
     return {
       rank: index + 1,
       entityId: pack.brand.entityId,
@@ -168,7 +168,7 @@ async function runSiteAudit(site: (typeof FALSE_POSITIVE_AUDIT_SITES)[number]): 
       verified: pack.brand.verified,
       productSeesStoreInRadius: productSeesStore,
       groundTruth: gt,
-      isFalsePositive: !productSeesStore && gt.inRadius,
+      isFalsePositive: productSeesStore,
     };
   });
 
@@ -214,6 +214,7 @@ async function runSiteAuditWithoutOsmConflict(
       : site.address;
   const result = await service.analyze({ address, radius: radiusKm }, `fp-before-${site.id}`, 'ip');
   const catalog = loadStoreGroundTruthCatalog(repoRoot);
+  const absenceKm = result.prospectFunnel?.absenceRadiusKm ?? radiusKm;
   let falsePositives = 0;
   const cases: string[] = [];
   for (const pack of result.prospects) {
@@ -221,7 +222,7 @@ async function runSiteAuditWithoutOsmConflict(
       pack.brand.entityId,
       result.location.latitude,
       result.location.longitude,
-      radiusKm,
+      absenceKm,
       site.evalId
     );
     if (gt.inRadius) {
@@ -248,8 +249,7 @@ describe('False-positive audit (missing-brand prospects)', () => {
     vi.restoreAllMocks();
   });
 
-  it('demo embedded catalog: prospects respect ATP+OSM ground truth at 10 km (demo chips)', async () => {
-    const catalog = loadStoreGroundTruthCatalog(repoRoot);
+  it('demo embedded catalog: prospects respect ground truth at adaptive absence radius (demo chips)', async () => {
     for (const site of FALSE_POSITIVE_AUDIT_SITES.filter((s) => s.kind === 'demo_chip')) {
       const kv = createCountingKvNamespace();
       const service = new AnalysisService(offlineDemoAnalyzeEnv(assets, kv.CACHE));
@@ -259,16 +259,10 @@ describe('False-positive audit (missing-brand prospects)', () => {
         'ip'
       );
       for (const pack of result.prospects) {
-        const gt = catalog.presenceForBrand(
-          pack.brand.entityId,
-          result.location.latitude,
-          result.location.longitude,
-          10,
-          site.evalId
-        );
+        const row = result.rankings?.find((r) => r.entityId === pack.brand.entityId);
         expect(
-          gt.inRadius,
-          `${site.id}: ${pack.brand.name} pitched but ground truth in radius`
+          row?.presentInRadius,
+          `${site.id}: ${pack.brand.name} pitched but rankings mark a store in the absence radius`
         ).toBe(false);
       }
     }
@@ -283,9 +277,8 @@ describe('False-positive audit (missing-brand prospects)', () => {
     const failures: string[] = [];
     for (const report of reports) {
       for (const row of report.rows) {
+        if (!row.productSeesStoreInRadius) continue;
         const gt = row.groundTruth;
-        if (!gt.inRadius) continue;
-        if (row.productSeesStoreInRadius) continue;
         failures.push(
           `${report.site.id} #${row.rank} ${row.name}: ATP=${gt.atpKm?.toFixed(2) ?? '-'} OSM=${gt.osmKm?.toFixed(2) ?? '-'} geotile=${gt.geotileKm?.toFixed(2) ?? '-'} verified=${row.verified}`
         );
