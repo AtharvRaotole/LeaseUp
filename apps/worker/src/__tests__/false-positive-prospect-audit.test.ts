@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from 'vitest';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { AnalysisService } from '../services/analysis';
@@ -10,7 +10,15 @@ import {
   buildFalsePositiveAuditMarkdown,
   type SiteFalsePositiveReport,
 } from '../lib/false-positive-prospect-audit';
-import { installWorkersCacheApiStub } from './helpers/kv-counting';
+import {
+  createCountingKvNamespace,
+  installWorkersCacheApiStub,
+} from './helpers/kv-counting';
+import {
+  ensureWorkerGeotiles,
+  offlineDemoAnalyzeEnv,
+  offlineLiveAnalyzeEnv,
+} from './helpers/analysis-test-env';
 import {
   DEMO_CHIP_ADDRESSES,
   wickerparkFixture,
@@ -41,7 +49,8 @@ const assets = {
       const path = url.replace('https://tiles.local', '');
       const file = join(publicRoot, path);
       try {
-        return new Response(readFileSync(file), { status: 200 });
+        const body = readFileSync(file);
+        return new Response(body, { status: 200 });
       } catch {
         return new Response('missing', { status: 404 });
       }
@@ -50,7 +59,8 @@ const assets = {
       const path = url.replace('https://osm.local', '');
       const file = join(publicRoot, path);
       try {
-        return new Response(readFileSync(file), { status: 200 });
+        const body = readFileSync(file);
+        return new Response(body, { status: 200 });
       } catch {
         return new Response('missing', { status: 404 });
       }
@@ -58,15 +68,6 @@ const assets = {
     return new Response('missing', { status: 404 });
   },
 } as unknown as Fetcher;
-
-const db = {
-  prepare: () => {
-    const stmt = { bind: () => stmt, run: async () => ({}), first: async () => null };
-    return stmt;
-  },
-} as unknown as D1Database;
-
-const kv = { get: async () => null, put: async () => undefined } as unknown as KVNamespace;
 
 function insightsForEval(evalId: string): QlooInsight[] {
   const block = insightsByEval[evalId];
@@ -136,13 +137,8 @@ async function runSiteAudit(site: (typeof FALSE_POSITIVE_AUDIT_SITES)[number]): 
   const lon = geo?.lon ?? site.lon;
   const radiusKm = radiusKmForSite(site);
 
-  const service = new AnalysisService({
-    DB: db,
-    CACHE: kv,
-    APP_MODE: 'live',
-    ASSETS: assets,
-    QLOO_API_KEY: 'test-key-offline-audit',
-  } as import('../index').Env);
+  const kv = createCountingKvNamespace();
+  const service = new AnalysisService(offlineLiveAnalyzeEnv(assets, kv.CACHE));
 
   mockOfflineAnalyze(service, site, lat, lon);
 
@@ -194,13 +190,8 @@ async function runSiteAuditWithoutOsmConflict(
   const lon = geo?.lon ?? site.lon;
   const radiusKm = radiusKmForSite(site);
 
-  const service = new AnalysisService({
-    DB: db,
-    CACHE: kv,
-    APP_MODE: 'live',
-    ASSETS: assets,
-    QLOO_API_KEY: 'test-key-offline-audit',
-  } as import('../index').Env);
+  const kv = createCountingKvNamespace();
+  const service = new AnalysisService(offlineLiveAnalyzeEnv(assets, kv.CACHE));
 
   vi.spyOn(
     service as unknown as {
@@ -244,6 +235,10 @@ async function runSiteAuditWithoutOsmConflict(
 }
 
 describe('False-positive audit (missing-brand prospects)', () => {
+  beforeAll(() => {
+    ensureWorkerGeotiles(repoRoot);
+  });
+
   beforeEach(() => {
     installWorkersCacheApiStub();
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -256,12 +251,8 @@ describe('False-positive audit (missing-brand prospects)', () => {
   it('demo embedded catalog: prospects respect ATP+OSM ground truth at 10 km (demo chips)', async () => {
     const catalog = loadStoreGroundTruthCatalog(repoRoot);
     for (const site of FALSE_POSITIVE_AUDIT_SITES.filter((s) => s.kind === 'demo_chip')) {
-      const service = new AnalysisService({
-        DB: db,
-        CACHE: kv,
-        APP_MODE: 'demo',
-        ASSETS: assets,
-      } as import('../index').Env);
+      const kv = createCountingKvNamespace();
+      const service = new AnalysisService(offlineDemoAnalyzeEnv(assets, kv.CACHE));
       const result = await service.analyze(
         { address: DEMO_CHIP_ADDRESSES[site.demoFixture!], radius: 10 },
         `fp-demo-${site.id}`,
@@ -381,13 +372,8 @@ describe('False-positive audit (missing-brand prospects)', () => {
       const lon = geo?.lon ?? row.site.lon;
       const radiusKm = radiusKmForSite(row.site);
 
-      const service = new AnalysisService({
-        DB: db,
-        CACHE: kv,
-        APP_MODE: 'live',
-        ASSETS: assets,
-        QLOO_API_KEY: 'test-key-offline-audit',
-      } as import('../index').Env);
+      const kv = createCountingKvNamespace();
+      const service = new AnalysisService(offlineLiveAnalyzeEnv(assets, kv.CACHE));
       mockOfflineAnalyze(service, row.site, lat, lon);
 
       const catalog = loadStoreGroundTruthCatalog(repoRoot);

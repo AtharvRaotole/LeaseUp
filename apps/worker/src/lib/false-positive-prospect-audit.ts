@@ -218,11 +218,16 @@ export function loadStoreGroundTruthCatalog(repoRoot: string) {
     : [];
 
   const geotileDir = join(repoRoot, 'apps/worker/public/tiles');
-  const geotileBrands = JSON.parse(
-    readFileSync(join(geotileDir, 'brands.json'), 'utf8')
-  ).brands as Array<{ id: string }>;
-  const geotileIdx = new Map(geotileBrands.map((b, i) => [b.id, i]));
+  const geotileBrandsPath = join(geotileDir, 'brands.json');
+  const geotilesAvailable = existsSync(geotileBrandsPath);
+  let geotileIdx = new Map<string, number>();
   const geotileCache = new Map<string, { stores: Array<[number, number, number]> } | null>();
+  if (geotilesAvailable) {
+    const geotileBrands = JSON.parse(readFileSync(geotileBrandsPath, 'utf8')).brands as Array<{
+      id: string;
+    }>;
+    geotileIdx = new Map(geotileBrands.map((b, i) => [b.id, i]));
+  }
 
   const osmTilesDir = join(repoRoot, 'data/osm-snapshot/tiles');
   const osmBrands = JSON.parse(readFileSync(join(osmTilesDir, 'brands.json'), 'utf8')).brands as Array<{
@@ -280,6 +285,9 @@ export function loadStoreGroundTruthCatalog(repoRoot: string) {
     radiusKm: number,
     kind: 'atp' | 'osm' | 'geotile'
   ): number | undefined {
+    if (kind === 'geotile' && !geotilesAvailable) {
+      return nearestInTree(brandId, lat, lon, radiusKm, 'atp');
+    }
     let nearest = Infinity;
     if (kind === 'atp') {
       const row = atpExpanded[brandId];
