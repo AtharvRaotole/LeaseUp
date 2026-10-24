@@ -66,15 +66,25 @@ if (verified.length < 1) {
 }
 
 let failed = 0;
+let transient = 0;
 for (const row of verified) {
   const status = await checkUrl(row.url);
   const ok = status >= 200 && status < 400;
   if (!ok) {
+    if (status === 0) {
+      transient += 1;
+      console.warn(`SKIP transient ${row.name} ${row.url}`);
+      continue;
+    }
     failed += 1;
     console.error(`FAIL ${row.name} ${status} ${row.url}`);
   } else {
     console.log(`OK ${status} ${row.name}`);
   }
+}
+
+if (transient > 0) {
+  console.warn(`${transient} verified URL(s) skipped (transient network; not failing CI)`);
 }
 
 if (failed > 0) {

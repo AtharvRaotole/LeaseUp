@@ -6,7 +6,7 @@
 
 **On the live landing today:** the same headline appears above a short helper line from the app: "Enter an address to see which brands local shoppers want nearby, then check real store locations before you pitch." (`LANDING_PLAIN_SUMMARY` in `apps/web/src/lib/broker-copy.ts`).
 
-**Production reference:** Cloudflare Pages at commit **`d5c4040`** (integration head). **Mobile Lighthouse (GitHub Actions LHCI only):** median of **3** mobile runs on `ubuntu-latest` in Actions run [**40074283024**](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40074283024): landing performance **93**; Wicker report performance **89**, accessibility **96**. Do not cite local preview Lighthouse scores in Devpost copy; details in `docs/qa/a11y-perf.md`.
+**Production reference:** Cloudflare Pages at integration head **`9873456`**. **Mobile Lighthouse (GitHub Actions LHCI only):** median of **3** mobile runs on `ubuntu-latest` in Actions run [**40074283024**](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40074283024): landing performance **93**; Wicker report performance **89**, accessibility **96**. Do not cite local preview Lighthouse scores in Devpost copy; details in `docs/qa/a11y-perf.md`.
 
 Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` (40 US addresses, live Qloo API; metrics refreshed Oct 24, 2026 per PR #103).
 
@@ -30,7 +30,7 @@ LeaseUp is a real split stack: a React site on Cloudflare Pages talks to a Hono 
 
 ### Design
 
-Brokers see a **compact summary-first report**: three headline stat tiles, a plain **prospect funnel** sentence (scored / already nearby / pitched), then **Top brands to pitch** with brand-specific one-line reasons. The default list follows the **fitted taste blend**; under **How we know**, **Compare ranking** toggles **Local taste** vs **Chain size** so judges can see **83%** vs **76%** mean top-10 presence on the 40-address eval without implying raw Qloo beats chain size. A **non-blocking** first-run tour (`report-first-run-tour-hint`) keeps the report readable; judges can dismiss it or take three steps. Stable demo pitch at **`/pitch/demo-boulder-ulta`** (`e2e/demo-pitch-smoke.spec.ts`). Trade area shopper tags stay plain names; vacancy math is broker-controlled; pitch pack and pipeline close the loop. **`/methodology/qloo`** explains Qloo in plain broker language.
+Brokers see a **compact summary-first report**: three headline stat tiles with **honest rank copy** (raw Qloo **54%** vs chain **76%** vs blend **83%** nearby-match language tied to the active ranking mode), a plain **prospect funnel** sentence (scored / already nearby / pitched), then **Top brands to pitch** with brand-specific one-line reasons. The default list follows the **fitted taste blend**; under **How we know**, **Compare ranking** toggles **Local taste** vs **Chain size** so judges can see **83%** vs **76%** mean top-10 presence on the 40-address eval without implying raw Qloo beats chain size. The **Why this brand** card surfaces live Qloo taste overlap (recorded audiences on demo chips; live API in production) plus store-check honesty. **Co-tenancy mix** pairs OSM nearby tenants with Qloo pairing lines. A **non-blocking** first-run tour (`report-first-run-tour-hint`) keeps the report readable. Stable demo pitch at **`/pitch/demo-boulder-ulta`** (`e2e/demo-pitch-smoke.spec.ts`). **Vacancy cost** inputs are broker-controlled on the report, share dialog, and pitch snapshot; pitch pack and pipeline close the loop. **`/methodology/qloo`** explains Qloo in plain broker language.
 
 ### Potential Impact
 
@@ -87,7 +87,8 @@ Eval numbers below are only from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `pack
 | Qloo-down chain-size fallback | ✓ | ✓ | ✓ | | `apps/worker/src/lib/qloo-chain-fallback.ts`, `apps/worker/src/__tests__/qloo-analyze-resilience.test.ts`, `apps/web/src/components/report/TasteUnavailableBanner.tsx` |
 | Brand-specific pitch reasons (per prospect) | ✓ | ✓ | ✓ | ✓ | `apps/worker/src/services/analysis.ts`, `apps/web/src/lib/prospect-one-line.ts`, `apps/worker/src/__tests__/prospect-reasons.test.ts` |
 | Above-fold **Top brands to pitch** (`brands-to-pitch`) | | ✓ | ✓ | | `apps/web/src/components/report/ReportSummaryAboveFold.tsx`, `e2e/report-brands-visible.spec.ts` (390 + 1440; #93) |
-| **Why this brand** card (rank-aligned reasons) | ✓ | ✓ | ✓ | ✓ | `apps/web/src/components/report/WhyThisBrandCard.tsx`, `apps/worker/src/__tests__/prospect-reasons.test.ts` |
+| **Why this brand** card (live Qloo taste overlap + honest rank line) | ✓ | ✓ | ✓ | ✓ | `WhyThisBrandCard.tsx`, `why-brand-taste-ui.ts`, `packages/fixtures/src/brand-explainability/` |
+| **Co-tenancy mix** (OSM tenants + Qloo pairing bars) | ✓ | ✓ | ✓ | | `CoTenancyMixSection.tsx`, `co-tenancy-mix.ts`, `apps/web/src/__tests__/co-tenancy-mix.test.ts` |
 | Compact report summary (stat tiles + dense top-five list) | | ✓ | ✓ | | `apps/web/src/components/report/ReportSummaryAboveFold.tsx`, `docs/screenshots/report-summary-design/` (#96) |
 | Report → pipeline → watchlist loop | ✓ | | ✓ | | `e2e/pipeline-loop.spec.ts`, `apps/worker/migrations/0005_pipeline_card_evidence_watch.sql` |
 | Pipeline statuses, notes, reminders | ✓ | ✓ | ✓ | | `apps/web/src/lib/pipeline-status.ts`, `apps/web/src/components/pipeline/PipelineCardDialog.tsx` |
@@ -102,7 +103,7 @@ Eval numbers below are only from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `pack
 | Pitch pack share link | ✓ | ✓ | ✓ | | `apps/web/src/components/report/SharePitchDialog.tsx`, `apps/worker/src/services/pipeline.ts` (pitch API) |
 | Pipeline kanban + D1 cards | ✓ | | ✓ | | `apps/web/src/pages/PipelinePage.tsx`, `apps/worker/src/lib/pipeline-cards-db.ts` |
 | Owner update share from pipeline | ✓ | ✓ | ✓ | | `apps/web/src/components/pipeline/OwnerUpdatePanel.tsx`, `apps/worker/src/lib/owner-update.ts` |
-| Brand reach lines | | ✓ | ✓ | | `apps/web/src/components/report/BrandReachLine.tsx`, `packages/fixtures/src/brand-real-estate.json` |
+| Brand reach lines (~57 verified official URLs) | | ✓ | ✓ | | `BrandReachLine.tsx`, `brand-real-estate.json` (fetch-verified **2026-10-24**; TJX, Gap Inc., VF Corp. parent pages where shared) |
 | Portfolio batch (up to 10 sites) | ✓ | | ✓ | | `apps/web/src/pages/PortfolioPage.tsx` |
 | Brand sites / heatmap explore (not used to rank pitch list) | ✓ | ✓ | | ✓ | `apps/web/src/pages/BrandPage.tsx`; heatmap lift: `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` (`heatmapAddsLift: false`) |
 | Watchlist + diff | ✓ | ✓ | ✓ | | `apps/web/src/pages/WatchlistPage.tsx`, `packages/fixtures/src/watch-diff.ts` |
@@ -131,7 +132,7 @@ Brokers and landlords lose time pitching chains that already operate inside the 
 
 ## What it does
 
-LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped live at **`ecf55c0`**:
+LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped live at **`9873456`**:
 
 ### Landing redesign
 
@@ -146,7 +147,8 @@ LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped l
 - **`ReportFirstRunTour`**: optional bottom hint (`report-first-run-tour-hint`); dismiss or **Take the tour** without blocking the report (`ReportFirstRunTour.tsx`).
 - **`WatchSpaceButton`** (`watch-this-space`) saves the address to **Watchlist** for later diff alerts.
 - Deeper sections collapse under **Why these brands**, **What it costs you**, and **How we know** (`ReportCollapsibleSection`). **How we know** hosts **`QlooRankingToggle`** (`qloo-ranking-toggle`): **Local taste** (blend, **83%** mean top-10 presence on the 40-address eval) vs **Chain size** (**76%**), reordering the proof table and summary stat (`e2e/qloo-ranking-toggle.spec.ts`).
-- Map column: ranked map, **`WhyThisBrandCard`** (`data-testid="why-this-brand"`) for the selection, sidebar facts, and **Trade area shoppers** when data is available. Full ranked list stays in collapsible **Why these brands** (`brands-to-pitch-full-list`).
+- Map column: ranked map, **`WhyThisBrandCard`** (`data-testid="why-this-brand"`) for the selection with **Qloo taste overlap** lines from live or recorded brand audiences (`whyBrandTaste`, `formatBrandTasteOverlapLine`), an honest **rank summary** line, store-check copy, and optional **BrandReachLink**. Sidebar facts and **Trade area shoppers** when data is available. Full ranked list stays in collapsible **Why these brands** (`brands-to-pitch-full-list`).
+- **`CoTenancyMixSection`** (`data-testid="co-tenancy-mix"`): nearby OSM retail tenants plus category bars comparing who is already open vs who you are pitching (`buildCoTenancyMix`, `co-tenancy-copy.ts`).
 
 ### Trade area shoppers (Qloo tags)
 
@@ -157,7 +159,7 @@ LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped l
 ### Who to contact (brand reach)
 
 - **`BrandReachLine`** (`data-testid="brand-reach-line"`) on the pitch list (`BrandsToPitch`) and on each brand block in **`PitchPackBrief`**.
-- When `brand-real-estate.json` has a verified URL, shows **How to reach them: Official real-estate page**. Otherwise a plain fallback line from `brand-reach-copy.ts`.
+- When `brand-real-estate.json` has a verified URL (official brand or parent company domain, HTTP **200** on **2026-10-24**), shows the official real-estate link. Examples added for demo-chip staples: **TJ Maxx**, **Old Navy**, **Foot Locker**, **Dick's Sporting Goods**, **Sprouts**, **Kendra Scott**, and TJX/Gap/VF shared portals. Otherwise **Search for their real estate contact** (`brand-reach-copy.ts`). CI skips transient network failures (status **0**) without failing the build.
 - Pitch pack also has a dashed **contact slot** when no reach record exists yet.
 
 ### Vacancy cost

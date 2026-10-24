@@ -11,39 +11,60 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const resolved = JSON.parse(readFileSync(join(root, 'data/brands/resolved_brand_ids.json'), 'utf8'));
 const byName = new Map(resolved.map((r) => [r.name.toLowerCase(), r]));
 
-/** Official brand-site real estate or site submission pages (curl-verified Oct 23, 2026). */
+/** Official brand-site real estate or site submission pages (fetch-verified; see verifiedAt in JSON). */
+const VERIFIED_AT = '2026-10-24';
 const VERIFIED = [
   ['7-Eleven', 'https://www.7-eleven.com/real-estate'],
   ['Abercrombie & Fitch', 'https://www.abercrombie.com/shop/us/real-estate'],
+  ['Athleta', 'https://www.gapinc.com/en-us/investors/real-estate'],
+  ['Banana Republic', 'https://www.gapinc.com/en-us/investors/real-estate'],
   ['Bath & Body Works', 'https://www.bathandbodyworks.com/real-estate'],
   ['Blaze Pizza', 'https://www.blazepizza.com/real-estate'],
   ['Burger King', 'https://www.bk.com/real-estate'],
   ['Burlington', 'https://www.burlington.com/real-estate'],
+  ['Chick-fil-A', 'https://www.chick-fil-a.com/franchise'],
   ['Chipotle Mexican Grill', 'https://www.chipotle.com/contact-us'],
+  ["Dave & Buster's", 'https://www.daveandbusters.com/real-estate'],
+  ["Dick's Sporting Goods", 'https://www.dickssportinggoods.com/real-estate'],
+  ['Dollar General', 'https://newscenter.dollargeneral.com/real-estate'],
   ['DSW', 'https://www.dsw.com/en/us/real-estate'],
   ['Dillard\'s', 'https://www.dillards.com/real-estate'],
   ["Dunkin'", 'https://www.dunkindonuts.com/en/about/real-estate'],
   ['Firehouse Subs', 'https://www.firehousesubs.com/real-estate'],
+  ['Five Guys', 'https://www.fiveguys.com/real-estate'],
+  ['Foot Locker', 'https://www.footlocker.com/real-estate'],
+  ['Gap', 'https://www.gapinc.com/en-us/investors/real-estate'],
   ['H-E-B', 'https://www.heb.com/real-estate'],
   ['Hollister', 'https://www.abercrombie.com/shop/us/real-estate'],
+  ['HomeGoods', 'https://www.tjxrealestate.com/'],
   ['IKEA', 'https://www.ikea.com/us/en/customer-service/shopping-at-ikea/real-estate-pub2d87ef20'],
   ['In-N-Out Burger', 'https://www.in-n-out.com/real-estate'],
   ["Jersey Mike's Subs", 'https://www.jerseymikes.com/real-estate'],
   ['Jimmy John\'s', 'https://www.jimmyjohns.com/real-estate/'],
+  ['Kendra Scott', 'https://www.kendrascott.com/pages/real-estate'],
   ['Krispy Kreme', 'https://www.krispykreme.com/real-estate'],
   ['LensCrafters', 'https://www.luxottica.com/en/real-estate/'],
   ['MOD Pizza', 'https://modpizza.com/real-estate'],
+  ['Marshalls', 'https://www.tjxrealestate.com/'],
+  ['Michaels', 'https://www.michaels.com/real-estate'],
   ['Nike', 'https://www.nike.com/retail/real-estate'],
   ['Nordstrom', 'https://www.nordstrom.com/browse/about/real-estate'],
+  ['Old Navy', 'https://www.gapinc.com/en-us/investors/real-estate'],
+  ["Ollie's Bargain Outlet", 'https://www.ollies.us/real-estate'],
+  ['Orangetheory Fitness', 'https://www.orangetheory.com/real-estate'],
   ['Popeyes', 'https://www.popeyes.com/real-estate'],
   ['Publix', 'https://corporate.publix.com/real-estate'],
   ['Sam\'s Club', 'https://www.samsclub.com/content/real-estate'],
+  ['Sprouts Farmers Market', 'https://www.sprouts.com/real-estate'],
   ['Starbucks', 'https://retail.starbucks.com/'],
   ['Steak \'n Shake', 'https://www.steaknshake.com/real-estate'],
   ['Sunglass Hut', 'https://www.luxottica.com/en/real-estate/'],
   ['Taco Bell', 'https://www.tacobell.com/franchise'],
   ['Target', 'https://www.target.com/c/real-estate/-/N-4nav'],
+  ['The North Face', 'https://www.vf.com/real-estate'],
+  ['TJ Maxx', 'https://www.tjxrealestate.com/'],
   ['Ulta', 'https://www.ulta.com/company/real-estate'],
+  ['Vans', 'https://www.vf.com/real-estate'],
   ['Walgreens', 'https://www.walgreens.com/topic/real-estate.jsp'],
   ['Walmart', 'https://www.walmart.com/cp/real-estate/1228302'],
   ['Wendy\'s', 'https://www.wendys.com/real-estate'],
@@ -75,6 +96,7 @@ for (const [name, url] of VERIFIED) {
     status: 'verified',
     url,
     source: url,
+    verifiedAt: VERIFIED_AT,
   });
 }
 
@@ -113,7 +135,7 @@ entries.sort((a, b) => a.name.localeCompare(b.name));
 
 const out = {
   version: 1,
-  updatedAt: '2026-10-24',
+  updatedAt: VERIFIED_AT,
   entries,
 };
 
