@@ -6,7 +6,7 @@
 
 **On the live landing today:** the same headline appears above a short helper line from the app: "Enter an address to see which brands local shoppers want nearby, then check real store locations before you pitch." (`LANDING_PLAIN_SUMMARY` in `apps/web/src/lib/broker-copy.ts`).
 
-**Production reference:** Cloudflare Pages at commit **`60e57c3`** (demo chips + live mode). Mobile Lighthouse on local production preview (`docs/qa/a11y-perf.md`): landing performance **about 93**, Wicker report **84** (accessibility 100 on both).
+**Production reference:** Cloudflare Pages at commit **`60e57c3`** (demo chips + live mode). Mobile Lighthouse on local production preview (`docs/qa/a11y-perf.md`): landing performance **about 93**, Wicker report **67** (five-run median; accessibility 100 on both).
 
 Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` (40 US addresses, live Qloo API, October 23, 2026).
 
@@ -84,7 +84,7 @@ Eval numbers below are only from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `pack
 | Pipeline statuses, notes, reminders | ✓ | ✓ | ✓ | | `apps/web/src/lib/pipeline-status.ts`, `apps/web/src/components/pipeline/PipelineCardDialog.tsx` |
 | Plain-language broker copy pass | | ✓ | ✓ | | `apps/web/src/lib/broker-visible-jargon.ts`, `e2e/broker-jargon.spec.ts`, `docs/qa/a11y-perf.md` |
 | How LeaseUp uses Qloo (`/methodology/qloo`) | ✓ | ✓ | | ✓ | `apps/web/src/pages/HowLeaseUpUsesQlooPage.tsx`, `apps/web/src/lib/qloo-broker-explainer-copy.ts` |
-| Mobile Lighthouse (local preview) | ✓ | ✓ | | | `docs/qa/a11y-perf.md` (landing ~93 perf, report **84** perf mobile) |
+| Mobile Lighthouse (local preview) | ✓ | ✓ | | | `docs/qa/a11y-perf.md` (landing ~93 perf, report **67** perf mobile, five-run median) |
 | Trade area shopper tags (location insights) | ✓ | ✓ | ✓ | | `apps/worker/src/lib/trade-area-shoppers.ts`, `apps/web/src/components/report/WhoShopsHereCard.tsx` |
 | Store presence checks (ATP + OSM on chips) | ✓ | ✓ | ✓ | | `packages/fixtures/src/store-locations.json`, `apps/worker/src/lib/analysis-enrichment.ts`; false-positive audit (PR #89): removed all 4 known false positives across 13 test sites (not zero FP; OSM covers 25/227 chains) |
 | Summary-first report + collapsible depth | | ✓ | ✓ | | `apps/web/src/components/report/ReportSummaryAboveFold.tsx` |
@@ -198,7 +198,7 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 - **Web:** React, Vite, MapLibre GL, TanStack Query on Cloudflare Pages.
 - **API:** Cloudflare Worker (Hono), response cache for successful upstream calls, D1 for portfolio, pipeline, and metrics.
-- **Quality:** Playwright e2e (broker jargon, pipeline loop, Qloo-down, CRM), Lighthouse CI (mobile report perf **84**, landing **~93** per `docs/qa/a11y-perf.md`), CSP regression, worker bundle guard, Vitest on copy and ranking helpers.
+- **Quality:** Playwright e2e (broker jargon, pipeline loop, Qloo-down, CRM), Lighthouse CI (mobile report perf **67**, landing **~93** per `docs/qa/a11y-perf.md`), CSP regression, worker bundle guard, Vitest on copy and ranking helpers.
 
 ### Exactly how Qloo is used
 
@@ -233,7 +233,7 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 - Live at **`60e57c3`**: summary report with **brand-specific reasons**, **watchlist**, **pipeline evidence loop**, statuses/notes/reminders, and **Qloo-down fallback**.
 - Trade area shopper tags; brand reach lines; vacancy cost on report, share dialog, and pitch snapshot; owner update share links.
-- Plain-language broker pass + **`/methodology/qloo`** explainer; mobile Lighthouse **84** on report, **~93** on landing (local preview audit).
+- Plain-language broker pass + **`/methodology/qloo`** explainer; mobile Lighthouse **67** on report (five-run median), **~93** on landing (local preview audit).
 - Preregistered **40-address** live Qloo evaluation: mean top-10 presence **54% / 76% / 82%** (raw Qloo / chain / blend) per ATP/OSM; same-size tier AUC **0.667**; mid-size tier **P@5 0.53 vs 0.23**.
 
 ---

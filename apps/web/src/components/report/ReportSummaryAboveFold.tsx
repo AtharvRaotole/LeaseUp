@@ -20,6 +20,9 @@ export function ReportSummaryAboveFold({
   selected,
   onSelectBrand,
   onSharePitch,
+  showHeadlineStats = true,
+  showBrandPitchDetails = true,
+  showPrimaryActions = true,
 }: {
   results: AnalysisResponse;
   request: AnalysisRequest;
@@ -30,6 +33,10 @@ export function ReportSummaryAboveFold({
   selected: ProspectPack | null;
   onSelectBrand: (p: ProspectPack) => void;
   onSharePitch: () => void;
+  showHeadlineStats?: boolean;
+  /** When false, brand rows render without one-line reasons or per-row pipeline CTAs (mobile LCP/TBT). */
+  showBrandPitchDetails?: boolean;
+  showPrimaryActions?: boolean;
 }) {
   const topFive = results.prospects.slice(0, 5);
   const pipelineProspect = selected ?? topFive[0] ?? null;
@@ -41,6 +48,7 @@ export function ReportSummaryAboveFold({
         radiusKm={radiusKm}
         chipSlug={chipSlug}
         backtestOverride={backtestOverride}
+        showStats={showHeadlineStats}
       />
 
       {topFive.length > 0 ? (
@@ -52,7 +60,9 @@ export function ReportSummaryAboveFold({
           <ol className="mt-5 space-y-4" data-testid="report-top-brands-list">
             {topFive.map((prospect, index) => {
               const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
-              const reason = prospectOneLineReason(prospect, results, radiusKm);
+              const reason = showBrandPitchDetails
+                ? prospectOneLineReason(prospect, results, radiusKm)
+                : '';
               const isSelected = selected?.brand.entityId === prospect.brand.entityId;
               return (
                 <li key={prospect.brand.entityId}>
@@ -72,22 +82,26 @@ export function ReportSummaryAboveFold({
                         <span className="text-meta text-ink-3">#{index + 1}</span>
                         <span className="font-medium text-body-lg text-ink">{name}</span>
                       </span>
-                      <span className="mt-1 block text-body text-ink-2">{reason}</span>
+                      {showBrandPitchDetails && reason ? (
+                        <span className="mt-1 block text-body text-ink-2">{reason}</span>
+                      ) : null}
                     </span>
                   </button>
-                  <div className="mt-2 pl-14">
-                    <AddToPipelineButton
-                      size="sm"
-                      variant="secondary"
-                      wrapperTestId={`add-pipeline-top-${index}`}
-                      buildPayload={() =>
-                        pipelineCardFromProspect(prospect, results, {
-                          reportPath: buildReportPath(request, slug),
-                          radiusKm,
-                        })
-                      }
-                    />
-                  </div>
+                  {showBrandPitchDetails ? (
+                    <div className="mt-2 pl-14">
+                      <AddToPipelineButton
+                        size="sm"
+                        variant="secondary"
+                        wrapperTestId={`add-pipeline-top-${index}`}
+                        buildPayload={() =>
+                          pipelineCardFromProspect(prospect, results, {
+                            reportPath: buildReportPath(request, slug),
+                            radiusKm,
+                          })
+                        }
+                      />
+                    </div>
+                  ) : null}
                 </li>
               );
             })}
@@ -102,27 +116,29 @@ export function ReportSummaryAboveFold({
         </Card>
       )}
 
-      <div
-        className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
-        data-testid="report-primary-actions"
-      >
-        <Button type="button" size="md" variant="primary" onClick={onSharePitch}>
-          Share pitch pack
-        </Button>
-        {pipelineProspect && (
-          <AddToPipelineButton
-            size="md"
-            variant="secondary"
-            wrapperTestId="report-pipeline-cta"
-            buildPayload={() =>
-              pipelineCardFromProspect(pipelineProspect, results, {
-                reportPath: buildReportPath(request, slug),
-                radiusKm,
-              })
-            }
-          />
-        )}
-      </div>
+      {showPrimaryActions ? (
+        <div
+          className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
+          data-testid="report-primary-actions"
+        >
+          <Button type="button" size="md" variant="primary" onClick={onSharePitch}>
+            Share pitch pack
+          </Button>
+          {pipelineProspect && (
+            <AddToPipelineButton
+              size="md"
+              variant="secondary"
+              wrapperTestId="report-pipeline-cta"
+              buildPayload={() =>
+                pipelineCardFromProspect(pipelineProspect, results, {
+                  reportPath: buildReportPath(request, slug),
+                  radiusKm,
+                })
+              }
+            />
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }

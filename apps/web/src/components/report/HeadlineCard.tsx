@@ -15,11 +15,14 @@ export function HeadlineCard({
   radiusKm,
   chipSlug,
   backtestOverride,
+  showStats = true,
 }: {
   results: AnalysisResponse;
   radiusKm: number;
   chipSlug?: string | null;
   backtestOverride?: AnalysisResponse['backtest'];
+  /** When false, only the headline renders (stats deferred for faster LCP). */
+  showStats?: boolean;
 }) {
   const count = results.prospects.length;
   const area = placeHeadlineLabel(results.location, chipSlug);
@@ -42,6 +45,7 @@ export function HeadlineCard({
           ? `${count} brand${count === 1 ? '' : 's'} fit ${area} but have no store within ${radiusKm} km.`
           : `Every top brand for ${area} already has a store within ${radiusKm} km.`}
       </h2>
+      {showStats && (
       <div className="mt-8 grid grid-cols-3 gap-3 md:gap-4">
         <StatTile
           label="Nearby match"
@@ -65,6 +69,7 @@ export function HeadlineCard({
           tooltip={dataConfidenceStatTooltip()}
         />
       </div>
+      )}
     </Card>
   );
 }

@@ -85,6 +85,7 @@ export function ReportPage() {
   const isMdUp = useMediaQuery('(min-width: 768px)');
   const mountMapColumn = isMdUp || mobilePane === 'map';
   const [deferPostPaint, setDeferPostPaint] = useState(false);
+  const [deferMobileBrandDetails, setDeferMobileBrandDetails] = useState(false);
   const [deferDeepSections, setDeferDeepSections] = useState(false);
 
   useEffect(() => {
@@ -96,6 +97,7 @@ export function ReportPage() {
   useEffect(() => {
     if (!results) {
       setDeferPostPaint(false);
+      setDeferMobileBrandDetails(false);
       setDeferDeepSections(false);
       return;
     }
@@ -118,19 +120,27 @@ export function ReportPage() {
       return () => window.clearTimeout(t);
     };
     let clearTour: (() => void) | undefined;
+    let clearBrand: (() => void) | undefined;
     let clearDeep: (() => void) | undefined;
+    if (isMdUp) {
+      setDeferMobileBrandDetails(true);
+    }
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
+        if (!isMdUp) {
+          clearBrand = schedule(() => setDeferMobileBrandDetails(true), 400);
+        }
         clearTour = schedule(() => setDeferPostPaint(true), 2500);
-        clearDeep = schedule(() => setDeferDeepSections(true), 5000);
+        clearDeep = schedule(() => setDeferDeepSections(true), 12_000);
       });
     });
     return () => {
       cancelled = true;
+      clearBrand?.();
       clearTour?.();
       clearDeep?.();
     };
-  }, [results]);
+  }, [results, isMdUp]);
 
   const [geocodeCandidates, setGeocodeCandidates] = useState<GeocodeCandidate[] | null>(null);
   const [geocodeChecking, setGeocodeChecking] = useState(false);
@@ -310,6 +320,9 @@ export function ReportPage() {
             selected={selected}
             onSelectBrand={selectProspect}
             onSharePitch={() => setSharePitchOpen(true)}
+            showHeadlineStats={deferPostPaint}
+            showBrandPitchDetails={isMdUp || deferMobileBrandDetails}
+            showPrimaryActions={isMdUp || deferPostPaint}
           />
           {deferPostPaint && (
             <Suspense fallback={null}>
@@ -328,7 +341,7 @@ export function ReportPage() {
               slug={slug ?? 'run'}
             />
           )}
-          {(loading || steps.length > 0) && (
+          {deferPostPaint && (loading || steps.length > 0) && (
             <AgentRunStrip
               steps={steps}
               loading={loading}
@@ -372,7 +385,7 @@ export function ReportPage() {
     <div className="min-h-screen bg-bg print-pack">
       {shareHead && <ShareHead {...shareHead} />}
       <TopBar />
-      {results?.mode === 'demo' && <DemoBanner />}
+      {results?.mode === 'demo' && deferPostPaint && <DemoBanner />}
       {results?.tasteDataStatus === 'unavailable' && results.rankingNotice && (
         <TasteUnavailableBanner message={results.rankingNotice} />
       )}
