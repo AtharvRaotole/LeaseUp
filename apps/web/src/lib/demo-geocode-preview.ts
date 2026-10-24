@@ -1,5 +1,5 @@
 import type { GeocodePreviewResponse } from '@leaseup/contracts';
-import { matchDemoFixtureId, wickerparkFixture } from '@leaseup/fixtures';
+import { DEMO_CHIP_ADDRESSES, matchDemoFixtureId, wickerparkFixture } from '@leaseup/fixtures';
 
 /** Recorded ambiguous geocode for 350 Bleecker (offline demo, no Nominatim). */
 function bleeckerDemoPreview(address: string): GeocodePreviewResponse | null {
