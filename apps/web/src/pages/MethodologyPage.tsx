@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { EvalRunRow } from '@leaseup/fixtures';
 import {
   loadEvalRunBundle,
@@ -67,6 +68,23 @@ export function MethodologyPage() {
             A transparent pipeline from address to ranked brands, with backtests against real store
             footprints so judges can see where taste data helps and where it does not.
           </p>
+
+          <div
+            className="mt-8 rounded-card border border-border bg-surface-2 p-5"
+            data-testid="methodology-qloo-explainer-link"
+          >
+            <h2 className="font-semibold text-ink">How LeaseUp uses Qloo</h2>
+            <p className="mt-2 text-sm leading-relaxed text-ink-2">
+              Short broker-friendly explainer: what we call from Qloo, how ranking works, and what we
+              do not claim. No API jargon required.
+            </p>
+            <Link
+              to="/methodology/qloo"
+              className="mt-4 inline-flex min-h-11 items-center text-sm font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
+            >
+              Read the Qloo explainer
+            </Link>
+          </div>
 
           <section className="mt-12" aria-labelledby="pipeline-heading">
             <h2 id="pipeline-heading" className="font-display font-semibold text-title text-ink">
