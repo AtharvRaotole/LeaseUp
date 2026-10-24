@@ -72,6 +72,11 @@ test.describe('LeaseUp feature pages (demo)', () => {
     await expect(page.getByRole('link', { name: 'Open pitch pack' })).toBeVisible({
       timeout: 240000,
     });
+    await expect(page.getByTestId('agent-receipt')).toBeVisible({ timeout: 15000 });
+    await expect(page.getByTestId('agent-receipt-step-agent_plan')).toBeVisible();
+    await expect(page.getByTestId(/^agent-receipt-tool-agent_plan-/)).toHaveCount(
+      { minimum: 1 }
+    );
   });
 
   test('pipeline add from report and show board', async ({ page }) => {

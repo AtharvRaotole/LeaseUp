@@ -47,6 +47,25 @@ describe('agent receipt', () => {
     expect(buildPlannerUnavailableLine({ fallbackReason: 'OpenAI timeout' })).toContain('OpenAI timeout');
   });
 
+  it('reads plannerMode when mode is omitted (worker detail parity)', () => {
+    const planner = buildPlannerReceiptSection({
+      ...DEMO_PROSPECTING_RECEIPT_JOB,
+      steps: DEMO_PROSPECTING_RECEIPT_JOB.steps.map((s) =>
+        s.id === 'agent_plan'
+          ? {
+              ...s,
+              detail: {
+                plannerMode: 'dag_fallback',
+                fallbackReason: 'no_planner',
+                agentSteps: [],
+              },
+            }
+          : s
+      ),
+    });
+    expect(planner.fallbackLine).toContain('planner was not available on this server');
+  });
+
   it('sanitizes live planner result summaries (no UUIDs or raw tool ids)', () => {
     const decisions = parseAgentToolDecisions(LIVE_AGENT_PLAN_STEP);
     expect(decisions).toHaveLength(1);
@@ -68,7 +87,12 @@ describe('agent receipt', () => {
         s.id === 'agent_plan'
           ? {
               ...s,
-              detail: { mode: 'dag_fallback', fallbackReason: 'no_planner', agentSteps: [] },
+              detail: {
+                mode: 'dag_fallback',
+                plannerMode: 'dag_fallback',
+                fallbackReason: 'no_planner',
+                agentSteps: [],
+              },
             }
           : s
       ),

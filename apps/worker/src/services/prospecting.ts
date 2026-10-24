@@ -55,6 +55,18 @@ function initialSteps(): ProspectingStep[] {
   return STEP_DEFS.map((s) => ({ ...s, status: 'pending' }));
 }
 
+/** Backfill steps added after a job was created (e.g. agent_plan on deploy34). */
+export function syncProspectingStepDefs(steps: ProspectingStep[]): ProspectingStep[] {
+  const byId = new Map(steps.map((s) => [s.id, s]));
+  return STEP_DEFS.map((def) => {
+    const existing = byId.get(def.id);
+    if (existing) {
+      return existing.label === def.label ? existing : { ...existing, label: def.label };
+    }
+    return { ...def, status: 'pending' as const };
+  });
+}
+
 const ANALYSIS_TO_PROSPECTING: Partial<Record<AnalysisStepId, ProspectingStepId>> = {
   locate: 'geocode',
   taste: 'taste',
@@ -98,7 +110,13 @@ export class ProspectingService {
       .bind(id)
       .first<{ payload: string }>();
     if (!row?.payload) return null;
-    return ProspectingJobSchema.parse(JSON.parse(row.payload));
+    const job = ProspectingJobSchema.parse(JSON.parse(row.payload));
+    const synced = syncProspectingStepDefs(job.steps);
+    if (synced.length !== job.steps.length || synced.some((s, i) => s.id !== job.steps[i]?.id)) {
+      job.steps = synced;
+      await this.save(job);
+    }
+    return job;
   }
 
   async resumeStaleRunning(id: string): Promise<ProspectingJob | null> {
@@ -223,6 +241,8 @@ export class ProspectingService {
 
     if (job.status === 'complete') return job;
 
+    job.steps = syncProspectingStepDefs(job.steps);
+
     job.status = 'running';
     job.runningStartedAt = new Date().toISOString();
     await this.save(job);
@@ -256,6 +276,7 @@ export class ProspectingService {
       const plan = await runProspectingAgentPlanner({
         env: this.env,
         location: job.confirmedLocation!,
+        fixtureAddress: job.input.address,
         radiusKm: request.radius,
         runId,
         qloo,
@@ -266,8 +287,13 @@ export class ProspectingService {
         status: 'complete',
         durationMs: Date.now() - planStarted,
         summary: plan.summary,
+        reason:
+          plan.mode === 'dag_fallback' && plan.fallbackReason
+            ? plan.fallbackReason
+            : undefined,
         detail: {
           mode: plan.mode,
+          plannerMode: plan.mode,
           fallbackReason: plan.fallbackReason,
           budget: {
             maxSteps: PROSPECTING_AGENT_MAX_STEPS,
@@ -428,6 +454,13 @@ export class ProspectingService {
     id: ProspectingStepId,
     patch: Partial<ProspectingStep>
   ): Promise<void> {
+    job.steps = syncProspectingStepDefs(job.steps);
+    const def = STEP_DEFS.find((s) => s.id === id);
+    const found = job.steps.some((s) => s.id === id);
+    if (!found && def) {
+      job.steps.push({ ...def, status: 'pending', ...patch });
+      return;
+    }
     job.steps = job.steps.map((s) => (s.id === id ? { ...s, ...patch } : s));
   }
 
