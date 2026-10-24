@@ -30,6 +30,8 @@ const STEPS = [
   },
 ] as const;
 
+type Phase = 'hidden' | 'hint' | 'steps';
+
 type PopoverLayout =
   | { mode: 'sheet' }
   | { mode: 'floating'; top: number; left: number; width: number; arrow: 'top' | 'left' | 'right' };
@@ -98,41 +100,57 @@ function computeLayout(stepIndex: number): PopoverLayout | null {
   return { mode: 'floating', top, left, width, arrow: 'top' };
 }
 
+function readTourDone(): boolean {
+  try {
+    return localStorage.getItem(REPORT_TOUR_STORAGE_KEY) === 'done';
+  } catch {
+    return true;
+  }
+}
+
+function persistTourDone() {
+  try {
+    localStorage.setItem(REPORT_TOUR_STORAGE_KEY, 'done');
+  } catch {
+    /* private mode */
+  }
+}
+
 export function ReportFirstRunTour({ ready }: { ready: boolean }) {
+  const [phase, setPhase] = useState<Phase>('hidden');
   const [step, setStep] = useState(0);
-  const [visible, setVisible] = useState(false);
   const [layout, setLayout] = useState<PopoverLayout | null>(null);
 
   useEffect(() => {
     if (!ready) return;
-    try {
-      if (localStorage.getItem(REPORT_TOUR_STORAGE_KEY) === 'done') return;
-    } catch {
-      return;
-    }
-    setVisible(true);
+    if (readTourDone()) return;
+    setPhase('hint');
   }, [ready]);
 
-  const dismiss = useCallback(() => {
-    try {
-      localStorage.setItem(REPORT_TOUR_STORAGE_KEY, 'done');
-    } catch {
-      /* private mode */
-    }
-    setVisible(false);
+  const finish = useCallback(() => {
+    persistTourDone();
+    setPhase('hidden');
     highlightTarget(undefined);
   }, []);
 
-  useOnEscape(dismiss, visible);
+  const startSteps = useCallback(() => {
+    setStep(0);
+    setPhase('steps');
+  }, []);
 
-  const placePopover = () => {
+  useOnEscape(() => {
+    if (phase === 'steps') finish();
+    else if (phase === 'hint') finish();
+  }, phase !== 'hidden');
+
+  const placePopover = useCallback(() => {
     const current = STEPS[step] ?? STEPS[0];
     setLayout(computeLayout(step));
     highlightTarget(current.highlightTestId);
-  };
+  }, [step]);
 
   useLayoutEffect(() => {
-    if (!visible) {
+    if (phase !== 'steps') {
       highlightTarget(undefined);
       setLayout(null);
       return;
@@ -146,9 +164,61 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
       window.removeEventListener('scroll', onLayout, true);
       highlightTarget(undefined);
     };
-  }, [step, visible]);
+  }, [phase, step, placePopover]);
 
-  if (!visible || !layout) return null;
+  if (phase === 'hint') {
+    return createPortal(
+      <div
+        className="no-print pointer-events-none fixed inset-x-0 bottom-0 z-[60] flex justify-center px-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:inset-x-auto sm:right-4 sm:bottom-4 sm:justify-end sm:px-0"
+        data-testid="report-first-run-tour-hint"
+      >
+        <div
+          className="pointer-events-auto w-full max-w-md rounded-card border border-border bg-surface p-4 shadow-pop sm:max-w-sm"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="font-medium text-body text-ink">Quick tour available</p>
+              <p className="mt-1 text-small text-ink-2">
+                See where your pitch list, brand details, and pipeline live. Your report stays fully visible.
+              </p>
+            </div>
+            <button
+              type="button"
+              className="shrink-0 rounded-control p-1 text-ink-3 transition-colors duration-150 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              onClick={finish}
+              aria-label="Dismiss tour hint"
+              data-testid="report-tour-hint-dismiss"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="primary"
+              onClick={startSteps}
+              data-testid="report-tour-take"
+            >
+              Take the tour
+            </Button>
+            <button
+              type="button"
+              className="rounded-control text-small text-ink-3 underline-offset-2 transition-colors duration-150 hover:text-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              onClick={finish}
+            >
+              Not now
+            </button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
+  }
+
+  if (phase !== 'steps' || !layout) return null;
 
   const current = STEPS[step] ?? STEPS[0];
   const isLast = step >= STEPS.length - 1;
@@ -194,7 +264,7 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
         <button
           type="button"
           className="shrink-0 rounded-control p-1 text-ink-3 transition-colors duration-150 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-          onClick={dismiss}
+          onClick={finish}
           aria-label="Dismiss tour"
           data-testid="report-tour-dismiss"
         >
@@ -212,14 +282,14 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
             Next
           </Button>
         ) : (
-          <Button type="button" size="sm" variant="primary" onClick={dismiss} data-testid="report-tour-finish">
+          <Button type="button" size="sm" variant="primary" onClick={finish} data-testid="report-tour-finish">
             Got it
           </Button>
         )}
         <button
           type="button"
           className="rounded-control text-small text-ink-3 underline-offset-2 transition-colors duration-150 hover:text-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-          onClick={dismiss}
+          onClick={finish}
         >
           Skip tour
         </button>
