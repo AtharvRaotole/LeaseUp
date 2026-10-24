@@ -35,6 +35,33 @@ export const LOCAL_AUDIENCE_TOP_K = 30;
  */
 export const BRAND_AUDIENCE_MIN_PANEL_LIFT = 0.03;
 
+/**
+ * Cosmetic display names for Qloo audience entity ids whose raw names drop punctuation
+ * ("Arts Crafts", "Health And Beauty"). Same audience, same id, readable label; never a new category.
+ */
+export const QLOO_AUDIENCE_DISPLAY_NAMES: Readonly<Record<string, string>> = {
+  '604A723B-3E2C-4795-89AA-DF5BA0C3B3C5': 'Arts & Crafts', // Arts Crafts
+  '8F0407D3-64F3-47BF-A6B1-BA4C30465F71': 'Health & Beauty', // Health And Beauty
+  'AAF408EF-5947-4035-BD34-6678F4A94994': 'Arts & Culture', // Arts Culture
+  '42D6F3D0-AD4A-4AC8-B3EE-229775638336': 'Art & Collectibles', // Art Collectibles
+  '1B2E2B7F-2FF5-495F-9389-FD4D35A03144': 'Stocks & Bonds', // Stocks Bonds
+  'ED8798A4-1EB1-4E53-80EA-4FD08BD3C148': 'Gourmand & Fine Dining', // Gourmand Fine Dining
+  'ED9B04EF-C693-44C8-82DE-C2B138710601': 'Jewelry', // Jewellery
+  '22D0A7AF-7833-49F3-8E36-42E8D91EEC8B': 'Parents with Young Children', // Parents With Young Children
+  '2C606C12-C64F-46B1-BAE6-4FB0C278E612': 'Angel Startup Investing', // Angel Start Up Investing
+};
+
+/** Readable label for a Qloo audience: mapped by entity id, otherwise Qloo's own name. */
+export function audienceDisplayName(entityId: string, qlooName: string): string {
+  return QLOO_AUDIENCE_DISPLAY_NAMES[entityId] ?? qlooName.trim();
+}
+
+/**
+ * Distinctiveness: an audience that passes every other gate for more than this share of the brands
+ * recorded at a location says nothing specific about any one of them, so it is dropped there.
+ */
+export const AUDIENCE_MAX_BRAND_SHARE_AT_LOCATION = 0.5;
+
 export type AudienceOverlapOptions = {
   brandMinAffinity?: number;
   brandTopK?: number;
@@ -42,6 +69,8 @@ export type AudienceOverlapOptions = {
   /** entityId -> baseline affinity across a panel of other brands (0.5 when absent). */
   panelBaseline?: Record<string, number>;
   minPanelLift?: number;
+  /** Audience entity ids to drop (generic at this location; see `genericAudienceIdsAtLocation`). */
+  excludeAudienceIds?: ReadonlySet<string>;
 };
 
 function sortedByAffinity(rows: QlooAudienceRow[]): QlooAudienceRow[] {
@@ -70,6 +99,7 @@ export function computeBrandLocalAudienceOverlap(
   const localTopK = options.localTopK ?? LOCAL_AUDIENCE_TOP_K;
   const baseline = options.panelBaseline;
   const minLift = options.minPanelLift ?? BRAND_AUDIENCE_MIN_PANEL_LIFT;
+  const exclude = options.excludeAudienceIds;
 
   const localRank = new Map<string, number>();
   sortedByAffinity(localRows)
@@ -80,12 +110,39 @@ export function computeBrandLocalAudienceOverlap(
     .slice(0, brandTopK)
     .filter((row) => row.affinity >= brandMin && localRank.has(row.entityId))
     .filter((row) => !baseline || row.affinity - (baseline[row.entityId] ?? 0.5) >= minLift)
+    .filter((row) => !exclude?.has(row.entityId))
     .map((row) => ({
       entityId: row.entityId,
-      name: row.name.trim(),
+      name: audienceDisplayName(row.entityId, row.name),
       affinity: row.affinity,
       affinityRank: localRank.get(row.entityId)!,
     }));
+}
+
+/**
+ * Audience ids that pass the overlap gates (including panel lift) for more than
+ * `AUDIENCE_MAX_BRAND_SHARE_AT_LOCATION` of the given brands at one location. Needs at least two brands;
+ * with fewer there is no basis to call anything generic.
+ */
+export function genericAudienceIdsAtLocation(
+  brands: Array<{ brandEntityId: string; audiences: QlooAudienceRow[] }>,
+  localRows: QlooAudienceRow[],
+  baselineFor: (brandEntityId: string) => Record<string, number> | undefined,
+  maxShare = AUDIENCE_MAX_BRAND_SHARE_AT_LOCATION
+): Set<string> {
+  const generic = new Set<string>();
+  if (brands.length < 2) return generic;
+  const counts = new Map<string, number>();
+  for (const brand of brands) {
+    const rows = computeBrandLocalAudienceOverlap(brand.audiences, localRows, {
+      panelBaseline: baselineFor(brand.brandEntityId),
+    });
+    for (const row of rows) counts.set(row.entityId, (counts.get(row.entityId) ?? 0) + 1);
+  }
+  for (const [id, count] of counts) {
+    if (count > brands.length * maxShare) generic.add(id);
+  }
+  return generic;
 }
 
 function toSignal(row: TradeAreaTasteRow): BrandTasteOverlapSignal {

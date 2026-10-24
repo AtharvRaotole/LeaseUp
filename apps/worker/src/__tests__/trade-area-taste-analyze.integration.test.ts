@@ -37,8 +37,8 @@ describe('tradeAreaTaste on analyze response', () => {
     const ulta = boulder.prospects.find(
       (p) => p.brand.entityId === '0F77E9A4-121C-4941-ACE1-28502DBF1865'
     );
-    // Live Qloo recordings: only Health And Beauty passes the brand x local overlap guard for Ulta.
-    expect(ulta?.whyBrandTaste?.signals.map((s) => s.name)).toEqual(['Health And Beauty']);
+    // Live Qloo recordings: only Health & Beauty passes the brand x local overlap guard for Ulta.
+    expect(ulta?.whyBrandTaste?.signals.map((s) => s.name)).toEqual(['Health & Beauty']);
     expect(ulta?.whyBrandTaste?.signals[0]?.kind).toBe('audience');
     expect(ulta?.whyBrandTaste?.summary).toContain('Ulta');
 
@@ -50,8 +50,20 @@ describe('tradeAreaTaste on analyze response', () => {
     const tj = wicker.prospects.find(
       (p) => p.brand.entityId === 'A94FC7B6-34D3-4970-9EA5-2D17C49E84B6'
     );
-    expect(tj?.whyBrandTaste?.signals.map((s) => s.name)).toEqual(['Arts Crafts', 'Home Organization']);
+    expect(tj?.whyBrandTaste?.signals.map((s) => s.name)).toEqual(['Arts & Crafts', 'Home Organization']);
     expect(tj?.whyBrandTaste?.summary).toMatch(/TJ Maxx/i);
+
+    // Distinctiveness: Yoga and Sneakerheads pass for most brands pitched at Wicker, so they are dropped;
+    // J.Crew is left with nothing and its Why card omits the taste section.
+    const jcrew = wicker.prospects.find(
+      (p) => p.brand.entityId === 'A4F0BE29-87A4-4074-9ABB-21B215E532FD'
+    );
+    if (jcrew) expect(jcrew.whyBrandTaste).toBeUndefined();
+    for (const p of wicker.prospects) {
+      const names = p.whyBrandTaste?.signals.map((s) => s.name) ?? [];
+      expect(names).not.toContain('Yoga');
+      expect(names).not.toContain('Sneakerheads');
+    }
   });
 
   it('attaches recorded taste for top Sevierville prospect (Sephora)', async () => {
@@ -66,7 +78,7 @@ describe('tradeAreaTaste on analyze response', () => {
     );
     expect(sephora).toBeDefined();
     expect(sephora!.tradeAreaTaste?.tags).toEqual([]);
-    expect(sephora!.tradeAreaTaste?.audiences.map((a) => a.name)).toContain('Health And Beauty');
+    expect(sephora!.tradeAreaTaste?.audiences.map((a) => a.name)).toContain('Health & Beauty');
     for (const row of sephora!.tradeAreaTaste?.audiences ?? []) {
       expect(row.affinityRank).toBeGreaterThanOrEqual(1);
       expect(row.affinityRank).toBeLessThanOrEqual(30);

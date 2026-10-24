@@ -52,7 +52,7 @@ describe('loadTradeAreaTasteForProspect', () => {
       10
     );
     expect(taste?.tags).toEqual([]);
-    expect(taste?.audiences.map((a) => a.name)).toContain('Health And Beauty');
+    expect(taste?.audiences.map((a) => a.name)).toContain('Health & Beauty');
   });
 
   it('returns undefined for a demo brand with no recording', async () => {

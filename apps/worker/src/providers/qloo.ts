@@ -7,6 +7,7 @@ import {
   parseQlooAudienceRows,
   computeBrandLocalAudienceOverlap,
   audiencePanelBaseline,
+  genericAudienceIdsForLocation,
   TRADE_AREA_SHOPPER_TAG_SUBTYPES,
   type TradeAreaTasteRow,
 } from '@leaseup/fixtures/worker';
@@ -283,10 +284,15 @@ export class QlooClient {
         this.fetchAudienceInsights({ brandEntityId: params.brandEntityId, runId: params.runId }),
         this.fetchAudienceInsights({ location: params.location, runId: params.runId }),
       ]);
+      const localRows = parseQlooAudienceRows(localJson);
       const audiences = computeBrandLocalAudienceOverlap(
         parseQlooAudienceRows(brandJson),
-        parseQlooAudienceRows(localJson),
-        { panelBaseline: audiencePanelBaseline(params.brandEntityId) }
+        localRows,
+        {
+          panelBaseline: audiencePanelBaseline(params.brandEntityId),
+          // Drop audiences that pass for most recorded brands at this pin: generic, not brand-specific.
+          excludeAudienceIds: genericAudienceIdsForLocation(localRows),
+        }
       );
       if (audiences.length === 0) return null;
       return { tags: [], audiences };

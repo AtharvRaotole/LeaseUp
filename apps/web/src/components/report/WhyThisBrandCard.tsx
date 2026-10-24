@@ -3,11 +3,10 @@ import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 import { Card } from '../ui/Card';
 import { cn } from '../../lib/cn';
 import { displayBrandName } from '../../lib/brand-display';
-import { absenceVerificationSummary } from '../../lib/absence-verification-copy';
+import { whyCardStoreCheckLine } from '../../lib/absence-verification-copy';
 import { whyBrandTasteSection } from '../../lib/why-brand-taste-ui';
 import { BrandReachLink } from './BrandReachLink';
 import { analysisStoreDataDateLabel } from '../../lib/store-data-dates';
-import { pitchCheckedSourcesLabel } from '../../lib/copy';
 
 export function WhyThisBrandCard({
   prospect,
@@ -58,10 +57,7 @@ export function WhyThisBrandCard({
       ) : null}
 
       <p className="mt-3 text-sm text-ink-2" data-testid="why-absence-verification">
-        {absenceVerificationSummary(prospect, radiusKm, results)}
-      </p>
-      <p className="mt-1 text-xs text-ink-3" data-testid="why-store-check-date">
-        {pitchCheckedSourcesLabel(prospect)} as of {analysisStoreDataDateLabel(results)}.
+        {whyCardStoreCheckLine(prospect, radiusKm, results, analysisStoreDataDateLabel(results))}
       </p>
 
       {prospect.brandReach ? (

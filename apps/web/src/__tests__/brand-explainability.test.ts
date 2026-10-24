@@ -6,7 +6,7 @@ describe('brand explainability fixtures', () => {
     const row = brandExplainabilityForDemo('boulder', '0F77E9A4-121C-4941-ACE1-28502DBF1865');
     expect(row).not.toBeNull();
     expect(row!.tags).toEqual([]);
-    expect(row!.audiences.map((a) => a.name)).toEqual(['Health And Beauty']);
+    expect(row!.audiences.map((a) => a.name)).toEqual(['Health & Beauty']);
     expect(row!.audiences[0]?.affinityRank).toBeGreaterThan(0);
     expect(row!.provenance.host).toBe('https://hackathon.api.qloo.com');
   });
