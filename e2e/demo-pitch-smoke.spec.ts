@@ -5,6 +5,13 @@ const DEMO_PITCH_BOULDER_ULTA_ID = 'demo-boulder-ulta';
 
 const UNICODE_DASH = /[\u2013\u2014]/;
 
+/** Matches `pitchFreshnessHonestyLine` without pinning calendar day or CI run date. */
+const USER_FACING_DATE = '[A-Z][a-z]{2} \\d{1,2}, \\d{4}';
+const PITCH_FRESHNESS_LINE = new RegExp(
+  `^Saved ${USER_FACING_DATE}\\. Store distances ` +
+    `(refreshed today|refreshed on open|refreshed ${USER_FACING_DATE}|from snapshot ${USER_FACING_DATE}|from saved snapshot)\\.$`
+);
+
 function isBenignConsoleError(text: string): boolean {
   return /favicon|404|devtools|Failed to load resource/i.test(text);
 }
@@ -22,11 +29,15 @@ test('demo pitch page renders with clean console and plain copy', async ({ page 
   await expect(page.getByTestId('pitch-page')).toBeVisible({ timeout: 30_000 });
   await expect(page.getByTestId('pitch-pack-brief')).toBeVisible();
   await expect(page.getByText('Sample leasing brief')).toBeVisible();
-  await expect(page.getByTestId('pitch-date-meta')).toContainText(
-    /Data snapshot of Oct 24, 2026/
+  await expect(page.getByTestId('pitch-date-meta')).toContainText(/km trade area/);
+  await expect(page.getByTestId('pitch-freshness-label')).toContainText(
+    /Saved Oct 24, 2026/
+  );
+  await expect(page.getByTestId('pitch-freshness-label')).toContainText(
+    /Store distances refreshed today/
   );
   await expect(page.getByText('Your list #1')).toBeVisible();
-  await expect(page.getByTestId('pitch-date-meta')).not.toContainText(/^Prepared /);
+  await expect(page.getByTestId('pitch-freshness-label')).not.toContainText(/^Prepared /);
   await expect(page.getByTestId('pitch-brand-brief').first()).toContainText(/Ulta/i);
 
   const visibleText = await page.locator('body').innerText();

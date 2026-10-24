@@ -8,7 +8,12 @@ import { PageEmptyState } from '../components/ui/PageEmptyState';
 import { WatchDiffPanel } from '../components/watchlist/WatchDiffPanel';
 import { fetchWatchDetail, fetchWatchlist, recheckWatchSpace } from '../lib/watchlist-api';
 import { formatUserFacingDate } from '../lib/format-date';
-import { watchlistEmptyAction, watchlistEmptyLine } from '../lib/empty-state-copy';
+import {
+  watchlistEmptyAction,
+  watchlistEmptyLine,
+  watchlistLoadErrorLine,
+  watchlistSpaceLoadErrorLine,
+} from '../lib/empty-state-copy';
 
 export function WatchlistPage() {
   const { watchId } = useParams();
@@ -23,7 +28,7 @@ export function WatchlistPage() {
       setSpaces(data.spaces);
       setError(null);
     } catch {
-      setError('Could not load your watchlist.');
+      setError(watchlistLoadErrorLine);
     }
   }, []);
 
@@ -32,7 +37,7 @@ export function WatchlistPage() {
       setDetail(await fetchWatchDetail(id));
       setError(null);
     } catch {
-      setError('Could not load this saved space.');
+      setError(watchlistSpaceLoadErrorLine);
     }
   }, []);
 
@@ -54,7 +59,7 @@ export function WatchlistPage() {
       setError(null);
     } catch (err) {
       const message = err instanceof Error ? err.message : '';
-      setError(message.includes('10 minutes') ? message : 'Recheck failed. Try again.');
+      setError(message.includes('10 minutes') ? message : 'Recheck did not finish. Try again in a moment.');
     } finally {
       setRechecking(false);
     }
