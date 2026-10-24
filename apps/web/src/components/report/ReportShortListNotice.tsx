@@ -5,20 +5,24 @@ import {
   reportShortListLine,
   reportShortListWidenAction,
 } from '../../lib/empty-state-copy';
-import type { AnalysisRequest } from '@leaseup/contracts';
+import type { AnalysisRequest, AnalysisResponse } from '@leaseup/contracts';
+import { absenceRadiusKm } from '../../lib/absence-radius';
 import { buildReportPath } from '../../lib/report-params';
 
 export function ReportShortListNotice({
   count,
   radiusKm,
+  results,
   request,
   slug,
 }: {
   count: number;
   radiusKm: number;
+  results?: AnalysisResponse;
   request: AnalysisRequest;
   slug: string;
 }) {
+  const absenceKm = absenceRadiusKm(results, radiusKm);
   const wider = Math.min(25, radiusKm + 5);
   return (
     <div
@@ -26,7 +30,7 @@ export function ReportShortListNotice({
       data-testid="report-short-list-notice"
       role="status"
     >
-      <p>{reportShortListLine(count, radiusKm)}</p>
+      <p>{reportShortListLine(count, absenceKm)}</p>
       <div className="mt-3 flex flex-wrap gap-2">
         {radiusKm < 25 && (
           <Link to={buildReportPath({ ...request, radius: wider }, slug)}>

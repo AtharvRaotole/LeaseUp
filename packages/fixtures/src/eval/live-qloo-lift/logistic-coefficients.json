@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "fittedOn": "preregistered 40-site cohort pooled M1 (log chain, log radius, log density, tier, Qloo z)",
+  "fittedOn": "40-site data/qloo-eval-40 pooled M1 (log chain, log radius, log density, tier, Qloo z)",
   "model": "M1_pooled",
   "features": [
     "logChainSize",
@@ -12,7 +12,7 @@
   ],
   "standardize": {
     "mean": {
-      "logChainSize": 6.417244599333324,
+      "logChainSize": 6.417268413133689,
       "logRadiusKm": 1.467424718593475,
       "logDensity3km": 4.228215760786707,
       "tierUrban": 0.2334414080592867,
@@ -20,7 +20,7 @@
       "qlooAffinityZ": 1.8987950525374668e-17
     },
     "std": {
-      "logChainSize": 1.319652167077402,
+      "logChainSize": 1.319631471821851,
       "logRadiusKm": 0.6862745211829281,
       "logDensity3km": 0.9115855535206705,
       "tierUrban": 0.42302070624098204,
@@ -28,15 +28,15 @@
       "qlooAffinityZ": 1.0000000009818295
     }
   },
-  "intercept": -1.0736917973646363,
+  "intercept": -1.0533497060007169,
   "coefficients": {
-    "logChainSize": 0.8237018227742742,
-    "logRadiusKm": 0.7413486712415467,
-    "logDensity3km": 0.8738043540435125,
-    "tierUrban": -0.4036327290248127,
-    "tierSuburban": -0.21924151387504254,
-    "qlooAffinityZ": 0.6637611360236632
+    "logChainSize": 0.860530304804225,
+    "logRadiusKm": 0.730393712830696,
+    "logDensity3km": 0.8625037017225125,
+    "tierUrban": -0.4030779875069326,
+    "tierSuburban": -0.20600938879072297,
+    "qlooAffinityZ": 0.6690111150163813
   },
-  "cohortMeanP10PooledRank": 0.82,
+  "cohortMeanP10PooledRank": 0.825,
   "cohortMeanP10LoaoFromResults": 0.82
 }

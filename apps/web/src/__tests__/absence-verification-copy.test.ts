@@ -4,6 +4,15 @@ import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 
 const results = {
   osmSnapshotLabel: 'OpenStreetMap snapshot',
+  prospectFunnel: {
+    brandsScored: 224,
+    searchRadiusKm: 10,
+    absenceRadiusKm: 3,
+    alreadyNearbyCount: 42,
+    strongFitAbsentCount: 8,
+    pitchedCount: 8,
+    verifiedCount: 0,
+  },
 } as AnalysisResponse;
 
 describe('absenceVerificationSummary', () => {
@@ -19,7 +28,7 @@ describe('absenceVerificationSummary', () => {
       },
     } as ProspectPack;
     expect(absenceVerificationSummary(prospect, 10, results)).toBe(
-      'No store within 10 km in All The Places. Not yet checked in OpenStreetMap snapshot.'
+      'No store within 3 km in All The Places. Not yet checked in OpenStreetMap snapshot.'
     );
   });
 
@@ -35,7 +44,7 @@ describe('absenceVerificationSummary', () => {
       },
     } as ProspectPack;
     expect(absenceVerificationSummary(prospect, 10, results)).toContain(
-      'No store within 10 km in All The Places or OpenStreetMap snapshot'
+      'No store within 3 km in All The Places or OpenStreetMap snapshot'
     );
   });
 });

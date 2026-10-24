@@ -9,6 +9,6 @@ describe('logistic blend cohort (data/qloo-eval-40)', () => {
     const meanP10 = cohortLogisticBlendMeanP10();
     expect(meanP10).toBeGreaterThan(0.79);
     expect(meanP10).toBeLessThan(0.85);
-    expect(coef.cohortMeanP10PooledRank).toBeCloseTo(0.82, 2);
+    expect(coef.cohortMeanP10PooledRank).toBeCloseTo(0.825, 3);
   });
 });

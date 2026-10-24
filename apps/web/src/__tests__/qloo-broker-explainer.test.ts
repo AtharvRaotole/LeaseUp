@@ -11,7 +11,7 @@ describe('QLOO_BROKER_EXPLAINER', () => {
     const blob = JSON.stringify(QLOO_BROKER_EXPLAINER);
     expect(blob).toContain('54%');
     expect(blob).toContain('76%');
-    expect(blob).toContain('82%');
+    expect(blob).toContain('83%');
     expect(blob).toContain('53%');
     expect(blob).not.toMatch(/72%/);
     expect(blob).not.toMatch(/PR #\d+/i);
