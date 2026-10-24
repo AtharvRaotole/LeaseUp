@@ -230,7 +230,7 @@ export async function enrichProspectsWithNearest(
   location: Location,
   catalog: StoreCatalog,
   presence?: NearbyPresenceCache,
-  osmSnapshot?: OsmSnapshotCatalog
+  osmSnapshot?: OsmSnapshotCatalog | null
 ): Promise<ProspectPack[]> {
   const cache = presence ?? new NearbyPresenceCache(catalog, location);
   return Promise.all(
@@ -238,9 +238,8 @@ export async function enrichProspectsWithNearest(
       const reconciled = await reconcileNearestStoreKm(
         pack.brand.entityId,
         location,
-        catalog,
         cache,
-        osmSnapshot
+        osmSnapshot ?? undefined
       );
       return {
         ...pack,

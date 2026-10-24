@@ -120,7 +120,7 @@ export function pitchProspectFact(
   const km = prospect.nearestExistingStoreKm;
   if (km !== undefined) {
     if (km > absenceKm) {
-      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (no tracked chain store within ${absenceKm} km).`;
+      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (no store within ${absenceKm} km).`;
     }
     return `Nearest ${name} is ${km.toFixed(1)} km from this pin.`;
   }
@@ -139,7 +139,7 @@ export function pitchProspectFactFromSnapshot(
   const km = prospect.nearestExistingStoreKm;
   if (km !== undefined) {
     if (km > absenceKm) {
-      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (no tracked chain store within ${absenceKm} km).`;
+      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (no store within ${absenceKm} km).`;
     }
     return `Nearest ${name} is ${km.toFixed(1)} km from this pin.`;
   }

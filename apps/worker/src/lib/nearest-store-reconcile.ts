@@ -1,5 +1,4 @@
 import type { Location, ProspectPack } from '@leaseup/contracts';
-import type { StoreCatalog } from '../services/store-catalog';
 import type { OsmSnapshotCatalog } from '../services/osm-snapshot-catalog';
 import { osmSnapshotBrandUsable } from '../services/osm-snapshot-catalog';
 import { NearbyPresenceCache } from './nearby-presence-cache';
@@ -16,7 +15,6 @@ export type NearestStoreReconcileResult = {
 export async function reconcileNearestStoreKm(
   entityId: string,
   location: Location,
-  catalog: StoreCatalog,
   presence: NearbyPresenceCache,
   osmSnapshot?: OsmSnapshotCatalog
 ): Promise<NearestStoreReconcileResult> {

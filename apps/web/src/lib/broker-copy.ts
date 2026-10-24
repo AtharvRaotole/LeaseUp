@@ -140,7 +140,7 @@ export function verificationBrokerLabel(verified: ProspectPack['brand']['verifie
     case 'unverified (1 source)':
       return 'One source only';
     case 'conflict - likely present':
-      return 'Likely open';
+      return 'Store data disagrees; likely open nearby';
     case 'conflict':
       return 'Sources disagree';
     case 'unverified':
@@ -164,6 +164,7 @@ export function verificationBrokerTooltip(
     case 'unverified (1 source)':
       return `Only one database shows a store within ${radiusKm} km. Treat as a lead, not proof of absence.`;
     case 'conflict - likely present':
+      return `Store data disagrees; map data likely shows a store within ${radiusKm} km.`;
     case 'conflict':
       return `Our sources disagree about a store within ${radiusKm} km.`;
     case 'unverified':

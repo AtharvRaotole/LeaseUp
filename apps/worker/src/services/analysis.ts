@@ -374,7 +374,13 @@ export class AnalysisService {
               presence
             ),
         buildMapStores(location, insights, request.radius, this.catalog, 10, presence),
-        enrichProspectsWithNearest(prospects, location, this.catalog, presence, this.osmSnapshot),
+        enrichProspectsWithNearest(
+          prospects,
+          location,
+          this.catalog,
+          presence,
+          this.osmSnapshot ?? undefined
+        ),
       ]);
 
       const absenceRadiusKm = prospectFunnel?.absenceRadiusKm ?? request.radius;

@@ -33,7 +33,7 @@ describe('reconcileNearestStoreKm', () => {
       nearestStoreKm: vi.fn().mockResolvedValue(2.1),
     } as unknown as OsmSnapshotCatalog;
 
-    const result = await reconcileNearestStoreKm(REI, LOC, catalog, presence, osmSnapshot);
+    const result = await reconcileNearestStoreKm(REI, LOC, presence, osmSnapshot);
     expect(result.km).toBe(2.1);
     expect(result.unconfirmed).toBe(true);
   });
@@ -54,7 +54,7 @@ describe('reconcileNearestStoreKm', () => {
       findStoresNearby: vi.fn().mockResolvedValue([{ distance: 12 }]),
     } as unknown as StoreCatalog;
     const presence = new NearbyPresenceCache(catalog, LOC);
-    const result = await reconcileNearestStoreKm(REI, LOC, catalog, presence, undefined);
+    const result = await reconcileNearestStoreKm(REI, LOC, presence, undefined);
     expect(result).toEqual({ km: 12, unconfirmed: false });
   });
 });
