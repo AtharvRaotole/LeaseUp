@@ -91,6 +91,25 @@ export function AgentReceipt({ job }: { job: ProspectingJob }) {
                     {row.reason}
                   </p>
                 )}
+                {row.toolDecisions?.map((decision, index) => (
+                  <div
+                    key={`${row.id}-tool-${index}`}
+                    className="mt-2 border-l-2 border-border pl-2.5"
+                    data-testid={`agent-receipt-tool-${row.id}-${index}`}
+                  >
+                    <p className="text-sm text-ink-2">
+                      <span className="font-medium text-ink">{decision.plannerLabel}: </span>
+                      {decision.reason}
+                    </p>
+                    {(decision.tool || decision.resultSummary) && (
+                      <p className="mt-0.5 text-xs text-ink-3">
+                        {decision.tool}
+                        {decision.tool && decision.resultSummary ? ' — ' : ''}
+                        {decision.resultSummary}
+                      </p>
+                    )}
+                  </div>
+                ))}
                 {row.status === 'error' && (
                   <p className={cn('mt-1 text-xs text-danger')}>Step ended with an error</p>
                 )}
