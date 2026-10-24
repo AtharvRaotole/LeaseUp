@@ -1,25 +1,28 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { OverpassClient } from '../services/overpass';
+import { ResponseCache } from '../lib/response-cache';
 import boulderResponse from './fixtures/overpass-boulder-synthetic.json';
 import wickerParkResponse from './fixtures/overpass-wicker-park-synthetic.json';
 import emptyResponse from './fixtures/overpass-empty.json';
 
 describe('OverpassClient', () => {
   let client: OverpassClient;
-  let mockCache: KVNamespace;
+  let mockCache: ResponseCache;
 
   beforeEach(() => {
-    mockCache = {
-      get: vi.fn().mockResolvedValue(null),
-      put: vi.fn().mockResolvedValue(undefined),
-    } as unknown as KVNamespace;
-
+    vi.stubGlobal('caches', {
+      default: {
+        match: async () => undefined,
+        put: async () => undefined,
+      },
+    });
+    mockCache = new ResponseCache();
     client = new OverpassClient(mockCache, 5000);
   });
 
   describe('queryBrands', () => {
     it('returns cached response when available', async () => {
-      vi.mocked(mockCache.get).mockResolvedValue(boulderResponse as never);
+      vi.spyOn(mockCache, 'get').mockResolvedValue(boulderResponse as never);
 
       const result = await client.queryProspectBrands(40.0150, -105.2705, 10, [
         { entityId: 'x', name: 'Whole Foods Market', wikidata: 'Q1809448' },
@@ -129,6 +132,7 @@ describe('OverpassClient', () => {
     });
 
     it('caches successful responses with 7d TTL', async () => {
+      const putSpy = vi.spyOn(mockCache, 'putJsonIfChanged').mockResolvedValue(true);
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         json: async () => boulderResponse,
@@ -138,10 +142,10 @@ describe('OverpassClient', () => {
         { entityId: 'x', name: 'Whole Foods Market' },
       ]);
 
-      expect(mockCache.put).toHaveBeenCalledWith(
+      expect(putSpy).toHaveBeenCalledWith(
         expect.stringContaining('overpass:v2:'),
-        expect.any(String),
-        { expirationTtl: 604800 }
+        boulderResponse,
+        604800
       );
     });
 

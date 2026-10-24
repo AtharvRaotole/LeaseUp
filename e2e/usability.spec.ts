@@ -47,6 +47,19 @@ test.describe('Usability: tour, tooltips, errors', () => {
     await expect(banner.getByText(/demo example/i)).toBeVisible();
   });
 
+  test('report and pitch avoid broker jargon in visible copy', async ({ page }) => {
+    test.setTimeout(180_000);
+    await page.addInitScript(() => {
+      localStorage.setItem('leaseup-report-guided-tour-v1', 'done');
+    });
+    await page.goto(`${BASE}/r/wicker?address=${encodeURIComponent(WICKER)}&radius=10`);
+    await expect(page.getByTestId('report-summary')).toBeVisible({ timeout: 120_000 });
+    const reportText = await page.locator('main').innerText();
+    expect(reportText.toLowerCase()).not.toContain('white space');
+    expect(reportText.toLowerCase()).not.toContain('over-index');
+    expect(reportText).not.toMatch(/\bAUC\b/);
+  });
+
   test('axe on report with tour dismissed', async ({ page }) => {
     test.setTimeout(180_000);
     await page.goto(

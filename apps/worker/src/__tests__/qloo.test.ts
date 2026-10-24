@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { QlooClient, normalizeHeatmapCells, clampQlooTake, QLOO_MAX_TAKE } from '../providers/qloo';
-import { ConfigurationError } from '../lib/errors';
+import { ConfigurationError, UpstreamError } from '../lib/errors';
 import { getStoreBrandIds } from '@leaseup/fixtures';
 import { sha256Short } from '../lib/cache-key';
+import { ResponseCache } from '../lib/response-cache';
 
 const db = {
   prepare: () => {
@@ -33,6 +34,12 @@ function makeEnv(overrides: Record<string, string | undefined> = {}) {
 describe('QlooClient', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    vi.stubGlobal('caches', {
+      default: {
+        match: async () => undefined,
+        put: async () => undefined,
+      },
+    });
   });
 
   afterEach(() => {
@@ -43,6 +50,37 @@ describe('QlooClient', () => {
     expect(() => new QlooClient(makeEnv({ APP_MODE: 'live', QLOO_API_KEY: '' }))).toThrow(
       ConfigurationError
     );
+  });
+
+  it('serves demo taste insights when FORCE_QLOO_DOWN is unset (default worker env)', async () => {
+    const client = new QlooClient(makeEnv());
+    const rows = await client.getBrandInsights({
+      location: { kind: 'query', query: 'Wicker Park, Chicago' },
+    });
+    expect(rows.length).toBeGreaterThan(0);
+    expect(rows.some((r) => (r.query?.affinity ?? 0) > 0)).toBe(true);
+  });
+
+  it('only treats FORCE_QLOO_DOWN exactly "1" as forcing Qloo down', async () => {
+    for (const value of ['0', 'true', 'yes', '']) {
+      const client = new QlooClient(makeEnv({ FORCE_QLOO_DOWN: value }));
+      const rows = await client.getBrandInsights({
+        location: { kind: 'query', query: 'Wicker Park, Chicago' },
+      });
+      expect(rows.length).toBeGreaterThan(0);
+    }
+
+    const forced = new QlooClient(makeEnv({ FORCE_QLOO_DOWN: '1' }));
+    await expect(
+      forced.getBrandInsights({
+        location: { kind: 'query', query: 'Wicker Park, Chicago' },
+      })
+    ).rejects.toBeInstanceOf(UpstreamError);
+    await expect(
+      forced.getBrandInsights({
+        location: { kind: 'query', query: 'Wicker Park, Chicago' },
+      })
+    ).rejects.toMatchObject({ code: 'QLOO_UNAVAILABLE' });
   });
 
   it('uses hashed brand list in cache key under 512 bytes', async () => {
@@ -63,6 +101,8 @@ describe('QlooClient', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
+    const putSpy = vi.spyOn(ResponseCache.prototype, 'putJsonIfChanged').mockResolvedValue(true);
+
     await client.getBrandInsights({
       location: { kind: 'point', latitude: 41.9, longitude: -87.67, radiusKm: 10 },
       brandIds,
@@ -70,7 +110,7 @@ describe('QlooClient', () => {
       runId: 'test',
     });
 
-    const cacheKey = vi.mocked(kv.put).mock.calls[0]?.[0] as string;
+    const cacheKey = putSpy.mock.calls[0]?.[0] as string;
     expect(cacheKey.length).toBeLessThan(512);
     expect(cacheKey).not.toContain(brandIds[0]);
     const hash = await sha256Short(brandIds.join(','));
@@ -142,12 +182,31 @@ describe('QlooClient', () => {
       });
     vi.stubGlobal('fetch', fetchMock);
 
+    const putSpy = vi.spyOn(ResponseCache.prototype, 'putJsonIfChanged').mockResolvedValue(true);
+
     const insights = await client.getBrandInsights({
       location: { kind: 'point', latitude: 40, longitude: -105, radiusKm: 10 },
       take: 10,
     });
     expect(insights).toHaveLength(1);
     expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(putSpy).toHaveBeenCalled();
+  });
+
+  it('does not cache when all fetch attempts fail', async () => {
+    const client = new QlooClient(makeEnv({ APP_MODE: 'live', QLOO_API_KEY: 'test-key' }));
+    const putSpy = vi.spyOn(ResponseCache.prototype, 'putJsonIfChanged');
+
+    const fetchMock = vi.fn().mockRejectedValue(new TypeError('network down'));
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(
+      client.getBrandInsights({
+        location: { kind: 'point', latitude: 40, longitude: -105, radiusKm: 10 },
+        take: 10,
+      })
+    ).rejects.toMatchObject({ code: 'QLOO_UNAVAILABLE' });
+    expect(putSpy).not.toHaveBeenCalled();
   });
 
   it('serves recorded fixture insights in demo mode (no fabricated IDs)', async () => {

@@ -1,39 +1,32 @@
 import { Hono } from 'hono';
-import { getCookie, setCookie } from 'hono/cookie';
-import { randomUUID } from 'node:crypto';
 import type { Env } from '../index';
 import type { Context } from 'hono';
-import { PipelineAddCardSchema, PipelineUpdateCardSchema } from '@leaseup/contracts';
+import {
+  PipelineAddCardSchema,
+  PipelineAttachPitchSchema,
+  PipelineUpdateCardSchema,
+} from '@leaseup/contracts';
 import { PipelineService } from '../services/pipeline';
+import { workspaceIdFromRequest } from '../lib/workspace-cookie';
 
 export const pipelineRouter = new Hono<{ Bindings: Env }>();
 
-const WORKSPACE_COOKIE = 'leaseup_pipeline_ws';
-
-function cookieSecure(c: Context<{ Bindings: Env }>): boolean {
-  return new URL(c.req.url).protocol === 'https:';
-}
-
 async function workspaceId(c: Context<{ Bindings: Env }>): Promise<string> {
-  const existing = getCookie(c, WORKSPACE_COOKIE);
-  if (existing && /^[0-9a-f-]{36}$/i.test(existing)) {
-    return existing;
-  }
-  const id = randomUUID();
-  setCookie(c, WORKSPACE_COOKIE, id, {
-    path: '/',
-    httpOnly: true,
-    secure: cookieSecure(c),
-    sameSite: 'Lax',
-    maxAge: 60 * 60 * 24 * 400,
-  });
-  return id;
+  return workspaceIdFromRequest(c);
 }
 
 pipelineRouter.get('/pipeline', async (c) => {
   const ws = await workspaceId(c);
   const service = new PipelineService(c.env);
   const board = await service.getOrCreate(ws);
+  return c.json(board);
+});
+
+pipelineRouter.post('/pipeline/attach-pitch', async (c) => {
+  const body = PipelineAttachPitchSchema.parse(await c.req.json());
+  const ws = await workspaceId(c);
+  const service = new PipelineService(c.env);
+  const board = await service.attachPitchLink(ws, body);
   return c.json(board);
 });
 

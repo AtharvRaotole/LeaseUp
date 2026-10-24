@@ -4,6 +4,7 @@ import { OSM_SNAPSHOT_BRAND_STATUS } from '../data/osm-snapshot-meta';
 
 const BRAND_A = '205AF33F-118E-4C49-9721-6BDBAF981DA0';
 const BRAND_B = '2D890327-8794-4C5A-898F-FFF0323325CF';
+const STARBUCKS = 'B13C02E3-BA3C-4B39-85B4-ACF12FEBC892';
 
 const db = {
   prepare: () => {
@@ -20,6 +21,22 @@ const kv = {
 function makeAssets(tiles: Record<string, unknown>) {
   return {
     fetch: vi.fn(async (url: string) => {
+      if (url.includes('tiles.local')) {
+        const path = url.replace('https://tiles.local', '');
+        if (path === '/tiles/brands.json') {
+          return new Response(
+            JSON.stringify({
+              brands: [{ id: BRAND_A, name: 'REI', displayName: 'REI', count: 193 }],
+            }),
+            { status: 200 }
+          );
+        }
+        const gh = path.match(/\/tiles\/(.+)\.json$/)?.[1];
+        if (gh && tiles[gh]) {
+          return new Response(JSON.stringify(tiles[gh]), { status: 200 });
+        }
+        return new Response('missing', { status: 404 });
+      }
       const path = url.replace('https://osm.local', '');
       if (path === '/osm-tiles/brands.json') {
         return new Response(JSON.stringify(tiles.brands), { status: 200 });
@@ -73,6 +90,71 @@ describe('OSM snapshot verification', () => {
     );
 
     expect(result.status).toBe('verified (2 sources)');
+  });
+
+  it('treats ok snapshot brands with zero tiled points as single source', async () => {
+    const assets = makeAssets({
+      brands: {
+        brands: [{ id: BRAND_A, name: 'REI', qid: 'Q3414933', count: 0 }],
+      },
+      dp3: { gh: 'dp3', stores: [] },
+    });
+
+    const service = new AnalysisService({
+      DB: db,
+      CACHE: kv,
+      APP_MODE: 'live',
+      ASSETS: assets,
+      QLOO_API_KEY: 'x',
+    } as import('../index').Env);
+
+    const verify = (
+      service as unknown as {
+        verifyFromOsmSnapshot: (
+          id: string,
+          loc: { address: string; latitude: number; longitude: number },
+          radius: number
+        ) => Promise<{ status: string; metroCoverageNote?: string }>;
+      }
+    ).verifyFromOsmSnapshot;
+    const result = await verify.call(
+      service,
+      BRAND_A,
+      { address: 'x', latitude: 41.91, longitude: -87.68 },
+      10
+    );
+
+    expect(result.status).toBe('unverified (1 source)');
+    expect(result.metroCoverageNote).toMatch(/no store points/i);
+  });
+
+  it('never marks missing-from-snapshot brands as two-source verified', async () => {
+    OSM_SNAPSHOT_BRAND_STATUS[STARBUCKS] = 'missing';
+    const service = new AnalysisService({
+      DB: db,
+      CACHE: kv,
+      APP_MODE: 'live',
+      ASSETS: makeAssets({ brands: { brands: [] } }),
+      QLOO_API_KEY: 'x',
+    } as import('../index').Env);
+
+    const verify = (
+      service as unknown as {
+        verifyFromOsmSnapshot: (
+          id: string,
+          loc: { address: string; latitude: number; longitude: number },
+          radius: number
+        ) => Promise<{ status: string }>;
+      }
+    ).verifyFromOsmSnapshot;
+    const result = await verify.call(
+      service,
+      STARBUCKS,
+      { address: 'x', latitude: 41.91, longitude: -87.68 },
+      10
+    );
+    expect(result.status).toBe('unverified (1 source)');
+    expect(result.status).not.toBe('verified (2 sources)');
   });
 
   it('treats failed snapshot brands as single source', async () => {

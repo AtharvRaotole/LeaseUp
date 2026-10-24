@@ -30,7 +30,10 @@ import {
   demoFixtureStratum,
   densityToDefaultStratum,
   demoAnalyzeBacktests,
+  adaptiveEvalRadiusKm,
+  expectedRandomPresentInTop10,
 } from '@leaseup/fixtures/worker';
+import { tasteLocationLabel, formatBacktestStepSummary } from '../lib/analyze-step-copy';
 import { NearbyPresenceCache } from '../lib/nearby-presence-cache';
 import { createStoreCatalog, type StoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
@@ -40,6 +43,7 @@ import { brandCategoryLabel } from '../lib/brand-category';
 const DEMO_DATA_RECORDED_AT = '2026-10-23T03:36:00.000Z';
 import { toOverpassSearchBrand } from '../lib/osm-brand-hints';
 import { OSM_WIKIDATA_BY_ENTITY } from '../data/osm-wikidata-map';
+import { overpassBrandMatchesSearch } from '../lib/osm-brand-match';
 import type { QlooLocation } from '../providers/qloo';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
@@ -50,16 +54,36 @@ import {
   extractQlooSignals,
 } from '../lib/analysis-enrichment';
 import { buildStrictEvalSnapshot } from '../lib/strict-eval-snapshot';
-import { runStep, type StepEmitter } from '../lib/analysis-steps';
+import { emitAnalyzeKickoff, runStep, type StepEmitter } from '../lib/analysis-steps';
+import {
+  ANALYZE_ENRICHMENT_QLOO_BUDGET_MS,
+  withSoftTimeout,
+} from '../lib/analysis-step-budget';
 import { encodeGeohash } from '../lib/geohash';
 import { sha256Short } from '../lib/cache-key';
 import {
   OsmSnapshotCatalog,
   osmSnapshotBrandStatus,
+  osmSnapshotBrandUsable,
   osmSnapshotDisplayLabel,
   osmSnapshotRecordedAt,
 } from './osm-snapshot-catalog';
 import { loadTradeAreaTasteForProspect } from '../lib/trade-area-taste';
+import { getResponseCache } from '../lib/worker-cache';
+import type { ResponseCache } from '../lib/response-cache';
+import { tryAcquireOverpassRefreshLock } from '../lib/overpass-refresh-lock';
+import { loadTradeAreaShoppersSnapshot } from '../lib/trade-area-shoppers';
+import { brandReachForEntity } from '../lib/brand-reach';
+import {
+  METRO_COVERAGE_SCAN_KM,
+  metroStoreCoverageIncomplete,
+} from '../lib/verification-coverage';
+import {
+  buildChainSizeInsightsFromCatalog,
+  chainRankedInsights,
+  isQlooUnavailableError,
+  TASTE_UNAVAILABLE_RANKING_NOTICE,
+} from '../lib/qloo-chain-fallback';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -70,7 +94,7 @@ export class AnalysisService {
   private overpass: OverpassClient;
   private geocode: GeocodeService;
   private db: D1Database;
-  private cache: KVNamespace;
+  private responseCache: ResponseCache;
   private mode: 'live' | 'demo';
   private catalog: StoreCatalog;
   private osmSnapshot: OsmSnapshotCatalog | null;
@@ -80,16 +104,18 @@ export class AnalysisService {
     this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
     this.qloo = new QlooClient(env);
     this.openai = new OpenAIClient(env);
-    this.overpass = new OverpassClient(env.CACHE, 12000, this.mode === 'demo');
-    this.cache = env.CACHE;
+    this.responseCache = getResponseCache();
+    this.overpass = new OverpassClient(this.responseCache, 12000, this.mode === 'demo');
     this.geocode = new GeocodeService(
-      env.CACHE,
+      this.responseCache,
       env.NOMINATIM_CONTACT || DEFAULT_NOMINATIM_CONTACT,
       this.mode
     );
     this.db = env.DB;
     this.catalog = createStoreCatalog(env, this.mode);
-    this.osmSnapshot = env.ASSETS ? new OsmSnapshotCatalog(env.ASSETS, env.CACHE) : null;
+    this.osmSnapshot = env.ASSETS
+      ? new OsmSnapshotCatalog(env.ASSETS, this.responseCache)
+      : null;
   }
 
   async analyze(request: AnalysisRequest, runId: string, ipHash: string): Promise<AnalysisResponse> {
@@ -103,6 +129,8 @@ export class AnalysisService {
     onStep?: StepEmitter
   ): Promise<AnalysisResponse> {
     const emit: StepEmitter = onStep ?? (() => undefined);
+
+    await emitAnalyzeKickoff(emit);
 
     await this.db
       .prepare(
@@ -130,23 +158,36 @@ export class AnalysisService {
 
       const qlooLocation = this.buildQlooLocation(location, request.address, request.radius);
 
+      let tasteUnavailable = false;
       const insights = await runStep(
         emit,
         'taste',
         "Read the neighborhood's taste (Qloo)",
         async () => {
-          const rows = await this.qloo.getBrandInsights({
-            location: qlooLocation,
-            brandIds: this.catalog.getBrandIds(),
-            tags: request.categoryTags,
-            take: 50,
-            runId,
-          });
-          return {
-            summary: `${rows.length} brands ranked for ${this.qlooLocationLabel(qlooLocation)}`,
-            detail: { brandCount: rows.length, query: this.qlooLocationLabel(qlooLocation) },
-            result: rows,
-          };
+          try {
+            const rows = await this.qloo.getBrandInsights({
+              location: qlooLocation,
+              brandIds: this.catalog.getBrandIds(),
+              tags: request.categoryTags,
+              take: 50,
+              runId,
+            });
+            const tasteLabel = tasteLocationLabel(location, qlooLocation);
+            return {
+              summary: `${rows.length} brands ranked for ${tasteLabel}`,
+              detail: { brandCount: rows.length, query: tasteLabel },
+              result: rows,
+            };
+          } catch (err) {
+            if (!isQlooUnavailableError(err)) throw err;
+            tasteUnavailable = true;
+            const rows = buildChainSizeInsightsFromCatalog(this.catalog);
+            return {
+              summary: TASTE_UNAVAILABLE_RANKING_NOTICE,
+              detail: { brandCount: rows.length, fallback: 'chain_size' },
+              result: rows,
+            };
+          }
         }
       );
 
@@ -182,11 +223,23 @@ export class AnalysisService {
                   siteStratum,
                   presence
                 );
+          const adaptiveRadiusKm = adaptiveEvalRadiusKm(siteStratum, request.radius);
+          const randomExpected = expectedRandomPresentInTop10(
+            insights,
+            location.latitude,
+            location.longitude,
+            adaptiveRadiusKm
+          );
+          const backtestCopy = formatBacktestStepSummary({
+            adaptiveRadiusKm,
+            raw: triple.raw,
+            blended: triple.blended,
+            randomExpectedPresentAt10: randomExpected,
+          });
           return {
-            summary: `Raw P@10 ${(triple.raw.precisionAt10 * 100).toFixed(0)}% · Blended P@10 ${(triple.blended.precisionAt10 * 100).toFixed(0)}%`,
+            summary: backtestCopy.summary,
             detail: {
-              rawPrecisionAt10: triple.raw.precisionAt10,
-              blendedPrecisionAt10: triple.blended.precisionAt10,
+              ...backtestCopy.detail,
               baselinePrecisionAt10: triple.baseline.precisionAt10,
               rawAuc: triple.raw.auc,
               blendedAuc: triple.blended.auc,
@@ -209,7 +262,8 @@ export class AnalysisService {
             insights,
             request.radius,
             runId,
-            request.storefrontSqFt
+            request.storefrontSqFt,
+            tasteUnavailable
           );
           formatFilteredCount = generated.formatFilteredCount;
           const packs = generated.packs;
@@ -254,58 +308,86 @@ export class AnalysisService {
         result: true,
       }));
 
-      const rankings = await buildBrandRankings(
-        location,
-        insights,
-        request.radius,
-        this.catalog,
-        siteStratum,
-        presence
-      );
       const demoFixtureId = matchDemoFixtureId(location.address);
-      const strictEval = await buildStrictEvalSnapshot(
-        location,
-        insights,
-        request.radius,
-        demoFixtureId ? demoFixtureStratum(demoFixtureId) : densityToDefaultStratum(siteDensity),
-        this.catalog,
-        presence
-      );
-      const mapStores = await buildMapStores(
-        location,
-        insights,
-        request.radius,
-        this.catalog,
-        10,
-        presence
-      );
-      const nearestEnriched = await enrichProspectsWithNearest(
-        prospects,
-        location,
-        this.catalog,
-        presence
-      );
-      const enrichedProspects = await Promise.all(
-        nearestEnriched.map(async (pack) => {
-          const insight = insights.find((i) => i.entity_id === pack.brand.entityId);
-          const signals = insight ? extractQlooSignals(insight) : [];
-          const tradeAreaTaste = await loadTradeAreaTasteForProspect(
-            this.qloo,
+      const shoppersPromise = tasteUnavailable
+        ? Promise.resolve(undefined)
+        : loadTradeAreaShoppersSnapshot({
+            qloo: this.qloo,
+            responseCache: this.responseCache,
             location,
-            pack.brand.entityId,
-            request.radius,
-            runId
-          );
-          return {
-            ...pack,
-            qlooSignals: signals.length > 0 ? signals : undefined,
-            tradeAreaTaste,
-          };
-        })
+            radiusKm: request.radius,
+            runId,
+            mode: this.mode,
+          });
+
+      const [rankings, strictEval, mapStores, nearestEnriched] = await Promise.all([
+        buildBrandRankings(
+          location,
+          insights,
+          request.radius,
+          this.catalog,
+          siteStratum,
+          presence,
+          tasteUnavailable
+        ),
+        tasteUnavailable
+          ? Promise.resolve(undefined)
+          : buildStrictEvalSnapshot(
+              location,
+              insights,
+              request.radius,
+              demoFixtureId ? demoFixtureStratum(demoFixtureId) : densityToDefaultStratum(siteDensity),
+              this.catalog,
+              presence
+            ),
+        buildMapStores(location, insights, request.radius, this.catalog, 10, presence),
+        enrichProspectsWithNearest(prospects, location, this.catalog, presence),
+      ]);
+
+      let enrichedProspects = nearestEnriched;
+      if (!tasteUnavailable) {
+        const tasteEnriched = await withSoftTimeout(
+          Promise.all(
+            nearestEnriched.map(async (pack) => {
+              const insight = insights.find((i) => i.entity_id === pack.brand.entityId);
+              const signals = insight ? extractQlooSignals(insight) : [];
+              const tradeAreaTaste = await loadTradeAreaTasteForProspect(
+                this.qloo,
+                location,
+                pack.brand.entityId,
+                request.radius,
+                runId
+              );
+              return {
+                ...pack,
+                qlooSignals: signals.length > 0 ? signals : undefined,
+                tradeAreaTaste,
+              };
+            })
+          ),
+          ANALYZE_ENRICHMENT_QLOO_BUDGET_MS,
+          'trade-area taste enrichment'
+        );
+        if (tasteEnriched) enrichedProspects = tasteEnriched;
+      }
+
+      const tradeAreaShoppers = await withSoftTimeout(
+        shoppersPromise,
+        ANALYZE_ENRICHMENT_QLOO_BUDGET_MS,
+        'trade-area shoppers'
       );
 
-      const dataQuality = this.assessDataQuality(insights.length, backtestBlended);
-      const warnings = this.generateWarnings(insights.length, backtestBlended, location);
+      const effectiveBacktest =
+        tasteUnavailable && backtestBaseline ? backtestBaseline : backtestBlended;
+      const dataQuality = tasteUnavailable
+        ? 'low'
+        : this.assessDataQuality(insights.length, backtestBlended);
+      const warnings = this.generateWarnings(
+        insights.length,
+        effectiveBacktest,
+        location,
+        tasteUnavailable
+      );
       if (formatFilteredCount > 0) {
         warnings.push(
           `${formatFilteredCount} big-box or format brands hidden for ${request.storefrontSqFt ?? 2500} sq ft storefront`
@@ -314,12 +396,12 @@ export class AnalysisService {
 
       const response: AnalysisResponse = {
         location,
-        backtest: backtestBlended,
-        backtestBlended,
+        backtest: effectiveBacktest,
+        backtestBlended: tasteUnavailable ? backtestBaseline : backtestBlended,
         backtestBaseline,
         rankings,
         mapStores,
-        heatmapAvailable: this.mode === 'live',
+        heatmapAvailable: this.mode === 'live' && !tasteUnavailable,
         prospects: enrichedProspects,
         dataQuality,
         warnings,
@@ -331,6 +413,9 @@ export class AnalysisService {
         storefrontSqFt: request.storefrontSqFt ?? 2_500,
         formatFilteredCount: formatFilteredCount || undefined,
         strictEval,
+        tradeAreaShoppers,
+        tasteDataStatus: tasteUnavailable ? 'unavailable' : 'ok',
+        rankingNotice: tasteUnavailable ? TASTE_UNAVAILABLE_RANKING_NOTICE : undefined,
       };
 
       await this.persistRun(runId, location, response, 'completed');
@@ -372,13 +457,6 @@ export class AnalysisService {
     return { cells };
   }
 
-  private qlooLocationLabel(location: QlooLocation): string {
-    if (location.kind === 'point') {
-      return `${location.latitude},${location.longitude} (${location.radiusKm}km)`;
-    }
-    return location.query;
-  }
-
   private buildQlooLocation(location: Location, address: string, radiusKm: number): QlooLocation {
     if (this.mode === 'demo') {
       const fixtureId = matchDemoFixtureId(address);
@@ -417,7 +495,8 @@ export class AnalysisService {
     insights: Array<{ entity_id: string; name: string; query?: { affinity?: number; affinity_rank?: number } }>,
     radius: number,
     _runId: string,
-    storefrontSqFt?: number
+    storefrontSqFt?: number,
+    tasteUnavailable = false
   ): Promise<{ packs: ProspectPack[]; formatFilteredCount: number }> {
     const sqFt = storefrontSqFt ?? 2_500;
     let formatFilteredCount = 0;
@@ -427,7 +506,9 @@ export class AnalysisService {
     const blendSite = fixtureId
       ? DEMO_LOGISTIC_SITE_CONTEXT[fixtureId]
       : defaultLogisticSiteContext(siteDensity, radius);
-    const blended = orderInsightsByLogisticBlend(insights, blendSite);
+    const blended = tasteUnavailable
+      ? chainRankedInsights(insights)
+      : orderInsightsByLogisticBlend(insights, blendSite);
     const tierFit = buildTierFitByEntityId(insights.map((i) => i.entity_id));
     const rankedCount = insights.length;
     const affinities = insights.map((i) => i.query?.affinity ?? 0).filter((a) => a > 0);
@@ -489,10 +570,15 @@ export class AnalysisService {
         candidate,
         location,
         nationalCount,
-        rankedCount
+        rankedCount,
+        tasteUnavailable,
+        radius
       );
 
       let coverageNote = this.catalog.getCoverageNote(candidate.entity_id, nationalCount);
+      if (verification.metroCoverageNote) {
+        coverageNote = this.appendCoverageNote(verification.metroCoverageNote, coverageNote);
+      }
       if (osmSnapshotBrandStatus(candidate.entity_id) === 'failed') {
         coverageNote = this.appendCoverageNote(
           'OpenStreetMap snapshot fetch failed for this brand; showing ATP only.',
@@ -510,17 +596,20 @@ export class AnalysisService {
 
       prospectPacks.push({
         coverageNote,
+        brandReach: brandReachForEntity(candidate.entity_id),
         brand: {
           entityId: candidate.entity_id,
           name: displayName,
-          affinity: candidate.query?.affinity || 0,
+          affinity: tasteUnavailable ? 0 : candidate.query?.affinity || 0,
           affinityRank: candidate.blendedRank,
           popularity: undefined,
           verified: verification.status,
           verificationSources: verification.sources,
           nationalStoreCount: nationalCount,
           chainSizeTier: tierContext?.tier,
-          tasteFitBeyondChainPercentile: tierContext?.tasteFitBeyondChainPercentile,
+          tasteFitBeyondChainPercentile: tasteUnavailable
+            ? undefined
+            : tierContext?.tasteFitBeyondChainPercentile,
           nearbyStoreCount: 0,
           storefrontFormat: formatSpec.format,
           minStorefrontSqFt: formatSpec.minSqFt,
@@ -554,12 +643,31 @@ export class AnalysisService {
       | 'unverified (1 source)'
       | 'conflict - likely present';
     sources: string[];
+    metroCoverageNote?: string;
   }> {
     const sources: string[] = ['All The Places (CC0)'];
     const snapshotLabel = osmSnapshotDisplayLabel();
     const status = osmSnapshotBrandStatus(entityId);
     if (status === 'failed' || status === 'missing' || !this.osmSnapshot) {
-      return { status: 'unverified (1 source)', sources };
+      return {
+        status: 'unverified (1 source)',
+        sources,
+        metroCoverageNote:
+          status === 'missing'
+            ? 'OpenStreetMap snapshot does not include this brand; showing ATP only.'
+            : undefined,
+      };
+    }
+    const osmNationalCount = await this.osmSnapshot.getNationalStoreCount(entityId);
+    if (!osmSnapshotBrandUsable(entityId, osmNationalCount)) {
+      return {
+        status: 'unverified (1 source)',
+        sources,
+        metroCoverageNote:
+          status === 'ok'
+            ? 'OpenStreetMap snapshot has no store points for this brand; showing ATP only.'
+            : undefined,
+      };
     }
     const found = await this.osmSnapshot.hasBrandNearby(
       entityId,
@@ -573,6 +681,34 @@ export class AnalysisService {
         sources: [...sources, `${snapshotLabel} (store found)`],
       };
     }
+
+    const nationalCount = await this.catalog.getNationalStoreCount(entityId);
+    const atpNearby = await this.catalog.findStoresNearby(
+      entityId,
+      location.latitude,
+      location.longitude,
+      METRO_COVERAGE_SCAN_KM
+    );
+    const nearestAtpKm = atpNearby[0]?.distance;
+    const nearestOsmKm = await this.osmSnapshot.nearestStoreKm(
+      entityId,
+      location.latitude,
+      location.longitude,
+      METRO_COVERAGE_SCAN_KM
+    );
+    const metroGap = metroStoreCoverageIncomplete({
+      nationalStoreCount: nationalCount,
+      nearestAtpKm,
+      nearestOsmKm,
+    });
+    if (metroGap.incomplete) {
+      return {
+        status: 'unverified (1 source)',
+        sources,
+        metroCoverageNote: metroGap.reason,
+      };
+    }
+
     return {
       status: 'verified (2 sources)',
       sources: [...sources, snapshotLabel],
@@ -600,9 +736,7 @@ export class AnalysisService {
     const lockKey = `verify:live-overpass:${await sha256Short(
       `${location.latitude},${location.longitude}:${radiusKm}:${pending.map((p) => p.brand.entityId).sort().join(',')}`
     )}`;
-    const existing = await this.cache.get(lockKey);
-    if (existing) return;
-    await this.cache.put(lockKey, '1', { expirationTtl: 60 });
+    if (!tryAcquireOverpassRefreshLock(lockKey)) return;
     const searchBrands = pending.map((pack) =>
       toOverpassSearchBrand(pack.brand.entityId, pack.brand.name)
     );
@@ -656,8 +790,8 @@ export class AnalysisService {
   }> {
     const verifyCacheKey = await this.verifyResultCacheKey(location, radiusKm, prospects);
     if (verifyCacheKey) {
-      const cached = await this.cache.get(verifyCacheKey);
-      if (cached) {
+      const cached = await this.responseCache.get(verifyCacheKey, 'text');
+      if (typeof cached === 'string') {
         const parsed = JSON.parse(cached) as {
           prospects: ProspectPack[];
           summary: {
@@ -722,7 +856,7 @@ export class AnalysisService {
       };
 
       if (verifyCacheKey) {
-        await this.cache.put(verifyCacheKey, JSON.stringify(payload), { expirationTtl: 3600 });
+        await this.responseCache.putJsonIfChanged(verifyCacheKey, payload, 3600);
       }
 
       return payload;
@@ -772,22 +906,14 @@ export class AnalysisService {
       };
     }
 
-    const needles = [brandName, qlooName].filter(Boolean).map((s) => s!.toLowerCase());
     const wikidata = entityId ? OSM_WIKIDATA_BY_ENTITY[entityId] : undefined;
+    const search = {
+      name: brandName,
+      wikidata,
+      aliases: qlooName ? [qlooName] : undefined,
+    };
 
-    const osmHasBrand = osmResult.brands.some((b) => {
-      if (wikidata && b.brandWikidata === wikidata) return true;
-      const brandLower = b.brand?.toLowerCase() ?? '';
-      const nameLower = b.name.toLowerCase();
-      return needles.some(
-        (n) =>
-          n.length > 0 &&
-          (brandLower.includes(n) ||
-            n.includes(brandLower) ||
-            nameLower.includes(n) ||
-            n.includes(nameLower))
-      );
-    });
+    const osmHasBrand = osmResult.brands.some((b) => overpassBrandMatchesSearch(b, search));
 
     if (osmHasBrand) {
       return {
@@ -810,29 +936,54 @@ export class AnalysisService {
   }
 
   private generateReasons(
-    prospect: { name: string; qlooRank: number; query?: { affinity?: number } },
+    prospect: {
+      entity_id: string;
+      name: string;
+      qlooRank: number;
+      query?: { affinity?: number };
+    },
     location: Location,
     nationalCount: number,
-    rankedCount: number
+    rankedCount: number,
+    tasteUnavailable = false,
+    radiusKm = 10
   ): string[] {
     const reasons: string[] = [];
     const affinity = prospect.query?.affinity ?? 0;
     const area = location.neighborhood || location.city || 'this area';
+    const category = brandCategoryLabel(prospect.entity_id);
+    const displayName = displayBrandName(prospect.entity_id, prospect.name);
 
-    if (affinity > 0 && rankedCount > 1) {
-      const percentile = 1 - (prospect.qlooRank - 1) / (rankedCount - 1);
+    if (tasteUnavailable) {
+      reasons.push(TASTE_UNAVAILABLE_RANKING_NOTICE);
+    } else if (affinity > 0 && rankedCount > 0) {
+      const percentile = rankedCount > 1 ? 1 - (prospect.qlooRank - 1) / (rankedCount - 1) : 1;
       if (percentile >= 0.95) {
-        reasons.push(`Qloo rank #${prospect.qlooRank} (top 5% of ${rankedCount} brands) in ${area}`);
+        reasons.push(
+          `${displayName}: Qloo rank #${prospect.qlooRank} (top 5% of ${rankedCount} brands) for ${area}`
+        );
       } else if (percentile >= 0.9) {
-        reasons.push(`Qloo rank #${prospect.qlooRank} (top 10% of ${rankedCount} brands) in ${area}`);
+        reasons.push(
+          `${displayName}: Qloo rank #${prospect.qlooRank} (top 10% of ${rankedCount} brands) for ${area}`
+        );
       } else if (percentile >= 0.85) {
-        reasons.push(`Qloo rank #${prospect.qlooRank} (top 15% of ${rankedCount} brands) in ${area}`);
+        reasons.push(
+          `${displayName}: Qloo rank #${prospect.qlooRank} (top 15% of ${rankedCount} brands) for ${area}`
+        );
+      } else {
+        reasons.push(
+          `${displayName}: Qloo rank #${prospect.qlooRank} of ${rankedCount} brands scored for ${area}`
+        );
       }
+    } else {
+      reasons.push(`No taste score for ${displayName} in this run`);
     }
 
-    reasons.push(
-      'Prospect ordering uses the fitted taste-aware blend (Qloo rank, chain size, and trade-area density); backtest uses the same blend with adaptive-radius presence'
-    );
+    reasons.push(`No ${displayName} store within ${radiusKm} km (ATP catalog)`);
+
+    if (category) {
+      reasons.push(`${category} — category gap vs. nearby tenants`);
+    }
 
     if (nationalCount >= 100) {
       reasons.push(`Established chain with ${nationalCount} US locations`);
@@ -856,9 +1007,14 @@ export class AnalysisService {
   private generateWarnings(
     insightCount: number,
     backtest: BacktestResult,
-    location: Location
+    location: Location,
+    tasteUnavailable = false
   ): string[] {
     const warnings: string[] = [];
+
+    if (tasteUnavailable) {
+      warnings.push(TASTE_UNAVAILABLE_RANKING_NOTICE);
+    }
 
     if (insightCount < 20) {
       warnings.push('Limited brand data available for this location');
@@ -914,8 +1070,14 @@ export class AnalysisService {
       nearestStoreKm?: number;
       coTenantBrands?: string[];
       verificationLabel?: string;
+      brandReach?: import('@leaseup/contracts').BrandReachContact;
+      brandEntityId?: string;
     }
   ): Promise<{ draft: string; model: string }> {
+    const reach =
+      context?.brandReach ??
+      (context?.brandEntityId ? brandReachForEntity(context.brandEntityId) : undefined);
+
     const result = await this.openai.generateOutreach({
       brandName,
       address,
@@ -926,6 +1088,7 @@ export class AnalysisService {
       nearestStoreKm: context?.nearestStoreKm,
       coTenantBrands: context?.coTenantBrands,
       verificationLabel: context?.verificationLabel,
+      brandReach: reach,
     });
 
     return {

@@ -68,14 +68,21 @@ export function qlooProofBrokerBanner(results: AnalysisResponse): {
     findAdaptiveEvalRowByAddress(results.location.address);
   const cohortLegacy = loadLiveQlooLiftAggregates();
   const auc = cohortLegacy.sameSizeAuc;
+  const randomExpected =
+    recorded && recorded.n_present !== undefined && recorded.n_brands
+      ? (10 * recorded.n_present) / recorded.n_brands
+      : undefined;
   const methodParts = [
     `Recorded eval uses a density-based radius (e.g. ${adaptiveRadiusKm ?? 1.5} km dense urban).`,
-    `Cohort same-size tier AUC ${auc.value.toFixed(3)} (95% CI ${auc.ciLow.toFixed(3)} to ${auc.ciHigh.toFixed(3)}).`,
+    randomExpected !== undefined
+      ? `Random baseline at that radius: ~${randomExpected.toFixed(1)} of 10 present (pool ${recorded!.n_present}/${recorded!.n_brands} in radius).`
+      : '',
+    `Cohort rank match among similar chains ${(auc.value * 100).toFixed(0)}% (likely range ${(auc.ciLow * 100).toFixed(0)}% to ${(auc.ciHigh * 100).toFixed(0)}%).`,
     `Mean top-10 presence: raw Qloo ${(agg.p10_raw * 100).toFixed(0)}%, chain size ${(agg.p10_chain * 100).toFixed(0)}%, taste-aware blend ${(agg.p10_blend * 100).toFixed(0)}%.`,
   ];
   if (recorded?.same_size_auc !== undefined && recorded.same_size_auc_ci) {
     methodParts.push(
-      `This pin same-size AUC ${recorded.same_size_auc.toFixed(3)} (95% CI ${recorded.same_size_auc_ci[0].toFixed(2)} to ${recorded.same_size_auc_ci[1].toFixed(2)}).`
+      `This pin rank match ${(recorded.same_size_auc * 100).toFixed(0)}% (likely range ${(recorded.same_size_auc_ci[0] * 100).toFixed(0)}% to ${(recorded.same_size_auc_ci[1] * 100).toFixed(0)}%).`
     );
   }
   if (recorded?.p10_raw !== undefined) {

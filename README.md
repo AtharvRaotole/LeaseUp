@@ -1,22 +1,24 @@
 # LeaseUp
 
-**Find the tenants your retail space is missing.**
+**Find the right stores for your empty retail space.**
 
-LeaseUp ranks brands for a storefront using Qloo taste affinity, then checks the list against real chain locations (All The Places) and OpenStreetMap before you pitch. Built for the [Qloo Agentic Hackathon 2026](https://qloo.devpost.com/).
+Type in an address. LeaseUp shows which brands people nearby love but can't find close by, and helps you pitch them. Store locations are checked against public map data before you reach out. Built for the [Qloo Agentic Hackathon 2026](https://qloo.devpost.com/).
 
 **Live demo:** [https://leaseup-59m.pages.dev](https://leaseup-59m.pages.dev)
 
 ![LeaseUp landing (light, 1440px)](docs/screenshots/landing-light-1440.png)
 
-## One-minute demo
+## Try it in 60 seconds (judge path, demo mode)
 
-1. Open the live site and enter `1574 N Milwaukee Ave, Chicago, IL 60622` (or click **Wicker Park**).
-2. Leave radius at **10 km** and run **Analyze**.
-3. Scan **Brands to pitch** for high-fit chains with no nearby store.
-4. Open **Compare** to flip Wicker vs Sevierville on recorded fixtures.
-5. Click **Draft outreach** on a prospect to see gpt-4o-mini copy (on demand only).
+Three recorded addresses (no API key): **`1560 N Milwaukee Ave, Chicago, IL 60622`** (Wicker Park chip), **`1300 Pearl St, Boulder, CO 80302`**, **`125 Collier Dr, Sevierville, TN 37862`**. Source: `packages/fixtures/src/demo-addresses.ts`.
 
-Report UI (demo chip):
+| Goal | Minimal path from `/` |
+| --- | --- |
+| **Finished report** | 1 click: **Wicker Park, Chicago** demo chip |
+| **Pitch pack** | On report: **Share pitch pack** → **Create public link** → open pitch URL |
+| **Pipeline board** | On report: **Add to pipeline** → **Pipeline** in the header |
+
+Stills for reviewers (no video): [report](docs/screenshots/report-light-1440.png), [pitch](docs/screenshots/features/pitch-pack-light-1440.png), [pipeline](docs/screenshots/features/pipeline-light-1440.png). Full feature-to-criteria map with eval file links: [docs/devpost/SUBMISSION.md](docs/devpost/SUBMISSION.md#judge-path-try-the-product--where-to-verify). Broker Qloo explainer in the app: `/methodology/qloo` (linked from [methodology](https://leaseup-59m.pages.dev/methodology)).
 
 ![Report (light, 1440px)](docs/screenshots/report-light-1440.png)
 
@@ -110,6 +112,7 @@ Demo mode serves recorded responses for the three chip addresses only; other add
 ## Accuracy and honesty
 
 - **Backtest:** Among brands Qloo returns that we also track in All The Places, we count how many of the top 10 already have a store within your radius. Demo hit rates on the homepage are computed from fixtures (`packages/fixtures`), not hand-edited.
+- **40-address live eval (Oct 2026, OSM-retiled ground truth):** raw Qloo **P@10 0.54**, chain size **0.76**, logistic blend **0.82** (**+6.2** pp vs chain), same-size tier AUC **0.667** [0.646, 0.689]. Raw Qloo does not beat chain size on mean top-10 presence. Write-up: `data/qloo-eval-40/QLOO_LIFT_EVAL.md`.
 - **Verification labels** on the report reflect ATP matches and OSM snapshot checks where recorded; single-source rows are marked accordingly.
 - **Limits:** We track on the order of 200 major chains in the embedded ATP snapshot, not every retailer. Cross-batch Qloo affinity ordering is an assumption when more than 45 brand IDs are requested. Heatmaps appear only when Qloo returns cells in live mode.
 

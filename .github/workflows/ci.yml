@@ -55,6 +55,8 @@ jobs:
           ls -la packages/contracts/dist/ packages/fixtures/dist/ || echo "Dist folders missing!"
       
       - name: Build all packages
+        env:
+          VITE_API_URL: https://ci.leaseup.invalid
         run: pnpm build
         
       - name: Run typecheck
@@ -125,6 +127,8 @@ jobs:
         run: pnpm install --frozen-lockfile
         
       - name: Build
+        env:
+          VITE_API_URL: https://ci.leaseup.invalid
         run: pnpm build
         
       - name: Upload build artifacts
@@ -154,6 +158,139 @@ jobs:
         run: pnpm exec playwright install chromium
       - name: CSP + map smoke (production _headers)
         run: node scripts/run-csp-e2e.mjs
+
+  a11y-e2e:
+    name: Axe a11y e2e
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.0'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium
+      - name: Axe serious/critical (production preview + demo worker)
+        run: node scripts/run-a11y-e2e.mjs
+
+  qloo-down-e2e:
+    name: Qloo down e2e
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.0'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium
+      - name: Chain-size fallback when Qloo is down
+        run: node scripts/run-qloo-down-e2e.mjs
+
+  watchlist-e2e:
+    name: Watchlist e2e
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.0'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium
+      - name: Watchlist save and recheck (demo fixtures)
+        run: node scripts/run-watchlist-e2e.mjs
+
+  wicker-broker-e2e:
+    name: Wicker broker report e2e
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.0'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium
+      - name: Who shops here + Who to contact on Wicker demo
+        run: node scripts/run-wicker-broker-e2e.mjs
+
+  pipeline-crm-e2e:
+    name: Pipeline CRM e2e
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.0'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium
+      - name: Pipeline status, notes, and reminder (demo)
+        run: node scripts/run-pipeline-crm-e2e.mjs
+
+  pipeline-loop-e2e:
+    name: Pipeline loop e2e
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.0'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium
+      - name: Report, watchlist, and pipeline evidence loop
+        run: node scripts/run-pipeline-loop-e2e.mjs
+
+  landing-hero-preview-e2e:
+    name: Landing hero preview e2e
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.0'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium
+      - name: Hero preview image loads (light + dark)
+        run: node scripts/run-landing-hero-preview-e2e.mjs
 
   lighthouse:
     name: Lighthouse CI

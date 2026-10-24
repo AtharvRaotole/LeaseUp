@@ -1,5 +1,64 @@
-import type { AnalysisResponse, Location, ProspectPack } from '@leaseup/contracts';
-import { DEMO_OSM_UNRECORDED_NOTE } from '@leaseup/fixtures';
+import type { AnalysisResponse, Location, PitchPackSnapshot, ProspectPack } from '@leaseup/contracts';
+const DEMO_OSM_UNRECORDED_NOTE = 'OSM check not recorded for demo';
+
+/** Plain label for pitch packs: how many store datasets we checked for this brand. */
+export function pitchPackVerificationSummary(
+  snapshot: Pick<PitchPackSnapshot, 'prospects'>
+): string {
+  let twoSource = 0;
+  let oneSource = 0;
+  let checking = 0;
+  for (const row of snapshot.prospects) {
+    const v = row.prospect.brand.verified;
+    if (v === 'verified (2 sources)') twoSource += 1;
+    else if (v === 'unverified (1 source)' || v === 'unverified') oneSource += 1;
+    else if (v === 'verifying...') checking += 1;
+  }
+  const parts: string[] = [];
+  if (twoSource > 0) {
+    parts.push(
+      `${twoSource} brand${twoSource === 1 ? '' : 's'} checked in All The Places and OpenStreetMap`
+    );
+  }
+  if (oneSource > 0) {
+    parts.push(
+      `${oneSource} brand${oneSource === 1 ? '' : 's'} checked against All The Places only (no OSM snapshot for that chain)`
+    );
+  }
+  if (checking > 0) {
+    parts.push(`${checking} still waiting on a second source`);
+  }
+  if (parts.length === 0) {
+    return 'Store checks vary by brand on this list.';
+  }
+  return parts.join('; ') + '.';
+}
+
+export function pitchCheckedSourcesLabel(prospect: ProspectPack): string {
+  const sources = prospect.brand.verificationSources ?? [];
+  const atp = sources.some((s) => /all the places/i.test(s));
+  const osm = sources.some(
+    (s) => /openstreetmap/i.test(s) && !/store found/i.test(s)
+  );
+  const checked = (atp ? 1 : 0) + (osm ? 1 : 0);
+  if (prospect.brand.verified === 'verified (2 sources)' || checked >= 2) {
+    return 'Checked in 2 sources';
+  }
+  if (prospect.brand.verified === 'unverified (1 source)') {
+    return 'Checked against All The Places';
+  }
+  if (checked === 1) {
+    if (atp && !osm) return 'Checked against All The Places';
+    return 'Checked in 1 source';
+  }
+  if (prospect.brand.verified === 'verifying...') {
+    return 'Checking second source';
+  }
+  if (checked === 0) {
+    return 'Store check in progress';
+  }
+  return `Checked in ${checked} source${checked === 1 ? '' : 's'}`;
+}
 
 export function verificationShortLabel(verified: ProspectPack['brand']['verified']): string {
   switch (verified) {
@@ -8,7 +67,7 @@ export function verificationShortLabel(verified: ProspectPack['brand']['verified
     case 'verifying...':
       return 'Checking OSM';
     case 'unverified (1 source)':
-      return 'One source';
+      return 'Checked against All The Places';
     case 'conflict - likely present':
       return 'Likely present';
     case 'conflict':
@@ -73,7 +132,7 @@ export function verificationSourceHelp(
       if (demoOsmSkipped) {
         return `Checked: All The Places (no store within ${radiusKm} km). Not checked: ${osmLabel} (${DEMO_OSM_UNRECORDED_NOTE}).`;
       }
-      return `Checked: All The Places (no store within ${radiusKm} km). Not checked yet: ${osmLabel}.`;
+      return `Checked against All The Places (no store within ${radiusKm} km). ${osmLabel} is not in our offline snapshot for this chain.`;
     }
     if (osmChecked && !atpChecked) {
       return `Checked: ${osmLabel} (no store within ${radiusKm} km). Not checked yet: All The Places.`;
@@ -99,7 +158,7 @@ export function verificationLabel(verified: ProspectPack['brand']['verified']): 
     case 'verifying...':
       return 'Checking OpenStreetMap';
     case 'unverified (1 source)':
-      return 'One source';
+      return 'Checked against All The Places';
     case 'conflict - likely present':
       return 'Likely present';
     case 'conflict':

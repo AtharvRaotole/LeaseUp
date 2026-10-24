@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-10-23T04:57:36.264Z",
+  "recordedAt": "2026-10-23T22:19:34.405Z",
   "displayLabel": "OpenStreetMap snapshot, Oct 23, 2026",
   "brands": {
     "0B47F4FC-A267-4E07-85F4-F64511835C03": {
@@ -15,32 +15,32 @@
     "0E011D42-90B2-496E-B285-4EB2181EB0A9": {
       "status": "ok",
       "name": "AT&T",
-      "qid": "Q35476",
-      "wikidataSource": "exact_wbsearch",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q35476\"](area.us);out center tags;",
+      "qid": "Q298594",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q298594\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 45595,
-      "elementCount": 241
+      "latencyMs": 72997,
+      "elementCount": 2925
     },
     "5D03112C-CD2A-41C3-9ED0-D72EED8BB373": {
       "status": "ok",
       "name": "Abercrombie & Fitch",
-      "qid": "Q319618",
-      "wikidataSource": "override",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q319618\"](area.us);out center tags;",
+      "qid": "Q319344",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q319344\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 46495,
-      "elementCount": 0
+      "latencyMs": 44455,
+      "elementCount": 119
     },
     "81100467-8F5D-4796-B222-A84983379402": {
       "status": "ok",
       "name": "Academy Sports + Outdoors",
-      "qid": "Q4672981",
-      "wikidataSource": "override",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4672981\"](area.us);out center tags;",
+      "qid": "Q4671380",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4671380\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 62800,
-      "elementCount": 2778
+      "latencyMs": 47973,
+      "elementCount": 276
     },
     "FCEA7CA1-1D40-4680-B337-E74594D9BCF1": {
       "status": "ok",
@@ -55,32 +55,32 @@
     "88483819-91A9-45BE-8110-0D6CD0C9B35D": {
       "status": "ok",
       "name": "Aldi",
-      "qid": "Q125054",
-      "wikidataSource": "override",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q125054\"](area.us);out center tags;",
+      "qid": "Q41171672",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q41171672\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 29463,
-      "elementCount": 8
+      "latencyMs": 49114,
+      "elementCount": 2448
     },
     "2D890327-8794-4C5A-898F-FFF0323325CF": {
       "status": "ok",
       "name": "American Eagle Outfitters",
-      "qid": "Q463871",
-      "wikidataSource": "override",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q463871\"](area.us);out center tags;",
+      "qid": "Q2842931",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q2842931\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 49259,
-      "elementCount": 0
+      "latencyMs": 36210,
+      "elementCount": 402
     },
     "D2AB8018-EDD0-45A4-908F-A93658E5223E": {
       "status": "ok",
       "name": "Ann Taylor",
-      "qid": "Q4766705",
-      "wikidataSource": "exact_wbsearch",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4766705\"](area.us);out center tags;",
+      "qid": "Q4766699",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4766699\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 35420,
-      "elementCount": 0
+      "latencyMs": 39808,
+      "elementCount": 156
     },
     "8AB653CD-7984-4263-B4B0-F3C4C02519DC": {
       "status": "ok",
@@ -95,12 +95,12 @@
     "D5B78065-6DBB-4DDB-80DF-6495B9B1006B": {
       "status": "ok",
       "name": "Apple",
-      "qid": "Q89",
-      "wikidataSource": "exact_wbsearch",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q89\"](area.us);out center tags;",
+      "qid": "Q421253",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q421253\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 27608,
-      "elementCount": 0
+      "latencyMs": 43843,
+      "elementCount": 249
     },
     "8227A628-2D77-4EB3-8F1A-2C4238997412": {
       "status": "ok",
@@ -122,15 +122,25 @@
       "latencyMs": 55593,
       "elementCount": 3016
     },
+    "BB2ED76F-B614-4601-9C57-619025DB52CE": {
+      "status": "ok",
+      "name": "Ashley Furniture",
+      "qid": "Q4805437",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4805437\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 38315,
+      "elementCount": 509
+    },
     "DFFF4470-F663-4742-A503-4FD0CB152498": {
       "status": "ok",
       "name": "Athleta",
-      "qid": "Q3784882",
-      "wikidataSource": "exact_wbsearch",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q3784882\"](area.us);out center tags;",
+      "qid": "Q105722424",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q105722424\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 38215,
-      "elementCount": 0
+      "latencyMs": 34908,
+      "elementCount": 138
     },
     "86AA27A6-074F-4137-8358-FA16DBD7F34E": {
       "status": "ok",
@@ -152,6 +162,16 @@
       "latencyMs": 44483,
       "elementCount": 114
     },
+    "BEE83976-354E-4991-95BB-C32595C9C96D": {
+      "status": "ok",
+      "name": "Banana Republic",
+      "qid": "Q806085",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q806085\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 36922,
+      "elementCount": 280
+    },
     "0BAC80D0-90D5-46A8-A11F-7CC58DE74963": {
       "status": "ok",
       "name": "Barnes & Noble",
@@ -161,6 +181,16 @@
       "endpoint": "overpass.private.coffee",
       "latencyMs": 99639,
       "elementCount": 127
+    },
+    "706BC87D-2A45-474B-AD67-210677434F88": {
+      "status": "ok",
+      "name": "Baskin-Robbins",
+      "qid": "Q584601",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q584601\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 46654,
+      "elementCount": 1135
     },
     "2D00EBC5-9F4C-46E2-86D5-99E55B8D30D9": {
       "status": "ok",
@@ -172,6 +202,16 @@
       "latencyMs": 32117,
       "elementCount": 97
     },
+    "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E": {
+      "status": "ok",
+      "name": "Bath & Body Works",
+      "qid": "Q810773",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q810773\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 40693,
+      "elementCount": 896
+    },
     "BEF4E5D5-245C-49D5-8D20-7C8A1B3C80F5": {
       "status": "ok",
       "name": "Best Buy",
@@ -182,6 +222,16 @@
       "latencyMs": 59170,
       "elementCount": 962
     },
+    "AD18E464-9E20-425E-80B3-010E665D78C1": {
+      "status": "ok",
+      "name": "Big Lots",
+      "qid": "Q4905973",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4905973\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 38581,
+      "elementCount": 722
+    },
     "495FBED3-17C4-484F-A208-73C0018E0463": {
       "status": "ok",
       "name": "Blaze Pizza",
@@ -191,6 +241,36 @@
       "endpoint": "overpass.kumi.systems",
       "latencyMs": 96188,
       "elementCount": 193
+    },
+    "F52C8EA1-4FAC-4863-A016-2E649B81CA9F": {
+      "status": "ok",
+      "name": "Bloomingdale's",
+      "qid": "Q283383",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q283383\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 38353,
+      "elementCount": 50
+    },
+    "22B1BC87-CDFE-4340-86F8-8E0E6E1E6A7D": {
+      "status": "ok",
+      "name": "Blue Bottle Coffee",
+      "qid": "Q4928917",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4928917\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 54440,
+      "elementCount": 63
+    },
+    "9DBAA49C-D49D-4BBE-ADBA-FE4D090F8217": {
+      "status": "ok",
+      "name": "Bojangles",
+      "qid": "Q891163",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q891163\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 52272,
+      "elementCount": 724
     },
     "9B3F03CE-3145-4ABC-A42E-C20945BF60B8": {
       "status": "ok",
@@ -212,25 +292,45 @@
       "latencyMs": 35506,
       "elementCount": 117
     },
+    "D9E4D872-7E4D-4E5A-B94F-FFD25B7D98C2": {
+      "status": "ok",
+      "name": "Buffalo Wild Wings",
+      "qid": "Q509255",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q509255\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 55923,
+      "elementCount": 1109
+    },
     "25FFE815-A824-4029-9BA5-10E70CD8EE26": {
       "status": "ok",
       "name": "Build-A-Bear Workshop",
-      "qid": "Q4986377",
-      "wikidataSource": "exact_wbsearch",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4986377\"](area.us);out center tags;",
+      "qid": "Q1002992",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q1002992\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 36315,
-      "elementCount": 0
+      "latencyMs": 47499,
+      "elementCount": 151
+    },
+    "74D13B62-2C51-4D99-804F-3D338F7B0406": {
+      "status": "ok",
+      "name": "Burger King",
+      "qid": "Q177054",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q177054\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 82952,
+      "elementCount": 6285
     },
     "91491729-2989-44C6-82F1-E8EB25B9FA42": {
       "status": "ok",
       "name": "Burlington",
-      "qid": "Q31058",
-      "wikidataSource": "exact_wbsearch",
-      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q31058\"](area.us);out center tags;",
+      "qid": "Q4999220",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q4999220\"](area.us);out center tags;",
       "endpoint": "overpass-api.de",
-      "latencyMs": 31683,
-      "elementCount": 0
+      "latencyMs": 47162,
+      "elementCount": 836
     },
     "0F6BCED5-19B1-4DFD-B55C-42708EE32A64": {
       "status": "ok",
@@ -242,6 +342,396 @@
       "latencyMs": 36672,
       "elementCount": 309
     },
+    "F1032969-49C0-4F0D-AC5C-0629C1319D81": {
+      "status": "ok",
+      "name": "Carl's Jr.",
+      "qid": "Q1043486",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q1043486\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 47349,
+      "elementCount": 957
+    },
+    "B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7": {
+      "status": "ok",
+      "name": "Chick-fil-A",
+      "qid": "Q491516",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q491516\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 64191,
+      "elementCount": 2807
+    },
+    "9D8CE161-6BBD-4FE7-AA0A-DA9FB0C760DF": {
+      "status": "ok",
+      "name": "Chili's",
+      "qid": "Q1072948",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q1072948\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 49654,
+      "elementCount": 1158
+    },
+    "4CFF9589-5168-48BD-88F0-D0826466F37D": {
+      "status": "ok",
+      "name": "Chipotle Mexican Grill",
+      "qid": "Q465751",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q465751\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 76548,
+      "elementCount": 3189
+    },
+    "7F4CD3BE-477A-467D-B4F7-5F245B56B5F4": {
+      "status": "ok",
+      "name": "Claire's",
+      "qid": "Q2974996",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q2974996\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 46364,
+      "elementCount": 488
+    },
+    "FBCBEB97-74E1-4390-984A-BC7E5EF4F2EA": {
+      "status": "ok",
+      "name": "Costco",
+      "qid": "Q715583",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q715583\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 48529,
+      "elementCount": 1606
+    },
+    "7C4CC0B9-1C3C-4C5C-A732-5991046EBB03": {
+      "status": "ok",
+      "name": "Crumbl",
+      "qid": "Q106924414",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q106924414\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 53480,
+      "elementCount": 504
+    },
+    "54057197-DAD6-4798-846B-4A6EB72C8D9F": {
+      "status": "ok",
+      "name": "Culver's",
+      "qid": "Q1143589",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q1143589\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 55352,
+      "elementCount": 1039
+    },
+    "2158D476-D2CC-4FAA-BCA2-CD2B373E0CFF": {
+      "status": "ok",
+      "name": "Dairy Queen",
+      "qid": "Q1141226",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q1141226\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 74387,
+      "elementCount": 3460
+    },
+    "D0D3D990-E5B5-4B8A-AAC1-8D97E9227B56": {
+      "status": "ok",
+      "name": "Denny's",
+      "qid": "Q1189695",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q1189695\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 77562,
+      "elementCount": 1230
+    },
+    "CA5AE7AD-7CA2-4C8B-BC17-DC89B09ABD35": {
+      "status": "ok",
+      "name": "Dick's Sporting Goods",
+      "qid": "Q5272601",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q5272601\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 44565,
+      "elementCount": 680
+    },
+    "77A843BF-AA9A-4588-A44B-E8AA684A910C": {
+      "status": "ok",
+      "name": "Dollar General",
+      "qid": "Q145168",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q145168\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 88082,
+      "elementCount": 11292
+    },
+    "8B4368C8-ABC7-4AC4-9B8C-D47495E6EE7D": {
+      "status": "ok",
+      "name": "Dollar Tree",
+      "qid": "Q5289230",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q5289230\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 92544,
+      "elementCount": 5544
+    },
+    "5E978F43-4450-4F41-8EE4-A0421E8EC178": {
+      "status": "ok",
+      "name": "Dunkin'",
+      "qid": "Q847743",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q847743\"](area.us);out center tags;",
+      "endpoint": "overpass.private.coffee",
+      "latencyMs": 143984,
+      "elementCount": 238
+    },
+    "1DCF5C56-35D6-4CCA-AF5E-13F6ACB63C0F": {
+      "status": "ok",
+      "name": "Dutch Bros Coffee",
+      "qid": "Q5317253",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q5317253\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 57024,
+      "elementCount": 792
+    },
+    "3297674E-00F1-4A10-A3C7-983BDB823A0E": {
+      "status": "ok",
+      "name": "European Wax Center",
+      "qid": "Q5413426",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q5413426\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 40671,
+      "elementCount": 428
+    },
+    "B4F15973-8C09-4ACA-8E11-5CF3437D514D": {
+      "status": "ok",
+      "name": "F45 Training",
+      "qid": "Q64390973",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q64390973\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 33661,
+      "elementCount": 215
+    },
+    "3ADFE43E-4C2A-421A-995B-EE896F73E6FC": {
+      "status": "ok",
+      "name": "Family Dollar",
+      "qid": "Q5433101",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q5433101\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 82643,
+      "elementCount": 4307
+    },
+    "1DF5514A-1819-438B-BF91-880A21169FE9": {
+      "status": "ok",
+      "name": "First Watch",
+      "qid": "Q5454064",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q5454064\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 54404,
+      "elementCount": 356
+    },
+    "6D548BAE-A999-44A2-8FEB-5E92E9AE158F": {
+      "status": "ok",
+      "name": "Five Guys",
+      "qid": "Q1131810",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q1131810\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 59765,
+      "elementCount": 1303
+    },
+    "1C26370D-CCAB-4014-9D61-F17703B7C25C": {
+      "status": "ok",
+      "name": "Jimmy John's",
+      "qid": "Q1689380",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q1689380\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 63242,
+      "elementCount": 2167
+    },
+    "36588026-85C4-48C0-B555-85891F815D99": {
+      "status": "ok",
+      "name": "KFC",
+      "qid": "Q524757",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q524757\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 74749,
+      "elementCount": 3330
+    },
+    "945C90D2-07D7-43B3-98FE-C437DE7A6D16": {
+      "status": "ok",
+      "name": "Kohl's",
+      "qid": "Q967265",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q967265\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 59428,
+      "elementCount": 1086
+    },
+    "0E00B261-EF66-4F74-B645-040E8C6755D3": {
+      "status": "ok",
+      "name": "Kroger",
+      "qid": "Q153417",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q153417\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 53266,
+      "elementCount": 2308
+    },
+    "A7EB849F-73C2-4367-AB4D-467EED8A65D4": {
+      "status": "ok",
+      "name": "Little Caesars",
+      "qid": "Q1393809",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q1393809\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 76615,
+      "elementCount": 2442
+    },
+    "853AD85F-89EF-4274-BD23-E2B5C1F1A8DC": {
+      "status": "ok",
+      "name": "MAC Cosmetics",
+      "qid": "Q2624442",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q2624442\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 48325,
+      "elementCount": 90
+    },
+    "3CCF14AE-D5B0-4CB8-A8BA-5597827E8130": {
+      "status": "ok",
+      "name": "Mattress Firm",
+      "qid": "Q6791878",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q6791878\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 82814,
+      "elementCount": 1644
+    },
+    "8417D6F9-C8C7-40AD-BE49-0987A4663228": {
+      "status": "ok",
+      "name": "McDonald's",
+      "qid": "Q38076",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q38076\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 118310,
+      "elementCount": 13878
+    },
+    "C69202E6-9A83-4BD6-A720-ECAB9DB2AE52": {
+      "status": "ok",
+      "name": "Michaels",
+      "qid": "Q6835667",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q6835667\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 79101,
+      "elementCount": 1028
+    },
+    "81EC4A41-53FB-47FD-995A-B8AE3EE90652": {
+      "status": "ok",
+      "name": "Old Navy",
+      "qid": "Q2735242",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q2735242\"](area.us);out center tags;",
+      "endpoint": "overpass.kumi.systems",
+      "latencyMs": 110770,
+      "elementCount": 175
+    },
+    "0E67ECB0-C65D-4221-A0A2-2E5CD84B9322": {
+      "status": "ok",
+      "name": "Panda Express",
+      "qid": "Q1358690",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q1358690\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 70425,
+      "elementCount": 2168
+    },
+    "CCD54989-DFC4-4443-A378-72D6693B4903": {
+      "status": "ok",
+      "name": "Panera Bread",
+      "qid": "Q7130852",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q7130852\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 67722,
+      "elementCount": 2022
+    },
+    "A165685B-F595-457A-9DD8-E0CC8A6252B6": {
+      "status": "ok",
+      "name": "Papa John's",
+      "qid": "Q2759586",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q2759586\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 74746,
+      "elementCount": 1895
+    },
+    "93F6AA68-9168-4F6F-A27E-2508755B1690": {
+      "status": "ok",
+      "name": "Party City",
+      "qid": "Q7140896",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q7140896\"](area.us);out center tags;",
+      "endpoint": "overpass.private.coffee",
+      "latencyMs": 156251,
+      "elementCount": 81
+    },
+    "0025C006-CD75-479F-B42E-DFD4D16A6DE5": {
+      "status": "ok",
+      "name": "Petco",
+      "qid": "Q7171798",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q7171798\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 51695,
+      "elementCount": 1162
+    },
+    "16876F8E-06C7-429D-9F42-713027D90F2C": {
+      "status": "ok",
+      "name": "Pizza Hut",
+      "qid": "Q191615",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q191615\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 74050,
+      "elementCount": 3744
+    },
+    "CF8FDD0C-2601-4F42-95A7-05B5DAD71529": {
+      "status": "ok",
+      "name": "Planet Fitness",
+      "qid": "Q7201095",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q7201095\"](area.us);out center tags;",
+      "endpoint": "overpass.kumi.systems",
+      "latencyMs": 110763,
+      "elementCount": 1528
+    },
+    "BBF22D8D-166F-44A8-8694-3F6FF4F745AB": {
+      "status": "ok",
+      "name": "Popeyes",
+      "qid": "Q1330910",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q1330910\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 70275,
+      "elementCount": 2450
+    },
+    "2BAF7E3C-1A8C-496D-9E3E-30E0D067DE96": {
+      "status": "ok",
+      "name": "Publix",
+      "qid": "Q672170",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q672170\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 45807,
+      "elementCount": 1532
+    },
     "205AF33F-118E-4C49-9721-6BDBAF981DA0": {
       "status": "ok",
       "name": "REI",
@@ -251,61 +741,223 @@
       "endpoint": "overpass-api.de",
       "latencyMs": 38364,
       "elementCount": 189
+    },
+    "20E485DE-70A9-4635-AF36-F1305B60827D": {
+      "status": "ok",
+      "name": "Raising Cane's",
+      "qid": "Q7285144",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q7285144\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 52372,
+      "elementCount": 747
+    },
+    "8D0B9212-0D30-4D8C-9134-06B7F232C642": {
+      "status": "ok",
+      "name": "Sally Beauty",
+      "qid": "Q7405065",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q7405065\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 63245,
+      "elementCount": 1121
+    },
+    "796DBCE4-2B75-4171-BF32-44C16EDE63D5": {
+      "status": "ok",
+      "name": "Sam's Club",
+      "qid": "Q1268937",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q1268937\"](area.us);out center tags;",
+      "endpoint": "overpass.kumi.systems",
+      "latencyMs": 76317,
+      "elementCount": 0
+    },
+    "94977D7A-B380-4FCD-94E2-F0A743E2A75F": {
+      "status": "ok",
+      "name": "Sheetz",
+      "qid": "Q7492551",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q7492551\"](area.us);out center tags;",
+      "endpoint": "overpass.kumi.systems",
+      "latencyMs": 74787,
+      "elementCount": 1389
+    },
+    "28C14EC0-E167-413A-9DAB-3C2A54F00072": {
+      "status": "ok",
+      "name": "Sonic Drive-In",
+      "qid": "Q7561808",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q7561808\"](area.us);out center tags;",
+      "endpoint": "overpass.kumi.systems",
+      "latencyMs": 102216,
+      "elementCount": 2873
+    },
+    "B13C02E3-BA3C-4B39-85B4-ACF12FEBC892": {
+      "status": "ok",
+      "name": "Starbucks",
+      "qid": "Q37158",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q37158\"](area.us);out center tags;",
+      "endpoint": "overpass-api.de",
+      "latencyMs": 104198,
+      "elementCount": 11352
+    },
+    "4FF960CB-CCB8-4723-8657-8E9A5F0A53E2": {
+      "status": "missing_raw",
+      "name": "Subway",
+      "qid": "Q244457",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "29271B4D-CAD2-4DD4-A766-7338AEE5533D": {
+      "status": "missing_raw",
+      "name": "Taco Bell",
+      "qid": "Q752941",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A": {
+      "status": "ok",
+      "name": "Target",
+      "qid": "Q1046951",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q1046951\"](area.us);out center tags;",
+      "endpoint": "overpass.private.coffee",
+      "latencyMs": 118275,
+      "elementCount": 2017
+    },
+    "4C35AE62-092D-4110-A6DC-19F6932AE5FD": {
+      "status": "missing_raw",
+      "name": "Texas Roadhouse",
+      "qid": "Q1147970",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "CBCFD4C5-3906-4361-B56D-583B1BCB6532": {
+      "status": "missing_raw",
+      "name": "The Home Depot",
+      "qid": "Q864407",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "9278BB94-37C8-4C8F-908A-5067ECA014E7": {
+      "status": "ok",
+      "name": "Tim Hortons",
+      "qid": "Q175106",
+      "wikidataSource": "atp",
+      "query": "[out:json][timeout:180];area[\"ISO3166-1\"=\"US\"][admin_level=2]->.us;nwr[\"brand:wikidata\"=\"Q175106\"](area.us);out center tags;",
+      "endpoint": "overpass.kumi.systems",
+      "latencyMs": 90000,
+      "elementCount": 500
+    },
+    "096B986E-3D63-44F4-BE44-F85D52A2979D": {
+      "status": "missing_raw",
+      "name": "Trader Joe's",
+      "qid": "Q688825",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "0F77E9A4-121C-4941-ACE1-28502DBF1865": {
+      "status": "missing_raw",
+      "name": "Ulta",
+      "qid": "Q7887530",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "AC8F9047-F23D-4A54-BBAA-A3CBD2991C02": {
+      "status": "missing_raw",
+      "name": "Vans",
+      "qid": "Q483915",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "D3310425-7161-41FC-8C2C-5435AF0F0A5B": {
+      "status": "missing_raw",
+      "name": "Victoria's Secret",
+      "qid": "Q3324779",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "4C7C9E59-5CD7-4EDF-860D-5427FEA4046C": {
+      "status": "missing_raw",
+      "name": "Waffle House",
+      "qid": "Q1701206",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "D89FBEF9-E16C-4521-8513-20B180F56FAA": {
+      "status": "missing_raw",
+      "name": "Walgreens",
+      "qid": "Q1521182",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "D72865CB-DDB5-4202-96A4-D0415C0ACBF3": {
+      "status": "missing_raw",
+      "name": "Walmart",
+      "qid": "Q483551",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "3D47E593-FAD0-41F6-A289-CEDD54BCD8CC": {
+      "status": "missing_raw",
+      "name": "Wawa",
+      "qid": "Q1284782",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "6AC63878-1A9C-4D43-98C7-EAF9582BE1FB": {
+      "status": "missing_raw",
+      "name": "Wendy's",
+      "qid": "Q550258",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23": {
+      "status": "missing_raw",
+      "name": "Whole Foods Market",
+      "qid": "Q1809448",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "0D2EF24C-80B5-4841-A2F4-47CBC9471CC1": {
+      "status": "missing_raw",
+      "name": "Wingstop",
+      "qid": "Q8025339",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6": {
+      "status": "missing_raw",
+      "name": "TJ Maxx",
+      "qid": "Q1285758",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "A7E4F56C-19A7-4166-A4EA-EC77A59C3DC9": {
+      "status": "missing_raw",
+      "name": "Marshalls",
+      "qid": "Q1140878",
+      "wikidataSource": "atp",
+      "elementCount": 0
+    },
+    "002A706B-424B-40FB-8BE5-D99E706B1CC4": {
+      "status": "missing_raw",
+      "name": "HomeGoods",
+      "qid": "Q5887941",
+      "wikidataSource": "atp",
+      "elementCount": 0
     }
   },
   "failedBrands": [],
   "missingWikidata": [
     {
-      "brandId": "BB2ED76F-B614-4601-9C57-619025DB52CE",
-      "name": "Ashley Furniture"
-    },
-    {
-      "brandId": "BEE83976-354E-4991-95BB-C32595C9C96D",
-      "name": "Banana Republic"
-    },
-    {
-      "brandId": "706BC87D-2A45-474B-AD67-210677434F88",
-      "name": "Baskin-Robbins"
-    },
-    {
-      "brandId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
-      "name": "Bath & Body Works"
-    },
-    {
-      "brandId": "AD18E464-9E20-425E-80B3-010E665D78C1",
-      "name": "Big Lots"
-    },
-    {
-      "brandId": "F52C8EA1-4FAC-4863-A016-2E649B81CA9F",
-      "name": "Bloomingdale's"
-    },
-    {
-      "brandId": "22B1BC87-CDFE-4340-86F8-8E0E6E1E6A7D",
-      "name": "Blue Bottle Coffee"
-    },
-    {
-      "brandId": "9DBAA49C-D49D-4BBE-ADBA-FE4D090F8217",
-      "name": "Bojangles"
-    },
-    {
       "brandId": "14D07FA0-1C87-48E7-B19A-0D6401D2D082",
       "name": "Boot Barn"
     },
     {
-      "brandId": "D9E4D872-7E4D-4E5A-B94F-FFD25B7D98C2",
-      "name": "Buffalo Wild Wings"
-    },
-    {
-      "brandId": "74D13B62-2C51-4D99-804F-3D338F7B0406",
-      "name": "Burger King"
-    },
-    {
       "brandId": "D46C358B-C258-40FD-BE2F-1B03DBAC7913",
       "name": "Cabela's"
-    },
-    {
-      "brandId": "F1032969-49C0-4F0D-AC5C-0629C1319D81",
-      "name": "Carl's Jr."
     },
     {
       "brandId": "FF45877E-0E1D-4E41-A392-7E7C18A4FE18",
@@ -328,28 +980,12 @@
       "name": "Cava"
     },
     {
-      "brandId": "B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7",
-      "name": "Chick-fil-A"
-    },
-    {
       "brandId": "9AE69D0B-DBFE-49AC-8951-499883140A89",
       "name": "Chico's"
     },
     {
-      "brandId": "9D8CE161-6BBD-4FE7-AA0A-DA9FB0C760DF",
-      "name": "Chili's"
-    },
-    {
-      "brandId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
-      "name": "Chipotle Mexican Grill"
-    },
-    {
       "brandId": "C628D8FF-42F1-4626-9766-274148DBAB27",
       "name": "Church's Chicken"
-    },
-    {
-      "brandId": "7F4CD3BE-477A-467D-B4F7-5F245B56B5F4",
-      "name": "Claire's"
     },
     {
       "brandId": "C306B282-6425-46DF-98F0-D976C6A65B1E",
@@ -368,28 +1004,12 @@
       "name": "Cost Plus World Market"
     },
     {
-      "brandId": "FBCBEB97-74E1-4390-984A-BC7E5EF4F2EA",
-      "name": "Costco"
-    },
-    {
-      "brandId": "7C4CC0B9-1C3C-4C5C-A732-5991046EBB03",
-      "name": "Crumbl"
-    },
-    {
       "brandId": "C2FBC3D3-1A7E-4DFA-8824-BEDC0EB86C57",
       "name": "Crunch Fitness"
     },
     {
-      "brandId": "54057197-DAD6-4798-846B-4A6EB72C8D9F",
-      "name": "Culver's"
-    },
-    {
       "brandId": "0A4C7FDD-C236-4255-A8C0-82F875C03EC2",
       "name": "DSW"
-    },
-    {
-      "brandId": "2158D476-D2CC-4FAA-BCA2-CD2B373E0CFF",
-      "name": "Dairy Queen"
     },
     {
       "brandId": "47C8C56F-D079-451D-855A-D694B53C5A83",
@@ -400,32 +1020,8 @@
       "name": "Del Taco"
     },
     {
-      "brandId": "D0D3D990-E5B5-4B8A-AAC1-8D97E9227B56",
-      "name": "Denny's"
-    },
-    {
-      "brandId": "CA5AE7AD-7CA2-4C8B-BC17-DC89B09ABD35",
-      "name": "Dick's Sporting Goods"
-    },
-    {
       "brandId": "0E01EDE4-04E3-4801-916D-29171340AD1E",
       "name": "Dillard's"
-    },
-    {
-      "brandId": "77A843BF-AA9A-4588-A44B-E8AA684A910C",
-      "name": "Dollar General"
-    },
-    {
-      "brandId": "8B4368C8-ABC7-4AC4-9B8C-D47495E6EE7D",
-      "name": "Dollar Tree"
-    },
-    {
-      "brandId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
-      "name": "Dunkin'"
-    },
-    {
-      "brandId": "1DCF5C56-35D6-4CCA-AF5E-13F6ACB63C0F",
-      "name": "Dutch Bros Coffee"
     },
     {
       "brandId": "DE5DD631-BCC4-4EC9-B684-D2C822CA8F33",
@@ -436,20 +1032,8 @@
       "name": "El Pollo Loco"
     },
     {
-      "brandId": "3297674E-00F1-4A10-A3C7-983BDB823A0E",
-      "name": "European Wax Center"
-    },
-    {
       "brandId": "DB37F394-B330-4BFC-A14B-42A53B9CF7D9",
       "name": "Express"
-    },
-    {
-      "brandId": "B4F15973-8C09-4ACA-8E11-5CF3437D514D",
-      "name": "F45 Training"
-    },
-    {
-      "brandId": "3ADFE43E-4C2A-421A-995B-EE896F73E6FC",
-      "name": "Family Dollar"
     },
     {
       "brandId": "937A21AD-ACF2-4DBE-B61E-4A5466FE3E77",
@@ -462,14 +1046,6 @@
     {
       "brandId": "DA4F4642-9D83-4D04-93BD-F08CF62FFD07",
       "name": "Firehouse Subs"
-    },
-    {
-      "brandId": "1DF5514A-1819-438B-BF91-880A21169FE9",
-      "name": "First Watch"
-    },
-    {
-      "brandId": "6D548BAE-A999-44A2-8FEB-5E92E9AE158F",
-      "name": "Five Guys"
     },
     {
       "brandId": "4C160FEA-FDB6-4DEC-99FC-13899680A0F4",
@@ -564,14 +1140,6 @@
       "name": "Jamba"
     },
     {
-      "brandId": "1C26370D-CCAB-4014-9D61-F17703B7C25C",
-      "name": "Jimmy John's"
-    },
-    {
-      "brandId": "36588026-85C4-48C0-B555-85891F815D99",
-      "name": "KFC"
-    },
-    {
       "brandId": "6C386104-464E-4FB5-8570-37B88B132875",
       "name": "Kate Spade"
     },
@@ -584,16 +1152,8 @@
       "name": "Kendra Scott"
     },
     {
-      "brandId": "945C90D2-07D7-43B3-98FE-C437DE7A6D16",
-      "name": "Kohl's"
-    },
-    {
       "brandId": "A16489A3-A51E-4DD6-9966-934C86D80FE9",
       "name": "Krispy Kreme"
-    },
-    {
-      "brandId": "0E00B261-EF66-4F74-B645-040E8C6755D3",
-      "name": "Kroger"
     },
     {
       "brandId": "45B2D126-FCBC-44EA-BD09-FFA408BC1078",
@@ -620,10 +1180,6 @@
       "name": "Lidl"
     },
     {
-      "brandId": "A7EB849F-73C2-4367-AB4D-467EED8A65D4",
-      "name": "Little Caesars"
-    },
-    {
       "brandId": "1D533FB9-E335-4ACA-8095-24E199049EA7",
       "name": "LongHorn Steakhouse"
     },
@@ -634,10 +1190,6 @@
     {
       "brandId": "E4182E04-0D61-4DAD-AE66-EF4208951A5C",
       "name": "Lush"
-    },
-    {
-      "brandId": "853AD85F-89EF-4274-BD23-E2B5C1F1A8DC",
-      "name": "MAC Cosmetics"
     },
     {
       "brandId": "B23E595D-0C54-4B41-94F0-23C17B4075D9",
@@ -664,24 +1216,12 @@
       "name": "Massage Envy"
     },
     {
-      "brandId": "3CCF14AE-D5B0-4CB8-A8BA-5597827E8130",
-      "name": "Mattress Firm"
-    },
-    {
-      "brandId": "8417D6F9-C8C7-40AD-BE49-0987A4663228",
-      "name": "McDonald's"
-    },
-    {
       "brandId": "FF5D6B55-7FF3-432C-A0E8-CE3F790E7941",
       "name": "Men's Wearhouse"
     },
     {
       "brandId": "23A88F48-A3C6-46A5-82FB-0D862DF508C0",
       "name": "Michael Kors"
-    },
-    {
-      "brandId": "C69202E6-9A83-4BD6-A720-ECAB9DB2AE52",
-      "name": "Michaels"
     },
     {
       "brandId": "A4AF25AA-776E-4FF4-849E-4FE1BCA7B4E2",
@@ -712,10 +1252,6 @@
       "name": "Nordstrom Rack"
     },
     {
-      "brandId": "81EC4A41-53FB-47FD-995A-B8AE3EE90652",
-      "name": "Old Navy"
-    },
-    {
       "brandId": "1C537252-DE55-4FCF-931D-B76F157CF913",
       "name": "Ollie's Bargain Outlet"
     },
@@ -732,24 +1268,8 @@
       "name": "P.F. Chang's"
     },
     {
-      "brandId": "0E67ECB0-C65D-4221-A0A2-2E5CD84B9322",
-      "name": "Panda Express"
-    },
-    {
-      "brandId": "CCD54989-DFC4-4443-A378-72D6693B4903",
-      "name": "Panera Bread"
-    },
-    {
-      "brandId": "A165685B-F595-457A-9DD8-E0CC8A6252B6",
-      "name": "Papa John's"
-    },
-    {
       "brandId": "C7CDAEC5-8939-4754-941D-0FFFE70A2172",
       "name": "Paper Source"
-    },
-    {
-      "brandId": "93F6AA68-9168-4F6F-A27E-2508755B1690",
-      "name": "Party City"
     },
     {
       "brandId": "4F4B6506-341D-42FE-BC21-E440D03F60CC",
@@ -760,24 +1280,8 @@
       "name": "PetSmart"
     },
     {
-      "brandId": "0025C006-CD75-479F-B42E-DFD4D16A6DE5",
-      "name": "Petco"
-    },
-    {
       "brandId": "1AE523DD-3DE5-419F-9FDF-FFF48A863E5D",
       "name": "Philz Coffee"
-    },
-    {
-      "brandId": "16876F8E-06C7-429D-9F42-713027D90F2C",
-      "name": "Pizza Hut"
-    },
-    {
-      "brandId": "CF8FDD0C-2601-4F42-95A7-05B5DAD71529",
-      "name": "Planet Fitness"
-    },
-    {
-      "brandId": "BBF22D8D-166F-44A8-8694-3F6FF4F745AB",
-      "name": "Popeyes"
     },
     {
       "brandId": "CDA781D5-B243-4EFA-A7C9-1BE6C1979397",
@@ -792,20 +1296,12 @@
       "name": "Pret A Manger"
     },
     {
-      "brandId": "2BAF7E3C-1A8C-496D-9E3E-30E0D067DE96",
-      "name": "Publix"
-    },
-    {
       "brandId": "51D54EC5-B77F-485C-A3D8-2852EF220205",
       "name": "Qdoba"
     },
     {
       "brandId": "0EF78F2A-A8EF-4EB6-A2F0-37A8499BF9C7",
       "name": "QuikTrip"
-    },
-    {
-      "brandId": "20E485DE-70A9-4635-AF36-F1305B60827D",
-      "name": "Raising Cane's"
     },
     {
       "brandId": "F6A198C3-A7F2-4637-95C0-F89234B788DE",
@@ -828,20 +1324,8 @@
       "name": "Safeway"
     },
     {
-      "brandId": "8D0B9212-0D30-4D8C-9134-06B7F232C642",
-      "name": "Sally Beauty"
-    },
-    {
-      "brandId": "796DBCE4-2B75-4171-BF32-44C16EDE63D5",
-      "name": "Sam's Club"
-    },
-    {
       "brandId": "2C5054E1-8691-4F52-83CD-310D029BA6A3",
       "name": "Sephora"
-    },
-    {
-      "brandId": "94977D7A-B380-4FCD-94E2-F0A743E2A75F",
-      "name": "Sheetz"
     },
     {
       "brandId": "787C68A0-D33B-4C72-96BC-8AA923E55567",
@@ -860,10 +1344,6 @@
       "name": "Snap Fitness"
     },
     {
-      "brandId": "28C14EC0-E167-413A-9DAB-3C2A54F00072",
-      "name": "Sonic Drive-In"
-    },
-    {
       "brandId": "864FB0EF-F55A-478E-8E02-DAFF2DE6FDC2",
       "name": "SoulCycle"
     },
@@ -872,16 +1352,8 @@
       "name": "Sprouts Farmers Market"
     },
     {
-      "brandId": "B13C02E3-BA3C-4B39-85B4-ACF12FEBC892",
-      "name": "Starbucks"
-    },
-    {
       "brandId": "2C8106F4-B33F-45DA-80E6-5DCD39826B54",
       "name": "Steak 'n Shake"
-    },
-    {
-      "brandId": "4FF960CB-CCB8-4723-8657-8E9A5F0A53E2",
-      "name": "Subway"
     },
     {
       "brandId": "46ACDCB4-D58F-49E7-B5CE-80E44B78E5E1",
@@ -896,28 +1368,12 @@
       "name": "T-Mobile"
     },
     {
-      "brandId": "29271B4D-CAD2-4DD4-A766-7338AEE5533D",
-      "name": "Taco Bell"
-    },
-    {
       "brandId": "A8861362-99E1-4513-82EA-45F9421A130A",
       "name": "Talbots"
     },
     {
-      "brandId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
-      "name": "Target"
-    },
-    {
       "brandId": "D9477DA6-D020-4C27-A494-1EFF2607D594",
       "name": "Tempur-Pedic"
-    },
-    {
-      "brandId": "4C35AE62-092D-4110-A6DC-19F6932AE5FD",
-      "name": "Texas Roadhouse"
-    },
-    {
-      "brandId": "CBCFD4C5-3906-4361-B56D-583B1BCB6532",
-      "name": "The Home Depot"
     },
     {
       "brandId": "DB03F250-64F3-47AB-8756-BC1C4E13EBFD",
@@ -926,10 +1382,6 @@
     {
       "brandId": "CEBF621E-22D6-47C2-B02D-6C4C615BB341",
       "name": "Tiffany & Co."
-    },
-    {
-      "brandId": "9278BB94-37C8-4C8F-908A-5067ECA014E7",
-      "name": "Tim Hortons"
     },
     {
       "brandId": "FFB9D7B9-F161-4003-86BA-6FD2A860AFDA",
@@ -944,10 +1396,6 @@
       "name": "Torchy's Tacos"
     },
     {
-      "brandId": "096B986E-3D63-44F4-BE44-F85D52A2979D",
-      "name": "Trader Joe's"
-    },
-    {
       "brandId": "C3195799-34B7-4AEB-92DB-7C595190B240",
       "name": "Tropical Smoothie Cafe"
     },
@@ -956,72 +1404,32 @@
       "name": "Twin Peaks"
     },
     {
-      "brandId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
-      "name": "Ulta"
-    },
-    {
       "brandId": "DEFEBCC5-A986-4D7C-8408-7575210872FC",
       "name": "Under Armour"
-    },
-    {
-      "brandId": "AC8F9047-F23D-4A54-BBAA-A3CBD2991C02",
-      "name": "Vans"
     },
     {
       "brandId": "FFB1123D-833E-434E-BCE6-3967F03BC854",
       "name": "Verizon"
     },
     {
-      "brandId": "D3310425-7161-41FC-8C2C-5435AF0F0A5B",
-      "name": "Victoria's Secret"
-    },
-    {
       "brandId": "D619A0B2-F0ED-4DD3-97D9-00BDC4F32E7C",
       "name": "Vuori"
-    },
-    {
-      "brandId": "4C7C9E59-5CD7-4EDF-860D-5427FEA4046C",
-      "name": "Waffle House"
-    },
-    {
-      "brandId": "D89FBEF9-E16C-4521-8513-20B180F56FAA",
-      "name": "Walgreens"
-    },
-    {
-      "brandId": "D72865CB-DDB5-4202-96A4-D0415C0ACBF3",
-      "name": "Walmart"
     },
     {
       "brandId": "AB8D769A-CCEB-4C2D-A3D8-21641E0EC664",
       "name": "Warby Parker"
     },
     {
-      "brandId": "3D47E593-FAD0-41F6-A289-CEDD54BCD8CC",
-      "name": "Wawa"
-    },
-    {
       "brandId": "3ADC201F-5168-456F-A031-28B06ED86DFA",
       "name": "Wegmans"
-    },
-    {
-      "brandId": "6AC63878-1A9C-4D43-98C7-EAF9582BE1FB",
-      "name": "Wendy's"
     },
     {
       "brandId": "48803C8A-4E24-4888-B029-CDDF0D4547CE",
       "name": "Whataburger"
     },
     {
-      "brandId": "1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23",
-      "name": "Whole Foods Market"
-    },
-    {
       "brandId": "2B7931BB-8C2D-4FE0-BA41-8A5216BE6B4D",
       "name": "Williams-Sonoma"
-    },
-    {
-      "brandId": "0D2EF24C-80B5-4841-A2F4-47CBC9471CC1",
-      "name": "Wingstop"
     },
     {
       "brandId": "5BE78DDD-DFD2-40FF-8C43-502A68D0759F",
@@ -1050,138 +1458,16 @@
     {
       "brandId": "89396A3C-043E-4B1A-B0EC-5CE441F88EE3",
       "name": "White House Black Market"
-    },
-    {
-      "brandId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
-      "name": "TJ Maxx"
-    },
-    {
-      "brandId": "A7E4F56C-19A7-4166-A4EA-EC77A59C3DC9",
-      "name": "Marshalls"
-    },
-    {
-      "brandId": "002A706B-424B-40FB-8BE5-D99E706B1CC4",
-      "name": "HomeGoods"
-    }
-  ],
-  "wikidataEnriched": [
-    {
-      "brandId": "0E011D42-90B2-496E-B285-4EB2181EB0A9",
-      "name": "AT&T",
-      "qid": "Q35476",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "D2AB8018-EDD0-45A4-908F-A93658E5223E",
-      "name": "Ann Taylor",
-      "qid": "Q4766705",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "8AB653CD-7984-4263-B4B0-F3C4C02519DC",
-      "name": "Anytime Fitness",
-      "qid": "Q4778364",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "D5B78065-6DBB-4DDB-80DF-6495B9B1006B",
-      "name": "Apple",
-      "qid": "Q89",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "8227A628-2D77-4EB3-8F1A-2C4238997412",
-      "name": "Applebee's",
-      "qid": "Q621532",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "CE2A2DDD-3F1D-49A4-8DDF-5665365587CE",
-      "name": "Arby's",
-      "qid": "Q630866",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "DFFF4470-F663-4742-A503-4FD0CB152498",
-      "name": "Athleta",
-      "qid": "Q3784882",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "86AA27A6-074F-4137-8358-FA16DBD7F34E",
-      "name": "Au Bon Pain",
-      "qid": "Q4818942",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "E00BD9FA-BE47-432E-86D1-4E0046FE73DD",
-      "name": "Aveda",
-      "qid": "Q4827965",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "0BAC80D0-90D5-46A8-A11F-7CC58DE74963",
-      "name": "Barnes & Noble",
-      "qid": "Q795454",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "2D00EBC5-9F4C-46E2-86D5-99E55B8D30D9",
-      "name": "Bass Pro Shops",
-      "qid": "Q4867953",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "BEF4E5D5-245C-49D5-8D20-7C8A1B3C80F5",
-      "name": "Best Buy",
-      "qid": "Q533415",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "495FBED3-17C4-484F-A208-73C0018E0463",
-      "name": "Blaze Pizza",
-      "qid": "Q23016666",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "9B3F03CE-3145-4ABC-A42E-C20945BF60B8",
-      "name": "Bonefish Grill",
-      "qid": "Q4941599",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "5318FE99-3ADB-4E62-BFA5-DED63001E3DD",
-      "name": "Brooks Brothers",
-      "qid": "Q929722",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "25FFE815-A824-4029-9BA5-10E70CD8EE26",
-      "name": "Build-A-Bear Workshop",
-      "qid": "Q4986377",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "91491729-2989-44C6-82F1-E8EB25B9FA42",
-      "name": "Burlington",
-      "qid": "Q31058",
-      "source": "exact_wbsearch"
-    },
-    {
-      "brandId": "0F6BCED5-19B1-4DFD-B55C-42708EE32A64",
-      "name": "Caribou Coffee",
-      "qid": "Q5039494",
-      "source": "exact_wbsearch"
     }
   ],
   "tiles": {
-    "tileCount": 440,
-    "totalBytes": 545588,
-    "maxTileBytes": 17140,
-    "pointCount": 19574,
-    "brandCount": 25
+    "tileCount": 475,
+    "totalBytes": 3973931,
+    "maxTileBytes": 107822,
+    "pointCount": 142342,
+    "brandCount": 82
   },
-  "totalElements": 19574,
-  "succeededBrands": 25,
+  "totalElements": 142342,
+  "succeededBrands": 82,
   "failedCount": 0
 }

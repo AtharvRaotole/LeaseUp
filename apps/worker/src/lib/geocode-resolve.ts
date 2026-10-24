@@ -1,4 +1,5 @@
 import type { GeocodeCandidate, Location } from '@leaseup/contracts';
+import { GeocodeNotFoundError } from './errors';
 import { geocodeCandidateScore, rankGeocodeCandidates } from './geocode-rank';
 
 /** If the top candidate beats the runner-up by at least this much, we auto-pick it. */
@@ -29,7 +30,7 @@ export function resolveGeocodeFromCandidates(
   const candidates = ranked.slice(0, 3);
 
   if (candidates.length === 0) {
-    throw new Error('Address not found');
+    throw new GeocodeNotFoundError();
   }
 
   if (candidates.length === 1) {

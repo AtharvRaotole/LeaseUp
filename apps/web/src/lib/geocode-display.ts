@@ -1,5 +1,27 @@
 import type { GeocodeCandidate } from '@leaseup/contracts';
 
+function looksLikeStreetSegment(segment: string): boolean {
+  return (
+    /\d/.test(segment) ||
+    /\b(street|st|avenue|ave|road|rd|boulevard|blvd|drive|dr|lane|ln|way|place|pl)\b/i.test(segment)
+  );
+}
+
+function streetLineFromResolvedLabel(resolvedAddress: string): string {
+  const segments = resolvedAddress.split(',').map((s) => s.trim()).filter(Boolean);
+  if (
+    segments.length >= 3 &&
+    !looksLikeStreetSegment(segments[0]!) &&
+    /^\d+[A-Za-z]?(-\d+)?$/.test(segments[1]!)
+  ) {
+    return `${segments[1]} ${segments[2]}`.replace(/\s+/g, ' ').trim();
+  }
+  if (segments.length >= 2 && /^\d+[A-Za-z]?(-\d+)?$/.test(segments[0]!)) {
+    return `${segments[0]} ${segments[1]}`.replace(/\s+/g, ' ').trim();
+  }
+  return segments[0] ?? resolvedAddress;
+}
+
 export function postalCodeFromResolved(resolvedAddress: string): string | null {
   const match = resolvedAddress.match(/\b(\d{5})(?:-\d{4})?\b/);
   return match?.[1] ?? null;
@@ -17,15 +39,16 @@ export function geocodeCandidateSubtitle(c: GeocodeCandidate): string {
   return c.resolvedAddress;
 }
 
-/** Web mercator tile index for a static map thumbnail (Carto basemap). */
-export function mapThumbnailUrl(lat: number, lng: number, zoom = 14): string {
-  const n = 2 ** zoom;
-  const x = Math.floor(((lng + 180) / 360) * n);
-  const latRad = (lat * Math.PI) / 180;
-  const y = Math.floor(
-    ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * n
-  );
-  return `https://basemaps.cartocdn.com/light_all/${zoom}/${x}/${y}.png`;
+/** First segment of Nominatim label (street number and name). */
+export function geocodeCandidateStreetLine(c: GeocodeCandidate): string {
+  return streetLineFromResolvedLabel(c.resolvedAddress);
+}
+
+/** Stable key for merging picker rows that differ only in Nominatim punctuation. */
+export function geocodeCandidateDedupeKey(c: GeocodeCandidate): string {
+  const street = geocodeCandidateStreetLine(c).toLowerCase().replace(/\s+/g, ' ').trim();
+  const place = geocodeCandidateTitle(c).toLowerCase().replace(/\s+/g, ' ').trim();
+  return `${street}|${place}`;
 }
 
 function haversineKm(a: GeocodeCandidate, b: GeocodeCandidate): number {

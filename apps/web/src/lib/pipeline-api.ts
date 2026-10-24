@@ -63,3 +63,16 @@ export async function generatePipelineOutreach(cardId: string): Promise<Pipeline
 export function pipelineExportUrl(): string {
   return apiUrl('/api/pipeline/export.csv');
 }
+
+export async function attachPipelinePitchLink(input: {
+  pitchId: string;
+  pitchLink: string;
+  propertyAddress: string;
+  brandEntityIds: string[];
+}): Promise<PipelineBoard> {
+  const res = await pipelineFetch('/api/pipeline/attach-pitch', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+  return (await res.json()) as PipelineBoard;
+}

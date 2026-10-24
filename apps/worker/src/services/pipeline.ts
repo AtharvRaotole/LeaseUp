@@ -3,7 +3,7 @@ import type {
   PipelineAddCard,
   PipelineBoard,
   PipelineCard,
-  PipelineColumn,
+  PipelineProspectStatus,
   PipelinePublicBoard,
   PipelineUpdateCard,
 } from '@leaseup/contracts';
@@ -14,18 +14,28 @@ import {
 } from '@leaseup/contracts';
 import type { Env } from '../index';
 import { OpenAIClient } from '../providers/openai';
-import { pipelineColumnLabel } from '../lib/pipeline-export-labels';
+import {
+  insertPipelineCard,
+  listPipelineCards,
+  migrateLegacyCardsToTable,
+  updatePipelineCardRow,
+} from '../lib/pipeline-cards-db';
+import { findWatchIdForProperty } from '../lib/pipeline-watch-alerts';
+import { normalizePipelineCard } from '../lib/pipeline-legacy';
+import {
+  PIPELINE_STATUS_ORDER,
+  pipelineProspectStatusLabel,
+} from '../lib/pipeline-status-labels';
 
-const COLUMN_ORDER: PipelineColumn[] = [
-  'to_pitch',
-  'contacted',
-  'touring',
-  'loi',
-  'signed',
-  'passed',
-];
+export { PIPELINE_STATUS_ORDER };
 
-export { COLUMN_ORDER };
+type BoardPayload = {
+  workspaceId: string;
+  shareId: string;
+  createdAt: string;
+  updatedAt: string;
+  cards?: PipelineCard[];
+};
 
 function emptyBoard(workspaceId: string, shareId: string): PipelineBoard {
   const now = new Date().toISOString();
@@ -38,8 +48,8 @@ function emptyBoard(workspaceId: string, shareId: string): PipelineBoard {
   };
 }
 
-function nextSortOrder(cards: PipelineCard[], column: PipelineColumn): number {
-  const inCol = cards.filter((c) => c.column === column);
+function nextSortOrder(cards: PipelineCard[], status: PipelineProspectStatus): number {
+  const inCol = cards.filter((c) => c.prospectStatus === status);
   if (inCol.length === 0) return 0;
   return Math.max(...inCol.map((c) => c.sortOrder)) + 1;
 }
@@ -51,11 +61,45 @@ function escapeCsv(value: string): string {
   return value;
 }
 
+function boardPayload(board: PipelineBoard): BoardPayload {
+  return {
+    workspaceId: board.workspaceId,
+    shareId: board.shareId,
+    createdAt: board.createdAt,
+    updatedAt: board.updatedAt,
+  };
+}
+
 export class PipelineService {
   private db: D1Database;
 
   constructor(env: Env) {
     this.db = env.DB;
+  }
+
+  private async loadCards(workspaceId: string, legacyPayload?: BoardPayload): Promise<PipelineCard[]> {
+    const rows = await listPipelineCards(this.db, workspaceId);
+    if (rows.length > 0) return rows;
+
+    const legacy = legacyPayload?.cards;
+    if (legacy?.length) {
+      const normalized = legacy.map((c) => normalizePipelineCard(c));
+      await migrateLegacyCardsToTable(this.db, workspaceId, normalized);
+      return await listPipelineCards(this.db, workspaceId);
+    }
+    return [];
+  }
+
+  private async assembleBoard(payload: BoardPayload): Promise<PipelineBoard> {
+    const cards = await this.loadCards(payload.workspaceId, payload);
+    const board: PipelineBoard = {
+      workspaceId: payload.workspaceId,
+      shareId: payload.shareId,
+      createdAt: payload.createdAt,
+      updatedAt: payload.updatedAt,
+      cards,
+    };
+    return PipelineBoardSchema.parse(board);
   }
 
   async getOrCreate(workspaceId: string): Promise<PipelineBoard> {
@@ -67,7 +111,7 @@ export class PipelineService {
     PipelineBoardSchema.parse(board);
     await this.db
       .prepare('INSERT INTO pipeline_boards (workspace_id, share_id, payload) VALUES (?, ?, ?)')
-      .bind(workspaceId, shareId, JSON.stringify(board))
+      .bind(workspaceId, shareId, JSON.stringify(boardPayload(board)))
       .run();
     return board;
   }
@@ -78,7 +122,8 @@ export class PipelineService {
       .bind(workspaceId)
       .first<{ payload: string }>();
     if (!row?.payload) return null;
-    return PipelineBoardSchema.parse(JSON.parse(row.payload));
+    const payload = JSON.parse(row.payload) as BoardPayload;
+    return this.assembleBoard(payload);
   }
 
   async getPublic(shareId: string): Promise<PipelinePublicBoard | null> {
@@ -87,7 +132,8 @@ export class PipelineService {
       .bind(shareId)
       .first<{ payload: string }>();
     if (!row?.payload) return null;
-    const board = PipelineBoardSchema.parse(JSON.parse(row.payload));
+    const payload = JSON.parse(row.payload) as BoardPayload;
+    const board = await this.assembleBoard(payload);
     const publicBoard: PipelinePublicBoard = {
       shareId: board.shareId,
       cards: board.cards.map((c) => ({
@@ -102,12 +148,12 @@ export class PipelineService {
     return PipelinePublicBoardSchema.parse(publicBoard);
   }
 
-  private async save(board: PipelineBoard): Promise<PipelineBoard> {
+  private async saveMeta(board: PipelineBoard): Promise<PipelineBoard> {
     board.updatedAt = new Date().toISOString();
     PipelineBoardSchema.parse(board);
     await this.db
       .prepare('UPDATE pipeline_boards SET payload = ?, updated_at = unixepoch() WHERE workspace_id = ?')
-      .bind(JSON.stringify(board), board.workspaceId)
+      .bind(JSON.stringify(boardPayload(board)), board.workspaceId)
       .run();
     return board;
   }
@@ -115,9 +161,38 @@ export class PipelineService {
   async addCard(workspaceId: string, input: PipelineAddCard): Promise<PipelineBoard> {
     const board = await this.getOrCreate(workspaceId);
     const now = new Date().toISOString();
+    const watchId =
+      input.radiusKm !== undefined
+        ? await findWatchIdForProperty(
+            this.db,
+            workspaceId,
+            input.propertyAddress,
+            input.radiusKm
+          )
+        : undefined;
+
+    const existingIdx = board.cards.findIndex(
+      (c) =>
+        c.brandEntityId === input.brandEntityId &&
+        c.propertyAddress.trim().toLowerCase() === input.propertyAddress.trim().toLowerCase()
+    );
+
+    if (existingIdx >= 0) {
+      const card = board.cards[existingIdx]!;
+      card.evidenceSnapshot = input.evidenceSnapshot ?? card.evidenceSnapshot;
+      card.reportPath = input.reportPath ?? card.reportPath;
+      card.pitchId = input.pitchId ?? card.pitchId;
+      card.pitchLink = input.pitchLink ?? card.pitchLink;
+      card.watchId = watchId ?? card.watchId;
+      card.lastTouchedAt = now;
+      board.cards[existingIdx] = PipelineCardSchema.parse(card);
+      await updatePipelineCardRow(this.db, workspaceId, board.cards[existingIdx]);
+      return this.saveMeta(board);
+    }
+
     const card: PipelineCard = {
       id: randomUUID(),
-      column: 'to_pitch',
+      prospectStatus: 'to_pitch',
       sortOrder: nextSortOrder(board.cards, 'to_pitch'),
       brandEntityId: input.brandEntityId,
       brandName: input.brandName,
@@ -131,11 +206,45 @@ export class PipelineService {
       notes: '',
       lastTouchedAt: now,
       outreachContext: input.outreachContext,
-      outreachStatus: 'none',
+      evidenceSnapshot: input.evidenceSnapshot,
+      watchId,
     };
     PipelineCardSchema.parse(card);
+    await insertPipelineCard(this.db, workspaceId, card);
     board.cards.push(card);
-    return this.save(board);
+    return this.saveMeta(board);
+  }
+
+  async attachPitchLink(
+    workspaceId: string,
+    input: {
+      pitchId: string;
+      pitchLink: string;
+      propertyAddress: string;
+      brandEntityIds: string[];
+    }
+  ): Promise<PipelineBoard> {
+    const board = await this.getOrCreate(workspaceId);
+    const normalized = input.propertyAddress.trim().toLowerCase();
+    const idSet = new Set(input.brandEntityIds);
+    const now = new Date().toISOString();
+    let touched = false;
+
+    for (let i = 0; i < board.cards.length; i++) {
+      const card = board.cards[i]!;
+      if (card.propertyAddress.trim().toLowerCase() !== normalized) continue;
+      if (!idSet.has(card.brandEntityId)) continue;
+      card.pitchId = input.pitchId;
+      card.pitchLink = input.pitchLink;
+      card.lastTouchedAt = now;
+      const parsed = PipelineCardSchema.parse(card);
+      board.cards[i] = parsed;
+      await updatePipelineCardRow(this.db, workspaceId, parsed);
+      touched = true;
+    }
+
+    if (!touched) return board;
+    return this.saveMeta(board);
   }
 
   async updateCard(
@@ -151,12 +260,12 @@ export class PipelineService {
     const card = board.cards[idx]!;
     const now = new Date().toISOString();
 
-    if (patch.column !== undefined) {
-      card.column = patch.column;
+    if (patch.prospectStatus !== undefined) {
+      card.prospectStatus = patch.prospectStatus;
       if (patch.sortOrder === undefined) {
         card.sortOrder = nextSortOrder(
           board.cards.filter((c) => c.id !== cardId),
-          patch.column
+          patch.prospectStatus
         );
       }
     }
@@ -169,12 +278,15 @@ export class PipelineService {
     if (patch.outreachDraft !== undefined) {
       card.outreachDraft = patch.outreachDraft ?? undefined;
     }
-    if (patch.outreachStatus !== undefined) {
-      card.outreachStatus = patch.outreachStatus;
+    if (patch.pitchId !== undefined) card.pitchId = patch.pitchId;
+    if (patch.pitchLink !== undefined) card.pitchLink = patch.pitchLink;
+    if (patch.tradeAreaAlert !== undefined) {
+      card.tradeAreaAlert = patch.tradeAreaAlert ?? undefined;
     }
     card.lastTouchedAt = now;
     board.cards[idx] = PipelineCardSchema.parse(card);
-    return this.save(board);
+    await updatePipelineCardRow(this.db, workspaceId, board.cards[idx]);
+    return this.saveMeta(board);
   }
 
   async generateOutreach(env: Env, workspaceId: string, cardId: string): Promise<PipelineBoard> {
@@ -202,7 +314,8 @@ export class PipelineService {
       model: draft.model,
     };
     card.lastTouchedAt = new Date().toISOString();
-    return this.save(board);
+    await updatePipelineCardRow(this.db, workspaceId, PipelineCardSchema.parse(card));
+    return this.saveMeta(board);
   }
 
   exportCsv(board: PipelineBoard): string {
@@ -210,11 +323,11 @@ export class PipelineService {
       'brand',
       'property',
       'neighborhood',
-      'column',
+      'status',
       'rank',
       'verification',
       'recipient',
-      'follow_up',
+      'next_step_reminder',
       'last_touched',
       'pitch_link',
       'report_path',
@@ -223,8 +336,8 @@ export class PipelineService {
     const rows = board.cards
       .slice()
       .sort((a, b) => {
-        const colA = COLUMN_ORDER.indexOf(a.column);
-        const colB = COLUMN_ORDER.indexOf(b.column);
+        const colA = PIPELINE_STATUS_ORDER.indexOf(a.prospectStatus);
+        const colB = PIPELINE_STATUS_ORDER.indexOf(b.prospectStatus);
         if (colA !== colB) return colA - colB;
         return a.sortOrder - b.sortOrder;
       })
@@ -233,7 +346,7 @@ export class PipelineService {
           c.brandName,
           c.propertyAddress,
           c.propertyNeighborhood ?? '',
-          pipelineColumnLabel(c.column),
+          pipelineProspectStatusLabel(c.prospectStatus),
           String(c.affinityRank),
           c.verification,
           c.recipientEmail ?? '',

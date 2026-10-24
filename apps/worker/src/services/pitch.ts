@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import type { PitchCreate, PitchPackSnapshot } from '@leaseup/contracts';
 import { PitchPackSnapshotSchema } from '@leaseup/contracts';
 import type { Env } from '../index';
+import { SHARE_PERSIST_UNAVAILABLE } from '../lib/kv-persistent';
 import { displayBrandName } from '../lib/brand-display';
 import { formatFitsStorefront } from '../lib/storefront-format';
 
@@ -78,10 +79,20 @@ export class PitchService {
 
     PitchPackSnapshotSchema.parse(snapshot);
 
-    await this.db
-      .prepare('INSERT INTO pitch_packs (pitch_id, payload) VALUES (?, ?)')
-      .bind(id, JSON.stringify(snapshot))
-      .run();
+    try {
+      await this.db
+        .prepare('INSERT INTO pitch_packs (pitch_id, payload) VALUES (?, ?)')
+        .bind(id, JSON.stringify(snapshot))
+        .run();
+    } catch (err) {
+      console.warn(
+        JSON.stringify({
+          event: 'pitch_persist_failed',
+          message: (err as Error).message,
+        })
+      );
+      throw new Error(SHARE_PERSIST_UNAVAILABLE, { cause: err });
+    }
 
     return snapshot;
   }

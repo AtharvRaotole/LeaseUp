@@ -53,13 +53,17 @@ export async function buildBrandRankings(
   radiusKm: number,
   catalog: StoreCatalog,
   densityOrStratum: EvalSiteDensity | EvalDensityStratum = 'urban',
-  presence?: NearbyPresenceCache
+  presence?: NearbyPresenceCache,
+  tasteUnavailable = false
 ): Promise<BrandRankingRow[]> {
   const cache = presence ?? new NearbyPresenceCache(catalog, location);
-  const blended = orderInsightsByLogisticBlend(
-    insights,
-    logisticSiteForBlend(location, densityOrStratum, radiusKm)
-  );
+  const blended = tasteUnavailable
+    ? orderInsightsByNationalStoreCount(insights).map((row, index) => ({
+        ...row,
+        qlooRank: index + 1,
+        blendedRank: index + 1,
+      }))
+    : orderInsightsByLogisticBlend(insights, logisticSiteForBlend(location, densityOrStratum, radiusKm));
   const brandIds = new Set(catalog.getBrandIds());
   const tierFit = buildTierFitByEntityId(insights.map((i) => i.entity_id));
   const scoreRadiusKm = presenceRadiusKm(densityOrStratum, radiusKm);
@@ -80,13 +84,17 @@ export async function buildBrandRankings(
     rows.push({
       entityId: insight.entity_id,
       name: displayBrandName(insight.entity_id, insight.name),
-      affinity: insight.query?.affinity ?? 0,
-      qlooRank: index + 1,
+      affinity: tasteUnavailable ? 0 : (insight.query?.affinity ?? 0),
+      qlooRank: tasteUnavailable
+        ? (blended.find((row) => row.entity_id === insight.entity_id)?.qlooRank ?? index + 1)
+        : index + 1,
       blendedRank: blendedRow?.blendedRank ?? index + 1,
       baselineRank: baselineRankById.get(insight.entity_id) ?? index + 1,
       nationalStoreCount: getNationalStoreCount(insight.entity_id),
       chainSizeTier: tier?.tier,
-      tasteFitBeyondChainPercentile: tier?.tasteFitBeyondChainPercentile,
+      tasteFitBeyondChainPercentile: tasteUnavailable
+        ? undefined
+        : tier?.tasteFitBeyondChainPercentile,
       presentInRadius: nearby.length > 0,
       nearestStoreKm: nearby[0]?.distance,
     });

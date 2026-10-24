@@ -9,6 +9,9 @@ export class ConfigurationError extends Error {
 
 export class UpstreamError extends Error {
   statusCode: number;
+  code?: string;
+  /** Broker-safe copy for API responses (never raw upstream text). */
+  userMessage?: string;
 
   constructor(message: string, statusCode: number) {
     super(message);
@@ -25,5 +28,14 @@ export class GeocodeAmbiguousError extends Error {
     super('Multiple possible locations for this address. Please confirm on the map.');
     this.name = 'GeocodeAmbiguousError';
     this.candidates = candidates;
+  }
+}
+
+export class GeocodeNotFoundError extends Error {
+  readonly code = 'GEOCODE_NOT_FOUND';
+
+  constructor(message = 'We could not find that street address. Use a retail storefront with city and state.') {
+    super(message);
+    this.name = 'GeocodeNotFoundError';
   }
 }

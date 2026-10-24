@@ -1,21 +1,23 @@
 import {
   DEMO_CHIP_ADDRESSES,
   demoChipIdsByQlooLift,
+  demoChipPresentInTop10,
   demoChipQlooProof,
   type DemoFixtureId,
 } from '@leaseup/fixtures';
 import { demoChipProofLabel } from '../lib/broker-copy';
 
 const DEMO_QUALITY_LABEL: Record<DemoFixtureId, string> = {
-  wicker: 'Typical urban lift (59th to 64th percentile cohort)',
-  boulder: 'Typical urban lift (59th to 64th percentile cohort)',
+  wicker: 'Typical urban lift on our recorded city sites',
+  boulder: 'Typical urban lift on our recorded city sites',
   sevierville: 'Below typical lift',
 };
 
 function demoExampleChipLabel(id: DemoFixtureId): string {
-  const { qlooPresentInTop10, lift } = demoChipQlooProof(id, 10);
+  const present = demoChipPresentInTop10(id, 10);
+  const { lift } = demoChipQlooProof(id, 10);
   const tiedNote = lift === 0 ? 'tied without taste' : undefined;
-  return `${demoChipProofLabel(qlooPresentInTop10, tiedNote)} · ${DEMO_QUALITY_LABEL[id]}`;
+  return `${demoChipProofLabel(present, tiedNote)} · ${DEMO_QUALITY_LABEL[id]}`;
 }
 
 const DEMO_CHIP_META: Record<
@@ -43,6 +45,7 @@ const DEMO_CHIP_META: Record<
 export const DEMO_EXAMPLES = demoChipIdsByQlooLift().map((id) => ({
   id,
   ...DEMO_CHIP_META[id],
+  presentInTop10: demoChipPresentInTop10(id, 10),
   hitRateLabel: demoExampleChipLabel(id),
   qualityLabel: DEMO_QUALITY_LABEL[id],
 }));

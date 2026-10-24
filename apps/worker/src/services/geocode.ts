@@ -8,6 +8,7 @@ import {
 import { GeocodeAmbiguousError } from '../lib/errors';
 import { candidateToLocation, resolveGeocodeFromCandidates } from '../lib/geocode-resolve';
 import { NominatimClient } from './nominatim';
+import type { ResponseCache } from '../lib/response-cache';
 
 function demoFixtureLocation(address: string): Location {
   const fixtureId = matchDemoFixtureId(address);
@@ -37,7 +38,7 @@ export class GeocodeService {
   private nominatim: NominatimClient;
   private mode: 'live' | 'demo';
 
-  constructor(cache: KVNamespace, contact: string, mode: 'live' | 'demo') {
+  constructor(cache: ResponseCache, contact: string, mode: 'live' | 'demo') {
     this.nominatim = new NominatimClient(cache, contact);
     this.mode = mode;
   }
@@ -61,7 +62,10 @@ export class GeocodeService {
       };
     }
 
-    const raw = await this.nominatim.geocodeCandidates(address, 5);
+    let raw = await this.nominatim.geocodeCandidates(address, 5);
+    if (raw.length === 0) {
+      raw = await this.nominatim.legacyGeocodeCandidates(address, 5);
+    }
     const resolved = resolveGeocodeFromCandidates(address, raw);
     return {
       needsConfirmation: resolved.needsConfirmation,

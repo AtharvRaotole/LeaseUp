@@ -1,3 +1,7 @@
+import { prefetchDemoReportAnalyzeFromLocation } from './lib/report-analyze-prefetch';
+
+prefetchDemoReportAnalyzeFromLocation();
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

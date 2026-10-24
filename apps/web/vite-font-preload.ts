@@ -1,10 +1,7 @@
 import type { Plugin } from 'vite';
 
 /** Critical text weights (latin) — preloaded from /public/fonts. */
-const PRELOAD_FONT_HREFS = [
-  '/fonts/schibsted-grotesk/schibsted-grotesk-latin-500-normal.woff2',
-  '/fonts/schibsted-grotesk/schibsted-grotesk-latin-600-normal.woff2',
-];
+const PRELOAD_FONT_HREFS = ['/fonts/schibsted-grotesk/schibsted-grotesk-latin-600-normal.woff2'];
 
 /** Inject font preloads for LCP headline and UI semibold. */
 export function fontPreloadPlugin(): Plugin {

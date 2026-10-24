@@ -1,7 +1,12 @@
 import type { Context, ErrorHandler } from 'hono';
 import type { Env } from '../index';
 import { ZodError } from 'zod';
-import { ConfigurationError, GeocodeAmbiguousError, UpstreamError } from '../lib/errors';
+import {
+  ConfigurationError,
+  GeocodeAmbiguousError,
+  GeocodeNotFoundError,
+  UpstreamError,
+} from '../lib/errors';
 import { corsHeadersForRequest } from './cors-headers';
 
 function jsonError(
@@ -50,13 +55,24 @@ export const errorHandler: ErrorHandler<{ Bindings: Env }> = (err: Error, c: Con
     );
   }
 
+  if (err instanceof GeocodeNotFoundError) {
+    return jsonError(
+      c,
+      {
+        error: err.message,
+        code: err.code,
+      },
+      404
+    );
+  }
+
   if (err instanceof UpstreamError) {
     const status = err.statusCode >= 400 && err.statusCode < 600 ? err.statusCode : 502;
     return jsonError(
       c,
       {
-        error: err.message,
-        code: 'UPSTREAM_ERROR',
+        error: err.userMessage ?? err.message,
+        code: err.code ?? 'UPSTREAM_ERROR',
       },
       status === 503 ? 503 : 502
     );

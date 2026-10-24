@@ -29,6 +29,21 @@ function topBrandSummary(results: AnalysisResponse, max = 3): string {
   return names.join(' · ');
 }
 
+/** Read-only share meta from URL params (no /api/analyze, no KV). */
+export function reportShareMetaFromRequest(
+  request: AnalysisRequest,
+  canonicalPath: string
+): SharePreviewMeta {
+  const loc = request.confirmedLocation;
+  const area =
+    loc?.neighborhood?.trim() || loc?.city?.trim() || request.address.trim() || 'this site';
+  const title = `Tenant shortlist for ${area} · LeaseUp`;
+  const description = `${request.radius} km radius. Qloo taste + verified store absence.`;
+  const canonicalUrl = `${SITE_PUBLIC_ORIGIN}${canonicalPath}`;
+  const imageUrl = `${WORKER_PUBLIC_ORIGIN}/api/og/report.png?${reportOgQueryFromRequest(request)}`;
+  return { title, description, imageUrl, canonicalUrl };
+}
+
 export function reportShareMeta(
   results: AnalysisResponse,
   radiusKm: number,

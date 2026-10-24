@@ -1,5 +1,9 @@
 import type { GeocodeCandidate } from '@leaseup/contracts';
-import { dedupeGeocodeCandidatesWithinMeters } from './geocode-label';
+import {
+  GEOCODE_DEDUPE_RADIUS_METERS,
+  dedupeGeocodeCandidatesByPlaceAndDistance,
+  filterCandidatesByInputPostalCode,
+} from './geocode-candidate-filter';
 
 /** Prefer candidates whose city or borough appears in the user's input string. */
 export function geocodeCandidateScore(inputAddress: string, c: GeocodeCandidate): number {
@@ -28,6 +32,7 @@ export function geocodeCandidateScore(inputAddress: string, c: GeocodeCandidate)
   }
   // "New York, NY" with no borough named means Manhattan (New York County) by USPS convention.
   if (isNycWithoutBorough && /\b(manhattan|new york county)\b/.test(resolvedBlob)) s += 30;
+  if (isNycWithoutBorough && boroughs.test(resolvedBlob)) s -= 45;
 
   if (/\bboulder\b/.test(input) && /\bboulder\b/.test(resolvedBlob)) s += 35;
   if (/\bboulder\b/.test(input) && /\bdenver\b/.test(resolvedBlob)) s -= 25;
@@ -50,15 +55,16 @@ export function rankGeocodeCandidates(
 ): GeocodeCandidate[] {
   const score = (c: GeocodeCandidate): number => geocodeCandidateScore(inputAddress, c);
 
-  // Nominatim often returns the same address twice (building + entrance nodes); dedupe so
-  // an unambiguous address does not land in "Needs confirmation".
+  let list = filterCandidatesByInputPostalCode(inputAddress, candidates);
+
   const seen = new Set<string>();
-  const unique = candidates.filter((c) => {
+  list = list.filter((c) => {
     const k = c.resolvedAddress.trim().toLowerCase();
     if (seen.has(k)) return false;
     seen.add(k);
     return true;
   });
-  const spaced = dedupeGeocodeCandidatesWithinMeters(unique, 50);
-  return spaced.sort((a, b) => score(b) - score(a));
+
+  list = dedupeGeocodeCandidatesByPlaceAndDistance(list, GEOCODE_DEDUPE_RADIUS_METERS);
+  return list.sort((a, b) => score(b) - score(a));
 }

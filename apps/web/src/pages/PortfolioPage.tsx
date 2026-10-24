@@ -5,13 +5,15 @@ import { Upload } from 'lucide-react';
 import { TopBar } from '../components/layout/TopBar';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
-import { Skeleton } from '../components/ui/Skeleton';
+import { PortfolioLoadingSkeleton } from '../components/portfolio/PortfolioLoadingSkeleton';
+import { portfolioEmptyAction, portfolioEmptyLine } from '../lib/empty-state-copy';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { apiUrl } from '../lib/api';
 import { buildReportPath } from '../lib/report-params';
 import { CalmErrorPanel } from '../components/ui/CalmErrorPanel';
 import type { ApiErrorInfo } from '../lib/api-error';
 import { SERVER_BUSY_MESSAGE } from '../lib/calm-error-copy';
+import { applyPortfolioSseMessage, parsePortfolioSseBlock } from '../lib/portfolio-sse';
 
 type SortKey = 'property' | 'neighborhood' | 'hitRate' | 'status';
 
@@ -105,39 +107,40 @@ export function PortfolioPage() {
   const runPortfolio = async (portfolioId: string) => {
     setBusy(true);
     setError(null);
-    const res = await fetch(apiUrl(`/api/portfolio/${portfolioId}/run`), { method: 'POST' });
-    if (!res.ok || !res.body) {
-      setBusy(false);
-      setError('We could not run analyses right now. Try again in a moment.');
-      return;
-    }
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const chunks = buffer.split('\n\n');
-      buffer = chunks.pop() ?? '';
-      for (const chunk of chunks) {
-        const line = chunk.split('\n').find((l) => l.startsWith('data: '));
-        if (!line) continue;
-        const payload = JSON.parse(line.slice(6)) as PortfolioRow | PortfolioResponse;
-        if ('rows' in payload) {
-          setPortfolio(payload);
-        } else if ('id' in payload && 'inputAddress' in payload) {
-          setPortfolio((prev) => {
-            if (!prev) return prev;
-            return {
-              ...prev,
-              rows: prev.rows.map((r) => (r.id === payload.id ? payload : r)),
-            };
-          });
+    const poll = window.setInterval(() => {
+      void loadPortfolio(portfolioId).catch(() => undefined);
+    }, 2000);
+
+    try {
+      const res = await fetch(apiUrl(`/api/portfolio/${portfolioId}/run`), { method: 'POST' });
+      if (!res.ok || !res.body) {
+        setError('We could not run analyses right now. Try again in a moment.');
+        return;
+      }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const chunks = buffer.split('\n\n');
+        buffer = chunks.pop() ?? '';
+        for (const chunk of chunks) {
+          const message = parsePortfolioSseBlock(chunk);
+          if (!message) continue;
+          setPortfolio((prev) => applyPortfolioSseMessage(prev, message));
         }
       }
+    } finally {
+      window.clearInterval(poll);
+      setBusy(false);
+      try {
+        await loadPortfolio(portfolioId);
+      } catch {
+        /* keep last SSE state */
+      }
     }
-    setBusy(false);
   };
 
   const confirmRow = async (rowId: string, candidateIndex: number) => {
@@ -218,12 +221,16 @@ export function PortfolioPage() {
   }, [id, loadPortfolio]);
 
   useEffect(() => {
-    if (!id || !portfolio?.rows.some((r) => r.status === 'analyzing')) return;
+    if (!id) return;
+    const needsPoll =
+      busy ||
+      portfolio?.rows.some((r) => r.status === 'analyzing' || r.status === 'geocoding');
+    if (!needsPoll) return;
     const timer = window.setInterval(() => {
-      void loadPortfolio(id);
-    }, 3000);
+      void loadPortfolio(id).catch(() => undefined);
+    }, 2000);
     return () => window.clearInterval(timer);
-  }, [id, portfolio?.rows, loadPortfolio]);
+  }, [id, portfolio?.rows, busy, loadPortfolio]);
 
   return (
     <div className="min-h-screen bg-bg" data-testid="portfolio-page">
@@ -233,7 +240,7 @@ export function PortfolioPage() {
           <div className="min-w-0 lg:col-span-5">
             <h1 className="break-words font-display font-semibold text-display text-ink">Portfolio mode</h1>
             <p className="mt-3 break-words text-ink-2">
-              Paste up to 10 storefronts or upload a CSV. We geocode, confirm ambiguous matches, then run Qloo analyses in sequence.
+              Paste up to 10 storefronts or upload a CSV. We geocode, confirm ambiguous matches, then run shopper taste analyses in sequence.
             </p>
             {!portfolio && (
               <Card className="mt-8 p-5">
@@ -368,21 +375,18 @@ export function PortfolioPage() {
                   </table>
                 </Card>
               ) : loadingPortfolio ? (
-                <Skeleton className="min-h-[320px] w-full rounded-card" data-testid="portfolio-loading" />
+                <PortfolioLoadingSkeleton />
               ) : (
                 <Card
                   className="flex min-h-[320px] flex-col items-center justify-center p-8 text-center"
                   data-testid="portfolio-empty-state"
                 >
-                  <p className="max-w-sm text-ink-2">
-                    Add up to 10 storefront addresses on the left. We geocode each pin, run Qloo taste
-                    rankings, and show hit rates side by side.
-                  </p>
+                  <p className="max-w-sm text-ink-2">{portfolioEmptyLine}</p>
                   <a
                     href="#portfolio-addresses"
                     className="mt-6 text-sm font-medium text-accent hover:underline"
                   >
-                    Start with your first address
+                    {portfolioEmptyAction}
                   </a>
                 </Card>
               )}

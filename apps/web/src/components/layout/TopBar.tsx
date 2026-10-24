@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { to: '/brand', label: 'Brand sites' },
   { to: '/portfolio', label: 'Portfolio' },
   { to: '/pipeline', label: 'Pipeline' },
+  { to: '/watchlist', label: 'Watchlist' },
   { to: '/methodology', label: 'How it works' },
 ];
 
@@ -57,7 +58,7 @@ export function TopBar() {
           </Badge>
           <button
             type="button"
-            className="rounded-control p-2 text-ink-2 hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-accent"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-control text-ink-2 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             aria-expanded={menuOpen}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             onClick={() => setMenuOpen((o) => !o)}
@@ -76,7 +77,7 @@ export function TopBar() {
               <li key={item.to}>
                 <Link
                   to={item.to}
-                  className="block rounded-control px-2 py-2 text-ink hover:bg-surface-2"
+                  className="flex min-h-11 items-center rounded-control px-3 text-ink hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                   onClick={() => setMenuOpen(false)}
                 >
                   {item.label}

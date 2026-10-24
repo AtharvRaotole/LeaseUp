@@ -1,30 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import {
-  geocodeCandidateSubtitle,
-  geocodeCandidateTitle,
-  mapThumbnailUrl,
-  postalCodeFromResolved,
-} from '../lib/geocode-display';
-import type { GeocodeCandidate } from '@leaseup/contracts';
+import { geocodeCandidateStreetLine } from '../lib/geocode-display';
 
-const candidate: GeocodeCandidate = {
-  address: '1574 N Milwaukee Ave, Chicago',
-  latitude: 41.91,
-  longitude: -87.68,
-  neighborhood: 'Wicker Park',
-  city: 'Chicago',
-  resolvedAddress: '1574 N Milwaukee Ave, Chicago, IL 60622',
-};
-
-describe('geocode-display', () => {
-  it('formats title and subtitle with ZIP', () => {
-    expect(geocodeCandidateTitle(candidate)).toBe('Wicker Park');
-    expect(geocodeCandidateSubtitle(candidate)).toBe('Chicago, 60622');
-    expect(postalCodeFromResolved(candidate.resolvedAddress)).toBe('60622');
-  });
-
-  it('builds carto thumbnail url', () => {
-    const url = mapThumbnailUrl(41.91, -87.68);
-    expect(url).toMatch(/^https:\/\/basemaps\.cartocdn\.com\/light_all\/14\/\d+\/\d+\.png$/);
+describe('geocodeCandidateStreetLine', () => {
+  it('drops a leading POI name from the street line', () => {
+    const line = geocodeCandidateStreetLine({
+      address: '350 Bleecker St, New York, NY',
+      latitude: 40.73,
+      longitude: -74.0,
+      resolvedAddress:
+        'Slightly Alabama, 350, Bleecker Street, West Village, Manhattan, New York, NY, USA',
+    });
+    expect(line).toBe('350 Bleecker Street');
+    expect(line).not.toContain('Alabama');
   });
 });

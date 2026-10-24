@@ -10,6 +10,21 @@ export type ApiErrorInfo = {
 
 export function humanizeApiError(status: number, body: { error?: string; code?: string; retryAfter?: number }): ApiErrorInfo {
   const code = body.code;
+  if (code === 'GEOCODE_NOT_FOUND') {
+    return {
+      message:
+        body.error?.trim() ||
+        'We could not find that street address. Use a retail storefront with city and state.',
+      code: 'GEOCODE_NOT_FOUND',
+    };
+  }
+  if (code === 'QLOO_UNAVAILABLE') {
+    return {
+      message: body.error?.trim() || 'Taste data is slow right now. Try again in a moment.',
+      code: 'QLOO_UNAVAILABLE',
+      retryAfterSec: 30,
+    };
+  }
   if (status === 429 || code === 'RATE_LIMIT_EXCEEDED') {
     return {
       message: 'Lots of searches right now. Try again in a minute.',
@@ -39,6 +54,13 @@ export function humanizeApiError(status: number, body: { error?: string; code?: 
     return { message: 'We could not find that resource.', code };
   }
   const raw = body.error?.trim();
+  if (raw && /qloo api fetch error/i.test(raw)) {
+    return {
+      message: 'Taste data is slow right now. Try again in a moment.',
+      code: 'QLOO_UNAVAILABLE',
+      retryAfterSec: 30,
+    };
+  }
   if (!raw || /^too many requests$/i.test(raw)) {
     return {
       message: 'Lots of searches right now. Try again in a minute.',

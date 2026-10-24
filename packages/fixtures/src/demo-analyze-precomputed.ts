@@ -16,6 +16,8 @@ export type DemoStrictEvalSnapshot = {
     qloo?: number;
     chain?: number;
     winner?: string;
+    randomExpected?: number;
+    randomMonteCarlo?: number;
   }>;
   notes: string[];
 };
@@ -107,9 +109,14 @@ export function demoAnalyzeStrictEval(
         chain: chainPresent,
         winner: blendPresent >= chainPresent ? 'qloo' : 'chain',
       },
+      {
+        id: 'random_monte_carlo',
+        label: 'Random ranking baseline',
+        randomExpected: (10 * row.n_present) / row.n_brands,
+      },
     ],
     notes: [
-      `Recorded 40-site adaptive eval: logistic blend P@10 ${(row.p10_blend * 100).toFixed(0)}% vs chain ${(row.p10_chain * 100).toFixed(0)}% at this pin.`,
+      `Recorded 40-site adaptive eval: taste blend top-10 hit rate ${(row.p10_blend * 100).toFixed(0)}% vs chain size ${(row.p10_chain * 100).toFixed(0)}% at this pin.`,
     ],
   };
 }

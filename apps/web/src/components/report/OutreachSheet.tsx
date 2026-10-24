@@ -6,7 +6,7 @@ import { Button } from '../ui/Button';
 import { Skeleton } from '../ui/Skeleton';
 import { apiUrl } from '../../lib/api';
 import { coTenantBrandNames } from '../../lib/co-tenancy-mix';
-import { verificationShortLabel } from '../../lib/copy';
+import { verificationBrokerLabel } from '../../lib/broker-copy';
 import { isAcceptableOutreachDraft } from '@leaseup/contracts';
 
 export function OutreachSheet({
@@ -38,7 +38,9 @@ export function OutreachSheet({
           neighborhood: results.location.neighborhood || results.location.city,
           nearestStoreKm: prospect.nearestExistingStoreKm,
           coTenantBrands: coTenantBrandNames(results),
-          verificationLabel: verificationShortLabel(prospect.brand.verified),
+          verificationLabel: verificationBrokerLabel(prospect.brand.verified),
+          brandEntityId: prospect.brand.entityId,
+          brandReach: prospect.brandReach,
         }),
       });
       if (!res.ok) throw new Error('Draft failed');
