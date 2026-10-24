@@ -8,8 +8,8 @@ import {
 import { demoChipProofLabel } from '../lib/broker-copy';
 
 const DEMO_QUALITY_LABEL: Record<DemoFixtureId, string> = {
-  wicker: 'Typical urban lift (59th to 64th percentile cohort)',
-  boulder: 'Typical urban lift (59th to 64th percentile cohort)',
+  wicker: 'Typical urban lift on our recorded city sites',
+  boulder: 'Typical urban lift on our recorded city sites',
   sevierville: 'Below typical lift',
 };
 

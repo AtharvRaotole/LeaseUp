@@ -65,12 +65,18 @@ export function PipelineCardDialog({
   const onKeyDown = (e: KeyboardEvent) => {
     if (readOnly) return;
     if (e.key === 'ArrowRight') {
-      const n = nextProspectStatus(card.prospectStatus);
-      if (n) void moveTo(n);
+      const n = nextProspectStatus(prospectStatus);
+      if (n) {
+        setProspectStatus(n);
+        void moveTo(n);
+      }
     }
     if (e.key === 'ArrowLeft') {
-      const p = prevProspectStatus(card.prospectStatus);
-      if (p) void moveTo(p);
+      const p = prevProspectStatus(prospectStatus);
+      if (p) {
+        setProspectStatus(p);
+        void moveTo(p);
+      }
     }
   };
 
@@ -107,7 +113,7 @@ export function PipelineCardDialog({
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
             <div className="flex flex-wrap gap-2 text-sm">
               <span className="text-ink-3">Status</span>
-              <span className="font-medium text-ink">{prospectStatusLabel(card.prospectStatus)}</span>
+              <span className="font-medium text-ink">{prospectStatusLabel(prospectStatus)}</span>
               <span className="text-ink-3">·</span>
               <span className="text-ink-3">Rank #{card.affinityRank}</span>
               <span className="text-ink-3">·</span>
@@ -121,9 +127,14 @@ export function PipelineCardDialog({
                     key={col.id}
                     type="button"
                     size="sm"
-                    variant={card.prospectStatus === col.id ? 'primary' : 'secondary'}
-                    disabled={busy || card.prospectStatus === col.id}
-                    onClick={() => void moveTo(col.id)}
+                    variant={prospectStatus === col.id ? 'primary' : 'secondary'}
+                    disabled={busy}
+                    aria-current={prospectStatus === col.id ? 'true' : undefined}
+                    onClick={() => {
+                      setProspectStatus(col.id);
+                      void moveTo(col.id);
+                    }}
+                    aria-label={`Set status to ${col.label}`}
                   >
                     {col.label}
                   </Button>
@@ -310,7 +321,7 @@ export function PipelineCardDialog({
 
           {!readOnly && (
             <p className="border-t border-border px-4 py-2 text-xs text-ink-3">
-              Tip: with this dialog focused, use left and right arrow keys to move status.
+              Keyboard: use the status buttons or the Status menu. Left and right arrow keys also move status when this dialog is focused.
             </p>
           )}
         </Dialog.Content>

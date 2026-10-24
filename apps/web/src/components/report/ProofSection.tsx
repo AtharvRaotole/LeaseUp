@@ -13,8 +13,9 @@ import {
   localFitTooltip,
 } from '../../lib/broker-copy';
 import { InfoTooltip } from '../ui/InfoTooltip';
+import { InfoPopover } from '../ui/InfoPopover';
 import { displayBrandName } from '../../lib/brand-display';
-import { rankMovementLabel, rankMovementLabelTechnical } from '../../lib/qloo-proof';
+import { rankMovementLabel } from '../../lib/qloo-proof';
 
 export function ProofSection({
   results,
@@ -126,17 +127,18 @@ export function ProofSection({
                     {fitPercentileLabel(row.qlooRank, totalScored, row.tasteFitBeyondChainPercentile)}
                   </td>
                 )}
-                <td
-                  className="px-4 py-3 text-xs text-ink-2"
-                  title={
-                    row.baselineRank !== undefined
-                      ? rankMovementLabelTechnical(row.qlooRank, row.baselineRank)
-                      : undefined
-                  }
-                >
-                  {row.baselineRank !== undefined
-                    ? rankMovementLabel(row.qlooRank, row.baselineRank)
-                    : 'n/a'}
+                <td className="px-4 py-3 text-xs text-ink-2">
+                  <span className="inline-flex items-center gap-1">
+                    {row.baselineRank !== undefined
+                      ? rankMovementLabel(row.qlooRank, row.baselineRank)
+                      : 'n/a'}
+                    {row.baselineRank !== undefined && (
+                      <InfoPopover
+                        label="Rank change with taste"
+                        body={movementColumnTooltip()}
+                      />
+                    )}
+                  </span>
                 </td>
                 <td className="px-4 py-3">
                   {row.presentInRadius && row.nearestStoreKm !== undefined ? (

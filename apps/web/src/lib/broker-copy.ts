@@ -46,6 +46,53 @@ export function localFitTooltip(): string {
   return 'How strongly local shoppers favor this brand compared with other chains we scored.';
 }
 
+export function localShopperMatchTooltip(): string {
+  return 'How this brand ranks for local shopper demand among chains of similar size at this address.';
+}
+
+export function separationScorePlainTooltip(): string {
+  return 'How often a brand with a store nearby ranks above one without. 1.0 means the list lines up with stores on the ground.';
+}
+
+export function methodologyDensityRadiusTooltip(): string {
+  return 'In busy areas we use a smaller store search circle so a nearby chain counts as present.';
+}
+
+export function methodologyTop10HitTooltip(): string {
+  return 'Of the top 10 brands on the list, how many already had a store inside the search circle.';
+}
+
+export function methodologyRankMatchTooltip(): string {
+  return 'How often taste ranking puts brands with a real store ahead of brands without one, among chains of similar size.';
+}
+
+export function methodologyTasteRankTooltip(): string {
+  return 'Where this site sits in local shopper taste compared with other chains of similar size (higher is stronger).';
+}
+
+export function methodologyLikelyRangeTooltip(): string {
+  return 'The range we expect this score to fall in if we repeated the study on similar addresses.';
+}
+
+export function methodologyCatalogMetricTooltip(metricId: string, description?: string): string {
+  switch (metricId) {
+    case 'same_size_auc':
+      return methodologyRankMatchTooltip();
+    case 'legacy_present_at10':
+      return `${methodologyTop10HitTooltip()} Uses your full search radius.`;
+    case 'adaptive_present_at10':
+      return `${methodologyTop10HitTooltip()} Uses a tighter circle in busy trade areas.`;
+    case 'spearman_presence':
+      return 'How closely rank order lines up with which brands already have a store in the circle.';
+    case 'surprise_present_at10':
+      return 'Present brands ranked high by taste but not by national chain size alone.';
+    case 'random_monte_carlo':
+      return 'Average top-10 hits if we shuffled the brand list at random.';
+    default:
+      return description ?? 'How this metric is scored on the recorded site list.';
+  }
+}
+
 export function verificationBrokerLabel(verified: ProspectPack['brand']['verified']): string {
   switch (verified) {
     case 'verified (2 sources)':

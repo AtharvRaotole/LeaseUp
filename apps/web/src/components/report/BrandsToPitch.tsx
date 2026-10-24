@@ -10,8 +10,11 @@ import { fitPercentileLabel } from '../../lib/fit-display';
 import { buildReportPath } from '../../lib/report-params';
 import { displayBrandName } from '../../lib/brand-display';
 import { brandCategoryLabel } from '../../lib/brand-category';
-import { verificationShortLabel, verificationSourceHelp } from '../../lib/copy';
-import { localFitTooltip } from '../../lib/broker-copy';
+import {
+  localShopperMatchTooltip,
+  verificationBrokerLabel,
+  verificationBrokerTooltip,
+} from '../../lib/broker-copy';
 import { InfoPopover } from '../ui/InfoPopover';
 import { InfoTooltip } from '../ui/InfoTooltip';
 import { pitchExpandedLines } from '../../lib/pitch-detail-copy';
@@ -69,8 +72,8 @@ function verificationPillCopy(
     };
   }
   return {
-    label: verificationShortLabel(verified),
-    help: verificationSourceHelp(prospect, radiusKm, results.osmSnapshotLabel, results),
+    label: verificationBrokerLabel(verified),
+    help: verificationBrokerTooltip(verified, radiusKm, results.osmSnapshotLabel),
     spinner: verified === 'verifying...',
   };
 }
@@ -260,7 +263,10 @@ export function BrandsToPitch({
                     </div>
                   </button>
                   <div className="flex flex-wrap items-center justify-end gap-1.5 sm:shrink-0">
-                    <PitchPill tone="accent" tooltip={localFitTooltip()}>{fitLabel}</PitchPill>
+                    <span className="inline-flex items-center gap-0.5">
+                      <PitchPill tone="accent">{fitLabel}</PitchPill>
+                      <InfoPopover label="Local shopper match" body={localShopperMatchTooltip()} />
+                    </span>
                     <span className="inline-flex items-center gap-0.5">
                       <PitchPill tone="neutral" tooltip={pill.help} spinner={pill.spinner}>
                         {pill.label}

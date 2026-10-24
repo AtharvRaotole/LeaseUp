@@ -12,9 +12,9 @@ describe('tasteFitBeyondChainPercentile copy', () => {
   });
 
   it('writes broker-facing taste lines for p=82 and p=95', () => {
-    expect(tasteFitMatchHerePhrase(40, 200, 82)).toBe('Top 18% for taste fit here');
-    expect(tasteFitMatchHerePhrase(10, 200, 95)).toBe('Top 5% for taste fit here');
-    expect(fitPercentileLabel(40, 200, 82)).toBe('Top 18% fit');
-    expect(fitPercentileLabel(10, 200, 95)).toBe('Top 5% fit');
+    expect(tasteFitMatchHerePhrase(40, 200, 82)).toBe('Top 18% local match here');
+    expect(tasteFitMatchHerePhrase(10, 200, 95)).toBe('Top 5% local match here');
+    expect(fitPercentileLabel(40, 200, 82)).toBe('Top 18% local match');
+    expect(fitPercentileLabel(10, 200, 95)).toBe('Top 5% local match');
   });
 });

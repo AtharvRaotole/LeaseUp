@@ -97,7 +97,7 @@ try {
   await waitFor(`http://127.0.0.1:${WORKER_PORT}/api/health`);
   await waitFor(`http://127.0.0.1:${PREVIEW_PORT}/`);
   run(
-    `PLAYWRIGHT_BASE_URL=http://127.0.0.1:${PREVIEW_PORT} PLAYWRIGHT_API_URL=http://127.0.0.1:${WORKER_PORT} pnpm exec playwright test e2e/qloo-down.spec.ts`
+    `PLAYWRIGHT_BASE_URL=http://127.0.0.1:${PREVIEW_PORT} PLAYWRIGHT_API_URL=http://127.0.0.1:${WORKER_PORT} PLAYWRIGHT_QLOO_DOWN=1 pnpm exec playwright test e2e/qloo-down.spec.ts e2e/broker-jargon.spec.ts -g "qloo-down"`
   );
 } finally {
   worker.kill('SIGTERM');
