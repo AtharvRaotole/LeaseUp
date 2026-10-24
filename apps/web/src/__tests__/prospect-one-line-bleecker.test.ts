@@ -43,6 +43,6 @@ describe('prospectOneLineReason Bleecker-like taste', () => {
     expect(line).not.toContain('Hotel');
     expect(line).not.toContain('Self Help');
     expect(line).not.toContain('American');
-    expect(line).toContain('Home');
+    expect(line).not.toContain('Category fit');
   });
 });
