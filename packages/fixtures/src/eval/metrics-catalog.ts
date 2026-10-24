@@ -35,7 +35,7 @@ export const EVAL_METRIC_CATALOG: EvalMetricDefinition[] = [
   {
     id: 'legacy_present_at10',
     label: 'Legacy present in top 10',
-    shortLabel: 'Legacy P@10',
+    shortLabel: 'Legacy top-10',
     description: 'Stores present within the user search radius among the top 10 ranked brands.',
     higherIsBetterForQloo: true,
     tieBand: 0,
