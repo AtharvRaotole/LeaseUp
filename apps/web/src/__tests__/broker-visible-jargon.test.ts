@@ -12,6 +12,9 @@ import {
   methodologyRankMatchTooltip,
   verificationBrokerLabel,
 } from '../lib/broker-copy';
+import { pitchPackVerificationSummary, verificationShortLabel } from '../lib/copy';
+import { QLOO_BROKER_EXPLAINER } from '../lib/qloo-broker-explainer-copy';
+import { cohortExplainerLimitsBody } from '@leaseup/fixtures';
 
 describe('broker-visible jargon guards', () => {
   it('plain fit labels avoid raw taste-fit wording', () => {
@@ -53,6 +56,36 @@ describe('broker-visible jargon guards', () => {
     for (const tip of [methodologyDensityRadiusTooltip(), methodologyRankMatchTooltip()]) {
       expect(findBrokerJargonViolations(tip)).toEqual([]);
       expect(tip).not.toMatch(/[\u2013\u2014]/);
+    }
+  });
+
+  it('store-check and Qloo explainer copy avoid the OSM acronym', () => {
+    const lines = [
+      verificationShortLabel('verifying...'),
+      pitchPackVerificationSummary({
+        prospects: [
+          {
+            whyLine: 'Example',
+            prospect: {
+              brand: {
+                entityId: 'a',
+                name: 'X',
+                affinity: 1,
+                affinityRank: 1,
+                verified: 'unverified (1 source)',
+              },
+              outreachDraft: '',
+              reasons: [],
+            },
+          },
+        ],
+      }),
+      cohortExplainerLimitsBody(),
+      ...QLOO_BROKER_EXPLAINER.sections.map((s) => s.body),
+    ];
+    for (const line of lines) {
+      expect(findBrokerJargonViolations(line)).not.toContain('osm-acronym');
+      expect(line).not.toMatch(/\bOSM\b/);
     }
   });
 });

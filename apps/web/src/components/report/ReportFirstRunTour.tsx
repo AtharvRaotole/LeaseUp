@@ -178,45 +178,35 @@ export function ReportFirstRunTourProvider({
   );
 }
 
-/** In-document banner; never covers report content. */
-export function ReportTourHintInline() {
+/** Compact chip beside the report headline; keeps the headline first in the layout. */
+export function ReportTourHintChip() {
   const { phase, startSteps, finish } = useReportTour();
   if (phase !== 'hint') return null;
 
   return (
     <div
-      className="no-print rounded-card border border-border bg-surface-2 px-4 py-3 sm:flex sm:items-center sm:justify-between sm:gap-4"
+      className="no-print inline-flex max-w-full items-center gap-0.5 rounded-pill border border-border bg-surface-2 pl-3 pr-1 shadow-sm"
       data-testid="report-first-run-tour-hint"
       role="status"
       aria-live="polite"
     >
-      <div className="min-w-0 flex-1">
-        <p className="font-medium text-body text-ink">Quick tour available</p>
-        <p className="mt-0.5 text-small text-ink-2 sm:mt-1">
-          See where your pitch list, brand details, and pipeline live. Nothing is dimmed.
-        </p>
-      </div>
-      <div className="mt-3 flex shrink-0 flex-wrap items-center gap-2 sm:mt-0">
-        <Button type="button" size="sm" variant="primary" onClick={startSteps} data-testid="report-tour-take">
-          Take the tour
-        </Button>
-        <button
-          type="button"
-          className="rounded-control text-small text-ink-3 underline-offset-2 transition-colors duration-150 hover:text-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-          onClick={finish}
-        >
-          Not now
-        </button>
-        <button
-          type="button"
-          className="rounded-control p-1 text-ink-3 transition-colors duration-150 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:ml-1"
-          onClick={finish}
-          aria-label="Dismiss tour hint"
-          data-testid="report-tour-hint-dismiss"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
+      <button
+        type="button"
+        className="min-h-9 shrink-0 rounded-pill py-1.5 text-small font-medium text-ink underline-offset-2 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        onClick={startSteps}
+        data-testid="report-tour-take"
+      >
+        Quick tour
+      </button>
+      <button
+        type="button"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-pill text-ink-3 transition-colors hover:bg-surface hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        onClick={finish}
+        aria-label="Dismiss tour hint"
+        data-testid="report-tour-hint-dismiss"
+      >
+        <X className="h-4 w-4" aria-hidden />
+      </button>
     </div>
   );
 }

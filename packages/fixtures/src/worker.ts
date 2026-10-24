@@ -124,6 +124,10 @@ export {
   WHY_BRAND_TASTE_BANNED_PHRASES,
 } from './why-brand-taste-summary.js';
 export {
+  brokerNoStoreWithinRadiusDualSourceShort,
+  brokerNoStoreWithinRadiusSingleSourceShort,
+} from './store-absence-broker-copy.js';
+export {
   distinctPitchAudienceLists,
   PITCH_AUDIENCE_CANDIDATE_MAX,
 } from './distinct-pitch-audiences.js';
@@ -134,7 +138,8 @@ export {
   type BrandExplainabilityStore,
   type LiveAudiencesCompact,
 } from './brand-explainability-store.js';
-export { overpassDemoByFixture, DEMO_OSM_UNRECORDED_NOTE } from './overpass-demo.js';
+export { DEMO_OSM_UNRECORDED_NOTE } from './demo-osm-constants.js';
+export { overpassDemoByFixture } from './overpass-demo.js';
 export {
   nearestStoreDistanceUnconfirmedLine,
   nearestChainStoreDistanceUnconfirmedLine,

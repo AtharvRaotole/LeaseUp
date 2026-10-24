@@ -1,5 +1,6 @@
 /**
  * Embed demo-chip Overpass recordings from data/overpass-recordings/<chip>.json only.
+ * Internal demo coverage marker: packages/fixtures/src/demo-osm-constants.ts
  * Each file MUST include { endpoint, query, recordedAt } and a real Overpass response body.
  * Synthetic test fixtures are never read here.
  */
@@ -76,9 +77,6 @@ for (const chip of chips) {
 
 const out = join(root, 'packages/fixtures/src/overpass-demo.ts');
 const contents = `import type { OverpassBrand } from './overpass-types';
-
-/** Shown on demo prospects when no recorded Overpass file exists for the chip. */
-export const DEMO_OSM_UNRECORDED_NOTE = 'OSM check not recorded for demo';
 
 export interface OverpassDemoRecording {
   recordedAt: string;

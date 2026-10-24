@@ -78,7 +78,8 @@ describe('OSM snapshot verification', () => {
         verifyFromOsmSnapshot: (
           id: string,
           loc: { address: string; latitude: number; longitude: number },
-          radius: number
+          searchRadiusKm: number,
+          absenceRadiusKm: number
         ) => Promise<{ status: string }>;
       }
     ).verifyFromOsmSnapshot;
@@ -86,6 +87,7 @@ describe('OSM snapshot verification', () => {
       service,
       BRAND_A,
       { address: 'x', latitude: 41.91, longitude: -87.68 },
+      10,
       10
     );
 
@@ -113,7 +115,8 @@ describe('OSM snapshot verification', () => {
         verifyFromOsmSnapshot: (
           id: string,
           loc: { address: string; latitude: number; longitude: number },
-          radius: number
+          searchRadiusKm: number,
+          absenceRadiusKm: number
         ) => Promise<{ status: string; metroCoverageNote?: string }>;
       }
     ).verifyFromOsmSnapshot;
@@ -121,6 +124,7 @@ describe('OSM snapshot verification', () => {
       service,
       BRAND_A,
       { address: 'x', latitude: 41.91, longitude: -87.68 },
+      10,
       10
     );
 
@@ -143,7 +147,8 @@ describe('OSM snapshot verification', () => {
         verifyFromOsmSnapshot: (
           id: string,
           loc: { address: string; latitude: number; longitude: number },
-          radius: number
+          searchRadiusKm: number,
+          absenceRadiusKm: number
         ) => Promise<{ status: string }>;
       }
     ).verifyFromOsmSnapshot;
@@ -151,6 +156,7 @@ describe('OSM snapshot verification', () => {
       service,
       STARBUCKS,
       { address: 'x', latitude: 41.91, longitude: -87.68 },
+      10,
       10
     );
     expect(result.status).toBe('unverified (1 source)');
@@ -171,7 +177,8 @@ describe('OSM snapshot verification', () => {
         verifyFromOsmSnapshot: (
           id: string,
           loc: { address: string; latitude: number; longitude: number },
-          radius: number
+          searchRadiusKm: number,
+          absenceRadiusKm: number
         ) => Promise<{ status: string }>;
       }
     ).verifyFromOsmSnapshot;
@@ -179,6 +186,7 @@ describe('OSM snapshot verification', () => {
       service,
       BRAND_B,
       { address: 'x', latitude: 41.91, longitude: -87.68 },
+      10,
       10
     );
 

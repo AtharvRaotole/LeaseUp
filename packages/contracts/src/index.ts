@@ -312,6 +312,10 @@ export const AnalysisResponseSchema = z.object({
   prospectFunnel: ProspectFunnelSchema.optional(),
   /** Retail chains with an OSM snapshot store inside the search radius. */
   nearbyTenants: z.array(NearbyTenantSchema).max(32).optional(),
+  /** ISO date of the store index used for nearest-store km on this payload (serve-time refresh). */
+  storeDistanceDataAsOf: z.string().optional(),
+  /** When true, some nearest-store km could not be reconciled and came from the saved snapshot. */
+  storeDistancesSnapshotOnly: z.boolean().optional(),
 });
 
 export type AnalysisResponse = z.infer<typeof AnalysisResponseSchema>;
@@ -516,6 +520,10 @@ export const PitchPackSnapshotSchema = z.object({
   rankingsTotal: z.number().int().optional(),
   landlord: PitchLandlordSchema.optional(),
   vacancy: VacancyCalculatorInputSchema.optional(),
+  /** ISO date of the store index used for nearest-store km on this payload (serve-time refresh). */
+  storeDistanceDataAsOf: z.string().optional(),
+  /** When true, some nearest-store km could not be reconciled and came from the saved snapshot. */
+  storeDistancesSnapshotOnly: z.boolean().optional(),
 });
 
 export type PitchPackSnapshot = z.infer<typeof PitchPackSnapshotSchema>;

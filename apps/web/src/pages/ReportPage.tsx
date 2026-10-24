@@ -65,10 +65,7 @@ import { activeBacktestForRankingMode } from '../lib/ranking-production';
 import { orderProspectsForRankingMode } from '../lib/ranking-mode';
 import { absenceRadiusKm as pitchAbsenceRadiusKm } from '../lib/absence-radius';
 
-import {
-  ReportFirstRunTourProvider,
-  ReportTourHintInline,
-} from '../components/report/ReportFirstRunTour';
+import { ReportFirstRunTourProvider } from '../components/report/ReportFirstRunTour';
 
 type MobilePane = 'report' | 'map';
 
@@ -325,7 +322,6 @@ export function ReportPage() {
   const reportSections = results && (
     <ReportFirstRunTourProvider ready={deferPostPaint && results.prospects.length > 0}>
       <div className="report-content-enter space-y-8 text-body">
-        {deferPostPaint && <ReportTourHintInline />}
         <ErrorBoundary fallback={<SectionUnavailable />}>
           <div className="print-pitch-block space-y-6">
             <ReportSummaryAboveFold

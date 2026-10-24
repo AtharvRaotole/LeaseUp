@@ -1,0 +1,39 @@
+{
+  "id": "7255de71-0000-4000-8000-000000000001",
+  "createdAt": "2026-10-20T00:00:00.000Z",
+  "address": "1422 N Milwaukee Ave, Chicago, IL 60622",
+  "location": {
+    "address": "1422 N Milwaukee Ave, Chicago, IL 60622",
+    "latitude": 41.9099418,
+    "longitude": -87.6772824,
+    "city": "Chicago",
+    "neighborhood": "Wicker Park",
+    "resolvedAddress": "1422 N Milwaukee Ave, Chicago, IL 60622"
+  },
+  "radiusKm": 10,
+  "absenceRadiusKm": 3,
+  "analysisTimestamp": "2026-10-20T00:00:00.000Z",
+  "runId": "wicker-pitch-honesty",
+  "prospects": [
+    {
+      "prospect": {
+        "brand": {
+          "entityId": "2D890327-8794-4C5A-898F-FFF0323325CF",
+          "name": "American Eagle Outfitters",
+          "affinity": 0.99,
+          "affinityRank": 52,
+          "verified": "verified (2 sources)"
+        },
+        "outreachDraft": "",
+        "reasons": [
+          "No American Eagle store within 3 km (All The Places store data)"
+        ],
+        "nearestExistingStoreKm": 1.9509521972612018,
+        "nearestExistingStoreUnconfirmed": true
+      },
+      "whyLine": "Why"
+    }
+  ],
+  "storeDistanceDataAsOf": "2026-10-20T00:00:00.000Z",
+  "storeDistancesSnapshotOnly": false
+}

@@ -258,7 +258,8 @@ export class ProspectingService {
         await analysisService.applyOsmVerification(
           result.location,
           request.radius,
-          result.prospects
+          result.prospects,
+          result.prospectFunnel?.absenceRadiusKm ?? request.radius
         );
       result.prospects = verified;
       const verifyLine = osmSummary.unavailable
