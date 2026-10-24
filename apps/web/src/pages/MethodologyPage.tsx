@@ -134,16 +134,13 @@ export function MethodologyPage() {
               Evaluation metric catalog
             </h2>
             <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
-              Headline metric:{' '}
-              {evalManifest.headlineMetricId
-                ? evalManifest.headlineMetricId
-                : 'pending (live API eval in progress)'}. Bundle:{' '}
-              <code className="rounded bg-surface-2 px-1 py-0.5 text-xs">{evalManifest.resultsBundle}</code>{' '}
-              ({evalBundle.dataSource}, site set {evalBundle.siteSetId}). Protocol:{' '}
-              <code className="rounded bg-surface-2 px-1 py-0.5 text-xs">
-                {evalManifest.protocolDoc}
-              </code>
-              .
+              Recorded {qlooLift.siteCount}-neighborhood cohort. Production blend top-10 hit rate{' '}
+              {formatP10PercentExact(qlooLift.logisticBlendPrecisionAt10)} vs{' '}
+              {formatP10PercentExact(qlooLift.chainSizePrecisionAt10)} for chain size only (about{' '}
+              {qlooLift.logisticBlendLiftVsChainPp.toFixed(1)} percentage points higher). Rank match among
+              similar-sized chains was about {(qlooLift.sameSizeAuc.value * 100).toFixed(0)}% on this study.
+              Rows below are per-site sanity checks on demo chips; the landing page proof section uses the same
+              recorded bundle.
             </p>
             {evalBundle.recordingNote && (
               <p className="mt-3 text-sm text-ink-2">{evalBundle.recordingNote}</p>

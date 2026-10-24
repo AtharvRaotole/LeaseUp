@@ -13,7 +13,7 @@ export function pitchDateMetaLine(snapshot: PitchPackSnapshot): string {
   const radius = `${snapshot.radiusKm} km trade area`;
   if (isDemoPitchId(snapshot.id)) {
     const snapDate = formatUserFacingDate(snapshot.analysisTimestamp);
-    return `Sample pitch from data snapshot of ${snapDate} · ${radius}`;
+    return `Data snapshot of ${snapDate} · ${radius}`;
   }
   return `Prepared ${formatUserFacingDate(snapshot.createdAt)} · ${radius}`;
 }
@@ -132,6 +132,7 @@ export function isNearestStoreDistanceLine(line: string): boolean {
 export function shouldShowStoredWhyLine(whyLine: string): boolean {
   const lower = whyLine.toLowerCase();
   if (lower.includes('qloo #') || lower.includes('qloo rank')) return false;
+  if (lower.includes('leaseup rank')) return false;
   if (lower.includes('prospect ordering')) return false;
   if (lower.includes('taste-aware blend')) return false;
   if (/\btop \d+%\b/.test(lower) && lower.includes('rank')) return false;
