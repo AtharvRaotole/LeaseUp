@@ -239,13 +239,14 @@ describe('False-absence sweep (verified missing-brand)', () => {
         verifyFromOsmSnapshot: (
           id: string,
           loc: { address: string; latitude: number; longitude: number },
-          radius: number,
+          searchRadiusKm: number,
+          absenceRadiusKm: number,
           name?: string
         ) => Promise<{ status: string }>;
       }
     ).verifyFromOsmSnapshot;
 
-    const result = await verify.call(service, REI_ENTITY_ID, BLEECKER_NYC, 10, 'REI');
+    const result = await verify.call(service, REI_ENTITY_ID, BLEECKER_NYC, 10, 3, 'REI');
     expect(result.status).toBe('conflict - likely present');
   });
 });
