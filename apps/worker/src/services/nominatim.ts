@@ -15,6 +15,10 @@ import { candidateToLocation, resolveGeocodeFromCandidates } from '../lib/geocod
 const NOMINATIM_BASE = 'https://nominatim.openstreetmap.org/search';
 const NOMINATIM_REVERSE = 'https://nominatim.openstreetmap.org/reverse';
 const MIN_INTERVAL_MS = 1000;
+export const NOMINATIM_FETCH_TIMEOUT_MS = 12_000;
+
+export const GEOCODE_TIMEOUT_USER_MESSAGE =
+  'Address lookup timed out. Check the spelling and try again in a moment.';
 
 type NominatimResult = {
   lat: string;
@@ -182,22 +186,46 @@ export class NominatimClient {
     return params;
   }
 
+  private isGeocodeTimeoutError(err: unknown): boolean {
+    return (
+      err instanceof UpstreamError &&
+      (err.code === 'GEOCODE_TIMEOUT' || err.code === 'GEOCODE_UPSTREAM_ERROR')
+    );
+  }
+
   private async fetchSearchSafe(params: Record<string, string>): Promise<NominatimResult[]> {
     try {
       return await this.fetchSearch(params);
-    } catch {
+    } catch (err) {
+      if (this.isGeocodeTimeoutError(err)) throw err;
       return [];
     }
   }
 
   private async fetchSearch(params: Record<string, string>): Promise<NominatimResult[]> {
     const url = `${NOMINATIM_BASE}?${new URLSearchParams(params).toString()}`;
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': this.contact,
-        Accept: 'application/json',
-      },
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), NOMINATIM_FETCH_TIMEOUT_MS);
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        headers: {
+          'User-Agent': this.contact,
+          Accept: 'application/json',
+        },
+        signal: controller.signal,
+      });
+    } catch (err) {
+      if ((err as Error).name === 'AbortError') {
+        const timeoutErr = new UpstreamError('Nominatim geocode timed out', 503);
+        timeoutErr.code = 'GEOCODE_TIMEOUT';
+        timeoutErr.userMessage = GEOCODE_TIMEOUT_USER_MESSAGE;
+        throw timeoutErr;
+      }
+      throw err;
+    } finally {
+      clearTimeout(timeout);
+    }
 
     if (!response.ok) {
       const err = new UpstreamError(`Nominatim geocode failed (${response.status})`, response.status);
