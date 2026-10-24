@@ -50,6 +50,9 @@ const db = {
           const row = watchStore.get(watchId);
           if (row) row.updated_at = updated;
         }
+        if (sql.includes('UPDATE pipeline_cards')) {
+          return { meta: { changes: 0 } };
+        }
         return {};
       },
       async first() {
