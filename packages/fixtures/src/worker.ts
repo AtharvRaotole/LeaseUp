@@ -20,6 +20,7 @@ export {
   demoAnalyzeBacktests,
 } from './demo-analyze-precomputed.js';
 export { expectedRandomPresentInTop10 } from './landing-random-baseline.js';
+export { rankTopPercentFromOrder } from './rank-top-percent.js';
 export {
   computeBacktest,
   calculateAUC,
