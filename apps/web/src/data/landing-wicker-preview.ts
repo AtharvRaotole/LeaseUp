@@ -2976,43 +2976,41 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "qlooSignals": [
         "affinity rank 0.998824558394489",
         "tier taste fit (not raw affinity)"
-      ]
-    },
-    {
-      "brandReach": {
-        "status": "not_yet_found",
-        "searchUrl": "https://www.google.com/search?q=Crumbl%20retail%20real%20estate%20site%20submission"
-      },
-      "brand": {
-        "entityId": "7C4CC0B9-1C3C-4C5C-A732-5991046EBB03",
-        "name": "Crumbl",
-        "affinity": 0.9981525096781785,
-        "affinityRank": 57,
-        "verified": "unverified (1 source)",
-        "verificationSources": [
-          "All The Places (CC0)"
-        ],
-        "nationalStoreCount": 890,
-        "chainSizeTier": "mid",
-        "tasteFitBeyondChainPercentile": 84,
-        "nearbyStoreCount": 0,
-        "storefrontFormat": "streetfront",
-        "minStorefrontSqFt": 800
-      },
-      "tenantMixScore": {
-        "categoryFit": "Retail"
-      },
-      "outreachDraft": "",
-      "reasons": [
-        "Crumbl: LeaseUp rank #57 of 224 brands for Wicker Park; Qloo taste rank #49 of 224",
-        "No Crumbl store within 3 km (All The Places store data)",
-        "Established chain with 890 US locations"
       ],
-      "nearestExistingStoreKm": 5.039849287112551,
-      "qlooSignals": [
-        "affinity rank 0.9981525096781785",
-        "tier taste fit (not raw affinity)"
-      ]
+      "tradeAreaTaste": {
+        "tags": [],
+        "audiences": [
+          {
+            "entityId": "604A723B-3E2C-4795-89AA-DF5BA0C3B3C5",
+            "name": "Arts & Crafts",
+            "affinity": 0.7960951924324036,
+            "affinityRank": 4
+          },
+          {
+            "entityId": "9130A837-ED3C-4BA9-9825-5D0D57D119CD",
+            "name": "Home Organization",
+            "affinity": 0.7158567905426025,
+            "affinityRank": 3
+          }
+        ]
+      },
+      "whyBrandTaste": {
+        "signals": [
+          {
+            "kind": "audience",
+            "name": "Arts & Crafts",
+            "affinity": 0.7960951924324036,
+            "affinityRank": 4
+          },
+          {
+            "kind": "audience",
+            "name": "Home Organization",
+            "affinity": 0.7158567905426025,
+            "affinityRank": 3
+          }
+        ],
+        "summary": "Qloo's TJ Maxx audience leans toward Arts & Crafts and Home Organization, which also rank among the top audiences near this pin."
+      }
     },
     {
       "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
@@ -3049,7 +3047,41 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "qlooSignals": [
         "affinity rank 0.9997519239550274",
         "tier taste fit (not raw affinity)"
-      ]
+      ],
+      "tradeAreaTaste": {
+        "tags": [],
+        "audiences": [
+          {
+            "entityId": "D4B24E84-C439-4D7C-B2DC-92F7C704DE76",
+            "name": "Sneakerheads",
+            "affinity": 0.8051401376724243,
+            "affinityRank": 13
+          },
+          {
+            "entityId": "ED9B04EF-C693-44C8-82DE-C2B138710601",
+            "name": "Jewelry",
+            "affinity": 0.8061163425445557,
+            "affinityRank": 19
+          }
+        ]
+      },
+      "whyBrandTaste": {
+        "signals": [
+          {
+            "kind": "audience",
+            "name": "Sneakerheads",
+            "affinity": 0.8051401376724243,
+            "affinityRank": 13
+          },
+          {
+            "kind": "audience",
+            "name": "Jewelry",
+            "affinity": 0.8061163425445557,
+            "affinityRank": 19
+          }
+        ],
+        "summary": "Qloo's Victoria's Secret audience leans toward Sneakerheads and Jewelry, which also rank among the top audiences near this pin."
+      }
     },
     {
       "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
@@ -3080,49 +3112,48 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "reasons": [
         "J.Crew: LeaseUp rank #65 of 224 brands for Wicker Park; Qloo taste rank #20 of 224",
         "No J.Crew store within 3 km (All The Places store data)",
+        "At least 2 tracked apparel chains within 3 km",
         "Established chain with 693 US locations"
       ],
       "nearestExistingStoreKm": 3.643146486346599,
       "qlooSignals": [
         "affinity rank 0.9993615902584512",
         "tier taste fit (not raw affinity)"
-      ]
-    },
-    {
-      "brandReach": {
-        "status": "not_yet_found",
-        "searchUrl": "https://www.google.com/search?q=American%20Eagle%20Outfitters%20retail%20real%20estate%20site%20submission"
-      },
-      "brand": {
-        "entityId": "2D890327-8794-4C5A-898F-FFF0323325CF",
-        "name": "American Eagle Outfitters",
-        "affinity": 0.9978672635368134,
-        "affinityRank": 68,
-        "verified": "unverified (1 source)",
-        "verificationSources": [
-          "All The Places (CC0)"
-        ],
-        "nationalStoreCount": 712,
-        "chainSizeTier": "mid",
-        "tasteFitBeyondChainPercentile": 82,
-        "nearbyStoreCount": 0,
-        "storefrontFormat": "streetfront",
-        "minStorefrontSqFt": 800
-      },
-      "tenantMixScore": {
-        "categoryFit": "Apparel"
-      },
-      "outreachDraft": "",
-      "reasons": [
-        "American Eagle Outfitters: LeaseUp rank #68 of 224 brands for Wicker Park; Qloo taste rank #52 of 224",
-        "No American Eagle Outfitters store within 3 km (All The Places store data)",
-        "Established chain with 712 US locations"
       ],
-      "nearestExistingStoreKm": 17.23241769016111,
-      "qlooSignals": [
-        "affinity rank 0.9978672635368134",
-        "tier taste fit (not raw affinity)"
-      ]
+      "tradeAreaTaste": {
+        "tags": [],
+        "audiences": [
+          {
+            "entityId": "F488B2E4-21FE-4AFA-8B2E-0DA5A0F4E756",
+            "name": "Yoga",
+            "affinity": 0.7951967716217041,
+            "affinityRank": 8
+          },
+          {
+            "entityId": "D4B24E84-C439-4D7C-B2DC-92F7C704DE76",
+            "name": "Sneakerheads",
+            "affinity": 0.7739622592926025,
+            "affinityRank": 13
+          }
+        ]
+      },
+      "whyBrandTaste": {
+        "signals": [
+          {
+            "kind": "audience",
+            "name": "Yoga",
+            "affinity": 0.7951967716217041,
+            "affinityRank": 8
+          },
+          {
+            "kind": "audience",
+            "name": "Sneakerheads",
+            "affinity": 0.7739622592926025,
+            "affinityRank": 13
+          }
+        ],
+        "summary": "Qloo's J.Crew audience leans toward Yoga and Sneakerheads, which also rank among the top audiences near this pin."
+      }
     },
     {
       "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
@@ -3159,7 +3190,41 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "qlooSignals": [
         "affinity rank 0.9994126793111553",
         "tier taste fit (not raw affinity)"
-      ]
+      ],
+      "tradeAreaTaste": {
+        "tags": [],
+        "audiences": [
+          {
+            "entityId": "ED9B04EF-C693-44C8-82DE-C2B138710601",
+            "name": "Jewelry",
+            "affinity": 0.8005615472793579,
+            "affinityRank": 19
+          },
+          {
+            "entityId": "D4B24E84-C439-4D7C-B2DC-92F7C704DE76",
+            "name": "Sneakerheads",
+            "affinity": 0.8033778071403503,
+            "affinityRank": 13
+          }
+        ]
+      },
+      "whyBrandTaste": {
+        "signals": [
+          {
+            "kind": "audience",
+            "name": "Jewelry",
+            "affinity": 0.8005615472793579,
+            "affinityRank": 19
+          },
+          {
+            "kind": "audience",
+            "name": "Sneakerheads",
+            "affinity": 0.8033778071403503,
+            "affinityRank": 13
+          }
+        ],
+        "summary": "Qloo's H&M audience leans toward Jewelry and Sneakerheads, which also rank among the top audiences near this pin."
+      }
     },
     {
       "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
@@ -3190,13 +3255,49 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "reasons": [
         "Vans: LeaseUp rank #88 of 224 brands for Wicker Park; Qloo taste rank #13 of 224",
         "No Vans store within 3 km (All The Places store data)",
+        "At least 2 tracked apparel chains within 3 km",
         "Established chain with 397 US locations"
       ],
       "nearestExistingStoreKm": 12.191706680907302,
       "qlooSignals": [
         "affinity rank 0.999598704694745",
         "tier taste fit (not raw affinity)"
-      ]
+      ],
+      "tradeAreaTaste": {
+        "tags": [],
+        "audiences": [
+          {
+            "entityId": "D4B24E84-C439-4D7C-B2DC-92F7C704DE76",
+            "name": "Sneakerheads",
+            "affinity": 0.8157919645309448,
+            "affinityRank": 13
+          },
+          {
+            "entityId": "ED9B04EF-C693-44C8-82DE-C2B138710601",
+            "name": "Jewelry",
+            "affinity": 0.8082069754600525,
+            "affinityRank": 19
+          }
+        ]
+      },
+      "whyBrandTaste": {
+        "signals": [
+          {
+            "kind": "audience",
+            "name": "Sneakerheads",
+            "affinity": 0.8157919645309448,
+            "affinityRank": 13
+          },
+          {
+            "kind": "audience",
+            "name": "Jewelry",
+            "affinity": 0.8082069754600525,
+            "affinityRank": 19
+          }
+        ],
+        "summary": "Qloo's Vans audience leans toward Sneakerheads and Jewelry, which also rank among the top audiences near this pin."
+      },
+      "coTenancyLine": "Pairs well with Abercrombie & Fitch nearby"
     },
     {
       "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
@@ -3233,7 +3334,41 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "qlooSignals": [
         "affinity rank 0.9985910800204608",
         "tier taste fit (not raw affinity)"
-      ]
+      ],
+      "tradeAreaTaste": {
+        "tags": [],
+        "audiences": [
+          {
+            "entityId": "5F4CF648-08CD-4031-A17E-491E90A4DD4C",
+            "name": "Astrology",
+            "affinity": 0.8044231534004211,
+            "affinityRank": 6
+          },
+          {
+            "entityId": "F488B2E4-21FE-4AFA-8B2E-0DA5A0F4E756",
+            "name": "Yoga",
+            "affinity": 0.8159388303756714,
+            "affinityRank": 8
+          }
+        ]
+      },
+      "whyBrandTaste": {
+        "signals": [
+          {
+            "kind": "audience",
+            "name": "Astrology",
+            "affinity": 0.8044231534004211,
+            "affinityRank": 6
+          },
+          {
+            "kind": "audience",
+            "name": "Yoga",
+            "affinity": 0.8159388303756714,
+            "affinityRank": 8
+          }
+        ],
+        "summary": "Qloo's Express audience leans toward Astrology and Yoga, which also rank among the top audiences near this pin."
+      }
     },
     {
       "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
@@ -3264,13 +3399,48 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "reasons": [
         "Aerie: LeaseUp rank #102 of 224 brands for Wicker Park; Qloo taste rank #39 of 224",
         "No Aerie store within 3 km (All The Places store data)",
+        "At least 2 tracked apparel chains within 3 km",
         "Established chain with 328 US locations"
       ],
       "nearestExistingStoreKm": 17.35370955548852,
       "qlooSignals": [
         "affinity rank 0.9987623600651642",
         "tier taste fit (not raw affinity)"
-      ]
+      ],
+      "tradeAreaTaste": {
+        "tags": [],
+        "audiences": [
+          {
+            "entityId": "1B095F7B-1A06-4F65-AE32-BB9E9EAC26D6",
+            "name": "Dance",
+            "affinity": 0.797365128993988,
+            "affinityRank": 20
+          },
+          {
+            "entityId": "F488B2E4-21FE-4AFA-8B2E-0DA5A0F4E756",
+            "name": "Yoga",
+            "affinity": 0.8175284266471863,
+            "affinityRank": 8
+          }
+        ]
+      },
+      "whyBrandTaste": {
+        "signals": [
+          {
+            "kind": "audience",
+            "name": "Dance",
+            "affinity": 0.797365128993988,
+            "affinityRank": 20
+          },
+          {
+            "kind": "audience",
+            "name": "Yoga",
+            "affinity": 0.8175284266471863,
+            "affinityRank": 8
+          }
+        ],
+        "summary": "Qloo's Aerie audience leans toward Dance and Yoga, which also rank among the top audiences near this pin."
+      }
     },
     {
       "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
@@ -3307,7 +3477,41 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "qlooSignals": [
         "affinity rank 0.9988062401433718",
         "tier taste fit (not raw affinity)"
-      ]
+      ],
+      "tradeAreaTaste": {
+        "tags": [],
+        "audiences": [
+          {
+            "entityId": "D4B24E84-C439-4D7C-B2DC-92F7C704DE76",
+            "name": "Sneakerheads",
+            "affinity": 0.8033605217933655,
+            "affinityRank": 13
+          },
+          {
+            "entityId": "ED9B04EF-C693-44C8-82DE-C2B138710601",
+            "name": "Jewelry",
+            "affinity": 0.7983499765396118,
+            "affinityRank": 19
+          }
+        ]
+      },
+      "whyBrandTaste": {
+        "signals": [
+          {
+            "kind": "audience",
+            "name": "Sneakerheads",
+            "affinity": 0.8033605217933655,
+            "affinityRank": 13
+          },
+          {
+            "kind": "audience",
+            "name": "Jewelry",
+            "affinity": 0.7983499765396118,
+            "affinityRank": 19
+          }
+        ],
+        "summary": "Qloo's Coach audience leans toward Sneakerheads and Jewelry, which also rank among the top audiences near this pin."
+      }
     }
   ],
   "dataQuality": "high",
@@ -3317,6 +3521,8 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
   "runId": "export-landing-wicker",
   "timestamp": "2026-10-24T04:32:32.498Z",
   "mode": "demo",
+  "osmSnapshotRecordedAt": "2026-10-24T04:32:32.498Z",
+  "osmSnapshotLabel": "OpenStreetMap snapshot, Oct 24, 2026",
   "storefrontSqFt": 2500,
   "strictEval": {
     "manifestId": "leaseup-eval-v1",
@@ -3385,9 +3591,131 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
     "absenceRadiusKm": 3,
     "alreadyNearbyCount": 84,
     "strongFitAbsentCount": 10,
-    "pitchedCount": 10,
+    "pitchedCount": 8,
     "verifiedCount": 0
-  }
+  },
+  "nearbyTenants": [
+    {
+      "entityId": "5D03112C-CD2A-41C3-9ED0-D72EED8BB373",
+      "name": "Abercrombie & Fitch",
+      "distanceKm": 0.12
+    },
+    {
+      "entityId": "0E011D42-90B2-496E-B285-4EB2181EB0A9",
+      "name": "AT&T",
+      "distanceKm": 0.13
+    },
+    {
+      "entityId": "3CCF14AE-D5B0-4CB8-A8BA-5597827E8130",
+      "name": "Mattress Firm",
+      "distanceKm": 0.37
+    },
+    {
+      "entityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+      "name": "Chipotle Mexican Grill",
+      "distanceKm": 0.38
+    },
+    {
+      "entityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+      "name": "Aldi",
+      "distanceKm": 0.54
+    },
+    {
+      "entityId": "1C26370D-CCAB-4014-9D61-F17703B7C25C",
+      "name": "Jimmy John's",
+      "distanceKm": 0.75
+    },
+    {
+      "entityId": "706BC87D-2A45-474B-AD67-210677434F88",
+      "name": "Baskin-Robbins",
+      "distanceKm": 0.81
+    },
+    {
+      "entityId": "8AB653CD-7984-4263-B4B0-F3C4C02519DC",
+      "name": "Anytime Fitness",
+      "distanceKm": 0.88
+    },
+    {
+      "entityId": "B13C02E3-BA3C-4B39-85B4-ACF12FEBC892",
+      "name": "Starbucks",
+      "distanceKm": 0.88
+    },
+    {
+      "entityId": "B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7",
+      "name": "Chick-fil-A",
+      "distanceKm": 0.95
+    },
+    {
+      "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+      "name": "Target",
+      "distanceKm": 0.95
+    },
+    {
+      "entityId": "BBF22D8D-166F-44A8-8694-3F6FF4F745AB",
+      "name": "Popeyes",
+      "distanceKm": 1.12
+    },
+    {
+      "entityId": "8417D6F9-C8C7-40AD-BE49-0987A4663228",
+      "name": "McDonald's",
+      "distanceKm": 1.13
+    },
+    {
+      "entityId": "BEF4E5D5-245C-49D5-8D20-7C8A1B3C80F5",
+      "name": "Best Buy",
+      "distanceKm": 1.19
+    },
+    {
+      "entityId": "945C90D2-07D7-43B3-98FE-C437DE7A6D16",
+      "name": "Kohl's",
+      "distanceKm": 1.25
+    },
+    {
+      "entityId": "3ADFE43E-4C2A-421A-995B-EE896F73E6FC",
+      "name": "Family Dollar",
+      "distanceKm": 1.62
+    },
+    {
+      "entityId": "0B47F4FC-A267-4E07-85F4-F64511835C03",
+      "name": "7-Eleven",
+      "distanceKm": 1.64
+    },
+    {
+      "entityId": "74D13B62-2C51-4D99-804F-3D338F7B0406",
+      "name": "Burger King",
+      "distanceKm": 1.72
+    },
+    {
+      "entityId": "0025C006-CD75-479F-B42E-DFD4D16A6DE5",
+      "name": "Petco",
+      "distanceKm": 1.72
+    },
+    {
+      "entityId": "CCD54989-DFC4-4443-A378-72D6693B4903",
+      "name": "Panera Bread",
+      "distanceKm": 1.74
+    },
+    {
+      "entityId": "B4F15973-8C09-4ACA-8E11-5CF3437D514D",
+      "name": "F45 Training",
+      "distanceKm": 1.79
+    },
+    {
+      "entityId": "7F4CD3BE-477A-467D-B4F7-5F245B56B5F4",
+      "name": "Claire's",
+      "distanceKm": 1.81
+    },
+    {
+      "entityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+      "name": "Bath & Body Works",
+      "distanceKm": 1.82
+    },
+    {
+      "entityId": "C69202E6-9A83-4BD6-A720-ECAB9DB2AE52",
+      "name": "Michaels",
+      "distanceKm": 1.83
+    }
+  ]
 } as AnalysisResponse;
 
 export const LANDING_WICKER_RADIUS_KM = 10;
