@@ -97,6 +97,7 @@ export {
 } from './demo-chip-qloo-proof.js';
 export {
   parseQlooExplainabilityRows,
+  parseQlooAudienceRows,
   topOverIndexRows,
   type TradeAreaTasteRow,
 } from './qloo-explainability.js';
@@ -104,11 +105,18 @@ export {
   topBrandTasteOverlapSignals,
   formatBrandTasteOverlapLine,
   deterministicWhyBrandTasteSummary,
+  computeBrandLocalAudienceOverlap,
+  BRAND_AUDIENCE_MIN_AFFINITY,
+  BRAND_AUDIENCE_TOP_K,
+  LOCAL_AUDIENCE_TOP_K,
+  BRAND_AUDIENCE_MIN_PANEL_LIFT,
   type BrandTasteOverlapSignal,
+  type QlooAudienceRow,
 } from './qloo-brand-taste-overlap.js';
 export {
   brandExplainabilityForDemo,
   listDemoExplainabilityRecordings,
+  audiencePanelBaseline,
 } from './brand-explainability-loader.js';
 export { overpassDemoByFixture, DEMO_OSM_UNRECORDED_NOTE } from './overpass-demo.js';
 export {

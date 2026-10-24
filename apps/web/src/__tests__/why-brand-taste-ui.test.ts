@@ -29,10 +29,10 @@ describe('whyBrandTasteSection', () => {
       reasons: ['No Ulta store within 3 km (ATP catalog)'],
       whyBrandTaste: {
         signals: [
-          { kind: 'tag', name: 'Skincare', affinity: 0.91, affinityRank: 0.9 },
-          { kind: 'audience', name: 'Beauty Shoppers', affinity: 0.88, affinityRank: 0.86 },
+          { kind: 'audience', name: 'Health And Beauty', affinity: 0.74, affinityRank: 27 },
+          { kind: 'audience', name: 'Astrology', affinity: 0.7, affinityRank: 7 },
         ],
-        summary: 'Qloo ties Ulta to Skincare and Beauty Shoppers near this pin.',
+        summary: "Qloo's Ulta audience leans toward Health And Beauty and Astrology, which also rank among the top audiences near this pin.",
       },
     } as ProspectPack;
 

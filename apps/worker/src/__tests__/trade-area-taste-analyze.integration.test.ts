@@ -37,7 +37,9 @@ describe('tradeAreaTaste on analyze response', () => {
     const ulta = boulder.prospects.find(
       (p) => p.brand.entityId === '0F77E9A4-121C-4941-ACE1-28502DBF1865'
     );
-    expect(ulta?.whyBrandTaste?.signals.length).toBeGreaterThanOrEqual(3);
+    // Live Qloo recordings: only Health And Beauty passes the brand x local overlap guard for Ulta.
+    expect(ulta?.whyBrandTaste?.signals.map((s) => s.name)).toEqual(['Health And Beauty']);
+    expect(ulta?.whyBrandTaste?.signals[0]?.kind).toBe('audience');
     expect(ulta?.whyBrandTaste?.summary).toContain('Ulta');
 
     const wicker = await service.analyze(
@@ -48,7 +50,7 @@ describe('tradeAreaTaste on analyze response', () => {
     const tj = wicker.prospects.find(
       (p) => p.brand.entityId === 'A94FC7B6-34D3-4970-9EA5-2D17C49E84B6'
     );
-    expect(tj?.whyBrandTaste?.signals.length).toBeGreaterThanOrEqual(2);
+    expect(tj?.whyBrandTaste?.signals.map((s) => s.name)).toEqual(['Arts Crafts', 'Home Organization']);
     expect(tj?.whyBrandTaste?.summary).toMatch(/TJ Maxx/i);
   });
 
@@ -63,8 +65,12 @@ describe('tradeAreaTaste on analyze response', () => {
       (p) => p.brand.entityId === '2C5054E1-8691-4F52-83CD-310D029BA6A3'
     );
     expect(sephora).toBeDefined();
-    expect(sephora!.tradeAreaTaste?.tags?.length).toBeGreaterThan(0);
-    expect(sephora!.tradeAreaTaste?.tags?.[0]?.affinityRank).toBeGreaterThan(0);
+    expect(sephora!.tradeAreaTaste?.tags).toEqual([]);
+    expect(sephora!.tradeAreaTaste?.audiences.map((a) => a.name)).toContain('Health And Beauty');
+    for (const row of sephora!.tradeAreaTaste?.audiences ?? []) {
+      expect(row.affinityRank).toBeGreaterThanOrEqual(1);
+      expect(row.affinityRank).toBeLessThanOrEqual(30);
+    }
   });
 
   it('attaches Who shops here snapshot on demo analyze without KV writes', async () => {

@@ -57,6 +57,11 @@ export function shopperInterestHighlight(interest: string): string {
   return `People near this site shop more for ${interest} than in a typical neighborhood`;
 }
 
+/** One-line form of a verified Qloo brand x local audience overlap (see whyBrandTaste). */
+export function audienceOverlapHighlight(audience: string): string {
+  return `Qloo's ${audience} audience ranks high for this brand and near this site`;
+}
+
 export function dataConfidenceStatTooltip(): string {
   return 'How sure we are about the address pin and how deep the brand ranking is.';
 }

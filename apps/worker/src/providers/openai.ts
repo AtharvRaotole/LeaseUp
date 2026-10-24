@@ -25,12 +25,13 @@ export interface WhyBrandTasteFacts {
 export function buildWhyBrandTastePrompt(facts: WhyBrandTasteFacts): string {
   const lines = facts.signals.map(
     (s, i) =>
-      `${i + 1}. ${s.kind === 'tag' ? 'Taste tag' : 'Audience'}: ${s.name} (affinity ${s.affinity}, rank ${s.affinityRank})`
+      `${i + 1}. ${s.kind === 'tag' ? 'Taste tag' : 'Audience'}: ${s.name} (brand affinity ${s.affinity.toFixed(2)}, #${s.affinityRank} among local audiences)`
   );
   return [
     `Brand: ${facts.brandName}`,
     '',
-    'Qloo local overlap signals (use only these names, do not add new interests or stats):',
+    'Qloo audiences that are both in this brand\'s own top audiences and among the top audiences near the site',
+    '(use only these names, do not add new interests or stats):',
     ...lines,
     '',
     'Write 1 or 2 short sentences for a broker explaining why this brand fits local taste.',

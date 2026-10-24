@@ -15,8 +15,8 @@ describe('pitchExpandedLines', () => {
       outreachDraft: '',
       reasons: [],
       whyBrandTaste: {
-        signals: [{ kind: 'tag', name: 'Skincare', affinity: 0.9, affinityRank: 0.88 }],
-        summary: 'Qloo ties Test to Skincare near this pin.',
+        signals: [{ kind: 'audience', name: 'Health And Beauty', affinity: 0.74, affinityRank: 27 }],
+        summary: "Qloo's Test audience leans toward Health And Beauty, which also ranks among the top audiences near this pin.",
       },
     } as ProspectPack;
     const results = {
@@ -25,7 +25,7 @@ describe('pitchExpandedLines', () => {
     } as AnalysisResponse;
 
     const lines = pitchExpandedLines(prospect, results, 10);
-    expect(lines.join(' ')).toContain('Skincare');
+    expect(lines.join(' ')).toContain('Health And Beauty');
     expect(lines.join(' ')).not.toMatch(/All The Places/);
   });
 });

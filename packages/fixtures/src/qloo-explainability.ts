@@ -5,6 +5,11 @@ export type TradeAreaTasteRow = {
   affinityRank: number;
 };
 
+/**
+ * Verified brand x local audience overlap for one demo chip and brand, computed from two live Qloo
+ * recordings (brand-only and location-only urn:audience insights). `tags` is always empty: tag
+ * insights are not used for the Why card (see qloo-brand-taste-overlap.ts).
+ */
 export type BrandExplainabilityRecording = {
   chip: string;
   brandEntityId: string;
@@ -17,8 +22,29 @@ export type BrandExplainabilityRecording = {
     recordedAt: string;
     host?: string;
     note?: string;
+    brandUrl?: string;
+    localUrl?: string;
   };
 };
+
+/** Rows of a Qloo urn:audience insights body: entity id, name and query.affinity, verbatim. */
+export function parseQlooAudienceRows(
+  rawJson: unknown
+): Array<{ entityId: string; name: string; affinity: number }> {
+  const results = (rawJson as { results?: Record<string, unknown> })?.results ?? {};
+  const list = ((results.audiences as unknown[]) ?? (results.entities as unknown[]) ?? []) as Array<
+    Record<string, unknown>
+  >;
+  const rows: Array<{ entityId: string; name: string; affinity: number }> = [];
+  for (const row of list) {
+    const entityId = row.entity_id ?? row.id;
+    const name = typeof row.name === 'string' ? row.name.trim() : '';
+    const affinity = (row.query as { affinity?: number } | undefined)?.affinity;
+    if (!entityId || !name || typeof affinity !== 'number') continue;
+    rows.push({ entityId: String(entityId), name, affinity });
+  }
+  return rows;
+}
 
 export function parseQlooExplainabilityRows(
   rawJson: unknown,

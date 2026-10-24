@@ -1,0 +1,262 @@
+{
+  "brandEntityId": "1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23",
+  "brandName": "Whole Foods Market",
+  "audiences": [
+    {
+      "entityId": "22D0A7AF-7833-49F3-8E36-42E8D91EEC8B",
+      "name": "Parents With Young Children",
+      "affinity": 0.8197831511497498
+    },
+    {
+      "entityId": "D3839B31-2A5F-4DA3-8C04-528D9611039E",
+      "name": "Organic Ingredients",
+      "affinity": 0.8184095621109009
+    },
+    {
+      "entityId": "14F62034-5661-4B52-822B-D2D88A3D1B02",
+      "name": "Wine Enthusiast",
+      "affinity": 0.8131139278411865
+    },
+    {
+      "entityId": "9130A837-ED3C-4BA9-9825-5D0D57D119CD",
+      "name": "Home Organization",
+      "affinity": 0.8094941973686218
+    },
+    {
+      "entityId": "F854077D-E466-4181-A7E4-4CDA52981EA2",
+      "name": "Healthy Eating",
+      "affinity": 0.8084747791290283
+    },
+    {
+      "entityId": "D1F0EE4A-FDB3-48DC-919C-5A94F3D4EC85",
+      "name": "Cooking",
+      "affinity": 0.8084661364555359
+    },
+    {
+      "entityId": "B374F423-E1E6-4783-AA1E-48A6B2B5635F",
+      "name": "Discount Shoppers",
+      "affinity": 0.8055980205535889
+    },
+    {
+      "entityId": "B7970242-69CC-40FB-AFB6-0A5781E613DB",
+      "name": "Gender Equality",
+      "affinity": 0.804319441318512
+    },
+    {
+      "entityId": "AAF408EF-5947-4035-BD34-6678F4A94994",
+      "name": "Arts Culture",
+      "affinity": 0.8032395839691162
+    },
+    {
+      "entityId": "20561289-536A-41EE-A841-23A6ED3D583B",
+      "name": "Hospitality Professional",
+      "affinity": 0.8016846179962158
+    },
+    {
+      "entityId": "7CB916B9-1D27-4D76-8D97-2CC5950385CA",
+      "name": "Travel",
+      "affinity": 0.8016414046287537
+    },
+    {
+      "entityId": "B48DAA8A-7398-4C76-9DB0-80E12669ABFD",
+      "name": "Mental Health",
+      "affinity": 0.7990410923957825
+    },
+    {
+      "entityId": "7DCA3589-E6FF-4582-BE24-5A2D09D71336",
+      "name": "Photography",
+      "affinity": 0.7987992167472839
+    },
+    {
+      "entityId": "C956BAAF-4449-4B0B-BCA1-D3B06644B165",
+      "name": "Wealth Inequality",
+      "affinity": 0.7985486388206482
+    },
+    {
+      "entityId": "2EFF1AB9-814F-48D2-B2DE-D418ED8385AE",
+      "name": "Avid Reader",
+      "affinity": 0.7977279424667358
+    },
+    {
+      "entityId": "98C407BC-7949-4440-A933-451853D966E4",
+      "name": "Marketing Professional",
+      "affinity": 0.7947216033935547
+    },
+    {
+      "entityId": "EEFA88EB-0D5D-4290-B0AB-F7840DE970DB",
+      "name": "Running",
+      "affinity": 0.7943155765533447
+    },
+    {
+      "entityId": "9D25E87E-030C-4EE7-B049-F24967AAD596",
+      "name": "Racial Justice",
+      "affinity": 0.794090986251831
+    },
+    {
+      "entityId": "539308D1-B0B5-4C9D-8B67-E7B565B59B09",
+      "name": "Political Junkie",
+      "affinity": 0.7933739423751831
+    },
+    {
+      "entityId": "555258C9-2696-496A-B1C1-C46A6F7795C8",
+      "name": "Politically Conservative",
+      "affinity": 0.793019711971283
+    },
+    {
+      "entityId": "A2F107FD-2A38-4100-AFFB-037A6A2DF338",
+      "name": "Politically Center",
+      "affinity": 0.7927864789962769
+    },
+    {
+      "entityId": "2C606C12-C64F-46B1-BAE6-4FB0C278E612",
+      "name": "Angel Start Up Investing",
+      "affinity": 0.791879415512085
+    },
+    {
+      "entityId": "EFCD3505-3119-4BBD-86D0-0B9F344C0C94",
+      "name": "Sales Professional",
+      "affinity": 0.7916461229324341
+    },
+    {
+      "entityId": "3A9990DA-AA86-4934-AC8D-4088E91700AA",
+      "name": "News Junkie",
+      "affinity": 0.7911710143089294
+    },
+    {
+      "entityId": "DA61B8AD-6D79-4B0C-BEA0-EC966C93902E",
+      "name": "AAPI",
+      "affinity": 0.7902466654777527
+    },
+    {
+      "entityId": "8371AF94-2F4C-4139-BC87-E3FBEA695D88",
+      "name": "Museums",
+      "affinity": 0.7894691228866577
+    },
+    {
+      "entityId": "B88B7B93-BD33-4910-B44E-24B06C6C8164",
+      "name": "Retirement",
+      "affinity": 0.7882510423660278
+    },
+    {
+      "entityId": "BAC54F13-A15E-49E8-A645-BCACD5683B14",
+      "name": "Ocean Health",
+      "affinity": 0.7871625423431396
+    },
+    {
+      "entityId": "35DD51F5-4C89-436D-9A36-1C6BDD1D1508",
+      "name": "NFT Collectors",
+      "affinity": 0.786376416683197
+    },
+    {
+      "entityId": "A6230919-E0C8-4707-89E5-F7C5BCE86A70",
+      "name": "Business Professional",
+      "affinity": 0.786160409450531
+    },
+    {
+      "entityId": "2EE4FA44-9A90-470F-839F-2CF54A273E59",
+      "name": "Fair Wages",
+      "affinity": 0.7853829264640808
+    },
+    {
+      "entityId": "AB40A444-E528-43FE-BE78-E014301CFD80",
+      "name": "Cinephile",
+      "affinity": 0.7837501764297485
+    },
+    {
+      "entityId": "2248A93C-17C0-4BCD-A671-19DB6BDB98D3",
+      "name": "Real Estate",
+      "affinity": 0.7835514545440674
+    },
+    {
+      "entityId": "399883E7-F468-4BD6-9209-91DAD7BF3537",
+      "name": "Judaism",
+      "affinity": 0.7821174263954163
+    },
+    {
+      "entityId": "AAAE9FAA-FE3D-4732-9E82-BD4CED485D60",
+      "name": "Outdoors",
+      "affinity": 0.7798280715942383
+    },
+    {
+      "entityId": "B3A035FD-0D99-4980-98FD-A5B81D7E402A",
+      "name": "Politically Progressive",
+      "affinity": 0.7775733470916748
+    },
+    {
+      "entityId": "87A86EE9-5CA0-4C1F-8237-E3EE73C72281",
+      "name": "Islam",
+      "affinity": 0.7768735885620117
+    },
+    {
+      "entityId": "AFA24856-F432-40E3-AADF-C939A033F77E",
+      "name": "Coffee",
+      "affinity": 0.776588499546051
+    },
+    {
+      "entityId": "7D3C0540-10B0-42BB-93BE-676F0C37242F",
+      "name": "Retail Professional",
+      "affinity": 0.776432991027832
+    },
+    {
+      "entityId": "1EFF8636-B50C-4B57-86DD-6CB2D4F8F397",
+      "name": "Foreign Affairs",
+      "affinity": 0.7762601971626282
+    },
+    {
+      "entityId": "F86C9FE1-16D1-4CFA-8E33-77AD4FEDBB60",
+      "name": "Foodie",
+      "affinity": 0.7754049301147461
+    },
+    {
+      "entityId": "7A247E73-7190-4340-8EAD-227EEFB22780",
+      "name": "Medical Professional",
+      "affinity": 0.7738067507743835
+    },
+    {
+      "entityId": "471BEA15-6E9F-4347-B3DF-46E4A6045B8E",
+      "name": "Secret Unravelers",
+      "affinity": 0.7731847167015076
+    },
+    {
+      "entityId": "A8A43978-5291-46DC-8952-D58EDC7FF82B",
+      "name": "Black",
+      "affinity": 0.7725540995597839
+    },
+    {
+      "entityId": "E7EC95B5-91D3-4B36-90CD-868680D13C93",
+      "name": "Casual Escapists",
+      "affinity": 0.7715692520141602
+    },
+    {
+      "entityId": "784D31A2-99A5-4E8C-8B89-047B01760CC2",
+      "name": "Animal Issues",
+      "affinity": 0.771526038646698
+    },
+    {
+      "entityId": "61419C52-AA82-48FB-A68E-F873A417E040",
+      "name": "Single",
+      "affinity": 0.7714483141899109
+    },
+    {
+      "entityId": "1B2E2B7F-2FF5-495F-9389-FD4D35A03144",
+      "name": "Stocks Bonds",
+      "affinity": 0.7700401544570923
+    },
+    {
+      "entityId": "F9619A04-A80C-4FB8-BBD4-7E653E31075F",
+      "name": "Technology Enthusiast",
+      "affinity": 0.7664549946784973
+    },
+    {
+      "entityId": "439B29E4-F9B2-4FA7-8095-123F6833DE5F",
+      "name": "Spirituality",
+      "affinity": 0.7628525495529175
+    }
+  ],
+  "provenance": {
+    "recordedAt": "2026-10-24T07:01:37.087Z",
+    "host": "https://hackathon.api.qloo.com",
+    "url": "https://hackathon.api.qloo.com/v2/insights?filter.type=urn%3Aaudience&signal.interests.entities=1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23&take=50",
+    "live": true
+  }
+}
