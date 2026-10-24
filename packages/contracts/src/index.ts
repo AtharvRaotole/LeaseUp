@@ -470,6 +470,8 @@ export const PitchPackSnapshotSchema = z.object({
   neighborhood: z.string().optional(),
   location: LocationSchema,
   radiusKm: z.number(),
+  /** Km used for pitch absence copy; defaults to radiusKm when omitted (older snapshots). */
+  absenceRadiusKm: z.number().optional(),
   analysisTimestamp: z.string(),
   runId: z.string(),
   mode: z.enum(['live', 'demo']).optional(),

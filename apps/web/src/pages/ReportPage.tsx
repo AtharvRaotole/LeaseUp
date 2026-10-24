@@ -330,6 +330,7 @@ export function ReportPage() {
             <ReportShortListNotice
               count={results.prospects.length}
               radiusKm={request.radius}
+              results={results}
               request={request}
               slug={slug ?? 'run'}
             />

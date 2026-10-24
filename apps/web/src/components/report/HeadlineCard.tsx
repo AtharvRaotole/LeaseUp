@@ -10,6 +10,9 @@ import {
   dataConfidenceStatTooltip,
 } from '../../lib/broker-copy';
 import { presentInTop10Count } from '../../lib/hit-rate';
+import { absenceRadiusKm } from '../../lib/absence-radius';
+import { reportHeadlineLine } from '../../lib/report-headline-copy';
+
 export function HeadlineCard({
   results,
   radiusKm,
@@ -21,8 +24,8 @@ export function HeadlineCard({
   chipSlug?: string | null;
   backtestOverride?: AnalysisResponse['backtest'];
 }) {
-  const count = results.prospects.length;
   const area = placeHeadlineLabel(results.location, chipSlug);
+  const absenceKm = absenceRadiusKm(results, radiusKm);
   const activeBacktest = backtestOverride ?? results.backtest;
   const hitLabel = alreadyNearbyStatLabel(activeBacktest);
   const analyzed = results.rankings?.length ?? 0;
@@ -38,9 +41,7 @@ export function HeadlineCard({
   return (
     <Card>
       <h2 className="font-display font-semibold text-h2 leading-snug text-ink md:text-title">
-        {count > 0
-          ? `${count} brand${count === 1 ? '' : 's'} fit ${area} but have no store within ${radiusKm} km.`
-          : `Every top brand for ${area} already has a store within ${radiusKm} km.`}
+        {reportHeadlineLine(results, area, radiusKm)}
       </h2>
       <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 md:mt-7 md:gap-4">
         <StatTile
@@ -49,7 +50,7 @@ export function HeadlineCard({
           value={hitLabel}
           subtitle={hitTieSubtitle ?? 'Top picks with a store in your radius'}
           mobileSubtitle="Stores already in radius"
-          tooltip={alreadyNearbyStatTooltip(radiusKm)}
+          tooltip={alreadyNearbyStatTooltip(absenceKm)}
         />
         <StatTile
           label="Brands scored"

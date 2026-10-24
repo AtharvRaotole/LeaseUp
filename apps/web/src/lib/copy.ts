@@ -111,6 +111,8 @@ export function verificationSourceHelp(
   osmSnapshotLabel?: string,
   results?: AnalysisResponse
 ): string {
+  const absenceKm =
+    results?.prospectFunnel?.absenceRadiusKm ?? radiusKm;
   const osmLabel = results?.osmSnapshotLabel ?? osmSnapshotLabel ?? 'OpenStreetMap';
   const verified = prospect.brand.verified;
   const sources = prospect.brand.verificationSources ?? [];
@@ -120,35 +122,35 @@ export function verificationSourceHelp(
   const demoOsmSkipped = prospect.coverageNote?.includes(DEMO_OSM_UNRECORDED_NOTE);
 
   if (verified === 'verified (2 sources)') {
-    return `We checked All The Places and ${osmLabel} within ${radiusKm} km and did not find a store.`;
+    return `We checked All The Places and ${osmLabel} within ${absenceKm} km and did not find a store.`;
   }
 
   if (verified === 'verifying...') {
-    return `All The Places shows no store within ${radiusKm} km. We are still checking ${osmLabel} for a second confirmation.`;
+    return `All The Places shows no store within ${absenceKm} km. We are still checking ${osmLabel} for a second confirmation.`;
   }
 
   if (verified === 'unverified (1 source)') {
     if (atpChecked && !osmChecked) {
       if (demoOsmSkipped) {
-        return `Checked: All The Places (no store within ${radiusKm} km). Not checked: ${osmLabel} (${DEMO_OSM_UNRECORDED_NOTE}).`;
+        return `Checked: All The Places (no store within ${absenceKm} km). Not checked: ${osmLabel} (${DEMO_OSM_UNRECORDED_NOTE}).`;
       }
-      return `Checked against All The Places (no store within ${radiusKm} km). ${osmLabel} is not in our offline snapshot for this chain.`;
+      return `Checked against All The Places (no store within ${absenceKm} km). ${osmLabel} is not in our offline snapshot for this chain.`;
     }
     if (osmChecked && !atpChecked) {
-      return `Checked: ${osmLabel} (no store within ${radiusKm} km). Not checked yet: All The Places.`;
+      return `Checked: ${osmLabel} (no store within ${absenceKm} km). Not checked yet: All The Places.`;
     }
-    return `Only one store dataset confirmed absence within ${radiusKm} km. We still need a second source before calling it verified.`;
+    return `Only one store dataset confirmed absence within ${absenceKm} km. We still need a second source before calling it verified.`;
   }
 
   if (verified === 'conflict - likely present' || verified === 'conflict') {
-    return `All The Places and ${osmLabel} disagree about whether ${prospect.brand.name} has a store within ${radiusKm} km.`;
+    return `All The Places and ${osmLabel} disagree about whether ${prospect.brand.name} has a store within ${absenceKm} km.`;
   }
 
   if (verified === 'unverified') {
-    return `We could not confirm absence in All The Places or ${osmLabel} within ${radiusKm} km.`;
+    return `We could not confirm absence in All The Places or ${osmLabel} within ${absenceKm} km.`;
   }
 
-  return `Store check within ${radiusKm} km.`;
+  return `Store check within ${absenceKm} km.`;
 }
 
 export function verificationLabel(verified: ProspectPack['brand']['verified']): string {
