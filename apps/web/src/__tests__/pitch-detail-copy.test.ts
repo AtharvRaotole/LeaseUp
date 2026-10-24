@@ -5,7 +5,13 @@ import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 describe('pitchExpandedLines', () => {
   it('returns taste summary and signals without store verification lines', () => {
     const prospect = {
-      brand: { entityId: 'x', name: 'Test', affinityRank: 1, verified: 'verified (2 sources)' },
+      brand: {
+        entityId: 'x',
+        name: 'Test',
+        affinity: 0.9,
+        affinityRank: 1,
+        verified: 'verified (2 sources)',
+      },
       outreachDraft: '',
       reasons: [],
       whyBrandTaste: {
