@@ -17,6 +17,15 @@ test.describe('Usability: tour, tooltips, errors', () => {
     await expect(hint).toBeVisible({ timeout: 120_000 });
     await expect(tour).toBeHidden();
     await expect(page.getByTestId('report-summary')).toBeVisible();
+    const hintLayout = await hint.evaluate((el) => {
+      const style = window.getComputedStyle(el);
+      const hintRect = el.getBoundingClientRect();
+      const brands = document.querySelector('[data-testid="brands-to-pitch"]');
+      const brandsTop = brands?.getBoundingClientRect().top ?? 0;
+      return { position: style.position, hintBottom: hintRect.bottom, brandsTop };
+    });
+    expect(hintLayout.position).not.toBe('fixed');
+    expect(hintLayout.hintBottom).toBeLessThanOrEqual(hintLayout.brandsTop + 4);
 
     await page.getByTestId('report-tour-take').click();
     await expect(tour).toBeVisible();
