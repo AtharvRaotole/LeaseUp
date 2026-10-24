@@ -102,14 +102,17 @@ export function LandingHeroFixtureFrame({ capture = false }: LandingHeroFixtureF
         role="img"
         aria-label="Map preview for Wicker Park trade area"
       >
-        <img
-          src="/demo/map-poster.jpg"
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover object-center"
-          width={320}
-          height={240}
-          decoding="async"
-        />
+        <picture className="absolute inset-0 block h-full w-full">
+          <source srcSet="/demo/map-poster-dark.jpg" media="(prefers-color-scheme: dark)" />
+          <img
+            src="/demo/map-poster.jpg"
+            alt=""
+            className="h-full w-full object-cover object-center"
+            width={320}
+            height={240}
+            decoding="async"
+          />
+        </picture>
         <div className="absolute inset-0 bg-gradient-to-t from-bg/25 to-transparent" aria-hidden />
       </div>
     </div>
