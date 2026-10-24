@@ -19,15 +19,16 @@ describe('landing wicker preview export harness', () => {
     if (process.env.EXPORT_LANDING_WICKER_PREVIEW !== '1') return;
 
     installWorkersCacheApiStub();
-    const service = new AnalysisService(
-      offlineDemoAnalyzeEnv(createDemoPublicAssetsFetcher(), kv)
-    );
+    const env = offlineDemoAnalyzeEnv(createDemoPublicAssetsFetcher(), kv);
+    const service = new AnalysisService(env);
 
-    const results = await service.analyze(
+    const raw = await service.analyze(
       { address: DEMO_CHIP_ADDRESSES.wicker, radius: 10, storefrontSqFt: 2500 },
       'export-landing-wicker',
       'ip'
     );
+    const { refreshAnalysisNearestStores } = await import('../lib/snapshot-nearest-refresh');
+    const results = await refreshAnalysisNearestStores(env, raw);
 
     const repoRoot = join(__dirname, '../../../../');
     const previewPath = join(repoRoot, 'apps/web/src/data/landing-wicker-preview.ts');

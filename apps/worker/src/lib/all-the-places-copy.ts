@@ -3,7 +3,7 @@
 export const ALL_THE_PLACES_STORE_DATA_TAG = '(All The Places store data)';
 
 export function noStoreWithinRadiusReason(displayName: string, radiusKm: number): string {
-  return `No ${displayName} store within ${radiusKm} km ${ALL_THE_PLACES_STORE_DATA_TAG}`;
+  return `No ${displayName} store within ${radiusKm} km.`;
 }
 
 export const VERIFY_STEP_LABEL = 'Double-check absence (All The Places + OpenStreetMap)';

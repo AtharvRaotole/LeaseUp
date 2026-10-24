@@ -41,6 +41,11 @@ const WatchlistDiffPreviewPage = lazy(() =>
     default: m.WatchlistDiffPreviewPage,
   }))
 );
+const WickerWhyCardCapturePage = lazy(() =>
+  import('./pages/WickerWhyCardCapturePage').then((m) => ({
+    default: m.WickerWhyCardCapturePage,
+  }))
+);
 
 export default function App() {
   return (
@@ -52,6 +57,7 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/__preview/landing-hero" element={<LandingHeroPreviewCapturePage />} />
           <Route path="/__preview/watchlist-diff" element={<WatchlistDiffPreviewPage />} />
+          <Route path="/__preview/wicker-why-card" element={<WickerWhyCardCapturePage />} />
           <Route path="/methodology" element={<MethodologyPage />} />
           <Route path="/methodology/qloo" element={<HowLeaseUpUsesQlooPage />} />
           <Route path="/brand" element={<BrandPage />} />

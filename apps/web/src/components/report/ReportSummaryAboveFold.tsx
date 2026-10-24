@@ -14,6 +14,7 @@ import { cn } from '../../lib/cn';
 import type { QlooRankingMode } from './QlooRankingToggle';
 import { ReportProspectFunnel } from './ReportProspectFunnel';
 import { ReportVacancyAboveFold } from './ReportVacancyAboveFold';
+import { ReportTourHintChip } from './ReportFirstRunTour';
 import type { VacancyCalculatorDraft } from '../../lib/vacancy-cost';
 
 export function ReportSummaryAboveFold({
@@ -63,6 +64,7 @@ export function ReportSummaryAboveFold({
         chipSlug={chipSlug}
         backtestOverride={backtestOverride}
         showStats={showHeadlineStats}
+        headlineActions={<ReportTourHintChip />}
       />
 
       {results.prospectFunnel && (

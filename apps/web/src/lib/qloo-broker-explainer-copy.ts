@@ -14,7 +14,7 @@ export const QLOO_BROKER_EXPLAINER = {
     {
       heading: 'What P@10 means on our backtests',
       body:
-        'P@10 is the share of the top 10 that already had a store in the trade area per ATP and OSM in the study. It is not a signed lease and it is not a guarantee of open whitespace.',
+        'P@10 is the share of the top 10 that already had a store in the trade area per All The Places and OpenStreetMap store checks in the study. It is not a signed lease and it is not a guarantee of open whitespace.',
     },
     {
       heading: 'How brands get ranked',
