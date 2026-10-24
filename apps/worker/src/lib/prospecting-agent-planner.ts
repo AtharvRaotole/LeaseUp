@@ -31,6 +31,7 @@ import {
   type ProspectingAgentStepLog,
 } from './prospecting-agent-state';
 import { demoFixtureStratum } from '@leaseup/fixtures/worker';
+import { runLiveTopProspectNearestStoreChecks } from './prospecting-agent-live-top-verify';
 
 export type ProspectingAgentPlanResult = {
   mode: 'agent' | 'dag_fallback';
@@ -413,6 +414,17 @@ export async function runProspectingAgentPlanner(params: {
       fallbackReason: (err as Error).message,
     };
   }
+
+  await runLiveTopProspectNearestStoreChecks({
+    env: params.env,
+    location: params.location,
+    radiusKm: params.radiusKm,
+    runId: params.runId,
+    qloo: params.qloo,
+    state,
+    steps,
+    plannerKind,
+  });
 
   const summary =
     steps.length > 0

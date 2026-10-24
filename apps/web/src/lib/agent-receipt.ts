@@ -32,6 +32,8 @@ export type PlannerReceiptSection = {
   decisions: AgentReceiptToolDecision[];
   fallbackLine: string | null;
   planSummary: string | null;
+  rankingImpactHeading: string;
+  rankingImpactLines: string[];
 };
 
 export const PLANNER_UNAVAILABLE_LINE = 'Planner unavailable, used the standard steps.';
@@ -103,6 +105,21 @@ function plannerDetailMode(detail?: Record<string, unknown>): string | undefined
   return typeof mode === 'string' ? mode : undefined;
 }
 
+export function buildPlannerRankingImpactLines(detail?: Record<string, unknown>): string[] {
+  const raw = detail?.prospectRankingDiff;
+  if (!raw || typeof raw !== 'object') {
+    return ['The agent kept the standard ranking.'];
+  }
+  const diff = raw as { summaryLines?: unknown; unchanged?: unknown };
+  if (Array.isArray(diff.summaryLines) && diff.summaryLines.length > 0) {
+    return diff.summaryLines.map((line) => plainProspectingStepResult(String(line)));
+  }
+  if (diff.unchanged === true) {
+    return ['The agent kept the standard ranking.'];
+  }
+  return ['The agent kept the standard ranking.'];
+}
+
 export function buildPlannerUnavailableLine(detail?: Record<string, unknown>): string {
   const reason = detail?.fallbackReason;
   if (typeof reason === 'string' && reason.trim()) {
@@ -118,7 +135,13 @@ export function buildPlannerUnavailableLine(detail?: Record<string, unknown>): s
 export function buildPlannerReceiptSection(job: ProspectingJob): PlannerReceiptSection {
   const planStep = job.steps.find((s) => s.id === 'agent_plan');
   if (!planStep || planStep.status === 'pending') {
-    return { decisions: [], fallbackLine: buildPlannerUnavailableLine(), planSummary: null };
+    return {
+      decisions: [],
+      fallbackLine: buildPlannerUnavailableLine(),
+      planSummary: null,
+      rankingImpactHeading: 'What the agent changed',
+      rankingImpactLines: ['The agent kept the standard ranking.'],
+    };
   }
 
   const detail = agentPlanDetail(job);
@@ -127,11 +150,15 @@ export function buildPlannerReceiptSection(job: ProspectingJob): PlannerReceiptS
   const decisions = parseAgentToolDecisions(planStep);
   const unavailableLine = buildPlannerUnavailableLine(detail);
 
+  const rankingImpactLines = buildPlannerRankingImpactLines(detail);
+
   if (decisions.length === 0) {
     return {
       decisions: [],
       fallbackLine: unavailableLine,
       planSummary: plainProspectingStepResult(planStep.summary) || null,
+      rankingImpactHeading: 'What the agent changed',
+      rankingImpactLines,
     };
   }
 
@@ -139,6 +166,8 @@ export function buildPlannerReceiptSection(job: ProspectingJob): PlannerReceiptS
     decisions,
     fallbackLine: isFallback ? unavailableLine : null,
     planSummary: plainProspectingStepResult(planStep.summary) || null,
+    rankingImpactHeading: 'What the agent changed',
+    rankingImpactLines,
   };
 }
 
@@ -224,6 +253,10 @@ export function agentReceiptMarkdown(job: ProspectingJob): string {
   for (const tool of planner.decisions) {
     lines.push(`- ${tool.plannerLabel}: ${tool.reason}`);
     if (tool.resultSummary) lines.push(`  - Result: ${tool.resultSummary}`);
+  }
+  lines.push('', `## ${planner.rankingImpactHeading}`, '');
+  for (const line of planner.rankingImpactLines) {
+    lines.push(`- ${line}`);
   }
   lines.push('', '## Run steps', '');
   for (const row of rows) {

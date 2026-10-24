@@ -64,12 +64,19 @@ describe('prospecting agent DAG impact', () => {
     const withAgent = await service.analyzeWithSteps(request, 'with-agent-dag', 'ip', undefined, {
       agentDagHooks: plan.dagHooks,
       qlooClient: runQloo,
+      captureProspectRankingDiff: true,
+      plannerAgentSteps: plan.steps,
     });
 
     const baselineIds = baseline.prospects.map((p) => p.brand.entityId);
     const agentIds = withAgent.prospects.map((p) => p.brand.entityId);
     expect(agentIds).not.toEqual(baselineIds);
     expect(agentIds[0]).not.toBe(baselineIds[0]);
+
+    expect(withAgent.prospectRankingDiff).toBeDefined();
+    expect(withAgent.prospectRankingDiff?.unchanged).toBe(false);
+    expect(withAgent.prospectRankingDiff?.summaryLines.length).toBeGreaterThan(0);
+    expect(withAgent.prospectRankingDiff?.summaryLines[0]).not.toMatch(/—/);
 
     const fullRunQlooCalls = runQloo.getLogicalCallCount();
     expect(fullRunQlooCalls).toBeLessThanOrEqual(baselineQlooCalls + 1);
@@ -82,6 +89,7 @@ describe('prospecting agent DAG impact', () => {
           delta: fullRunQlooCalls - baselineQlooCalls,
         },
         excludedByPlanner: [...(plan.dagHooks.excludeProspectEntityIds ?? [])],
+        prospectRankingDiff: withAgent.prospectRankingDiff,
       })
     );
   });

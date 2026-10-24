@@ -283,6 +283,27 @@ export const ProspectFunnelSchema = z.object({
 
 export type ProspectFunnel = z.infer<typeof ProspectFunnelSchema>;
 
+export const ProspectRankingChangeSchema = z.object({
+  kind: z.enum(['added', 'removed', 'moved']),
+  entityId: z.string(),
+  brandName: z.string(),
+  fromRank: z.number().int().optional(),
+  toRank: z.number().int().optional(),
+  plannerStepIndex: z.number().int().optional(),
+  plannerTool: z.string().optional(),
+  plannerReason: z.string().optional(),
+});
+
+export const AgentProspectRankingDiffSchema = z.object({
+  unchanged: z.boolean(),
+  baselineTopEntityIds: z.array(z.string()),
+  agentTopEntityIds: z.array(z.string()),
+  changes: z.array(ProspectRankingChangeSchema),
+  summaryLines: z.array(z.string()),
+});
+
+export type AgentProspectRankingDiff = z.infer<typeof AgentProspectRankingDiffSchema>;
+
 export const AnalysisResponseSchema = z.object({
   location: LocationSchema,
   backtest: BacktestResultSchema,
@@ -316,6 +337,8 @@ export const AnalysisResponseSchema = z.object({
   storeDistanceDataAsOf: z.string().optional(),
   /** When true, some nearest-store km could not be reconciled and came from the saved snapshot. */
   storeDistancesSnapshotOnly: z.boolean().optional(),
+  /** Baseline vs agent prospect order when full prospecting runs with a planner. */
+  prospectRankingDiff: AgentProspectRankingDiffSchema.optional(),
 });
 
 export type AnalysisResponse = z.infer<typeof AnalysisResponseSchema>;

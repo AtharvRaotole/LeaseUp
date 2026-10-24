@@ -332,6 +332,8 @@ export class ProspectingService {
           ...(plan.mode === 'agent' ? { agentDagHooks: plan.dagHooks } : {}),
           qlooClient: qloo,
           judgeQuotaAlreadyConsumed: this.mode === 'live',
+          captureProspectRankingDiff: plan.mode === 'agent',
+          plannerAgentSteps: plan.steps,
         }
       );
 
@@ -344,6 +346,9 @@ export class ProspectingService {
             ...(agentStep.detail.qlooLogicalCalls as Record<string, number>),
             afterFullRun: qlooLogicalAfterFullRun,
           },
+          ...(result.prospectRankingDiff
+            ? { prospectRankingDiff: result.prospectRankingDiff }
+            : {}),
         };
         await this.save(job);
       }

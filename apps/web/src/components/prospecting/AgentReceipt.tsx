@@ -84,6 +84,20 @@ export function AgentReceipt({ job }: { job: ProspectingJob }) {
             {planner.planSummary && planner.decisions.length > 0 && (
               <p className="mt-2 text-xs text-ink-3 break-words">{planner.planSummary}</p>
             )}
+            <div className="mt-5" data-testid="agent-receipt-ranking-impact">
+              <h4 className="text-sm font-semibold text-ink">{planner.rankingImpactHeading}</h4>
+              <ul className="mt-2 space-y-1.5">
+                {planner.rankingImpactLines.map((line, index) => (
+                  <li
+                    key={`ranking-impact-${index}`}
+                    className="text-sm text-ink-2 break-words"
+                    data-testid={`agent-receipt-ranking-impact-${index}`}
+                  >
+                    {line}
+                  </li>
+                ))}
+              </ul>
+            </div>
             {planner.decisions.length > 0 && (
               <ul className="mt-3 space-y-2.5">
                 {planner.decisions.map((decision, index) => (

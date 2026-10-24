@@ -1,5 +1,12 @@
 import { QlooClient } from '../providers/qloo';
-import type { ProspectingAgentDagHooks } from '../lib/prospecting-agent-state';
+import type {
+  ProspectingAgentDagHooks,
+  ProspectingAgentStepLog,
+} from '../lib/prospecting-agent-state';
+import {
+  computeAgentProspectRankingDiff,
+  type AgentProspectRankingDiff,
+} from '../lib/prospecting-agent-ranking-diff';
 import { OpenAIClient } from '../providers/openai';
 import { OverpassClient } from './overpass';
 import { GeocodeService } from './geocode';
@@ -122,6 +129,9 @@ export type AnalyzeWithStepsOptions = {
   qlooClient?: QlooClient;
   /** Set when prospecting (or another caller) already consumed the daily live Qloo judge quota. */
   judgeQuotaAlreadyConsumed?: boolean;
+  /** Compare standard vs agent prospect order using the same taste panel (no extra Qloo). */
+  captureProspectRankingDiff?: boolean;
+  plannerAgentSteps?: ProspectingAgentStepLog[];
 };
 
 export class AnalysisService {
@@ -314,11 +324,29 @@ export class AnalysisService {
 
       let formatFilteredCount = 0;
       let prospectFunnel: ProspectFunnel | undefined;
+      let prospectRankingDiff: AgentProspectRankingDiff | undefined;
       const prospects = await runStep(
         emit,
         'prospects',
         "Find who's missing",
         async () => {
+          const captureDiff =
+            Boolean(options?.captureProspectRankingDiff) &&
+            Boolean(agentDagHooks) &&
+            Boolean(options?.plannerAgentSteps?.length);
+
+          const baselineGenerated = captureDiff
+            ? await this.generateProspects(
+                location,
+                insights,
+                request.radius,
+                runId,
+                request.storefrontSqFt,
+                tasteUnavailable,
+                undefined
+              )
+            : null;
+
           const generated = await this.generateProspects(
             location,
             insights,
@@ -331,9 +359,24 @@ export class AnalysisService {
           formatFilteredCount = generated.formatFilteredCount;
           prospectFunnel = generated.funnel;
           const packs = generated.packs;
+
+          if (captureDiff && baselineGenerated) {
+            prospectRankingDiff = computeAgentProspectRankingDiff({
+              baselinePacks: baselineGenerated.packs,
+              agentPacks: packs,
+              plannerSteps: options!.plannerAgentSteps!,
+              dagHooks: agentDagHooks!,
+            });
+          }
+
           return {
             summary: `${packs.length} high-affinity brands absent in radius`,
-            detail: { count: packs.length, formatFilteredCount, funnel: prospectFunnel },
+            detail: {
+              count: packs.length,
+              formatFilteredCount,
+              funnel: prospectFunnel,
+              prospectRankingDiff,
+            },
             result: packs,
           };
         }
@@ -524,6 +567,7 @@ export class AnalysisService {
         rankingNotice: tasteUnavailable ? TASTE_UNAVAILABLE_RANKING_NOTICE : undefined,
         prospectFunnel,
         nearbyTenants: nearbyTenants.length > 0 ? nearbyTenants : undefined,
+        prospectRankingDiff,
       };
 
       await this.persistRun(runId, location, response, 'completed');

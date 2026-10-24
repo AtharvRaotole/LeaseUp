@@ -35,6 +35,7 @@ describe('agent receipt', () => {
     expect(planner.decisions).toHaveLength(2);
     expect(planner.decisions[0]?.plannerLabel).toBe('Rule');
     expect(planner.fallbackLine).toBeNull();
+    expect(planner.rankingImpactHeading).toBe('What the agent changed');
     const pipeline = buildPipelineReceiptRows(DEMO_PROSPECTING_RECEIPT_JOB);
     expect(pipeline.find((r) => r.id === 'agent_plan')).toBeUndefined();
     expect(pipeline.some((r) => r.label === 'Check stores in two directories')).toBe(true);
@@ -78,6 +79,31 @@ describe('agent receipt', () => {
     });
     expect(json).toContain('2C5054E1-8691-4F52-83CD-310D029BA6A3');
     expect(json).toContain('enrich_site_stratum');
+  });
+
+  it('shows ranking impact lines from prospectRankingDiff on agent_plan detail', () => {
+    const job = {
+      ...DEMO_PROSPECTING_RECEIPT_JOB,
+      steps: DEMO_PROSPECTING_RECEIPT_JOB.steps.map((s) =>
+        s.id === 'agent_plan'
+          ? {
+              ...s,
+              detail: {
+                ...s.detail,
+                prospectRankingDiff: {
+                  unchanged: false,
+                  baselineTopEntityIds: ['aaa'],
+                  agentTopEntityIds: ['bbb'],
+                  changes: [],
+                  summaryLines: ['Moved Sample Brand from spot 1 to spot 2.'],
+                },
+              },
+            }
+          : s
+      ),
+    };
+    const planner = buildPlannerReceiptSection(job);
+    expect(planner.rankingImpactLines[0]).toContain('Moved Sample Brand');
   });
 
   it('shows planner fallback when agent plan has no tool steps', () => {
