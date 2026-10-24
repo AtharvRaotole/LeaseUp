@@ -73,9 +73,9 @@ export function cohortExplainerHowRankedBody(): string {
 export function cohortExplainerLimitsBody(): string {
   return (
     `Raw Qloo order alone is weaker than sorting by national chain size on our ${cohortSiteCount()}-address backtest ` +
-    `(about ${cohortRawVsChainRounded()} top-10 presence per ATP/OSM). The product leans on the taste blend ` +
+    `(about ${cohortRawVsChainRounded()} top-10 presence per All The Places and OpenStreetMap checks). The product leans on the taste blend ` +
     `(about ${cohortBlendVsChainRounded()}, ${cohortBlendLiftPpLabel()}) and on ranking within similar chain sizes. ` +
-    `Map checks are helpful but not perfect: we corrected four mistaken absence labels found across 13 audited sites, yet a store can still be missing if it is not in All The Places or our OpenStreetMap snapshot (OSM covers 25 of 227 chains on demo chips).`
+    `Map checks are helpful but not perfect: we corrected four mistaken absence labels found across 13 audited sites, yet a store can still be missing if it is not in All The Places or our OpenStreetMap snapshot (OpenStreetMap covers 25 of 227 chains on demo chips).`
   );
 }
 

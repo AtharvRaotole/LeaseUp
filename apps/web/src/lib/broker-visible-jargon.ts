@@ -13,6 +13,7 @@ export const BROKER_RAW_JARGON_PATTERNS: { id: string; pattern: RegExp }[] = [
   { id: 'density-radius', pattern: /density[- ]tightened|density radius/i },
   { id: 'verified-label', pattern: /\bVerified\b/ },
   { id: 'unverified-label', pattern: /\bUnverified\b/ },
+  { id: 'osm-acronym', pattern: /\bOSM\b/ },
 ];
 
 export function findBrokerJargonViolations(text: string): string[] {

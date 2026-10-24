@@ -25,7 +25,6 @@ import {
   chainSizeTierFromStoreCount,
   isProspectChainTier,
   getNationalStoreCount,
-  DEMO_OSM_UNRECORDED_NOTE,
   matchDemoFixtureId,
   matchDemoChipWithinMeters,
   demoFixtureDensity,
@@ -53,7 +52,6 @@ import {
   coverageOsmFetchFailedNote,
   coverageOsmNoStorePointsNote,
   noStoreWithinRadiusReason,
-  verifyStepDemoAllThePlacesOnlySummary,
   verifyStepDualSourceSummary,
   verifyStepSingleSourceSummary,
   VERIFY_STEP_LABEL,
@@ -311,14 +309,9 @@ export class AnalysisService {
         const singleSource = prospects.filter(
           (p) => p.brand.verified === 'unverified (1 source)'
         ).length;
-        const demoOsmSkipped = prospects.some((p) =>
-          p.coverageNote?.includes(DEMO_OSM_UNRECORDED_NOTE)
-        );
         let summary: string;
         if (pending > 0) {
           summary = `${pending} prospects queued for OpenStreetMap verification (non-blocking)`;
-        } else if (demoOsmSkipped) {
-          summary = verifyStepDemoAllThePlacesOnlySummary(DEMO_OSM_UNRECORDED_NOTE);
         } else if (verified > 0) {
           summary = verifyStepDualSourceSummary(verified);
         } else if (singleSource > 0) {

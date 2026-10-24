@@ -79,13 +79,14 @@ describe('whyCardStoreCheckLine', () => {
     ).toBe('No store within 3 km (checked Oct 24, 2026).');
   });
 
-  it('keeps the demo OSM note accurate', () => {
+  it('does not append internal demo coverage markers to the why card', () => {
     const p = {
       ...prospect('unverified (1 source)', ['All The Places (CC0)']),
       coverageNote: 'OSM check not recorded for demo',
     } as ProspectPack;
     expect(whyCardStoreCheckLine(p, 10, results, 'Oct 24, 2026')).toBe(
-      'No store within 3 km in our store data as of Oct 24, 2026. OSM check not recorded for demo.'
+      'No store within 3 km in our store data as of Oct 24, 2026.'
     );
+    expect(whyCardStoreCheckLine(p, 10, results, 'Oct 24, 2026')).not.toMatch(/\bOSM\b/);
   });
 });

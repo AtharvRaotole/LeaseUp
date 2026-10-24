@@ -7,8 +7,6 @@ import {
 } from '@leaseup/fixtures';
 import { absenceRadiusKm } from './absence-radius';
 
-const DEMO_OSM_UNRECORDED_NOTE = 'OSM check not recorded for demo';
-
 function sourceChecked(sources: string[], needle: string): boolean {
   return sources.some((s) => s.toLowerCase().includes(needle.toLowerCase()));
 }
@@ -23,16 +21,12 @@ export function absenceVerificationSummary(
   const atpChecked = sourceChecked(sources, 'all the places');
   const osmChecked =
     sourceChecked(sources, 'openstreetmap') && !sources.some((s) => s.includes('store found'));
-  const demoOsmSkipped = prospect.coverageNote?.includes(DEMO_OSM_UNRECORDED_NOTE);
 
   if (prospect.brand.verified === 'verified (2 sources)' && atpChecked && osmChecked) {
     return brokerNoStoreWithinRadiusDualSourceShort(radiusKm);
   }
 
   if (prospect.brand.verified === 'unverified (1 source)' && atpChecked && !osmChecked) {
-    if (demoOsmSkipped) {
-      return `${brokerNoStoreWithinRadiusSingleSourceShort(radiusKm)} ${DEMO_OSM_UNRECORDED_NOTE}.`;
-    }
     return brokerNoStoreWithinRadiusSingleSourceShort(radiusKm);
   }
 
@@ -73,16 +67,12 @@ export function whyCardStoreCheckLine(
   const atpChecked = sourceChecked(sources, 'all the places');
   const osmChecked =
     sourceChecked(sources, 'openstreetmap') && !sources.some((s) => s.includes('store found'));
-  const demoOsmSkipped = prospect.coverageNote?.includes(DEMO_OSM_UNRECORDED_NOTE);
 
   if (prospect.brand.verified === 'verified (2 sources)' && atpChecked && osmChecked) {
     return brokerNoStoreWithinRadiusDualSource(radiusKm, storeDataDateLabel);
   }
 
   if (prospect.brand.verified === 'unverified (1 source)' && atpChecked && !osmChecked) {
-    if (demoOsmSkipped) {
-      return `${brokerNoStoreWithinRadiusSingleSource(radiusKm, storeDataDateLabel)} ${DEMO_OSM_UNRECORDED_NOTE}.`;
-    }
     return brokerNoStoreWithinRadiusSingleSource(radiusKm, storeDataDateLabel);
   }
 
