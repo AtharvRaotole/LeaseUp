@@ -16,7 +16,7 @@ export function LandingHeroProductPreview() {
 
   return (
     <div
-      className="mx-auto w-full max-w-[600px] lg:mx-0 xl:max-w-[640px]"
+      className="mx-auto w-full min-w-0 max-w-[600px] overflow-hidden lg:mx-0 xl:max-w-[640px]"
       data-testid="landing-hero-product-preview"
     >
       <Link
@@ -24,11 +24,7 @@ export function LandingHeroProductPreview() {
         className="group relative block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
       >
         <div
-          className="pointer-events-none absolute -inset-1 rounded-[14px] bg-accent/10 opacity-0 transition-opacity group-hover:opacity-100"
-          aria-hidden
-        />
-        <div
-          className="relative overflow-hidden rounded-xl border border-border-strong bg-surface shadow-[0_20px_50px_-16px_rgba(0,0,0,0.2)] transition-transform duration-200 group-hover:-translate-y-0.5 dark:shadow-[0_24px_56px_-18px_rgba(0,0,0,0.55)]"
+          className="relative overflow-hidden rounded-xl border border-border-strong bg-surface shadow-[0_20px_50px_-16px_rgba(0,0,0,0.2)] ring-0 ring-accent/0 transition-[transform,box-shadow,ring-color] duration-200 group-hover:-translate-y-0.5 group-hover:ring-2 group-hover:ring-accent/15 dark:shadow-[0_24px_56px_-18px_rgba(0,0,0,0.55)]"
         >
           <div className="flex items-center gap-2 border-b border-border bg-surface-2 px-3 py-2 sm:px-4 sm:py-2.5">
             <span className="h-2 w-2 rounded-full bg-[#ff5f57] sm:h-2.5 sm:w-2.5" aria-hidden />

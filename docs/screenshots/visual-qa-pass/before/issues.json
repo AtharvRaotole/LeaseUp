@@ -1,0 +1,34 @@
+[
+  {
+    "id": "landing-light-1440",
+    "message": "horizontal overflow: landing-hero-product-preview (+4px)"
+  },
+  {
+    "id": "pipeline-light-1440",
+    "message": "locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n  - waiting for getByTestId('pipeline-page') to be visible\n"
+  },
+  {
+    "id": "landing-light-390",
+    "message": "horizontal overflow: landing-hero-product-preview (+4px)"
+  },
+  {
+    "id": "pipeline-light-390",
+    "message": "locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n  - waiting for getByTestId('pipeline-page') to be visible\n"
+  },
+  {
+    "id": "landing-dark-1440",
+    "message": "horizontal overflow: landing-hero-product-preview (+4px)"
+  },
+  {
+    "id": "pipeline-dark-1440",
+    "message": "locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n  - waiting for getByTestId('pipeline-page') to be visible\n"
+  },
+  {
+    "id": "landing-dark-390",
+    "message": "horizontal overflow: landing-hero-product-preview (+4px)"
+  },
+  {
+    "id": "pipeline-dark-390",
+    "message": "locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n  - waiting for getByTestId('pipeline-page') to be visible\n"
+  }
+]
