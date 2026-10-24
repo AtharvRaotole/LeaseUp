@@ -118,6 +118,10 @@ export {
   type BrandTasteOverlapSignal,
   type QlooAudienceRow,
 } from './qloo-brand-taste-overlap.js';
+export {
+  distinctPitchAudienceLists,
+  PITCH_AUDIENCE_CANDIDATE_MAX,
+} from './distinct-pitch-audiences.js';
 // Live audience recordings are not bundled into the worker: it fetches
 // live-audiences.compact.json from ASSETS and binds it with this factory.
 export {

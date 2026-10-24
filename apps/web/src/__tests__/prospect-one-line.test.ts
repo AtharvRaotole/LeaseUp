@@ -75,7 +75,23 @@ describe('prospectOneLineReason', () => {
       10
     );
     expect(line).not.toContain('Hotel');
-    expect(line).toContain('Health & Beauty');
+    expect(line).toContain('Shared local audience: Health & Beauty');
+  });
+
+  it('prefers co-tenancy line over shopper-favor fallback', () => {
+    const line = prospectOneLineReason(
+      prospect({
+        coTenancyLine: 'Pairs well with Target nearby',
+        whyBrandTaste: {
+          signals: [{ kind: 'audience', name: 'Cooking', affinity: 0.8, affinityRank: 5 }],
+        },
+      }),
+      baseResults,
+      10
+    );
+    expect(line).toContain('Pairs well with Target nearby');
+    expect(line).not.toContain('Shared local audience');
+    expect(line).not.toContain('Cooking');
   });
 
   it('produces different copy for two brands with different data', () => {
@@ -107,7 +123,7 @@ describe('prospectOneLineReason', () => {
       10
     );
     expect(a).not.toBe(b);
-    expect(a).toContain('Sneakerheads');
+    expect(a).toContain('Shared local audience: Sneakerheads');
     expect(b).toContain('Top 20% local match here');
     expect(b).not.toContain('Category fit');
   });
