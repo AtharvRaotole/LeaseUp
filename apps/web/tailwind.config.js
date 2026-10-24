@@ -16,6 +16,7 @@ export default {
         'ink-4': 'var(--ink-4)',
         accent: 'var(--accent)',
         'accent-soft': 'var(--accent-soft)',
+        'on-accent': 'var(--on-accent)',
         success: 'var(--success)',
         warn: 'var(--warn)',
         danger: 'var(--danger)',
