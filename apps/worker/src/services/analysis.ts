@@ -67,6 +67,10 @@ import { overpassBrandMatchesSearch } from '../lib/osm-brand-match';
 import type { QlooLocation } from '../providers/qloo';
 import { DemoModeRequiredError } from '../lib/demo-mode';
 import {
+  consumeLiveQlooJudgeQuota,
+  liveQlooJudgeDailyCap,
+} from '../lib/live-qloo-judge-quota';
+import {
   buildBrandRankings,
   buildMapStores,
   buildTripleBacktest,
@@ -124,8 +128,10 @@ export class AnalysisService {
   private osmSnapshot: OsmSnapshotCatalog | null;
   private assets?: Fetcher;
   private verifyInflight = new Map<string, Promise<unknown>>();
+  private env: Env;
 
   constructor(env: Env) {
+    this.env = env;
     this.mode = env.APP_MODE === 'live' ? 'live' : 'demo';
     this.qloo = new QlooClient(env);
     this.openai = new OpenAIClient(env);
@@ -183,6 +189,15 @@ export class AnalysisService {
       });
 
       const qlooLocation = this.buildQlooLocation(location, request.address, request.radius);
+
+      if (this.mode === 'live') {
+        const nowSec = Math.floor(Date.now() / 1000);
+        await consumeLiveQlooJudgeQuota(
+          this.db,
+          liveQlooJudgeDailyCap(this.env),
+          nowSec
+        );
+      }
 
       let tasteUnavailable = false;
       const insights = await runStep(

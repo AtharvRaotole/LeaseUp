@@ -37,6 +37,8 @@ export interface Env {
   FORCE_QLOO_DOWN?: string;
   BUILD_TIME?: string;
   CI?: string;
+  /** Max live-mode analyzes that call Qloo per UTC day (shared worker key). */
+  LIVE_QLOO_JUDGE_DAILY_CAP?: string;
 }
 
 const app = new Hono<{ Bindings: Env }>();
