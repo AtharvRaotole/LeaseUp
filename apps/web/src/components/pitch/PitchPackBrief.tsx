@@ -37,11 +37,7 @@ export function PitchPackBrief({ snapshot }: { snapshot: PitchPackSnapshot }) {
         {snapshot.prospects.map(({ prospect }, index) => {
           const brandName = displayBrandName(prospect.brand.entityId, prospect.brand.name);
           const fitLines = pitchBrandFitLines(prospect, snapshot);
-          const rankLabel = fitPercentileLabel(
-            prospect.brand.affinityRank,
-            totalScored,
-            prospect.brand.tasteFitBeyondChainPercentile
-          );
+          const rankLabel = fitPercentileLabel(prospect.brand.affinityRank, totalScored);
           return (
             <article
               key={prospect.brand.entityId}

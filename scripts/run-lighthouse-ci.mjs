@@ -48,6 +48,7 @@ try {
   await waitFor('http://127.0.0.1:8787/api/health');
   await waitFor('http://127.0.0.1:4173/');
   run('npx lhci autorun --config=lighthouserc.cjs');
+  run('node scripts/print-lhci-medians.mjs');
 } finally {
   worker.kill('SIGTERM');
   preview.kill('SIGTERM');

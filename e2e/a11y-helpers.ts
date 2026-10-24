@@ -35,6 +35,10 @@ export async function createPitchPath(apiBase: string): Promise<string> {
 export async function prepareReportPage(page: Page) {
   await waitForReportReady(page);
   await page.getByTestId('report-tour-dismiss').click({ timeout: 5000 }).catch(() => undefined);
+  await page
+    .getByTestId('proof-ranking-table')
+    .waitFor({ state: 'visible', timeout: 60_000 })
+    .catch(() => undefined);
 }
 
 export async function preparePitchPage(page: Page) {
