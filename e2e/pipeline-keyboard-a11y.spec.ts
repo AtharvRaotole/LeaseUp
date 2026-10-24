@@ -33,6 +33,7 @@ test.describe('Pipeline keyboard and screen reader', () => {
     await statusSelect.selectOption('sent_by_me');
 
     const moveButton = page.getByRole('button', { name: 'Set status to Replied' });
+    await expect(moveButton).toBeEnabled();
     await moveButton.focus();
     await expect(moveButton).toBeFocused();
     await page.keyboard.press('Enter');

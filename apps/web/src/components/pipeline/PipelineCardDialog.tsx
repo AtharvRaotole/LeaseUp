@@ -113,7 +113,7 @@ export function PipelineCardDialog({
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
             <div className="flex flex-wrap gap-2 text-sm">
               <span className="text-ink-3">Status</span>
-              <span className="font-medium text-ink">{prospectStatusLabel(card.prospectStatus)}</span>
+              <span className="font-medium text-ink">{prospectStatusLabel(prospectStatus)}</span>
               <span className="text-ink-3">·</span>
               <span className="text-ink-3">Rank #{card.affinityRank}</span>
               <span className="text-ink-3">·</span>
@@ -127,8 +127,8 @@ export function PipelineCardDialog({
                     key={col.id}
                     type="button"
                     size="sm"
-                    variant={card.prospectStatus === col.id ? 'primary' : 'secondary'}
-                    disabled={busy || card.prospectStatus === col.id}
+                    variant={prospectStatus === col.id ? 'primary' : 'secondary'}
+                    disabled={busy || prospectStatus === col.id}
                     onClick={() => {
                       setProspectStatus(col.id);
                       void moveTo(col.id);
