@@ -6,7 +6,7 @@
 
 **On the live landing today:** the same headline appears above a short helper line from the app: "Enter an address to see which brands local shoppers want nearby, then check real store locations before you pitch." (`LANDING_PLAIN_SUMMARY` in `apps/web/src/lib/broker-copy.ts`).
 
-**Production reference:** Cloudflare Pages at integration head **`9873456`**. **Mobile Lighthouse (GitHub Actions LHCI only):** median of **3** mobile runs on `ubuntu-latest` in Actions run [**40074283024**](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40074283024): landing performance **93**; Wicker report performance **89**, accessibility **96**. Do not cite local preview Lighthouse scores in Devpost copy; details in `docs/qa/a11y-perf.md`.
+**Production reference:** Cloudflare Pages tracks branch **`cursor/leaseup-v1-c429`** (integration). The current integration head short SHA is in `docs/devpost/integration-head.txt` (CI verifies it is a commit on that branch; see `scripts/check-submission-doc.mjs`). Do not paste stale deploy SHAs in Devpost copy. **Mobile Lighthouse (GitHub Actions LHCI only):** median of **3** mobile runs on `ubuntu-latest` in Actions run [**40074283024**](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40074283024): landing performance **93**; Wicker report performance **89**, accessibility **96** (`docs/qa/a11y-perf.md`, `LHCI_MEDIANS` in the job log). Do not cite local preview Lighthouse scores in Devpost copy.
 
 Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` (40 US addresses, live Qloo API; metrics refreshed Oct 24, 2026 per PR #103).
 
@@ -14,7 +14,7 @@ Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-
 
 **Pitch absence radius (live product):** When building the pitch list, dense areas use an adaptive absence check with at least a **3 km** floor (for example Wicker at 10 km search uses **3 km** for "already nearby") so brokers do not pitch chains with a store a short drive away (`prospectAbsenceRadiusKm`, `data/qloo-eval-40/ADAPTIVE_RADIUS_TRADE_AREA_AUDIT.md`). The report shows a plain funnel line (`report-prospect-funnel`): brands scored, how many already have a store within that km, and how many fit taste with none (`prospect-funnel-copy.ts`).
 
-**Where Qloo lift shows up (do not oversell raw affinity):** Raw Qloo order does **not** beat national chain size on mean P@10 (**54%** vs **76%** on the 40-address panel; exact **0.538** vs **0.760**). The honest lift is from the **fitted logistic taste blend** (**83%** vs **76%**; exact **0.825** vs **0.760**, **+6.5 pp**) and from **ordering within a chain-size tier** (for example mid-size **P@5 0.53** vs **0.23** in the 439 to 864 store tier). Same-size tier AUC **0.664** [0.642, 0.687] is the pre-registered control-for-size test.
+**Where Qloo lift shows up (do not oversell raw affinity):** Raw Qloo order does **not** beat national chain size on mean P@10 (**54%** vs **76%** on the 40-address panel; exact **0.5375** vs **0.760** in `packages/fixtures/src/eval/live-qloo-lift/aggregates.json`). The honest lift is from the **fitted logistic taste blend** (**83%** vs **76%**; exact **0.825** vs **0.760**, **+6.5 pp** in the same file) and from **ordering within a chain-size tier** (for example mid-size **P@5 0.53** vs **0.23** in the 439 to 864 store tier per `data/qloo-eval-40/QLOO_LIFT_EVAL.md`). Same-size tier AUC **0.664** [0.642, 0.687] is the pre-registered control-for-size test (`aggregates.json`, `sameSizeAuc`).
 
 **Store verification honesty (PR #89 false-positive audit):** We removed all **4** known false positives across **13** test sites in that audit. We never claim "zero false positives": stores missing from **both** ATP and OSM cannot be detected, and OSM snapshot coverage applies to only **25** of **227** tracked chains on demo chips. Analyze also runs an **OSM `brand:wikidata` false-absence cross-check** (snapshot tiles plus demo Overpass recordings) so we do not label a top prospect as verified missing when wikidata says a store is in radius (`apps/worker/src/lib/osm-wikidata-absence-crosscheck.ts`, `data/qloo-eval-40/FALSE_ABSENCE_AUDIT.md`, `apps/worker/src/__tests__/false-absence-sweep.test.ts`).
 
@@ -26,7 +26,7 @@ Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-
 
 ### Technological Implementation
 
-LeaseUp is a real split stack: a React site on Cloudflare Pages talks to a Hono worker that batches live Qloo `/v2/insights` brand calls (45 IDs per request, 227 tracked chains), merges them with a fitted logistic taste blend (default pitch order), and checks open store footprints from All The Places, OSM snapshot tiles, and the wikidata false-absence cross-check before a broker pitches. Dense trade areas apply a **3 km** absence-radius floor when filtering prospects (`prospectAbsenceRadiusKm`). If Qloo returns errors in live mode, analysis **falls back to chain-size ranking** with a visible banner (`TasteUnavailableBanner`, `qloo-chain-fallback.ts`). Pipeline cards persist **prospect status**, **notes**, **follow-up reminders**, and **evidence** (reasons + links back to the report and watchlist). We preregistered a **40-address** live API study, refreshed ATP/OSM ground truth after the OSM tile retile (PR #103), and committed the headline metrics in the repo. Raw Qloo order reached **P@10 0.538** (54%) on that panel; national chain size reached **0.760** (76%); our shipped blend reached **0.825** (83%, **+6.5** percentage points vs chain, 95% CI **3.3 to 9.3**). Among similar-size chains, Qloo separated present vs absent about two thirds of the time (**same-size tier AUC 0.664**, 95% CI **0.642 to 0.687**). We do not use Qloo heatmap to rank the pitch list.
+LeaseUp is a real split stack: a React site on Cloudflare Pages talks to a Hono worker that batches live Qloo `/v2/insights` brand calls (45 IDs per request, 227 tracked chains), merges them with a fitted logistic taste blend (default pitch order), and checks open store footprints from All The Places, OSM snapshot tiles, and the wikidata false-absence cross-check before a broker pitches. Dense trade areas apply a **3 km** absence-radius floor when filtering prospects (`prospectAbsenceRadiusKm`). If Qloo returns errors in live mode, analysis **falls back to chain-size ranking** with a visible banner (`TasteUnavailableBanner`, `qloo-chain-fallback.ts`). Pipeline cards persist **prospect status**, **notes**, **follow-up reminders**, and **evidence** (reasons + links back to the report and watchlist). We preregistered a **40-address** live API study, refreshed ATP/OSM ground truth after the OSM tile retile (PR #103), and committed the headline metrics in the repo. Raw Qloo order reached **P@10 0.5375** (54%) on that panel (`aggregates.json`); national chain size reached **0.760** (76%); our shipped blend reached **0.825** (83%, **+6.5** percentage points vs chain, 95% CI **3.3 to 9.3**). Among similar-size chains, Qloo separated present vs absent about two thirds of the time (**same-size tier AUC 0.664**, 95% CI **0.642 to 0.687**). We do not use Qloo heatmap to rank the pitch list.
 
 ### Design
 
@@ -114,7 +114,7 @@ Eval numbers below are only from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `pack
 
 | Claim | Value | Where committed |
 | --- | --- | --- |
-| Raw Qloo mean P@10 (adaptive radius) | 0.538 (report as 54%) | `packages/fixtures/src/eval/live-qloo-lift/aggregates.json`, `data/qloo-eval-40/QLOO_LIFT_EVAL.md` |
+| Raw Qloo mean P@10 (adaptive radius) | 0.5375 (report as 54%) | `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` (`rawQlooPrecisionAt10`); `data/qloo-eval-40/QLOO_LIFT_EVAL.md` rounds to 0.538 in prose tables |
 | Chain size mean P@10 | 0.760 (report as 76%) | same |
 | Logistic blend mean P@10 vs chain | 0.825 vs 0.760 (83% vs 76%; +6.5 pp, 95% CI 3.3 to 9.3) | same |
 | Same-size tier AUC | 0.664 [0.642, 0.687] | same |
@@ -128,7 +128,7 @@ Eval numbers below are only from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `pack
 | OSM snapshot chain coverage on demo chips | 25 of 227 | `packages/fixtures/src/eval/cohort-eval-display.ts` |
 | Mobile Lighthouse medians (3 runs) | landing perf 93; report perf 89; report a11y 96 | `docs/qa/a11y-perf.md` (Actions run **40074283024**, `LHCI_MEDIANS`) |
 | Verified brand real-estate URLs | 13 | `packages/fixtures/src/brand-real-estate.json` (`status: verified`, checked by `scripts/check-brand-real-estate-urls.mjs`) |
-| Production integration reference SHA | `9873456` | commit message / deploy tag in this doc header (not a runtime metric) |
+| Production integration head (short SHA) | `docs/devpost/integration-head.txt` | Must be a commit on `cursor/leaseup-v1-c429`; checked by `scripts/check-submission-doc.mjs` |
 
 ---
 
@@ -140,7 +140,7 @@ Brokers and landlords lose time pitching chains that already operate inside the 
 
 ## What it does
 
-LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped live at **`9873456`**:
+LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped on production from integration branch **`cursor/leaseup-v1-c429`** (head in `docs/devpost/integration-head.txt`):
 
 ### Landing redesign
 
@@ -207,7 +207,7 @@ LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped l
 
 ### Still in the flow
 
-- Geocode confirm when needed; ranked list uses the fitted logistic taste blend when Qloo is available; store checks via All The Places (227 tracked chains), OSM snapshot tiles, wikidata false-absence cross-check, and adaptive absence radius (3 km floor in dense areas) on demo chips; Qloo proof under **How we know** cites **54% / 76% / 83%** mean top-10 presence (raw Qloo / chain / blend; exact **0.538 / 0.760 / 0.825**) per `data/qloo-eval-40/QLOO_LIFT_EVAL.md`; optional **OutreachSheet** draft (broker clicks, never auto-sent).
+- Geocode confirm when needed; ranked list uses the fitted logistic taste blend when Qloo is available; store checks via All The Places (227 tracked chains), OSM snapshot tiles, wikidata false-absence cross-check, and adaptive absence radius (3 km floor in dense areas) on demo chips; Qloo proof under **How we know** cites **54% / 76% / 83%** mean top-10 presence (raw Qloo / chain / blend; exact **0.5375 / 0.760 / 0.825**) per `packages/fixtures/src/eval/live-qloo-lift/aggregates.json`; optional **OutreachSheet** draft (broker clicks, never auto-sent).
 
 Demo chips use recorded Qloo JSON so judge demos stay fast.
 
@@ -237,7 +237,7 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 **Demo mode:** recorded brand insights and shopper tag fixtures for Wicker, Boulder, and Sevierville.
 
-**Evaluation honesty (broker read, then exact):** Across 40 US addresses, ranking by raw Qloo affinity put about **5** brands in the top 10 that already had a store in the trade area on average (**P@10 0.538**, **54%**). Sorting by national chain size put about **8** of those top 10 slots on brands already there (**P@10 0.760**, **76%**). The legacy 0.75/0.25 blend averaged about **6** (**P@10 0.59**). The fitted logistic taste blend reached **82.5%** mean top-10 presence (**83%** rounded), better than size alone (**P@10 0.825**, **+6.5** percentage points vs chain, 95% CI **3.3 to 9.3** pp). Among brands of similar chain size, Qloo's score separated present vs not present about two thirds of the time (**same-size tier AUC 0.664**, 95% CI **0.642 to 0.687**). Ground truth and aggregates were refreshed Oct 24, 2026 after the OSM snapshot retile (PR #103); Qloo insight JSON is unchanged.
+**Evaluation honesty (broker read, then exact):** Across 40 US addresses, ranking by raw Qloo affinity put about **5** brands in the top 10 that already had a store in the trade area on average (**P@10 0.5375**, **54%** from `aggregates.json`). Sorting by national chain size put about **8** of those top 10 slots on brands already there (**P@10 0.760**, **76%**). The legacy 0.75/0.25 blend averaged about **6** (**P@10 0.59**). The fitted logistic taste blend reached **82.5%** mean top-10 presence (**83%** rounded), better than size alone (**P@10 0.825**, **+6.5** percentage points vs chain, 95% CI **3.3 to 9.3** pp from `aggregates.json`). Among brands of similar chain size, Qloo's score separated present vs not present about two thirds of the time (**same-size tier AUC 0.664**, 95% CI **0.642 to 0.687**). Ground truth and aggregates were refreshed Oct 24, 2026 after the OSM snapshot retile (PR #103); Qloo insight JSON is unchanged.
 
 ---
 
@@ -252,10 +252,10 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 ## Accomplishments
 
-- Live at **`ecf55c0`**: compact summary with prospect funnel, search vs absence radius explainer, default **fitted taste blend** with **Compare ranking** toggle (**83%** vs **76%** on the 40-address eval), non-blocking tour, stable **`/pitch/demo-boulder-ulta`**, OSM wikidata false-absence cross-check, **`brands-to-pitch`**, pipeline evidence loop, watchlist hardening (#107), and **Qloo-down fallback**.
+- Production on integration branch **`cursor/leaseup-v1-c429`**: compact summary with prospect funnel, search vs absence radius explainer, default **fitted taste blend** with **Compare ranking** toggle (**83%** vs **76%** on the 40-address eval), non-blocking tour, stable **`/pitch/demo-boulder-ulta`**, OSM wikidata false-absence cross-check, **`brands-to-pitch`**, pipeline evidence loop, watchlist hardening (#107), and **Qloo-down fallback**.
 - Trade area shopper tags; brand reach lines; vacancy cost on report, share dialog, and pitch snapshot; owner update share links.
 - Plain-language broker pass + **`/methodology/qloo`** explainer; methodology shows exact cohort percents (82.5% vs 76%, +6.5 pp); mobile Lighthouse landing perf **93** / report perf **89** / report a11y **96** (GitHub Actions LHCI medians, run **40074283024**).
-- Preregistered **40-address** live Qloo evaluation (refreshed Oct 24, 2026): mean top-10 presence **54% / 76% / 83%** (raw Qloo / chain / blend; exact **0.538 / 0.760 / 0.825**) per ATP/OSM; same-size tier AUC **0.664**; mid-size tier **P@5 0.53 vs 0.23**.
+- Preregistered **40-address** live Qloo evaluation (refreshed Oct 24, 2026): mean top-10 presence **54% / 76% / 83%** (raw Qloo / chain / blend; exact **0.5375 / 0.760 / 0.825** in `aggregates.json`) per ATP/OSM; same-size tier AUC **0.664**; mid-size tier **P@5 0.53 vs 0.23**.
 
 ---
 
