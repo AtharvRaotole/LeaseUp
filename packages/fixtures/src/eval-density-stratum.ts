@@ -23,6 +23,23 @@ export function adaptiveRadiusKmForStratum(
   return Math.min(searchRadiusKm, RADIUS_KM_BY_STRATUM[stratum] ?? 5);
 }
 
+/** Walkable trade-area floor for pitching: do not call a chain absent if it has a store within 3 km. */
+export const PROSPECT_TRADE_AREA_FLOOR_KM = 3;
+
+/**
+ * Radius for "already serves this site" when building the pitch list.
+ * Uses adaptive eval km, but never below min(3 km, search radius) so dense sites
+ * do not pitch chains with a store a short drive away.
+ */
+export function prospectAbsenceRadiusKm(
+  stratum: EvalDensityStratum,
+  searchRadiusKm: number
+): number {
+  const adaptive = adaptiveRadiusKmForStratum(stratum, searchRadiusKm);
+  const floorKm = Math.min(PROSPECT_TRADE_AREA_FLOOR_KM, searchRadiusKm);
+  return Math.max(adaptive, floorKm);
+}
+
 /** Demo chips mapped to live-eval strata (Wicker = dense_urban per preregistration). */
 export function demoFixtureStratum(fixtureId: DemoFixtureId): EvalDensityStratum {
   if (fixtureId === 'wicker' || fixtureId === 'boulder') return 'dense_urban';

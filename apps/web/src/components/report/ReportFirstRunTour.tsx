@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { computeTourHintPlacement } from './tour-hint-placement';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { Button } from '../ui/Button';
@@ -29,6 +30,8 @@ const STEPS = [
     placement: 'default',
   },
 ] as const;
+
+type Phase = 'hidden' | 'hint' | 'steps';
 
 type PopoverLayout =
   | { mode: 'sheet' }
@@ -98,41 +101,92 @@ function computeLayout(stepIndex: number): PopoverLayout | null {
   return { mode: 'floating', top, left, width, arrow: 'top' };
 }
 
+function readTourDone(): boolean {
+  try {
+    return localStorage.getItem(REPORT_TOUR_STORAGE_KEY) === 'done';
+  } catch {
+    return true;
+  }
+}
+
+function persistTourDone() {
+  try {
+    localStorage.setItem(REPORT_TOUR_STORAGE_KEY, 'done');
+  } catch {
+    /* private mode */
+  }
+}
+
 export function ReportFirstRunTour({ ready }: { ready: boolean }) {
+  const [phase, setPhase] = useState<Phase>('hidden');
   const [step, setStep] = useState(0);
-  const [visible, setVisible] = useState(false);
   const [layout, setLayout] = useState<PopoverLayout | null>(null);
+  const hintRef = useRef<HTMLDivElement>(null);
+  const [hintPlacement, setHintPlacement] = useState<{ left: number; top: number; width: number } | null>(
+    null
+  );
 
   useEffect(() => {
     if (!ready) return;
-    try {
-      if (localStorage.getItem(REPORT_TOUR_STORAGE_KEY) === 'done') return;
-    } catch {
-      return;
-    }
-    setVisible(true);
+    if (readTourDone()) return;
+    setPhase('hint');
   }, [ready]);
 
-  const dismiss = useCallback(() => {
-    try {
-      localStorage.setItem(REPORT_TOUR_STORAGE_KEY, 'done');
-    } catch {
-      /* private mode */
-    }
-    setVisible(false);
+  const finish = useCallback(() => {
+    persistTourDone();
+    setPhase('hidden');
     highlightTarget(undefined);
   }, []);
 
-  useOnEscape(dismiss, visible);
+  const startSteps = useCallback(() => {
+    setStep(0);
+    setPhase('steps');
+  }, []);
 
-  const placePopover = () => {
+  useOnEscape(() => {
+    if (phase === 'steps') finish();
+    else if (phase === 'hint') finish();
+  }, phase !== 'hidden');
+
+  const placePopover = useCallback(() => {
     const current = STEPS[step] ?? STEPS[0];
     setLayout(computeLayout(step));
     highlightTarget(current.highlightTestId);
-  };
+  }, [step]);
+
+  const placeHint = useCallback(() => {
+    const el = hintRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const width = rect.width > 0 ? rect.width : Math.min(448, window.innerWidth - 32);
+    const height = rect.height > 0 ? rect.height : 160;
+    setHintPlacement(computeTourHintPlacement(width, height));
+  }, []);
 
   useLayoutEffect(() => {
-    if (!visible) {
+    if (phase !== 'hint') {
+      setHintPlacement(null);
+      return;
+    }
+    placeHint();
+    const onLayout = () => placeHint();
+    window.addEventListener('resize', onLayout);
+    window.addEventListener('scroll', onLayout, true);
+    const el = hintRef.current;
+    const ro =
+      el && typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(() => placeHint())
+        : null;
+    ro?.observe(el!);
+    return () => {
+      window.removeEventListener('resize', onLayout);
+      window.removeEventListener('scroll', onLayout, true);
+      ro?.disconnect();
+    };
+  }, [phase, placeHint]);
+
+  useLayoutEffect(() => {
+    if (phase !== 'steps') {
       highlightTarget(undefined);
       setLayout(null);
       return;
@@ -146,9 +200,67 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
       window.removeEventListener('scroll', onLayout, true);
       highlightTarget(undefined);
     };
-  }, [step, visible]);
+  }, [phase, step, placePopover]);
 
-  if (!visible || !layout) return null;
+  if (phase === 'hint') {
+    const hintStyle = hintPlacement
+      ? { left: hintPlacement.left, top: hintPlacement.top, width: hintPlacement.width }
+      : { left: 16, top: 140, width: Math.min(448, window.innerWidth - 32) };
+
+    return createPortal(
+      <div
+        className="no-print pointer-events-none fixed z-[60]"
+        data-testid="report-first-run-tour-hint"
+        style={hintStyle}
+      >
+        <div
+          ref={hintRef}
+          className="pointer-events-auto w-full max-w-md rounded-card border border-border bg-surface p-4 shadow-pop sm:max-w-sm"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="font-medium text-body text-ink">Quick tour available</p>
+              <p className="mt-1 text-small text-ink-2">
+                See where your pitch list, brand details, and pipeline live. Your report stays fully visible.
+              </p>
+            </div>
+            <button
+              type="button"
+              className="shrink-0 rounded-control p-1 text-ink-3 transition-colors duration-150 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              onClick={finish}
+              aria-label="Dismiss tour hint"
+              data-testid="report-tour-hint-dismiss"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="primary"
+              onClick={startSteps}
+              data-testid="report-tour-take"
+            >
+              Take the tour
+            </Button>
+            <button
+              type="button"
+              className="rounded-control text-small text-ink-3 underline-offset-2 transition-colors duration-150 hover:text-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              onClick={finish}
+            >
+              Not now
+            </button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
+  }
+
+  if (phase !== 'steps' || !layout) return null;
 
   const current = STEPS[step] ?? STEPS[0];
   const isLast = step >= STEPS.length - 1;
@@ -194,7 +306,7 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
         <button
           type="button"
           className="shrink-0 rounded-control p-1 text-ink-3 transition-colors duration-150 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-          onClick={dismiss}
+          onClick={finish}
           aria-label="Dismiss tour"
           data-testid="report-tour-dismiss"
         >
@@ -212,14 +324,14 @@ export function ReportFirstRunTour({ ready }: { ready: boolean }) {
             Next
           </Button>
         ) : (
-          <Button type="button" size="sm" variant="primary" onClick={dismiss} data-testid="report-tour-finish">
+          <Button type="button" size="sm" variant="primary" onClick={finish} data-testid="report-tour-finish">
             Got it
           </Button>
         )}
         <button
           type="button"
           className="rounded-control text-small text-ink-3 underline-offset-2 transition-colors duration-150 hover:text-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-          onClick={dismiss}
+          onClick={finish}
         >
           Skip tour
         </button>

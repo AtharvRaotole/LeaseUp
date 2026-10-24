@@ -8,9 +8,11 @@ import type {
   AnalysisResponse,
   Location,
   BacktestResult,
+  ProspectFunnel,
   ProspectPack,
 } from '@leaseup/contracts';
 import { affinityThresholdAtPercentile, isProspectCandidate } from '../lib/prospect-filter';
+import { buildProspectFunnel } from '../lib/prospect-funnel';
 import { formatFitsStorefront, getStorefrontFormatSpec } from '../lib/storefront-format';
 import {
   wickerparkFixture,
@@ -29,6 +31,7 @@ import {
   demoFixtureDensity,
   demoFixtureStratum,
   densityToDefaultStratum,
+  prospectAbsenceRadiusKm,
   demoAnalyzeBacktests,
   adaptiveEvalRadiusKm,
   expectedRandomPresentInTop10,
@@ -40,8 +43,10 @@ import { createStoreCatalog, type StoreCatalog } from './store-catalog';
 import { displayBrandName } from '../lib/brand-display';
 import { brandCategoryLabel } from '../lib/brand-category';
 
-/** Live Qloo recording instant (Oct 22, 2026 ~11:36 PM US Eastern). */
-const DEMO_DATA_RECORDED_AT = '2026-10-23T03:36:00.000Z';
+import { OSM_SNAPSHOT_RECORDED_AT } from '../data/osm-snapshot-meta';
+
+/** Demo taste + store bundle timestamp (aligned with OSM snapshot meta). */
+const DEMO_DATA_RECORDED_AT = OSM_SNAPSHOT_RECORDED_AT;
 import { toOverpassSearchBrand } from '../lib/osm-brand-hints';
 import { OSM_WIKIDATA_BY_ENTITY } from '../data/osm-wikidata-map';
 import { overpassBrandMatchesSearch } from '../lib/osm-brand-match';
@@ -254,6 +259,7 @@ export class AnalysisService {
       const backtestBaseline = backtestTriple.baseline as BacktestResult;
 
       let formatFilteredCount = 0;
+      let prospectFunnel: ProspectFunnel | undefined;
       const prospects = await runStep(
         emit,
         'prospects',
@@ -268,10 +274,11 @@ export class AnalysisService {
             tasteUnavailable
           );
           formatFilteredCount = generated.formatFilteredCount;
+          prospectFunnel = generated.funnel;
           const packs = generated.packs;
           return {
             summary: `${packs.length} high-affinity brands absent in radius`,
-            detail: { count: packs.length, formatFilteredCount },
+            detail: { count: packs.length, formatFilteredCount, funnel: prospectFunnel },
             result: packs,
           };
         }
@@ -418,6 +425,7 @@ export class AnalysisService {
         tradeAreaShoppers,
         tasteDataStatus: tasteUnavailable ? 'unavailable' : 'ok',
         rankingNotice: tasteUnavailable ? TASTE_UNAVAILABLE_RANKING_NOTICE : undefined,
+        prospectFunnel,
       };
 
       await this.persistRun(runId, location, response, 'completed');
@@ -499,12 +507,22 @@ export class AnalysisService {
     _runId: string,
     storefrontSqFt?: number,
     tasteUnavailable = false
-  ): Promise<{ packs: ProspectPack[]; formatFilteredCount: number }> {
+  ): Promise<{ packs: ProspectPack[]; formatFilteredCount: number; funnel: ProspectFunnel }> {
     const sqFt = storefrontSqFt ?? 2_500;
     let formatFilteredCount = 0;
     const prospectPacks: ProspectPack[] = [];
     const fixtureId = matchDemoFixtureId(location.address);
     const siteDensity = fixtureId ? demoFixtureDensity(fixtureId) : 'urban';
+    const siteStratum = fixtureId ? demoFixtureStratum(fixtureId) : densityToDefaultStratum(siteDensity);
+    const absenceRadiusKm = prospectAbsenceRadiusKm(siteStratum, radius);
+    const presence = new NearbyPresenceCache(this.catalog, location);
+    const catalogBrandIds = new Set(this.catalog.getBrandIds());
+    let alreadyNearbyCount = 0;
+    for (const insight of insights) {
+      if (!catalogBrandIds.has(insight.entity_id)) continue;
+      const nearby = await presence.storesNearby(insight.entity_id, absenceRadiusKm);
+      if (nearby.length > 0) alreadyNearbyCount += 1;
+    }
     const blendSite = fixtureId
       ? DEMO_LOGISTIC_SITE_CONTEXT[fixtureId]
       : defaultLogisticSiteContext(siteDensity, radius);
@@ -529,12 +547,7 @@ export class AnalysisService {
     const eligible: Eligible[] = [];
 
     for (const candidate of candidates) {
-      const nearbyStores = await this.catalog.findStoresNearby(
-        candidate.entity_id,
-        location.latitude,
-        location.longitude,
-        radius
-      );
+      const nearbyStores = await presence.storesNearby(candidate.entity_id, absenceRadiusKm);
 
       if (nearbyStores.length > 0) {
         continue;
@@ -575,7 +588,7 @@ export class AnalysisService {
         nationalCount,
         rankedCount,
         tasteUnavailable,
-        radius
+        absenceRadiusKm
       );
 
       let coverageNote = this.catalog.getCoverageNote(candidate.entity_id, nationalCount);
@@ -633,7 +646,17 @@ export class AnalysisService {
       });
     }
 
-    return { packs: prospectPacks, formatFilteredCount };
+    const funnel = buildProspectFunnel({
+      brandsScored: rankedCount,
+      searchRadiusKm: radius,
+      absenceRadiusKm,
+      alreadyNearbyCount,
+      strongFitAbsentCount: eligible.length,
+      pitchedCount: prospectPacks.length,
+      prospects: prospectPacks,
+    });
+
+    return { packs: prospectPacks, formatFilteredCount, funnel };
   }
 
   private async verifyFromOsmSnapshot(

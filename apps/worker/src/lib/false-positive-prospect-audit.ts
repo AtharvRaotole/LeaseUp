@@ -419,7 +419,7 @@ export function buildFalsePositiveAuditMarkdown(params: {
     '',
     `Generated: ${params.generatedAt}`,
     '',
-    'Offline audit of **top-10 “who’s missing” prospects** per site. A false positive is a prospect shown as absent while **any** repo store source (ATP expanded, worker geotiles, OSM snapshot tiles, supplements, or eval `ground_truth.json` counts) has a location within the analyze radius.',
+    'Offline audit of **top-10 “who’s missing” prospects** per site. A false positive is a prospect pitched while rankings still mark `presentInRadius` at the **prospect absence radius** (max of adaptive eval km and min(3 km, search radius)). See also `ADAPTIVE_RADIUS_TRADE_AREA_AUDIT.md` for search-radius and 3 km ATP/OSM checks.',
     '',
     '## Summary counts',
     '',

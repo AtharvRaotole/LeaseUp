@@ -1,19 +1,9 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { landingWickerReportPath } from './LandingReportPreview';
 import { LandingHeroFixtureFrame } from './LandingHeroFixtureFrame';
 import { LANDING_PUBLIC_HOST } from '../../lib/landing-public-host';
-import heroLightWebp from '../../assets/landing-hero/hero-wicker-light.webp';
-import heroDarkWebp from '../../assets/landing-hero/hero-wicker-dark.webp';
-
-/** CSS display width on desktop; raster assets are 2× for crisp type. */
-const HERO_DISPLAY_WIDTH = 600;
-const HERO_DISPLAY_HEIGHT = 299;
-const HERO_ASPECT = `${HERO_DISPLAY_WIDTH} / ${HERO_DISPLAY_HEIGHT}`;
 
 export function LandingHeroProductPreview() {
-  const [useFixtureFallback, setUseFixtureFallback] = useState(false);
-
   return (
     <div
       className="mx-auto w-full min-w-0 max-w-[600px] overflow-hidden lg:mx-0 xl:max-w-[640px]"
@@ -38,34 +28,7 @@ export function LandingHeroProductPreview() {
               {landingWickerReportPath}
             </div>
           </div>
-          {useFixtureFallback ? (
-            <LandingHeroFixtureFrame />
-          ) : (
-            <div className="relative w-full bg-bg" style={{ aspectRatio: HERO_ASPECT }}>
-              <img
-                data-testid="landing-hero-preview-img-light"
-                src={heroLightWebp}
-                alt=""
-                width={HERO_DISPLAY_WIDTH}
-                height={HERO_DISPLAY_HEIGHT}
-                loading="eager"
-                decoding="async"
-                className="absolute inset-0 block h-full w-full object-cover object-top dark:hidden"
-                onError={() => setUseFixtureFallback(true)}
-              />
-              <img
-                data-testid="landing-hero-preview-img-dark"
-                src={heroDarkWebp}
-                alt=""
-                width={HERO_DISPLAY_WIDTH}
-                height={HERO_DISPLAY_HEIGHT}
-                loading="eager"
-                decoding="async"
-                className="absolute inset-0 hidden h-full w-full object-cover object-top dark:block"
-                onError={() => setUseFixtureFallback(true)}
-              />
-            </div>
-          )}
+          <LandingHeroFixtureFrame />
         </div>
         <p className="mt-3 text-center text-meta text-ink-2 lg:text-left">
           <span className="text-ink-3">Sample report: Wicker Park, Chicago</span>

@@ -1,7 +1,22 @@
 import type { AnalysisResponse, PitchPackSnapshot, ProspectPack } from '@leaseup/contracts';
+import { isDemoPitchId } from '@leaseup/contracts';
 import { displayBrandName } from './brand-display';
 import { formatUserFacingDate } from './format-date';
 import { whyBrandBulletLines } from './why-brand-lines';
+import { absenceRadiusKm, pitchPackAbsenceRadiusKm } from './absence-radius';
+
+export function pitchBriefKindLabel(snapshot: PitchPackSnapshot): string {
+  return isDemoPitchId(snapshot.id) ? 'Sample leasing brief' : 'Leasing brief';
+}
+
+export function pitchDateMetaLine(snapshot: PitchPackSnapshot): string {
+  const radius = `${snapshot.radiusKm} km trade area`;
+  if (isDemoPitchId(snapshot.id)) {
+    const snapDate = formatUserFacingDate(snapshot.analysisTimestamp);
+    return `Sample pitch from data snapshot of ${snapDate} · ${radius}`;
+  }
+  return `Prepared ${formatUserFacingDate(snapshot.createdAt)} · ${radius}`;
+}
 
 export function pitchPropertyHeadline(snapshot: PitchPackSnapshot): string {
   return (
@@ -30,10 +45,20 @@ export function pitchBrandFitLines(
   snapshot: PitchPackSnapshot
 ): string[] {
   const total = snapshot.rankingsTotal ?? prospect.brand.affinityRank;
+  const absenceKm = pitchPackAbsenceRadiusKm(snapshot);
   const stubResults = {
     rankings: Array.from({ length: total }, () => ({})),
     osmSnapshotLabel: snapshot.osmSnapshotLabel,
     osmSnapshotRecordedAt: snapshot.osmSnapshotRecordedAt,
+    prospectFunnel: {
+      brandsScored: total,
+      searchRadiusKm: snapshot.radiusKm,
+      absenceRadiusKm: absenceKm,
+      alreadyNearbyCount: 0,
+      strongFitAbsentCount: 0,
+      pitchedCount: snapshot.prospects.length,
+      verifiedCount: 0,
+    },
   } as AnalysisResponse;
   const lines = whyBrandBulletLines(prospect, stubResults, snapshot.radiusKm);
   for (const reason of prospect.reasons.slice(0, 3)) {
@@ -54,21 +79,42 @@ export function pitchExecutiveSummaryLines(snapshot: PitchPackSnapshot): string[
   const strongestLine =
     strongest.length > 0 ? `Strongest: ${strongest.join(', ')}.` : 'No prospects in this snapshot.';
   return [
-    `${count} brand${count === 1 ? '' : 's'} whose fans already shop here and have no store within ${snapshot.radiusKm} km.`,
+    `${count} brand${count === 1 ? '' : 's'} whose fans already shop here and have no store within ${pitchPackAbsenceRadiusKm(snapshot)} km.`,
     strongestLine,
   ];
 }
 
-export function pitchProspectFact(prospect: ProspectPack, radiusKm: number): string {
+export function pitchProspectFact(
+  prospect: ProspectPack,
+  searchRadiusKm: number,
+  results?: AnalysisResponse
+): string {
+  const absenceKm = results ? absenceRadiusKm(results, searchRadiusKm) : searchRadiusKm;
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   const km = prospect.nearestExistingStoreKm;
   if (km !== undefined) {
-    if (km > radiusKm) {
-      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (no store within ${radiusKm} km).`;
+    if (km > absenceKm) {
+      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (no store within ${absenceKm} km).`;
     }
     return `Nearest ${name} is ${km.toFixed(1)} km from this pin.`;
   }
-  return `No ${name} store within ${radiusKm} km of this pin in our store data.`;
+  return `No ${name} store within ${absenceKm} km of this pin in our store data.`;
+}
+
+export function pitchProspectFactFromSnapshot(
+  prospect: ProspectPack,
+  snapshot: PitchPackSnapshot
+): string {
+  const absenceKm = pitchPackAbsenceRadiusKm(snapshot);
+  const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
+  const km = prospect.nearestExistingStoreKm;
+  if (km !== undefined) {
+    if (km > absenceKm) {
+      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (no store within ${absenceKm} km).`;
+    }
+    return `Nearest ${name} is ${km.toFixed(1)} km from this pin.`;
+  }
+  return `No ${name} store within ${absenceKm} km of this pin in our store data.`;
 }
 
 /** Matches worker pitch why lines and other nearest-store distance copy. */

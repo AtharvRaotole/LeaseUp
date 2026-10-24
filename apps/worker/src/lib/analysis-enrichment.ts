@@ -40,7 +40,8 @@ function logisticSiteForBlend(
   return defaultLogisticSiteContext(blendDensity, searchRadiusKm);
 }
 
-function presenceRadiusKm(
+/** Store presence radius for rankings and prospect absence (dense areas use a smaller km). */
+export function presenceRadiusKm(
   densityOrStratum: EvalSiteDensity | EvalDensityStratum,
   searchRadiusKm: number
 ): number {

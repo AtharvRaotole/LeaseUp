@@ -53,13 +53,13 @@ export const DEMO_ADAPTIVE_PROOF_ROWS: Record<DemoFixtureId, AdaptiveEvalAddress
 export const DEMO_ADAPTIVE_PROOF_AGG: ResultsAdaptiveAgg = {
   n_sites: 40,
   p10_raw: 0.5375,
-  p10_chain: 0.755,
-  p10_blend: 0.8175,
-  p10_legacy_blend: 0.59,
-  same_size_auc: 0.6670294642091228,
-  same_size_auc_ci: [0.6461676947462455, 0.6885277968924622],
-  blend_lift_vs_chain_pp: 6.25,
-  blend_lift_vs_chain_ci: [2.75, 9.25],
+  p10_chain: 0.76,
+  p10_blend: 0.825,
+  p10_legacy_blend: 0.5900000000000001,
+  same_size_auc: 0.664183201507667,
+  same_size_auc_ci: [0.6418974526577219, 0.6873149130922253],
+  blend_lift_vs_chain_pp: 6.5,
+  blend_lift_vs_chain_ci: [3.2500000000000013, 9.256249999999971],
 };
 
 export function demoAdaptiveProofRow(fixtureId: DemoFixtureId): AdaptiveEvalAddressRow {

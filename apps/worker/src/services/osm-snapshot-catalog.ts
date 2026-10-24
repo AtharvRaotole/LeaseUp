@@ -2,7 +2,6 @@ import { coveringGeohash3 } from '../lib/geohash';
 import type { ResponseCache } from '../lib/response-cache';
 import {
   OSM_SNAPSHOT_BRAND_STATUS,
-  OSM_SNAPSHOT_DISPLAY_LABEL,
   OSM_SNAPSHOT_RECORDED_AT,
 } from '../data/osm-snapshot-meta';
 
@@ -15,8 +14,17 @@ type TilePayload = { gh: string; stores: Array<[number, number, number]> };
 
 export type OsmSnapshotBrandStatus = 'ok' | 'failed' | 'missing';
 
+function formatSnapshotDateUtc(iso: string): string {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(iso));
+}
+
 export function osmSnapshotDisplayLabel(): string {
-  return OSM_SNAPSHOT_DISPLAY_LABEL;
+  return `OpenStreetMap snapshot, ${formatSnapshotDateUtc(OSM_SNAPSHOT_RECORDED_AT)}`;
 }
 
 export function osmSnapshotRecordedAt(): string {

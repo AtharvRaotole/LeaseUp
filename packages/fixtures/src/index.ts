@@ -148,6 +148,8 @@ export {
 } from './landing-random-baseline.js';
 export {
   adaptiveRadiusKmForStratum,
+  prospectAbsenceRadiusKm,
+  PROSPECT_TRADE_AREA_FLOOR_KM,
   densityToDefaultStratum,
   demoFixtureStratum,
   type EvalDensityStratum,
@@ -174,3 +176,7 @@ export {
   type BrandReverseDemoFixture,
 } from './brand-reverse-chicago.js';
 export { buildWatchRunSnapshot, diffWatchSnapshots } from './watch-diff.js';
+export {
+  DEMO_PITCH_BOULDER_ULTA,
+  DEMO_PITCH_BOULDER_ULTA_ID,
+} from './demo-pitch-boulder-ulta.js';

@@ -26,7 +26,7 @@ describe('qlooProofBrokerBanner', () => {
     expect(copy.headline).toMatch(/7 of 10 using store count alone/);
     expect(copy.headline).not.toMatch(/AUC/);
     expect(copy.cohortLine).toMatch(/Across 40 US neighborhoods/);
-    expect(copy.cohortLine).toMatch(/82% vs 76%/);
+    expect(copy.cohortLine).toMatch(/83% vs 76%/);
   });
 });
 

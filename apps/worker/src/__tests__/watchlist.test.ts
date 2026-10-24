@@ -211,6 +211,18 @@ describe('WatchlistService', () => {
     expect(listB[0]?.address).toContain('Madison');
   });
 
+  it('does not recheck a watch owned by another workspace', async () => {
+    const service = new WatchlistService({ DB: db } as import('../index').Env);
+    const detail = await service.saveFromReport(
+      'ws-a',
+      '1574 N Milwaukee Ave, Chicago, IL 60622',
+      10,
+      minimalAnalysis(undefined)
+    );
+    const result = await service.recheck(detail.watchId, 'ws-b', minimalAnalysis(2));
+    expect(result).toBeNull();
+  });
+
   it('enforces recheck cooldown before analyze', async () => {
     const service = new WatchlistService({ DB: db } as import('../index').Env);
     const detail = await service.saveFromReport(
