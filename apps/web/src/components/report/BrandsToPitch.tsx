@@ -44,7 +44,9 @@ function PitchPill({
       title={tooltip}
       className={cn(
         'inline-flex min-h-[22px] max-w-full items-center gap-1 rounded-pill px-2 py-0.5 text-caption font-medium leading-snug sm:max-w-[10.5rem]',
-        tone === 'accent' ? 'bg-accent-soft text-accent' : 'border border-border bg-surface text-ink-2'
+        tone === 'accent'
+          ? 'bg-accent-soft text-accent-muted'
+          : 'border border-border bg-surface text-ink-2'
       )}
     >
       {spinner && (

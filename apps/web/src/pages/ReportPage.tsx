@@ -414,7 +414,7 @@ export function ReportPage() {
           <Suspense
             fallback={
               <div className="sticky top-16 z-20 border-b border-border bg-surface/90 px-4 py-3">
-                <p className="mx-auto max-w-[1280px] truncate text-sm text-ink-2">{request.address}</p>
+                <p className="mx-auto max-w-content truncate text-sm text-ink-2">{request.address}</p>
               </div>
             }
           >
@@ -434,18 +434,18 @@ export function ReportPage() {
           </Suspense>
         ) : (
           <div className="sticky top-16 z-20 border-b border-border bg-surface/90 px-4 py-3">
-            <p className="mx-auto max-w-[1280px] truncate text-sm text-ink-2">{request.address}</p>
+            <p className="mx-auto max-w-content truncate text-sm text-ink-2">{request.address}</p>
           </div>
         )
       ) : (
         <div className="sticky top-16 z-20 border-b border-border bg-surface/90 backdrop-blur-md px-4 py-3">
-          <p className="mx-auto max-w-[1280px] truncate text-sm text-ink-2">{request.address}</p>
+          <p className="mx-auto max-w-content truncate text-sm text-ink-2">{request.address}</p>
         </div>
       )}
 
       {results && (
         <div className="sticky top-[7.25rem] z-20 border-b border-border bg-bg/95 px-4 py-2 md:hidden">
-          <div className="mx-auto max-w-[1280px]">
+          <div className="mx-auto max-w-content">
             <SegmentedControl
               value={mobilePane}
               onChange={setMobilePane}
@@ -458,7 +458,7 @@ export function ReportPage() {
         </div>
       )}
 
-      <main id="main-content" className="mx-auto max-w-[1280px] px-4 py-6 outline-none md:px-6 md:py-8">
+      <main id="main-content" className="mx-auto max-w-content px-4 py-6 outline-none md:px-6 md:py-8">
         <div className="grid grid-cols-12 gap-6 xl:gap-8">
           <div
             className={`col-span-12 min-w-0 space-y-6 xl:col-span-7 ${

@@ -35,15 +35,15 @@ export function LandingProductVisual() {
             </div>
             <LandingReportPreview />
           </div>
-          <p className="mt-6 text-center text-sm text-ink-2">
-            Recorded Wicker Park demo: ranked pitch list and map from fixture data.{' '}
+          <div className="mt-6 text-center text-sm text-ink-2">
+            <p>Recorded Wicker Park demo: ranked pitch list and map from fixture data.</p>
             <Link
               to={landingWickerReportPath}
-              className="font-medium text-accent underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
+              className="mt-1 inline-flex min-h-11 items-center font-medium text-ink underline decoration-accent underline-offset-2 hover:decoration-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-control"
             >
               Open the live report
             </Link>
-          </p>
+          </div>
         </div>
       </LandingReveal>
     </section>
