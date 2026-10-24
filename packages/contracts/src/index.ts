@@ -557,6 +557,8 @@ export const ProspectingStepSchema = z.object({
   status: z.enum(['pending', 'running', 'complete', 'error']),
   durationMs: z.number().optional(),
   summary: z.string().optional(),
+  /** Planner decision note when agent planner adds one (optional). */
+  reason: z.string().optional(),
   detail: z.record(z.unknown()).optional(),
 });
 

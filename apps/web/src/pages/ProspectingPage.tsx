@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { TopBar } from '../components/layout/TopBar';
 import { Button } from '../components/ui/Button';
+import { AgentReceipt } from '../components/prospecting/AgentReceipt';
 import { ProspectingTimeline } from '../components/prospecting/ProspectingTimeline';
 import { useProspectingRun } from '../hooks/useProspectingRun';
 import { apiUrl } from '../lib/api';
@@ -74,6 +75,8 @@ export function ProspectingPage() {
             <ProspectingTimeline job={job} loading={loading} />
           </div>
         )}
+
+        {job?.status === 'complete' && <AgentReceipt job={job} />}
 
         {job?.pitchId && (
           <div className="mt-8 rounded-card border border-accent/30 bg-surface p-5">
