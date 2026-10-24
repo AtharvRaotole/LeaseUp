@@ -1,0 +1,240 @@
+{
+  "id": "demo-boulder-ulta",
+  "createdAt": "2026-10-24T00:00:00.000Z",
+  "address": "1300 Pearl St, Boulder, CO 80302",
+  "neighborhood": "Pearl Street",
+  "location": {
+    "address": "1300 Pearl St, Boulder, CO 80302",
+    "latitude": 40.0179234,
+    "longitude": -105.2805434,
+    "city": "Boulder",
+    "neighborhood": "Pearl Street",
+    "resolvedAddress": "Boulder, Colorado"
+  },
+  "radiusKm": 10,
+  "analysisTimestamp": "2026-10-23T03:36:00.000Z",
+  "runId": "demo-pitch-gen",
+  "mode": "demo",
+  "prospects": [
+    {
+      "prospect": {
+        "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+        "brand": {
+          "entityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+          "name": "Ulta",
+          "affinity": 0.9982782629542255,
+          "affinityRank": 26,
+          "nationalStoreCount": 1556,
+          "chainSizeTier": "mid",
+          "tasteFitBeyondChainPercentile": 92,
+          "nearbyStoreCount": 0,
+          "storefrontFormat": "streetfront",
+          "minStorefrontSqFt": 800,
+          "verified": "unverified (1 source)",
+          "verificationSources": [
+            "All The Places (CC0)"
+          ]
+        },
+        "tenantMixScore": {
+          "score": 0,
+          "coAffinityMean": 0,
+          "categoryFit": "Beauty",
+          "explanation": ""
+        },
+        "outreachDraft": "",
+        "reasons": [
+          "Ulta: LeaseUp rank #26 (top 12% of 224 brands) for Pearl Street; Qloo taste rank #18 of 224",
+          "No Ulta store within 10 km (ATP catalog)",
+          "Beauty: category gap vs. nearby tenants",
+          "Established chain with 1556 US locations"
+        ],
+        "nearestExistingStoreKm": 11.260094416028336,
+        "qlooSignals": [
+          "affinity rank 0.9982782629542255",
+          "tier taste fit (not raw affinity)"
+        ],
+        "brandReach": {
+          "status": "verified",
+          "url": "https://www.ulta.com/company/real-estate",
+          "source": "https://www.ulta.com/company/real-estate"
+        }
+      },
+      "whyLine": "No Ulta store within 10 km (ATP catalog)"
+    },
+    {
+      "prospect": {
+        "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+        "brand": {
+          "entityId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
+          "name": "TJ Maxx",
+          "affinity": 0.9923931806870298,
+          "affinityRank": 32,
+          "nationalStoreCount": 1281,
+          "chainSizeTier": "mid",
+          "tasteFitBeyondChainPercentile": 84,
+          "nearbyStoreCount": 0,
+          "storefrontFormat": "streetfront",
+          "minStorefrontSqFt": 800,
+          "verified": "unverified (1 source)",
+          "verificationSources": [
+            "All The Places (CC0)"
+          ]
+        },
+        "tenantMixScore": {
+          "score": 0,
+          "coAffinityMean": 0,
+          "categoryFit": "Retail",
+          "explanation": ""
+        },
+        "outreachDraft": "",
+        "reasons": [
+          "TJ Maxx: LeaseUp rank #32 (top 15% of 224 brands) for Pearl Street; Qloo taste rank #48 of 224",
+          "No TJ Maxx store within 10 km (ATP catalog)",
+          "Retail: category gap vs. nearby tenants",
+          "Established chain with 1281 US locations"
+        ],
+        "nearestExistingStoreKm": 12.231856022718784,
+        "qlooSignals": [
+          "affinity rank 0.9923931806870298",
+          "tier taste fit (not raw affinity)"
+        ],
+        "brandReach": {
+          "status": "not_yet_found",
+          "searchUrl": "https://www.google.com/search?q=TJ%20Maxx%20retail%20real%20estate%20site%20submission"
+        }
+      },
+      "whyLine": "No TJ Maxx store within 10 km (ATP catalog)"
+    },
+    {
+      "prospect": {
+        "brand": {
+          "entityId": "81EC4A41-53FB-47FD-995A-B8AE3EE90652",
+          "name": "Old Navy",
+          "affinity": 0.9927246988280045,
+          "affinityRank": 39,
+          "nationalStoreCount": 1133,
+          "chainSizeTier": "mid",
+          "tasteFitBeyondChainPercentile": 86,
+          "nearbyStoreCount": 0,
+          "storefrontFormat": "streetfront",
+          "minStorefrontSqFt": 800,
+          "verified": "unverified (1 source)",
+          "verificationSources": [
+            "All The Places (CC0)"
+          ]
+        },
+        "tenantMixScore": {
+          "score": 0,
+          "coAffinityMean": 0,
+          "categoryFit": "Apparel",
+          "explanation": ""
+        },
+        "outreachDraft": "",
+        "reasons": [
+          "Old Navy: LeaseUp rank #39 (top 18% of 224 brands) for Pearl Street; Qloo taste rank #46 of 224",
+          "No Old Navy store within 10 km (ATP catalog)",
+          "Apparel: category gap vs. nearby tenants",
+          "Established chain with 1133 US locations"
+        ],
+        "nearestExistingStoreKm": 15.65706957272003,
+        "qlooSignals": [
+          "affinity rank 0.9927246988280045",
+          "tier taste fit (not raw affinity)"
+        ],
+        "brandReach": {
+          "status": "not_yet_found",
+          "searchUrl": "https://www.google.com/search?q=Old%20Navy%20retail%20real%20estate%20site%20submission"
+        }
+      },
+      "whyLine": "No Old Navy store within 10 km (ATP catalog)"
+    },
+    {
+      "prospect": {
+        "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+        "brand": {
+          "entityId": "423EDCAF-1289-474E-9982-0CC39A5BAEFE",
+          "name": "Hobby Lobby",
+          "affinity": 0.9910272817149701,
+          "affinityRank": 42,
+          "nationalStoreCount": 1097,
+          "chainSizeTier": "mid",
+          "tasteFitBeyondChainPercentile": 81,
+          "nearbyStoreCount": 0,
+          "storefrontFormat": "streetfront",
+          "minStorefrontSqFt": 800,
+          "verified": "unverified (1 source)",
+          "verificationSources": [
+            "All The Places (CC0)"
+          ]
+        },
+        "tenantMixScore": {
+          "score": 0,
+          "coAffinityMean": 0,
+          "categoryFit": "Retail",
+          "explanation": ""
+        },
+        "outreachDraft": "",
+        "reasons": [
+          "Hobby Lobby: LeaseUp rank #42 (top 19% of 224 brands) for Pearl Street; Qloo taste rank #53 of 224",
+          "No Hobby Lobby store within 10 km (ATP catalog)",
+          "Retail: category gap vs. nearby tenants",
+          "Established chain with 1097 US locations"
+        ],
+        "nearestExistingStoreKm": 19.738223906209893,
+        "qlooSignals": [
+          "affinity rank 0.9910272817149701",
+          "tier taste fit (not raw affinity)"
+        ],
+        "brandReach": {
+          "status": "not_yet_found",
+          "searchUrl": "https://www.google.com/search?q=Hobby%20Lobby%20retail%20real%20estate%20site%20submission"
+        }
+      },
+      "whyLine": "No Hobby Lobby store within 10 km (ATP catalog)"
+    },
+    {
+      "prospect": {
+        "brand": {
+          "entityId": "7C4CC0B9-1C3C-4C5C-A732-5991046EBB03",
+          "name": "Crumbl",
+          "affinity": 0.9989451089871769,
+          "affinityRank": 48,
+          "nationalStoreCount": 890,
+          "chainSizeTier": "mid",
+          "tasteFitBeyondChainPercentile": 94,
+          "nearbyStoreCount": 0,
+          "storefrontFormat": "streetfront",
+          "minStorefrontSqFt": 800,
+          "verified": "unverified (1 source)",
+          "verificationSources": [
+            "All The Places (CC0)"
+          ]
+        },
+        "tenantMixScore": {
+          "score": 0,
+          "coAffinityMean": 0,
+          "categoryFit": "Retail",
+          "explanation": ""
+        },
+        "outreachDraft": "",
+        "reasons": [
+          "Crumbl: LeaseUp rank #48 (top 22% of 224 brands) for Pearl Street; Qloo taste rank #15 of 224",
+          "No Crumbl store within 10 km (ATP catalog)",
+          "Retail: category gap vs. nearby tenants",
+          "Established chain with 890 US locations"
+        ],
+        "nearestExistingStoreKm": 19.153641297687578,
+        "qlooSignals": [
+          "affinity rank 0.9989451089871769",
+          "tier taste fit (not raw affinity)"
+        ],
+        "brandReach": {
+          "status": "not_yet_found",
+          "searchUrl": "https://www.google.com/search?q=Crumbl%20retail%20real%20estate%20site%20submission"
+        }
+      },
+      "whyLine": "No Crumbl store within 10 km (ATP catalog)"
+    }
+  ],
+  "rankingsTotal": 224
+}

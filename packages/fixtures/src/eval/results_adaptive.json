@@ -2,18 +2,18 @@
   "agg": {
     "n_sites": 40,
     "p10_raw": 0.5375,
-    "p10_chain": 0.755,
-    "p10_blend": 0.8174999999999999,
+    "p10_chain": 0.76,
+    "p10_blend": 0.825,
     "p10_legacy_blend": 0.5900000000000001,
-    "same_size_auc": 0.6670294642091228,
+    "same_size_auc": 0.664183201507667,
     "same_size_auc_ci": [
-      0.6461676947462455,
-      0.6885277968924622
+      0.6418974526577219,
+      0.6873149130922253
     ],
-    "blend_lift_vs_chain_pp": 6.249999999999998,
+    "blend_lift_vs_chain_pp": 6.5,
     "blend_lift_vs_chain_ci": [
-      2.7500000000000027,
-      9.25
+      3.2500000000000013,
+      9.256249999999971
     ]
   },
   "by_stratum": {
@@ -32,8 +32,8 @@
         438
       ],
       "n_brands": 45,
-      "pooled_within_stratum_auc": 0.6515344724985123,
-      "pos_rate": 0.2329708070978821
+      "pooled_within_stratum_auc": 0.6527530330024603,
+      "pos_rate": 0.23411562678878076
     },
     "2": {
       "count_range": [
@@ -50,8 +50,8 @@
         1771
       ],
       "n_brands": 45,
-      "pooled_within_stratum_auc": 0.6131961688542036,
-      "pos_rate": 0.31600231080300406
+      "pooled_within_stratum_auc": 0.6183301946013811,
+      "pos_rate": 0.32351242056614676
     },
     "4": {
       "count_range": [
@@ -59,8 +59,8 @@
         20496
       ],
       "n_brands": 46,
-      "pooled_within_stratum_auc": 0.6905206086398881,
-      "pos_rate": 0.5431675242995998
+      "pooled_within_stratum_auc": 0.6830185327728107,
+      "pos_rate": 0.5608919382504288
     }
   },
   "by_cat": {
@@ -77,28 +77,28 @@
         0.9166666666666666
       ],
       "qloo.auc": [
-        0.7141256094325041,
-        0.6504959356727014,
+        0.7156010127748313,
+        0.6519774194269914,
         0.7779924192588549
       ],
       "chain.auc": [
-        0.5977689662860493,
+        0.598648445747978,
         0.541338097035227,
-        0.6487696080068892
+        0.6505972310091114
       ],
       "logit_blend.auc": [
-        0.6861801671071107,
-        0.6214971837988915,
-        0.7505545797052825
+        0.6840610442091251,
+        0.6194162172355231,
+        0.748705871182727
       ],
       "strat_auc_qloo": [
-        0.7312372362151123,
-        0.6553970701619121,
+        0.7333532016348774,
+        0.6608531892245968,
         0.8074195998987085
       ],
       "partial_rho": [
-        0.36015977531923865,
-        0.24864036660436392,
+        0.3632027443513845,
+        0.25614879607457536,
         0.47022376464445353
       ]
     },
@@ -115,29 +115,29 @@
         0.8833333333333333
       ],
       "qloo.auc": [
-        0.6258369798414559,
-        0.6187551579383856,
-        0.6355697304855612
+        0.6264748356545254,
+        0.6144004794651925,
+        0.6386309728879255
       ],
       "chain.auc": [
-        0.7527263693876493,
-        0.7140667957061387,
-        0.7925957339705648
+        0.7588809113725349,
+        0.7184592502482179,
+        0.7988429538566205
       ],
       "logit_blend.auc": [
-        0.7895228977977884,
-        0.7591517277536467,
-        0.8235096306696239
+        0.7961016985468014,
+        0.7650405538193693,
+        0.8337310075612357
       ],
       "strat_auc_qloo": [
-        0.6782897467828974,
-        0.6534847702632938,
-        0.6996669694217378
+        0.6819169858192734,
+        0.6575075513982266,
+        0.7018923872652821
       ],
       "partial_rho": [
-        0.254192628685505,
-        0.22647968496442258,
-        0.28234058787207034
+        0.25930806177864724,
+        0.23059272217650462,
+        0.2880234013807898
       ]
     },
     "dense_urban": {
@@ -153,29 +153,29 @@
         0.6666666666666667
       ],
       "qloo.auc": [
-        0.6843852319589071,
-        0.6571041253329869,
-        0.712371609743232
+        0.6811171050488188,
+        0.6533545062966982,
+        0.7097367336872935
       ],
       "chain.auc": [
-        0.6052140506425681,
-        0.5727350807149445,
-        0.6460822137839707
+        0.6110697329137136,
+        0.5793478354879872,
+        0.650446087148235
       ],
       "logit_blend.auc": [
-        0.6865375587638298,
-        0.6557184935220859,
-        0.7217003259926628
+        0.688174656348171,
+        0.6567106470366444,
+        0.7229069651261839
       ],
       "strat_auc_qloo": [
-        0.6929287492430869,
-        0.6604197595655573,
-        0.7235719812569383
+        0.6908872741817212,
+        0.6583442646366248,
+        0.7213225077890364
       ],
       "partial_rho": [
-        0.2873609279101504,
-        0.2473181646979948,
-        0.32620230105231934
+        0.2858719164740241,
+        0.24523125058643083,
+        0.32474460337769195
       ]
     },
     "small_town": {
@@ -191,29 +191,29 @@
         0.8500000000000001
       ],
       "qloo.auc": [
-        0.5150044549213454,
-        0.48103668178210246,
-        0.5511862724389475
+        0.503712933209198,
+        0.4738534526820013,
+        0.5412553370817743
       ],
       "chain.auc": [
-        0.9103347154083568,
-        0.898078717553862,
-        0.921148482486996
+        0.9151294773967328,
+        0.9059392015128117,
+        0.924319753280654
       ],
       "logit_blend.auc": [
-        0.8655585527778197,
-        0.842132486794767,
-        0.8912165716470923
+        0.8682711556293183,
+        0.8459969520136914,
+        0.891504890266707
       ],
       "strat_auc_qloo": [
-        0.6040609137055838,
-        0.5680555555555555,
-        0.6360924683072334
+        0.5853788687299893,
+        0.5457446520518631,
+        0.6205705345809643
       ],
       "partial_rho": [
-        0.10564363379721765,
-        0.07124881790699113,
-        0.14128842583452417
+        0.09064550585762922,
+        0.05690070144721863,
+        0.12734373100318838
       ]
     },
     "sunbelt_growth": {
@@ -224,34 +224,34 @@
         0.7428571428571428
       ],
       "chain.p10": [
+        0.8428571428571429,
         0.8142857142857142,
-        0.7710714285714285,
-        0.8571428571428571
+        0.8857142857142858
       ],
       "qloo.auc": [
-        0.5843688270760505,
-        0.5529445780742519,
-        0.6125245161171454
+        0.5814968399788156,
+        0.5496155149423271,
+        0.6100452596068809
       ],
       "chain.auc": [
-        0.7544362983296073,
-        0.6991547695146602,
-        0.8061985613911447
+        0.7606071087529366,
+        0.7058388361609685,
+        0.812242616466815
       ],
       "logit_blend.auc": [
-        0.7754367002235939,
-        0.7218053731180215,
-        0.8271669571497661
+        0.7812387958366175,
+        0.7263836986335589,
+        0.8339484471390286
       ],
       "strat_auc_qloo": [
-        0.6375254375254376,
-        0.6021761821141816,
-        0.6717268626719973
+        0.6368191900106793,
+        0.6009713592884283,
+        0.6730629686366202
       ],
       "partial_rho": [
-        0.19805801356684435,
-        0.1389681297904465,
-        0.24750192586213055
+        0.19582872590381958,
+        0.1358269595962113,
+        0.2469114670476831
       ]
     },
     "tourist": {
@@ -267,29 +267,29 @@
         0.9666666666666667
       ],
       "qloo.auc": [
-        0.6290234164289198,
-        0.5583565010543062,
-        0.6862477741153605
+        0.6245925791851007,
+        0.5439890649946845,
+        0.6863526343559287
       ],
       "chain.auc": [
-        0.7106837708676256,
-        0.6073522208551074,
-        0.802904621295017
+        0.7166449253601092,
+        0.6105150961291314,
+        0.8100846217382308
       ],
       "logit_blend.auc": [
-        0.7525173831831701,
-        0.6696083841806925,
-        0.8058333439588008
+        0.7526883121488913,
+        0.6707380796400079,
+        0.8031951878139614
       ],
       "strat_auc_qloo": [
-        0.6611121875605502,
-        0.6194786030496803,
-        0.698655494933749
+        0.6595951732191514,
+        0.6130826910176393,
+        0.699638989169675
       ],
       "partial_rho": [
-        0.23849876716578236,
-        0.14947807954135622,
-        0.31228277703478297
+        0.23487217103454158,
+        0.1351399595652105,
+        0.3151337551223509
       ]
     }
   },
@@ -302,12 +302,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 222,
-      "n_present": 102,
+      "n_present": 103,
       "p10_raw": 0.7000000000000002,
       "p10_chain": 0.7999999999999998,
-      "p10_blend": 1,
-      "same_size_auc": 0.6800197823936697,
-      "taste_percentile": 49
+      "p10_blend": 0.9,
+      "same_size_auc": 0.6784646061814557,
+      "taste_percentile": 51
     },
     {
       "id": "athens_ga",
@@ -317,12 +317,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 223,
-      "n_present": 63,
+      "n_present": 64,
       "p10_raw": 0.7000000000000002,
       "p10_chain": 1,
       "p10_blend": 1,
-      "same_size_auc": 0.7059238363892807,
-      "taste_percentile": 74
+      "same_size_auc": 0.7002861230329042,
+      "taste_percentile": 71
     },
     {
       "id": "austin_soco",
@@ -332,11 +332,11 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 224,
-      "n_present": 75,
+      "n_present": 76,
       "p10_raw": 0.7999999999999998,
-      "p10_chain": 0.7000000000000002,
-      "p10_blend": 0.7999999999999998,
-      "same_size_auc": 0.6605128205128206,
+      "p10_chain": 0.7999999999999998,
+      "p10_blend": 0.9,
+      "same_size_auc": 0.6621900826446281,
       "taste_percentile": 44
     },
     {
@@ -347,12 +347,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 182,
-      "n_present": 37,
+      "n_present": 38,
       "p10_raw": 0.30000000000000004,
       "p10_chain": 0.7999999999999998,
       "p10_blend": 0.6000000000000001,
-      "same_size_auc": 0.6514285714285715,
-      "taste_percentile": 41
+      "same_size_auc": 0.6309696092619392,
+      "taste_percentile": 31
     },
     {
       "id": "bethesda_md",
@@ -367,7 +367,7 @@
       "p10_chain": 0.6000000000000001,
       "p10_blend": 0.7999999999999998,
       "same_size_auc": 0.613779718583212,
-      "taste_percentile": 26
+      "taste_percentile": 24
     },
     {
       "id": "boise_id",
@@ -377,12 +377,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 220,
-      "n_present": 43,
+      "n_present": 44,
       "p10_raw": 0.5,
       "p10_chain": 0.7999999999999998,
       "p10_blend": 0.7999999999999998,
-      "same_size_auc": 0.551004016064257,
-      "taste_percentile": 6
+      "same_size_auc": 0.5475255302435192,
+      "taste_percentile": 9
     },
     {
       "id": "boulder",
@@ -392,12 +392,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 224,
-      "n_present": 71,
+      "n_present": 72,
       "p10_raw": 0.7999999999999998,
       "p10_chain": 0.7999999999999998,
       "p10_blend": 0.9,
-      "same_size_auc": 0.6931877275091004,
-      "taste_percentile": 69
+      "same_size_auc": 0.7029396596183601,
+      "taste_percentile": 74
     },
     {
       "id": "branson_mo",
@@ -407,11 +407,11 @@
       "stratum": "tourist",
       "adaptive_radius_km": 5,
       "n_brands": 219,
-      "n_present": 74,
+      "n_present": 76,
       "p10_raw": 0.7000000000000002,
       "p10_chain": 0.9,
-      "p10_blend": 0.9,
-      "same_size_auc": 0.717948717948718,
+      "p10_blend": 1,
+      "same_size_auc": 0.7229437229437229,
       "taste_percentile": 86
     },
     {
@@ -422,12 +422,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 219,
-      "n_present": 94,
+      "n_present": 95,
       "p10_raw": 0.7999999999999998,
       "p10_chain": 0.9,
       "p10_blend": 1,
-      "same_size_auc": 0.6984126984126984,
-      "taste_percentile": 71
+      "same_size_auc": 0.6928176795580111,
+      "taste_percentile": 66
     },
     {
       "id": "chapelhill_nc",
@@ -437,12 +437,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 221,
-      "n_present": 42,
+      "n_present": 44,
       "p10_raw": 0.5,
       "p10_chain": 0.7000000000000002,
       "p10_blend": 0.7999999999999998,
-      "same_size_auc": 0.6506386175807664,
-      "taste_percentile": 39
+      "same_size_auc": 0.6747430249632893,
+      "taste_percentile": 49
     },
     {
       "id": "charlotte_se",
@@ -452,12 +452,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 224,
-      "n_present": 78,
+      "n_present": 79,
       "p10_raw": 0.6000000000000001,
-      "p10_chain": 0.7999999999999998,
-      "p10_blend": 0.7999999999999998,
-      "same_size_auc": 0.5793143521208599,
-      "taste_percentile": 11
+      "p10_chain": 0.9,
+      "p10_blend": 0.9,
+      "same_size_auc": 0.5833824395992929,
+      "taste_percentile": 14
     },
     {
       "id": "chi_lakeview",
@@ -467,12 +467,12 @@
       "stratum": "dense_urban",
       "adaptive_radius_km": 1.5,
       "n_brands": 224,
-      "n_present": 51,
+      "n_present": 53,
       "p10_raw": 0.5,
       "p10_chain": 0.6000000000000001,
       "p10_blend": 0.7000000000000002,
-      "same_size_auc": 0.6928702010968921,
-      "taste_percentile": 66
+      "same_size_auc": 0.6974389517569982,
+      "taste_percentile": 69
     },
     {
       "id": "wicker-park",
@@ -497,12 +497,12 @@
       "stratum": "dense_urban",
       "adaptive_radius_km": 1.5,
       "n_brands": 224,
-      "n_present": 66,
+      "n_present": 67,
       "p10_raw": 0.3999999999999999,
       "p10_chain": 0.6000000000000001,
       "p10_blend": 0.7000000000000002,
-      "same_size_auc": 0.6005931784478498,
-      "taste_percentile": 19
+      "same_size_auc": 0.5984213122841638,
+      "taste_percentile": 16
     },
     {
       "id": "edina_mn",
@@ -532,7 +532,7 @@
       "p10_chain": 0.7000000000000002,
       "p10_blend": 0.5,
       "same_size_auc": 0.5419222903885481,
-      "taste_percentile": 1
+      "taste_percentile": 6
     },
     {
       "id": "frisco_tx",
@@ -542,12 +542,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 224,
-      "n_present": 67,
+      "n_present": 69,
       "p10_raw": 0.3999999999999999,
       "p10_chain": 0.7999999999999998,
       "p10_blend": 1,
-      "same_size_auc": 0.6656738644825019,
-      "taste_percentile": 46
+      "same_size_auc": 0.6617986164488855,
+      "taste_percentile": 41
     },
     {
       "id": "gilbert_az",
@@ -557,12 +557,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 218,
-      "n_present": 104,
+      "n_present": 105,
       "p10_raw": 0.7000000000000002,
       "p10_chain": 0.7999999999999998,
       "p10_blend": 1,
-      "same_size_auc": 0.683289124668435,
-      "taste_percentile": 51
+      "same_size_auc": 0.6926803013993541,
+      "taste_percentile": 64
     },
     {
       "id": "greenwich_ct",
@@ -587,12 +587,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 15,
       "n_brands": 201,
-      "n_present": 42,
+      "n_present": 43,
       "p10_raw": 0.19999999999999996,
       "p10_chain": 0.9,
       "p10_blend": 0.9,
-      "same_size_auc": 0.6458333333333334,
-      "taste_percentile": 36
+      "same_size_auc": 0.6346633416458853,
+      "taste_percentile": 34
     },
     {
       "id": "ithaca_ny",
@@ -602,12 +602,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 221,
-      "n_present": 46,
+      "n_present": 48,
       "p10_raw": 0.3999999999999999,
       "p10_chain": 0.7000000000000002,
       "p10_blend": 0.7999999999999998,
-      "same_size_auc": 0.7147239263803681,
-      "taste_percentile": 79
+      "same_size_auc": 0.713957055214724,
+      "taste_percentile": 81
     },
     {
       "id": "keywest_fl",
@@ -617,12 +617,12 @@
       "stratum": "tourist",
       "adaptive_radius_km": 15,
       "n_brands": 224,
-      "n_present": 30,
+      "n_present": 32,
       "p10_raw": 0.09999999999999998,
       "p10_chain": 0.9,
       "p10_blend": 0.9,
-      "same_size_auc": 0.5463917525773195,
-      "taste_percentile": 4
+      "same_size_auc": 0.5040000000000001,
+      "taste_percentile": 1
     },
     {
       "id": "laramie_wy",
@@ -632,12 +632,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 205,
-      "n_present": 28,
+      "n_present": 32,
       "p10_raw": 0.09999999999999998,
       "p10_chain": 0.7000000000000002,
       "p10_blend": 0.7999999999999998,
-      "same_size_auc": 0.5622489959839356,
-      "taste_percentile": 9
+      "same_size_auc": 0.5238709677419355,
+      "taste_percentile": 4
     },
     {
       "id": "lasvegas_strip",
@@ -652,7 +652,7 @@
       "p10_chain": 0.6000000000000001,
       "p10_blend": 0.7000000000000002,
       "same_size_auc": 0.6889709275496078,
-      "taste_percentile": 61
+      "taste_percentile": 59
     },
     {
       "id": "madison_wi",
@@ -662,12 +662,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 223,
-      "n_present": 60,
+      "n_present": 62,
       "p10_raw": 0.3999999999999999,
       "p10_chain": 0.7999999999999998,
       "p10_blend": 0.9,
-      "same_size_auc": 0.6282051282051282,
-      "taste_percentile": 31
+      "same_size_auc": 0.6265133171912833,
+      "taste_percentile": 29
     },
     {
       "id": "myrtle_sc",
@@ -677,12 +677,12 @@
       "stratum": "tourist",
       "adaptive_radius_km": 5,
       "n_brands": 224,
-      "n_present": 79,
+      "n_present": 81,
       "p10_raw": 0.6000000000000001,
       "p10_chain": 1,
       "p10_blend": 1,
-      "same_size_auc": 0.6298913043478261,
-      "taste_percentile": 34
+      "same_size_auc": 0.6359649122807017,
+      "taste_percentile": 36
     },
     {
       "id": "naperville_il",
@@ -692,12 +692,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 224,
-      "n_present": 99,
+      "n_present": 102,
       "p10_raw": 0.7000000000000002,
       "p10_chain": 0.7999999999999998,
       "p10_blend": 0.9,
-      "same_size_auc": 0.6252244165170556,
-      "taste_percentile": 29
+      "same_size_auc": 0.6360360360360361,
+      "taste_percentile": 39
     },
     {
       "id": "nashville_12s",
@@ -707,12 +707,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 224,
-      "n_present": 104,
+      "n_present": 105,
       "p10_raw": 0.7000000000000002,
       "p10_chain": 0.9,
       "p10_blend": 0.9,
-      "same_size_auc": 0.6063094209161625,
-      "taste_percentile": 21
+      "same_size_auc": 0.6009573542210618,
+      "taste_percentile": 19
     },
     {
       "id": "nyc_uws",
@@ -722,12 +722,12 @@
       "stratum": "dense_urban",
       "adaptive_radius_km": 1.5,
       "n_brands": 224,
-      "n_present": 46,
+      "n_present": 47,
       "p10_raw": 0.3999999999999999,
       "p10_chain": 0.5,
       "p10_blend": 0.6000000000000001,
-      "same_size_auc": 0.7164086687306501,
-      "taste_percentile": 81
+      "same_size_auc": 0.7148936170212766,
+      "taste_percentile": 84
     },
     {
       "id": "nyc_williamsburg",
@@ -752,12 +752,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 145,
-      "n_present": 25,
+      "n_present": 26,
       "p10_raw": 0.19999999999999996,
       "p10_chain": 0.7000000000000002,
-      "p10_blend": 0.5,
-      "same_size_auc": 0.5977011494252874,
-      "taste_percentile": 14
+      "p10_blend": 0.6000000000000001,
+      "same_size_auc": 0.6041666666666666,
+      "taste_percentile": 21
     },
     {
       "id": "palo_alto_ca",
@@ -787,7 +787,7 @@
       "p10_chain": 0.6000000000000001,
       "p10_blend": 0.7000000000000002,
       "same_size_auc": 0.7124542124542125,
-      "taste_percentile": 76
+      "taste_percentile": 79
     },
     {
       "id": "phl_walnut",
@@ -797,12 +797,12 @@
       "stratum": "dense_urban",
       "adaptive_radius_km": 1.5,
       "n_brands": 224,
-      "n_present": 84,
+      "n_present": 85,
       "p10_raw": 0.7999999999999998,
       "p10_chain": 0.7999999999999998,
       "p10_blend": 0.7999999999999998,
-      "same_size_auc": 0.6922390722569135,
-      "taste_percentile": 64
+      "same_size_auc": 0.6914132379248659,
+      "taste_percentile": 61
     },
     {
       "id": "sea_caphill",
@@ -812,12 +812,12 @@
       "stratum": "dense_urban",
       "adaptive_radius_km": 5,
       "n_brands": 224,
-      "n_present": 68,
+      "n_present": 71,
       "p10_raw": 0.9,
       "p10_chain": 0.6000000000000001,
       "p10_blend": 0.7999999999999998,
-      "same_size_auc": 0.7178623013962446,
-      "taste_percentile": 84
+      "same_size_auc": 0.7091764705882353,
+      "taste_percentile": 76
     },
     {
       "id": "sedalia_mo",
@@ -827,12 +827,12 @@
       "stratum": "urban",
       "adaptive_radius_km": 5,
       "n_brands": 151,
-      "n_present": 33,
+      "n_present": 35,
       "p10_raw": 0.19999999999999996,
       "p10_chain": 0.9,
       "p10_blend": 1,
-      "same_size_auc": 0.5989208633093526,
-      "taste_percentile": 16
+      "same_size_auc": 0.5670840787119857,
+      "taste_percentile": 11
     },
     {
       "id": "sevierville",
@@ -842,12 +842,12 @@
       "stratum": "tourist",
       "adaptive_radius_km": 5,
       "n_brands": 224,
-      "n_present": 89,
+      "n_present": 91,
       "p10_raw": 0.7000000000000002,
       "p10_chain": 1,
       "p10_blend": 0.9,
-      "same_size_auc": 0.6128364389233955,
-      "taste_percentile": 24
+      "same_size_auc": 0.6138253638253638,
+      "taste_percentile": 26
     },
     {
       "id": "sf_fillmore",
@@ -872,12 +872,12 @@
       "stratum": "dense_urban",
       "adaptive_radius_km": 1.5,
       "n_brands": 224,
-      "n_present": 28,
+      "n_present": 29,
       "p10_raw": 0.30000000000000004,
       "p10_chain": 0.3999999999999999,
       "p10_blend": 0.6000000000000001,
-      "same_size_auc": 0.6859273066169618,
-      "taste_percentile": 59
+      "same_size_auc": 0.6745670009115771,
+      "taste_percentile": 46
     },
     {
       "id": "wellesley_ma",
