@@ -36,10 +36,7 @@
           ]
         },
         "tenantMixScore": {
-          "score": 0,
-          "coAffinityMean": 0,
-          "categoryFit": "Beauty",
-          "explanation": ""
+          "categoryFit": "Beauty"
         },
         "outreachDraft": "",
         "reasons": [
@@ -81,10 +78,7 @@
           ]
         },
         "tenantMixScore": {
-          "score": 0,
-          "coAffinityMean": 0,
-          "categoryFit": "Retail",
-          "explanation": ""
+          "categoryFit": "Retail"
         },
         "outreachDraft": "",
         "reasons": [
@@ -124,10 +118,7 @@
           ]
         },
         "tenantMixScore": {
-          "score": 0,
-          "coAffinityMean": 0,
-          "categoryFit": "Apparel",
-          "explanation": ""
+          "categoryFit": "Apparel"
         },
         "outreachDraft": "",
         "reasons": [
@@ -168,10 +159,7 @@
           ]
         },
         "tenantMixScore": {
-          "score": 0,
-          "coAffinityMean": 0,
-          "categoryFit": "Retail",
-          "explanation": ""
+          "categoryFit": "Retail"
         },
         "outreachDraft": "",
         "reasons": [
@@ -211,10 +199,7 @@
           ]
         },
         "tenantMixScore": {
-          "score": 0,
-          "coAffinityMean": 0,
-          "categoryFit": "Retail",
-          "explanation": ""
+          "categoryFit": "Retail"
         },
         "outreachDraft": "",
         "reasons": [

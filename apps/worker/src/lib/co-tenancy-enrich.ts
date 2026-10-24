@@ -136,9 +136,6 @@ export async function enrichProspectsWithCoTenancy(params: {
     return {
       ...pack,
       coTenancyLine: line,
-      tenantMixScore: pack.tenantMixScore
-        ? { ...pack.tenantMixScore, explanation: line }
-        : undefined,
     };
   });
 

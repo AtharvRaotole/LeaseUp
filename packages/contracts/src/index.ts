@@ -63,11 +63,9 @@ export const BacktestResultSchema = z.object({
 
 export type BacktestResult = z.infer<typeof BacktestResultSchema>;
 
+/** Brand retail category carried on the prospect. Not a computed tenant-mix or co-affinity score. */
 export const TenantMixScoreSchema = z.object({
-  score: z.number(),
-  coAffinityMean: z.number(),
   categoryFit: z.string(),
-  explanation: z.string(),
 });
 
 export type TenantMixScore = z.infer<typeof TenantMixScoreSchema>;

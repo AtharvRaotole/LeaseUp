@@ -8,12 +8,7 @@ describe('prospectBrandCategoryLabel', () => {
       brand: { entityId: 'x', name: 'X', affinity: 1, affinityRank: 1, verified: 'unverified' },
       outreachDraft: '',
       reasons: [],
-      tenantMixScore: {
-        score: 0,
-        coAffinityMean: 0,
-        categoryFit: 'Apparel',
-        explanation: '',
-      },
+      tenantMixScore: { categoryFit: 'Apparel' },
     } as ProspectPack;
     expect(prospectBrandCategoryLabel(prospect)).toBe('Apparel');
   });
