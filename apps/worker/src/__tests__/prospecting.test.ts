@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import type { ProspectingStep } from '@leaseup/contracts';
 import { ProspectingService, syncProspectingStepDefs } from '../services/prospecting';
 import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 
@@ -41,15 +42,15 @@ function demoEnv() {
 
 describe('syncProspectingStepDefs', () => {
   it('inserts agent_plan for legacy eight-step jobs', () => {
-    const legacy = [
-      { id: 'geocode', label: 'Geocode', status: 'complete' as const },
-      { id: 'taste', label: 'Taste', status: 'pending' as const },
-      { id: 'scan_stores', label: 'Scan', status: 'pending' as const },
-      { id: 'verify_osm', label: 'Verify', status: 'pending' as const },
-      { id: 'rank_backtest', label: 'Rank', status: 'pending' as const },
-      { id: 'explain_top5', label: 'Explain', status: 'pending' as const },
-      { id: 'draft_outreach', label: 'Draft', status: 'pending' as const },
-      { id: 'pitch_pack', label: 'Pitch', status: 'pending' as const },
+    const legacy: ProspectingStep[] = [
+      { id: 'geocode', label: 'Geocode', status: 'complete' },
+      { id: 'taste', label: 'Taste', status: 'pending' },
+      { id: 'scan_stores', label: 'Scan', status: 'pending' },
+      { id: 'verify_osm', label: 'Verify', status: 'pending' },
+      { id: 'rank_backtest', label: 'Rank', status: 'pending' },
+      { id: 'explain_top5', label: 'Explain', status: 'pending' },
+      { id: 'draft_outreach', label: 'Draft', status: 'pending' },
+      { id: 'pitch_pack', label: 'Pitch', status: 'pending' },
     ];
     const synced = syncProspectingStepDefs(legacy);
     expect(synced).toHaveLength(9);
