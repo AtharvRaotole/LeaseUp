@@ -115,7 +115,7 @@ export function applyProspectingAgentToolToState(
 }
 
 export function absenceRadiusKmForLocation(
-  address: string,
+  _address: string,
   radiusKm: number,
   siteStratum: EvalDensityStratum
 ): number {
