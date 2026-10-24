@@ -1,4 +1,13 @@
 import type { ProspectingJob, ProspectingStep, ProspectingStepId } from '@leaseup/contracts';
+import {
+  plainPlannerToolResult,
+  plainProspectingStepResult,
+  receiptStepLabel,
+  receiptStepResult,
+  sortPipelineReceiptSteps,
+} from './prospecting-receipt-copy';
+
+export { plainProspectingStepResult } from './prospecting-receipt-copy';
 
 export type AgentReceiptToolDecision = {
   plannerLabel: 'Rule' | 'Agent';
@@ -14,9 +23,16 @@ export type AgentReceiptStepRow = {
   result: string;
   durationSec: string | null;
   reason?: string;
-  toolDecisions?: AgentReceiptToolDecision[];
   status: ProspectingStep['status'];
 };
+
+export type PlannerReceiptSection = {
+  decisions: AgentReceiptToolDecision[];
+  fallbackLine: string | null;
+  planSummary: string | null;
+};
+
+export const PLANNER_UNAVAILABLE_LINE = 'Planner unavailable, used the standard steps.';
 
 /** Steps the server actually logged (never invent rows). */
 export function loggedProspectingSteps(steps: ProspectingStep[]): ProspectingStep[] {
@@ -39,18 +55,6 @@ export function prospectingStepDataSource(id: ProspectingStepId): string {
   return DATA_SOURCE_BY_STEP[id];
 }
 
-/** Plain broker copy for step summaries logged by the worker. */
-export function plainProspectingStepResult(summary?: string): string {
-  if (!summary?.trim()) return 'Finished';
-  return summary
-    .replace(/All The Places store data/gi, 'our store index')
-    .replace(/All The Places/gi, 'our store index')
-    .replace(/\bATP\b/g, 'store index')
-    .replace(/\bOSM\b/g, 'OpenStreetMap')
-    .replace(/\bQID\b/gi, 'brand id')
-    .replace(/\bQloo\b/gi, 'taste data');
-}
-
 function formatDurationSec(durationMs?: number): string | null {
   if (durationMs === undefined || !Number.isFinite(durationMs)) return null;
   return `${(durationMs / 1000).toFixed(1)} s`;
@@ -67,7 +71,7 @@ function receiptToolReason(plannerLabel: 'Rule' | 'Agent', raw: string): string 
   return plain;
 }
 
-function parseAgentToolDecisions(step: ProspectingStep): AgentReceiptToolDecision[] {
+export function parseAgentToolDecisions(step: ProspectingStep): AgentReceiptToolDecision[] {
   if (step.id !== 'agent_plan' || !step.detail || typeof step.detail !== 'object') return [];
   const raw = (step.detail as { agentSteps?: unknown }).agentSteps;
   if (!Array.isArray(raw)) return [];
@@ -78,28 +82,71 @@ function parseAgentToolDecisions(step: ProspectingStep): AgentReceiptToolDecisio
     const row = entry as Record<string, unknown>;
     const plannerLabel: 'Rule' | 'Agent' = row.planner === 'model' ? 'Agent' : 'Rule';
     const reason = receiptToolReason(plannerLabel, String(row.reason ?? ''));
-    const resultSummary = plainProspectingStepResult(String(row.resultSummary ?? ''));
-    const tool = String(row.tool ?? '').trim();
+    const resultSummary = plainPlannerToolResult(String(row.resultSummary ?? ''));
+    const tool = plainPlannerToolResult(String(row.tool ?? '').trim());
     if (!reason && !resultSummary) continue;
     decisions.push({ plannerLabel, reason, tool, resultSummary });
   }
   return decisions;
 }
 
-export function buildAgentReceiptRows(job: ProspectingJob): AgentReceiptStepRow[] {
-  return loggedProspectingSteps(job.steps).map((step) => ({
+function agentPlanDetail(job: ProspectingJob): Record<string, unknown> | undefined {
+  const step = job.steps.find((s) => s.id === 'agent_plan');
+  if (!step?.detail || typeof step.detail !== 'object') return undefined;
+  return step.detail as Record<string, unknown>;
+}
+
+export function buildPlannerReceiptSection(job: ProspectingJob): PlannerReceiptSection {
+  const planStep = job.steps.find((s) => s.id === 'agent_plan');
+  if (!planStep || planStep.status === 'pending') {
+    return { decisions: [], fallbackLine: PLANNER_UNAVAILABLE_LINE, planSummary: null };
+  }
+
+  const detail = agentPlanDetail(job);
+  const mode = detail?.mode;
+  const isFallback = mode === 'dag_fallback' || Boolean(detail?.fallbackReason);
+  const decisions = parseAgentToolDecisions(planStep);
+
+  if (decisions.length === 0) {
+    return {
+      decisions: [],
+      fallbackLine: PLANNER_UNAVAILABLE_LINE,
+      planSummary: isFallback
+        ? plainProspectingStepResult(planStep.summary)
+        : plainProspectingStepResult(planStep.summary) || null,
+    };
+  }
+
+  return {
+    decisions,
+    fallbackLine: isFallback ? PLANNER_UNAVAILABLE_LINE : null,
+    planSummary: plainProspectingStepResult(planStep.summary) || null,
+  };
+}
+
+function buildPipelineStepRow(step: ProspectingStep, job: ProspectingJob): AgentReceiptStepRow {
+  return {
     id: step.id,
-    label: step.label,
+    label: receiptStepLabel(step),
     dataSource: prospectingStepDataSource(step.id),
     result:
       step.status === 'error'
-        ? plainProspectingStepResult(step.summary) || 'Step failed'
-        : plainProspectingStepResult(step.summary),
+        ? receiptStepResult(step, job) || 'Step failed'
+        : receiptStepResult(step, job),
     durationSec: formatDurationSec(step.durationMs),
     reason: step.reason?.trim() ? plainProspectingStepResult(step.reason) : undefined,
-    toolDecisions: parseAgentToolDecisions(step),
     status: step.status,
-  }));
+  };
+}
+
+export function buildPipelineReceiptRows(job: ProspectingJob): AgentReceiptStepRow[] {
+  const pipeline = loggedProspectingSteps(job.steps).filter((s) => s.id !== 'agent_plan');
+  return sortPipelineReceiptSteps(pipeline).map((step) => buildPipelineStepRow(step, job));
+}
+
+/** @deprecated Use buildPipelineReceiptRows; kept for tests migrating off combined list. */
+export function buildAgentReceiptRows(job: ProspectingJob): AgentReceiptStepRow[] {
+  return buildPipelineReceiptRows(job);
 }
 
 export type AgentReceiptExport = {
@@ -109,6 +156,7 @@ export type AgentReceiptExport = {
   mode: ProspectingJob['mode'];
   pitchId?: string;
   analysisRunId?: string;
+  planner: PlannerReceiptSection;
   steps: AgentReceiptStepRow[];
 };
 
@@ -120,7 +168,8 @@ export function agentReceiptExport(job: ProspectingJob): AgentReceiptExport {
     mode: job.mode,
     pitchId: job.pitchId,
     analysisRunId: job.analysisRunId,
-    steps: buildAgentReceiptRows(job),
+    planner: buildPlannerReceiptSection(job),
+    steps: buildPipelineReceiptRows(job),
   };
 }
 
@@ -129,7 +178,8 @@ export function agentReceiptJson(job: ProspectingJob): string {
 }
 
 export function agentReceiptMarkdown(job: ProspectingJob): string {
-  const rows = buildAgentReceiptRows(job);
+  const planner = buildPlannerReceiptSection(job);
+  const rows = buildPipelineReceiptRows(job);
   const lines: string[] = [
     '# Agent receipt',
     '',
@@ -139,19 +189,20 @@ export function agentReceiptMarkdown(job: ProspectingJob): string {
   ];
   if (job.pitchId) lines.push(`Pitch pack: ${job.pitchId}`);
   if (job.analysisRunId) lines.push(`Analysis run: ${job.analysisRunId}`);
-  lines.push('', '## Steps', '');
+  lines.push('', '## Planner decisions', '');
+  if (planner.fallbackLine) lines.push(planner.fallbackLine);
+  if (planner.planSummary) lines.push(planner.planSummary);
+  for (const tool of planner.decisions) {
+    lines.push(`- ${tool.plannerLabel}: ${tool.reason}`);
+    if (tool.resultSummary) lines.push(`  - Result: ${tool.resultSummary}`);
+  }
+  lines.push('', '## Run steps', '');
   for (const row of rows) {
     lines.push(`### ${row.label}`);
     lines.push(`- Source: ${row.dataSource}`);
     lines.push(`- Result: ${row.result}`);
     if (row.durationSec) lines.push(`- Time: ${row.durationSec}`);
     if (row.reason) lines.push(`- Why: ${row.reason}`);
-    for (const tool of row.toolDecisions ?? []) {
-      lines.push(`- ${tool.plannerLabel}: ${tool.reason}`);
-      if (tool.tool || tool.resultSummary) {
-        lines.push(`  - ${tool.tool}${tool.resultSummary ? `: ${tool.resultSummary}` : ''}`);
-      }
-    }
     lines.push('');
   }
   return lines.join('\n').trimEnd() + '\n';
