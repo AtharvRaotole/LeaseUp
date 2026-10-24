@@ -63,7 +63,7 @@ describe('absence copy vs nearest store', () => {
           verified: 'unverified (1 source)',
           verificationSources: ['All The Places (CC0)'],
         },
-        reasons: ['No TJ Maxx store within 3 km (ATP catalog)'],
+        reasons: ['No TJ Maxx store within 3 km (All The Places store data)'],
         outreachDraft: '',
         nearestExistingStoreKm: 3.69,
       },
@@ -83,7 +83,7 @@ describe('absence copy vs nearest store', () => {
         verified: 'unverified (1 source)',
         verificationSources: ['All The Places (CC0)'],
       },
-      reasons: ['No TJ Maxx store within 3 km (ATP catalog)'],
+      reasons: ['No TJ Maxx store within 3 km (All The Places store data)'],
       outreachDraft: '',
       nearestExistingStoreKm: 3.69,
     };

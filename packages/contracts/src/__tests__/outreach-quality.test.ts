@@ -20,7 +20,7 @@ describe('outreach draft quality', () => {
 
   it('accepts a grounded short opener', () => {
     const ok =
-      'Qloo ranks Vans #13 in Wicker Park, with no Vans within 10 km (ATP + OSM). ' +
+      'Qloo ranks Vans #13 in Wicker Park, with no Vans within 10 km (All The Places + OpenStreetMap). ' +
       'Nearby retail includes Sephora and Whole Foods. We can share the site pack for 1574 N Milwaukee Ave.';
     expect(isAcceptableOutreachDraft(ok)).toBe(true);
   });

@@ -38,7 +38,7 @@ describe('buildOutreachPrompt', () => {
       neighborhood: 'Wicker Park',
       affinityRank: 3,
       nearestStoreKm: 4.2,
-      reasons: ['No store within 10km (ATP verified)'],
+      reasons: ['No store within 10km (All The Places store data)'],
     });
 
     expect(prompt).toContain('Madewell');

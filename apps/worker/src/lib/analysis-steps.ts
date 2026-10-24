@@ -6,7 +6,7 @@ export const STEP_DEFINITIONS: Array<{ id: AnalysisStepId; label: string }> = [
   { id: 'taste', label: "Read the neighborhood's taste (Qloo)" },
   { id: 'backtest', label: 'Prove it (backtest)' },
   { id: 'prospects', label: "Find who's missing" },
-  { id: 'verify', label: 'Double-check absence (ATP + OSM)' },
+  { id: 'verify', label: 'Double-check absence (All The Places + OpenStreetMap)' },
   { id: 'outreach_ready', label: 'Draft outreach (on demand)' },
 ];
 
