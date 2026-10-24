@@ -16,15 +16,15 @@ export function QlooRankingToggle({
   compact?: boolean;
 }) {
   return (
-    <div className={className}>
+    <div className={className} data-testid="qloo-ranking-toggle">
       <div className="flex items-center gap-1.5">
         <SegmentedControl
           label="Compare ranking"
           value={mode}
           onChange={(v) => onChange(v as QlooRankingMode)}
           options={[
-            { value: 'qloo', label: 'Local taste' },
-            { value: 'baseline', label: 'Chain size' },
+            { value: 'qloo', label: 'Local taste', testId: 'qloo-ranking-mode-qloo' },
+            { value: 'baseline', label: 'Chain size', testId: 'qloo-ranking-mode-baseline' },
           ]}
         />
         <InfoTooltip label={rankingModeTooltip(mode)} />

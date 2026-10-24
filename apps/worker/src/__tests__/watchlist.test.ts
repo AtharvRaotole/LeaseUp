@@ -1,13 +1,16 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 import { WatchlistService } from '../services/watchlist';
+import { RecheckCooldownError } from '../lib/watch-recheck-cooldown';
 import type { AnalysisResponse } from '@leaseup/contracts';
 
 const watchStore = new Map<string, Record<string, unknown>>();
 const snapshotStore = new Map<string, { payload: string; created_at: number }[]>();
+const rateLimitStore = new Map<string, { window_start: number }>();
 
 function resetStores() {
   watchStore.clear();
   snapshotStore.clear();
+  rateLimitStore.clear();
 }
 
 const db = {
@@ -53,9 +56,18 @@ const db = {
         if (sql.includes('UPDATE pipeline_cards')) {
           return { meta: { changes: 0 } };
         }
+        if (sql.includes('INSERT INTO rate_limits')) {
+          const id = String(this.binds[0]);
+          const windowStart = Number(this.binds[1]);
+          rateLimitStore.set(id, { window_start: windowStart });
+        }
         return {};
       },
       async first() {
+        if (sql.includes('SELECT window_start FROM rate_limits')) {
+          const row = rateLimitStore.get(String(this.binds[0]));
+          return row ? { window_start: row.window_start } : null;
+        }
         if (sql.includes('FROM watch_spaces WHERE watch_id = ? AND workspace_id')) {
           const [watchId, workspaceId] = this.binds as [string, string];
           for (const row of watchStore.values()) {
@@ -175,5 +187,41 @@ describe('WatchlistService', () => {
     );
     const other = await service.getDetail(detail.watchId, 'ws-b');
     expect(other).toBeNull();
+  });
+
+  it('lists watches only for the requesting workspace', async () => {
+    const service = new WatchlistService({ DB: db } as import('../index').Env);
+    await service.saveFromReport(
+      'ws-a',
+      '1574 N Milwaukee Ave, Chicago, IL 60622',
+      10,
+      minimalAnalysis(undefined)
+    );
+    await service.saveFromReport(
+      'ws-b',
+      '500 W Madison St, Chicago, IL 60661',
+      5,
+      minimalAnalysis(undefined)
+    );
+    const listA = await service.list('ws-a');
+    const listB = await service.list('ws-b');
+    expect(listA).toHaveLength(1);
+    expect(listB).toHaveLength(1);
+    expect(listA[0]?.address).toContain('Milwaukee');
+    expect(listB[0]?.address).toContain('Madison');
+  });
+
+  it('enforces recheck cooldown before analyze', async () => {
+    const service = new WatchlistService({ DB: db } as import('../index').Env);
+    const detail = await service.saveFromReport(
+      'ws-1',
+      '1574 N Milwaukee Ave, Chicago, IL 60622',
+      10,
+      minimalAnalysis(undefined)
+    );
+    await service.recheck(detail.watchId, 'ws-1', minimalAnalysis(2));
+    await expect(
+      service.assertRecheckAllowedForWatchAsync(detail.watchId, 'ws-1')
+    ).rejects.toBeInstanceOf(RecheckCooldownError);
   });
 });
