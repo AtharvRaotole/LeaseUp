@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /**
  * Pack the live Qloo audience recordings (brand-audiences/*.json, local-audiences/*.json) into one compact
- * JSON the worker bundles. Values are copied verbatim (full-precision affinities); only the layout changes,
- * so the worker bundle stays under scripts/check-worker-bundle.mjs's size cap.
+ * JSON. Values are copied verbatim (full-precision affinities); only the layout changes. The same bytes are
+ * written to packages/fixtures (bundled by the web app and tests) and apps/worker/public (served to the
+ * worker through its ASSETS binding, so the data stays out of the worker bundle).
  *
  * Usage: node scripts/compact-brand-explainability.mjs   (run after record-brand-explainability-fixture.mjs)
  */
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const dir = join(process.cwd(), "packages/fixtures/src/brand-explainability");
@@ -56,8 +57,12 @@ for (const file of listJson("brand-audiences")) {
   };
 }
 
-const out = join(dir, "live-audiences.compact.json");
-writeFileSync(out, `${JSON.stringify({ audiences, locals, brands })}\n`);
-console.log(
-  `Wrote ${out} (${Object.keys(brands).length} brands, ${Object.keys(locals).length} chips)`,
-);
+const body = `${JSON.stringify({ audiences, locals, brands })}\n`;
+const workerDir = join(process.cwd(), "apps/worker/public/brand-explainability");
+mkdirSync(workerDir, { recursive: true });
+for (const out of [join(dir, "live-audiences.compact.json"), join(workerDir, "live-audiences.compact.json")]) {
+  writeFileSync(out, body);
+  console.log(
+    `Wrote ${out} (${Object.keys(brands).length} brands, ${Object.keys(locals).length} chips)`,
+  );
+}

@@ -92,6 +92,8 @@ import {
   isQlooUnavailableError,
   TASTE_UNAVAILABLE_RANKING_NOTICE,
 } from '../lib/qloo-chain-fallback';
+import { enrichProspectsWithCoTenancy } from '../lib/co-tenancy-enrich';
+import type { NearbyTenant } from '@leaseup/contracts';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -106,6 +108,7 @@ export class AnalysisService {
   private mode: 'live' | 'demo';
   private catalog: StoreCatalog;
   private osmSnapshot: OsmSnapshotCatalog | null;
+  private assets?: Fetcher;
   private verifyInflight = new Map<string, Promise<unknown>>();
 
   constructor(env: Env) {
@@ -121,6 +124,7 @@ export class AnalysisService {
     );
     this.db = env.DB;
     this.catalog = createStoreCatalog(env, this.mode);
+    this.assets = env.ASSETS;
     this.osmSnapshot = env.ASSETS
       ? new OsmSnapshotCatalog(env.ASSETS, this.responseCache)
       : null;
@@ -366,7 +370,8 @@ export class AnalysisService {
                 location,
                 pack.brand.entityId,
                 request.radius,
-                runId
+                runId,
+                this.assets
               );
               return {
                 ...pack,
@@ -392,6 +397,34 @@ export class AnalysisService {
         ANALYZE_ENRICHMENT_QLOO_BUDGET_MS,
         'trade-area shoppers'
       );
+
+      let nearbyTenants: NearbyTenant[] = [];
+      if (this.osmSnapshot) {
+        nearbyTenants = await this.osmSnapshot.listNearbyTenants(
+          location.latitude,
+          location.longitude,
+          request.radius,
+          24
+        );
+      }
+
+      const coTenancyEnriched = await withSoftTimeout(
+        enrichProspectsWithCoTenancy({
+          qloo: this.qloo,
+          responseCache: this.responseCache,
+          location,
+          radiusKm: request.radius,
+          runId,
+          mode: this.mode,
+          nearbyTenants,
+          prospects: enrichedProspects,
+          tasteUnavailable,
+          assets: this.assets,
+        }),
+        ANALYZE_ENRICHMENT_QLOO_BUDGET_MS,
+        'co-tenancy enrichment'
+      );
+      if (coTenancyEnriched) enrichedProspects = coTenancyEnriched;
 
       const effectiveBacktest =
         tasteUnavailable && backtestBaseline ? backtestBaseline : backtestBlended;
@@ -433,6 +466,7 @@ export class AnalysisService {
         tasteDataStatus: tasteUnavailable ? 'unavailable' : 'ok',
         rankingNotice: tasteUnavailable ? TASTE_UNAVAILABLE_RANKING_NOTICE : undefined,
         prospectFunnel,
+        nearbyTenants: nearbyTenants.length > 0 ? nearbyTenants : undefined,
       };
 
       await this.persistRun(runId, location, response, 'completed');
@@ -638,14 +672,10 @@ export class AnalysisService {
           minStorefrontSqFt: formatSpec.minSqFt,
         },
         tenantMixScore: (() => {
+          // categoryFit is the brand retail taxonomy label only (not a site gap score).
           const categoryFit = brandCategoryLabel(candidate.entity_id);
           if (!categoryFit) return undefined;
-          return {
-            score: 0,
-            coAffinityMean: 0,
-            categoryFit,
-            explanation: '',
-          };
+          return { categoryFit };
         })(),
         demographics: undefined,
         outreachDraft: '',

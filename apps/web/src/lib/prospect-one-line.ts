@@ -1,5 +1,4 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
-import { brandCategoryLabel } from './brand-category';
 import { tasteFitMatchHerePhrase } from './fit-display';
 import { isNonRetailTasteName } from '@leaseup/fixtures';
 import { audienceOverlapHighlight } from './broker-copy';
@@ -30,11 +29,8 @@ export function prospectOneLineReason(
     parts.push(audienceOverlapHighlight(tasteSignal.name.trim()));
   }
 
-  const category =
-    prospect.tenantMixScore?.categoryFit?.trim() ||
-    brandCategoryLabel(prospect.brand.entityId);
-  if (category) {
-    parts.push(category);
+  if (prospect.coTenancyLine?.trim()) {
+    parts.push(prospect.coTenancyLine.trim());
   }
 
   if (parts.length === 0) return '';

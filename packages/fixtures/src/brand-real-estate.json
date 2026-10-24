@@ -19,9 +19,8 @@
     {
       "entityId": "81100467-8F5D-4796-B222-A84983379402",
       "name": "Academy Sports + Outdoors",
-      "status": "verified",
-      "url": "https://www.academy.com/real-estate",
-      "source": "https://www.academy.com/real-estate"
+      "status": "not_yet_found",
+      "searchUrl": "https://www.google.com/search?q=Academy%20Sports%20%2B%20Outdoors%20retail%20real%20estate%20site%20submission"
     },
     {
       "entityId": "FCEA7CA1-1D40-4680-B337-E74594D9BCF1",

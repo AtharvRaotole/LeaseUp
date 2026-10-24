@@ -24,7 +24,7 @@ describe('co-tenancy mix', () => {
           },
           outreachDraft: '',
           reasons: [],
-          tenantMixScore: { score: 0, coAffinityMean: 0, categoryFit: 'Apparel', explanation: '' },
+          tenantMixScore: { categoryFit: 'Apparel' },
         },
       ],
     } as unknown as import('@leaseup/contracts').AnalysisResponse;

@@ -22,6 +22,7 @@ import {
   methodologyTasteRankTooltip,
 } from '../lib/broker-copy';
 import { brokerMetricCatalogShortLabel } from '../lib/eval-display';
+import { methodologySiteTableBridgeLine } from '../lib/landing-eval-copy';
 
 const evalBundle = loadEvalRunBundle();
 const evalManifest = getEvalManifest();
@@ -134,20 +135,23 @@ export function MethodologyPage() {
               Evaluation metric catalog
             </h2>
             <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-ink-2">
-              Headline metric:{' '}
-              {evalManifest.headlineMetricId
-                ? evalManifest.headlineMetricId
-                : 'pending (live API eval in progress)'}. Bundle:{' '}
-              <code className="rounded bg-surface-2 px-1 py-0.5 text-xs">{evalManifest.resultsBundle}</code>{' '}
-              ({evalBundle.dataSource}, site set {evalBundle.siteSetId}). Protocol:{' '}
-              <code className="rounded bg-surface-2 px-1 py-0.5 text-xs">
-                {evalManifest.protocolDoc}
-              </code>
-              .
+              Recorded {qlooLift.siteCount}-neighborhood cohort. Production blend top-10 hit rate{' '}
+              {formatP10PercentExact(qlooLift.logisticBlendPrecisionAt10)} vs{' '}
+              {formatP10PercentExact(qlooLift.chainSizePrecisionAt10)} for chain size only (about{' '}
+              {qlooLift.logisticBlendLiftVsChainPp.toFixed(1)} percentage points higher). Rank match among
+              similar-sized chains was about {(qlooLift.sameSizeAuc.value * 100).toFixed(0)}% on this study.
+              Rows below are per-site sanity checks on demo chips; the landing page proof section uses the same
+              recorded bundle.
             </p>
             {evalBundle.recordingNote && (
               <p className="mt-3 text-sm text-ink-2">{evalBundle.recordingNote}</p>
             )}
+            <p
+              className="mt-4 max-w-[720px] text-sm leading-relaxed text-ink-2"
+              data-testid="methodology-site-table-bridge"
+            >
+              {methodologySiteTableBridgeLine()}
+            </p>
             <div className="mt-6 overflow-x-auto rounded-card border border-border" tabIndex={0}>
               <table className="w-full min-w-[720px] border-collapse text-left text-sm">
                 <caption className="sr-only">Evaluation metrics by site (Qloo / chain)</caption>

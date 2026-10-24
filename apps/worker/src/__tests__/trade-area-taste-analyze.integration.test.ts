@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { AnalysisService } from '../services/analysis';
 import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
+import { liveAudiencesOnlyAssets } from './helpers/analysis-test-env';
 
 const db = {
   prepare: () => {
@@ -23,6 +24,7 @@ function demoEnv() {
     DB: db,
     CACHE: kv,
     APP_MODE: 'demo',
+    ASSETS: liveAudiencesOnlyAssets(),
   } as import('../index').Env;
 }
 

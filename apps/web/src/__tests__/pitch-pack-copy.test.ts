@@ -23,7 +23,8 @@ describe('pitch pack copy', () => {
       runId: 'demo',
     } as PitchPackSnapshot;
     expect(pitchBriefKindLabel(snapshot)).toBe('Sample leasing brief');
-    expect(pitchDateMetaLine(snapshot)).toMatch(/Sample pitch from data snapshot of Oct 23, 2026/);
+    expect(pitchDateMetaLine(snapshot)).toMatch(/Data snapshot of Oct 23, 2026/);
+    expect(pitchDateMetaLine(snapshot)).not.toMatch(/Sample pitch from/);
     expect(pitchDateMetaLine(snapshot)).not.toMatch(/^Prepared /);
   });
 
@@ -71,6 +72,9 @@ describe('pitch pack copy', () => {
 
   it('hides rank-only and duplicate nearest-store why lines', () => {
     expect(shouldShowStoredWhyLine('Qloo rank #8 (top 5%) in Pearl Street')).toBe(false);
+    expect(
+      shouldShowStoredWhyLine('Ulta: LeaseUp rank #26 (top 12% of 224 brands) for Pearl Street')
+    ).toBe(false);
     expect(shouldShowStoredWhyLine('Nearest IKEA is 33.8 km from this pin.')).toBe(false);
     expect(isNearestStoreDistanceLine('Nearest IKEA is 33.8 km from this pin.')).toBe(true);
     expect(shouldShowStoredWhyLine('Strong co-tenancy with local apparel')).toBe(true);

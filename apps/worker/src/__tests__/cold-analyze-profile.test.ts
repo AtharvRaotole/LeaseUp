@@ -8,6 +8,7 @@ import {
   COLD_ANALYZE_ADDRESS,
 } from './helpers/cold-analyze-fetch-mock';
 import { installWorkersCacheApiStub } from './helpers/kv-counting';
+import { liveAudiencesOnlyAssets } from './helpers/analysis-test-env';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -37,6 +38,7 @@ function liveEnv() {
     CACHE: kv,
     APP_MODE: 'live',
     QLOO_API_KEY: 'test-key',
+    ASSETS: liveAudiencesOnlyAssets(),
   } as import('../index').Env;
 }
 
