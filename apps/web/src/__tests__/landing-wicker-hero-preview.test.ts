@@ -15,4 +15,11 @@ describe('landing hero Wicker preview', () => {
   it('recorded preview includes at least hero depth of prospects', () => {
     expect(LANDING_WICKER_PREVIEW.prospects.length).toBeGreaterThanOrEqual(HERO_TOP_N);
   });
+
+  it('recorded preview omits the ATP acronym and Wikidata QID coverage jargon', () => {
+    const blob = JSON.stringify(LANDING_WICKER_PREVIEW);
+    expect(blob).not.toMatch(/\bATP\b/);
+    expect(blob).not.toContain('Wikidata QID');
+    expect(blob).toContain('All The Places store data');
+  });
 });
