@@ -5,6 +5,13 @@ const DEMO_PITCH_BOULDER_ULTA_ID = 'demo-boulder-ulta';
 
 const UNICODE_DASH = /[\u2013\u2014]/;
 
+/** Matches `pitchFreshnessHonestyLine` without pinning calendar day or CI run date. */
+const USER_FACING_DATE = '[A-Z][a-z]{2} \\d{1,2}, \\d{4}';
+const PITCH_FRESHNESS_LINE = new RegExp(
+  `^Saved ${USER_FACING_DATE}\\. Store distances ` +
+    `(refreshed today|refreshed on open|refreshed ${USER_FACING_DATE}|from snapshot ${USER_FACING_DATE}|from saved snapshot)\\.$`
+);
+
 function isBenignConsoleError(text: string): boolean {
   return /favicon|404|devtools|Failed to load resource/i.test(text);
 }
