@@ -61,6 +61,10 @@ export function pitchBrandFitLines(
     },
   } as AnalysisResponse;
   const lines = whyBrandBulletLines(prospect, stubResults, snapshot.radiusKm);
+  if (prospect.nearestExistingStoreKm !== undefined) {
+    const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
+    lines.push(`Nearest ${name} is ${prospect.nearestExistingStoreKm.toFixed(1)} km away.`);
+  }
   for (const reason of prospect.reasons.slice(0, 3)) {
     if (shouldShowStoredWhyLine(reason)) lines.push(reason.trim());
   }

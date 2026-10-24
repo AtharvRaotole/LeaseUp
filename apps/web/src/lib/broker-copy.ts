@@ -7,6 +7,7 @@ import {
   cohortBlendLiftPpLabel,
 } from '@leaseup/fixtures';
 import { presentInTop10Count } from './hit-rate';
+import { searchVsAbsenceRadiusPlainLine } from './prospect-funnel-copy';
 
 const RANKING_EVAL_BLEND_PCT = formatP10PercentRounded(COHORT_EVAL_AGG.p10_blend);
 const RANKING_EVAL_CHAIN_PCT = formatP10PercentRounded(COHORT_EVAL_AGG.p10_chain);
@@ -27,8 +28,11 @@ export function tradeAreaLabel(radiusKm: number): string {
   return `${radiusKm} km area`;
 }
 
-export function tradeAreaTooltip(radiusKm: number): string {
-  return `We look for existing stores within ${radiusKm} km of your pin.`;
+export function tradeAreaTooltip(searchRadiusKm: number, absenceRadiusKm?: number): string {
+  if (absenceRadiusKm !== undefined) {
+    return searchVsAbsenceRadiusPlainLine(searchRadiusKm, absenceRadiusKm);
+  }
+  return `We look for existing stores within ${searchRadiusKm} km of your pin.`;
 }
 
 export function rankingBacktestStatLabel(backtest: BacktestResult): string {
@@ -60,6 +64,11 @@ export function brandsScoredStatTooltip(): string {
 /** Plain line when a taste tag or audience stands out in the trade area. */
 export function shopperInterestHighlight(interest: string): string {
   return `People near this site shop more for ${interest} than in a typical neighborhood`;
+}
+
+/** One-line form of a verified Qloo brand x local audience overlap (see whyBrandTaste). */
+export function audienceOverlapHighlight(audience: string): string {
+  return `Qloo's ${audience} audience ranks high for this brand and near this site`;
 }
 
 export function dataConfidenceStatTooltip(): string {

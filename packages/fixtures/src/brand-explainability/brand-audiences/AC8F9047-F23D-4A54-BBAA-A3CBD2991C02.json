@@ -1,0 +1,262 @@
+{
+  "brandEntityId": "AC8F9047-F23D-4A54-BBAA-A3CBD2991C02",
+  "brandName": "Vans",
+  "audiences": [
+    {
+      "entityId": "D4B24E84-C439-4D7C-B2DC-92F7C704DE76",
+      "name": "Sneakerheads",
+      "affinity": 0.8157919645309448
+    },
+    {
+      "entityId": "ED9B04EF-C693-44C8-82DE-C2B138710601",
+      "name": "Jewellery",
+      "affinity": 0.8082069754600525
+    },
+    {
+      "entityId": "42D6F3D0-AD4A-4AC8-B3EE-229775638336",
+      "name": "Art Collectibles",
+      "affinity": 0.7933566570281982
+    },
+    {
+      "entityId": "B966ABDA-92B7-4C91-B598-C65CE6013C9B",
+      "name": "Watch Collecting",
+      "affinity": 0.7832059264183044
+    },
+    {
+      "entityId": "40A2CD3E-0A56-4341-9996-9EF819D39398",
+      "name": "Watches",
+      "affinity": 0.7714828848838806
+    },
+    {
+      "entityId": "1D7AF41D-8ECF-414C-B6C9-7CA9FA276DBD",
+      "name": "Adrenaline Rushers",
+      "affinity": 0.7708176970481873
+    },
+    {
+      "entityId": "E1C2F640-4C29-4F79-AD75-82CDE3DB4622",
+      "name": "Exercising",
+      "affinity": 0.7700487971305847
+    },
+    {
+      "entityId": "ED8798A4-1EB1-4E53-80EA-4FD08BD3C148",
+      "name": "Gourmand Fine Dining",
+      "affinity": 0.7674657702445984
+    },
+    {
+      "entityId": "174B1FE8-CDCE-4896-ADF5-E59981B9AE95",
+      "name": "Spy Enthusiast",
+      "affinity": 0.7616258263587952
+    },
+    {
+      "entityId": "1F3BBF4D-D14C-4C1D-B9BD-8F8CDCEA55FA",
+      "name": "Street Fashion",
+      "affinity": 0.7558982372283936
+    },
+    {
+      "entityId": "DBDCB7B7-B015-425F-9C3E-619C9C4245EB",
+      "name": "Adventuring",
+      "affinity": 0.751526951789856
+    },
+    {
+      "entityId": "965CD575-A0AD-4128-88B6-DE0C599D644F",
+      "name": "Tattoos",
+      "affinity": 0.7467237114906311
+    },
+    {
+      "entityId": "F66B9D4E-1503-4BA1-8ABB-745652CA2A12",
+      "name": "Boutique Hotels",
+      "affinity": 0.7417217493057251
+    },
+    {
+      "entityId": "7553AEF3-0213-4419-8C17-E4CDF28B2BB0",
+      "name": "Vintage Apparel",
+      "affinity": 0.7389227151870728
+    },
+    {
+      "entityId": "FA88A1F6-8CEF-4F6A-8FD1-FE7A739052D7",
+      "name": "High Fashion",
+      "affinity": 0.7384648323059082
+    },
+    {
+      "entityId": "61D4EAAB-8591-4CCC-BEFC-5F0D18C4F3BD",
+      "name": "Music Festivals",
+      "affinity": 0.7356745004653931
+    },
+    {
+      "entityId": "7010BFFD-33F5-460C-8660-3E49C570FF47",
+      "name": "Perfume",
+      "affinity": 0.7267245650291443
+    },
+    {
+      "entityId": "107AE5DB-906C-430C-969E-3886C39BDD8C",
+      "name": "Motorcycles",
+      "affinity": 0.720495879650116
+    },
+    {
+      "entityId": "E8694D82-FE70-4EA5-A87B-53B90607EA75",
+      "name": "Baseball",
+      "affinity": 0.7190359234809875
+    },
+    {
+      "entityId": "DBF3D836-74E1-4A50-BAF7-6F3426ADA64A",
+      "name": "Engaged",
+      "affinity": 0.7179214954376221
+    },
+    {
+      "entityId": "1B095F7B-1A06-4F65-AE32-BB9E9EAC26D6",
+      "name": "Dance",
+      "affinity": 0.7178869247436523
+    },
+    {
+      "entityId": "7A1AEC8A-06B4-4834-B1E1-FD45648D9BE3",
+      "name": "Swimming",
+      "affinity": 0.7036240100860596
+    },
+    {
+      "entityId": "53E66B25-2B9E-4821-8257-65F66B62DD80",
+      "name": "Basketball",
+      "affinity": 0.7022245526313782
+    },
+    {
+      "entityId": "2D160ADC-1673-4D12-9530-D6E78DE07087",
+      "name": "Fishing",
+      "affinity": 0.6922465562820435
+    },
+    {
+      "entityId": "689CB6FD-E1A9-4B06-9932-3093B8F61A97",
+      "name": "Tennis",
+      "affinity": 0.6822081208229065
+    },
+    {
+      "entityId": "15D9D8DF-28AF-425A-AF2E-835DFB53E778",
+      "name": "Musician",
+      "affinity": 0.6787179708480835
+    },
+    {
+      "entityId": "31C1423A-6A88-4028-ADEC-C3042BE765B9",
+      "name": "American Football",
+      "affinity": 0.6776381134986877
+    },
+    {
+      "entityId": "F86C9FE1-16D1-4CFA-8E33-77AD4FEDBB60",
+      "name": "Foodie",
+      "affinity": 0.6742516756057739
+    },
+    {
+      "entityId": "73B662F7-7DB7-4D0C-A36B-2E8E75ACDF49",
+      "name": "Hiking",
+      "affinity": 0.6742257475852966
+    },
+    {
+      "entityId": "6BED625C-E312-47E9-A4B5-F978C7778269",
+      "name": "LGBTQ",
+      "affinity": 0.6738197207450867
+    },
+    {
+      "entityId": "109574B3-A21D-4935-AC94-1DC3C7B56BEC",
+      "name": "Sustainability",
+      "affinity": 0.6735432744026184
+    },
+    {
+      "entityId": "FB61D98E-C4BA-4959-A571-0861FD2AC850",
+      "name": "Climate Activism",
+      "affinity": 0.6693792939186096
+    },
+    {
+      "entityId": "8C44B7FB-384C-445D-8FB0-01AD0BB54248",
+      "name": "Soccer",
+      "affinity": 0.668688178062439
+    },
+    {
+      "entityId": "5F4CF648-08CD-4031-A17E-491E90A4DD4C",
+      "name": "Astrology",
+      "affinity": 0.6682994365692139
+    },
+    {
+      "entityId": "F488B2E4-21FE-4AFA-8B2E-0DA5A0F4E756",
+      "name": "Yoga",
+      "affinity": 0.6669690012931824
+    },
+    {
+      "entityId": "67A1B149-175D-4005-85E1-C0A395A1FA4F",
+      "name": "Architecture",
+      "affinity": 0.6614142060279846
+    },
+    {
+      "entityId": "616F4741-3864-41FD-BFCF-49B76AA025C8",
+      "name": "Education Issues",
+      "affinity": 0.6587101817131042
+    },
+    {
+      "entityId": "1C3735D4-FE2D-4CDE-811A-9B2BFE767DAD",
+      "name": "Meditation",
+      "affinity": 0.6581314206123352
+    },
+    {
+      "entityId": "AFA24856-F432-40E3-AADF-C939A033F77E",
+      "name": "Coffee",
+      "affinity": 0.6560407876968384
+    },
+    {
+      "entityId": "7F86E72A-AF3C-4AA9-B125-7155E9261466",
+      "name": "Home Decor",
+      "affinity": 0.6515485048294067
+    },
+    {
+      "entityId": "A8A43978-5291-46DC-8952-D58EDC7FF82B",
+      "name": "Black",
+      "affinity": 0.6466243267059326
+    },
+    {
+      "entityId": "2A7B1369-BF0D-46E2-AAEE-780817162FF4",
+      "name": "Christianity",
+      "affinity": 0.6432723999023438
+    },
+    {
+      "entityId": "663BAA0C-44CF-4794-8827-E36FBEF3E5F5",
+      "name": "Martial Arts",
+      "affinity": 0.6425122022628784
+    },
+    {
+      "entityId": "7819CC7E-FEAF-4FC6-B0D8-EFED92CD46AE",
+      "name": "Veganism",
+      "affinity": 0.6416051387786865
+    },
+    {
+      "entityId": "E47478B9-8ED2-449B-B854-6344059742E3",
+      "name": "Latino",
+      "affinity": 0.6387801766395569
+    },
+    {
+      "entityId": "FE2A1718-8970-46D1-947F-D23B199F906D",
+      "name": "Wrestling",
+      "affinity": 0.6318172216415405
+    },
+    {
+      "entityId": "AAAE9FAA-FE3D-4732-9E82-BD4CED485D60",
+      "name": "Outdoors",
+      "affinity": 0.6292427778244019
+    },
+    {
+      "entityId": "8F0407D3-64F3-47BF-A6B1-BA4C30465F71",
+      "name": "Health And Beauty",
+      "affinity": 0.6283616423606873
+    },
+    {
+      "entityId": "9D36D8C6-B39C-48AE-87A6-F63E59328577",
+      "name": "Racing",
+      "affinity": 0.6187983155250549
+    },
+    {
+      "entityId": "439B29E4-F9B2-4FA7-8095-123F6833DE5F",
+      "name": "Spirituality",
+      "affinity": 0.6186600923538208
+    }
+  ],
+  "provenance": {
+    "recordedAt": "2026-10-24T07:01:35.996Z",
+    "host": "https://hackathon.api.qloo.com",
+    "url": "https://hackathon.api.qloo.com/v2/insights?filter.type=urn%3Aaudience&signal.interests.entities=AC8F9047-F23D-4A54-BBAA-A3CBD2991C02&take=50",
+    "live": true
+  }
+}

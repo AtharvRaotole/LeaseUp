@@ -56,9 +56,13 @@ export const COLD_ANALYZE_PROFILE_BEFORE = {
   streamFirstRunningStepMs: 850,
 } as const;
 
-/** Same mock after parallel batches, overlap, and enrichment budget (this branch). */
+/**
+ * Same mock after parallel batches, overlap, and enrichment budget (this branch). Why-card taste now
+ * makes one brand-only audience call per unique brand plus one shared location-only call, instead of
+ * two brand+location calls per prospect.
+ */
 export const COLD_ANALYZE_PROFILE_AFTER = {
-  qlooHttp: 27,
+  qlooHttp: 10,
   overpassHttp: 0,
   analyzeWallMs: 1111,
   streamFirstRunningStepMs: 2,
@@ -93,10 +97,10 @@ describe('cold live analyze profile (fixtures only)', () => {
     expect(result.mode).toBe('live');
     expect(result.tasteDataStatus).not.toBe('unavailable');
     expect(stats.overpassHttp).toBe(COLD_ANALYZE_PROFILE_BEFORE.overpassHttp);
-    expect(stats.qlooHttp).toBe(COLD_ANALYZE_PROFILE_BEFORE.qlooHttp);
-    expect(stats.qlooHttp).toBe(
-      expectedMainInsightBatches() + 1 + result.prospects.length * 2
-    );
+    expect(stats.qlooHttp).toBe(COLD_ANALYZE_PROFILE_AFTER.qlooHttp);
+    const uniqueBrands = new Set(result.prospects.map((p) => p.brand.entityId)).size;
+    // main batches + shopper tags + brand-only audiences per unique brand + one location-only audiences
+    expect(stats.qlooHttp).toBe(expectedMainInsightBatches() + 1 + uniqueBrands + 1);
 
     // Wall time varies by runner; pin counts above and recorded BEFORE/AFTER constants below.
     expect(analyzeWallMs).toBeGreaterThan(0);
@@ -104,7 +108,7 @@ describe('cold live analyze profile (fixtures only)', () => {
   });
 
   it('documents measured before/after profile (same mock, recorded on da6f259 vs this branch)', () => {
-    expect(COLD_ANALYZE_PROFILE_AFTER.qlooHttp).toBe(COLD_ANALYZE_PROFILE_BEFORE.qlooHttp);
+    expect(COLD_ANALYZE_PROFILE_AFTER.qlooHttp).toBeLessThanOrEqual(COLD_ANALYZE_PROFILE_BEFORE.qlooHttp);
     expect(COLD_ANALYZE_PROFILE_AFTER.overpassHttp).toBe(COLD_ANALYZE_PROFILE_BEFORE.overpassHttp);
     expect(COLD_ANALYZE_PROFILE_AFTER.analyzeWallMs).toBeLessThan(
       COLD_ANALYZE_PROFILE_BEFORE.analyzeWallMs

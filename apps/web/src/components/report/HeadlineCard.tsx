@@ -13,19 +13,24 @@ import {
 import { presentInTop10Count } from '../../lib/hit-rate';
 import { absenceRadiusKm } from '../../lib/absence-radius';
 import { reportHeadlineLine } from '../../lib/report-headline-copy';
+import { searchVsAbsenceRadiusPlainLine } from '../../lib/prospect-funnel-copy';
 
 export function HeadlineCard({
   results,
   radiusKm,
   chipSlug,
   backtestOverride,
+  showStats = true,
 }: {
   results: AnalysisResponse;
   radiusKm: number;
   chipSlug?: string | null;
   backtestOverride?: AnalysisResponse['backtest'];
+  /** When false, only the headline renders (stats deferred for faster LCP). */
+  showStats?: boolean;
 }) {
   const area = placeHeadlineLabel(results.location, chipSlug);
+  const searchKm = results.prospectFunnel?.searchRadiusKm ?? radiusKm;
   const absenceKm = absenceRadiusKm(results, radiusKm);
   const activeBacktest = backtestOverride ?? results.backtest;
   const rankingCheckLabel = rankingBacktestStatLabel(activeBacktest);
@@ -44,46 +49,49 @@ export function HeadlineCard({
       <h2 className="font-display font-semibold text-h2 leading-snug text-ink md:text-title">
         {reportHeadlineLine(results, area, radiusKm)}
       </h2>
-      <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 md:mt-7 md:gap-4">
-        <StatTile
-          label="Ranking check"
-          mobileLabel="Rank check"
-          value={rankingCheckLabel}
-          subtitle={hitTieSubtitle ?? rankingBacktestStatSubtitle()}
-          mobileSubtitle="Top 10 vs stores nearby"
-          tooltip={rankingBacktestStatTooltip(absenceKm)}
-        />
-        <StatTile
-          label="Brands scored"
-          mobileLabel="Scored"
-          value={String(analyzed)}
-          subtitle="Chains ranked for this address"
-          mobileSubtitle="Ranked for this pin"
-          tooltip={brandsScoredStatTooltip()}
-        />
-        <StatTile
-          label="Pin confidence"
-          mobileLabel="Pin"
-          value={dataConfidenceLabel(results.dataQuality)}
-          subtitle={dataConfidenceSubtitle(results.dataQuality, results.location)}
-          mobileSubtitle="Address and trade area data"
-          tooltip={dataConfidenceStatTooltip()}
-        />
-      </div>
+      <p
+        className="mt-3 text-small leading-snug text-ink-3"
+        data-testid="report-search-absence-radius-line"
+      >
+        {searchVsAbsenceRadiusPlainLine(searchKm, absenceKm)}
+      </p>
+      {showStats && (
+        <div className="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3 md:mt-7 md:gap-4">
+          <StatTile
+            label="Ranking check"
+            value={rankingCheckLabel}
+            subtitle={hitTieSubtitle ?? rankingBacktestStatSubtitle()}
+            mobileSubtitle="Top 10 vs stores nearby"
+            tooltip={rankingBacktestStatTooltip(absenceKm)}
+          />
+          <StatTile
+            label="Brands scored"
+            value={String(analyzed)}
+            subtitle="Chains ranked for this address"
+            mobileSubtitle="Ranked for this pin"
+            tooltip={brandsScoredStatTooltip()}
+          />
+          <StatTile
+            label="Pin confidence"
+            value={dataConfidenceLabel(results.dataQuality)}
+            subtitle={dataConfidenceSubtitle(results.dataQuality, results.location)}
+            mobileSubtitle="Address and trade area data"
+            tooltip={dataConfidenceStatTooltip()}
+          />
+        </div>
+      )}
     </Card>
   );
 }
 
 function StatTile({
   label,
-  mobileLabel,
   value,
   subtitle,
   mobileSubtitle,
   tooltip,
 }: {
   label: string;
-  mobileLabel: string;
   value: string;
   subtitle: string;
   mobileSubtitle: string;
@@ -91,9 +99,8 @@ function StatTile({
 }) {
   return (
     <div className="flex min-w-0 flex-col rounded-control border border-border bg-surface-2 px-2.5 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-3.5">
-      <p className="flex min-h-[1.25rem] items-center gap-0.5 text-[10px] font-medium uppercase leading-tight tracking-wide text-ink-3 sm:text-meta md:text-label">
-        <span className="truncate md:hidden">{mobileLabel}</span>
-        <span className="hidden truncate md:inline">{label}</span>
+      <p className="flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[10px] font-medium uppercase leading-snug tracking-wide text-ink-3 sm:text-meta md:text-label">
+        <span className="min-w-0 flex-1 whitespace-normal">{label}</span>
         <InfoTooltip label={tooltip} />
       </p>
       <p className="mt-0.5 truncate text-body font-semibold tabular-nums text-ink sm:mt-1 sm:text-body-lg md:text-h3">

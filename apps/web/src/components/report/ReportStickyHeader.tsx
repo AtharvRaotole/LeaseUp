@@ -13,6 +13,7 @@ export function ReportStickyHeader({
   request,
   location,
   chipSlug,
+  absenceRadiusKm,
   onRadiusChange,
   onSharePitch,
   onRunProspecting,
@@ -20,6 +21,8 @@ export function ReportStickyHeader({
   request: AnalysisRequest;
   location: Location;
   chipSlug?: string | null;
+  /** Km for "already nearby" on the pitch list; when set, trade-area tooltip explains search vs absence. */
+  absenceRadiusKm?: number;
   onRadiusChange: (radius: number) => void;
   onSharePitch?: () => void;
   onRunProspecting?: () => void;
@@ -59,7 +62,7 @@ export function ReportStickyHeader({
           >
             {tradeAreaLabel(request.radius)}
           </button>
-          <InfoTooltip label={tradeAreaTooltip(request.radius)} />
+          <InfoTooltip label={tradeAreaTooltip(request.radius, absenceRadiusKm)} />
           {radiusOpen && (
             <div className="absolute right-0 top-full z-30 mt-2 rounded-card border border-border bg-surface p-3 shadow-pop">
               <SegmentedControl

@@ -25,7 +25,7 @@
 
 @media (max-width: 767px) {
   .report-content-enter {
-    animation: report-fade-in-mobile 160ms ease-out forwards;
+    animation: none;
   }
 }
 

@@ -1,0 +1,262 @@
+{
+  "brandEntityId": "C69202E6-9A83-4BD6-A720-ECAB9DB2AE52",
+  "brandName": "Michaels",
+  "audiences": [
+    {
+      "entityId": "604A723B-3E2C-4795-89AA-DF5BA0C3B3C5",
+      "name": "Arts Crafts",
+      "affinity": 0.808448851108551
+    },
+    {
+      "entityId": "D3839B31-2A5F-4DA3-8C04-528D9611039E",
+      "name": "Organic Ingredients",
+      "affinity": 0.7814090251922607
+    },
+    {
+      "entityId": "9130A837-ED3C-4BA9-9825-5D0D57D119CD",
+      "name": "Home Organization",
+      "affinity": 0.7657811641693115
+    },
+    {
+      "entityId": "B374F423-E1E6-4783-AA1E-48A6B2B5635F",
+      "name": "Discount Shoppers",
+      "affinity": 0.760036289691925
+    },
+    {
+      "entityId": "0E757BF5-3C77-41AF-AAB7-790AEB0505B7",
+      "name": "Finance Professional",
+      "affinity": 0.7178264260292053
+    },
+    {
+      "entityId": "2EFF1AB9-814F-48D2-B2DE-D418ED8385AE",
+      "name": "Avid Reader",
+      "affinity": 0.714137613773346
+    },
+    {
+      "entityId": "B48DAA8A-7398-4C76-9DB0-80E12669ABFD",
+      "name": "Mental Health",
+      "affinity": 0.7101118564605713
+    },
+    {
+      "entityId": "D1F0EE4A-FDB3-48DC-919C-5A94F3D4EC85",
+      "name": "Cooking",
+      "affinity": 0.7090752124786377
+    },
+    {
+      "entityId": "2A7B1369-BF0D-46E2-AAEE-780817162FF4",
+      "name": "Christianity",
+      "affinity": 0.7045397758483887
+    },
+    {
+      "entityId": "7819CC7E-FEAF-4FC6-B0D8-EFED92CD46AE",
+      "name": "Veganism",
+      "affinity": 0.688108503818512
+    },
+    {
+      "entityId": "439B29E4-F9B2-4FA7-8095-123F6833DE5F",
+      "name": "Spirituality",
+      "affinity": 0.6852490305900574
+    },
+    {
+      "entityId": "7F86E72A-AF3C-4AA9-B125-7155E9261466",
+      "name": "Home Decor",
+      "affinity": 0.685145378112793
+    },
+    {
+      "entityId": "E47478B9-8ED2-449B-B854-6344059742E3",
+      "name": "Latino",
+      "affinity": 0.6754179000854492
+    },
+    {
+      "entityId": "AFA24856-F432-40E3-AADF-C939A033F77E",
+      "name": "Coffee",
+      "affinity": 0.6741220951080322
+    },
+    {
+      "entityId": "F86C9FE1-16D1-4CFA-8E33-77AD4FEDBB60",
+      "name": "Foodie",
+      "affinity": 0.6735173463821411
+    },
+    {
+      "entityId": "8F0407D3-64F3-47BF-A6B1-BA4C30465F71",
+      "name": "Health And Beauty",
+      "affinity": 0.670044481754303
+    },
+    {
+      "entityId": "2EE4FA44-9A90-470F-839F-2CF54A273E59",
+      "name": "Fair Wages",
+      "affinity": 0.6670899987220764
+    },
+    {
+      "entityId": "22D0A7AF-7833-49F3-8E36-42E8D91EEC8B",
+      "name": "Parents With Young Children",
+      "affinity": 0.6633838415145874
+    },
+    {
+      "entityId": "B88B7B93-BD33-4910-B44E-24B06C6C8164",
+      "name": "Retirement",
+      "affinity": 0.6621657609939575
+    },
+    {
+      "entityId": "7A247E73-7190-4340-8EAD-227EEFB22780",
+      "name": "Medical Professional",
+      "affinity": 0.6609736084938049
+    },
+    {
+      "entityId": "67A1B149-175D-4005-85E1-C0A395A1FA4F",
+      "name": "Architecture",
+      "affinity": 0.6556174755096436
+    },
+    {
+      "entityId": "B3A035FD-0D99-4980-98FD-A5B81D7E402A",
+      "name": "Politically Progressive",
+      "affinity": 0.6531381011009216
+    },
+    {
+      "entityId": "1C3735D4-FE2D-4CDE-811A-9B2BFE767DAD",
+      "name": "Meditation",
+      "affinity": 0.652291476726532
+    },
+    {
+      "entityId": "9D25E87E-030C-4EE7-B049-F24967AAD596",
+      "name": "Racial Justice",
+      "affinity": 0.6511251926422119
+    },
+    {
+      "entityId": "2248A93C-17C0-4BCD-A671-19DB6BDB98D3",
+      "name": "Real Estate",
+      "affinity": 0.6392984986305237
+    },
+    {
+      "entityId": "A8A43978-5291-46DC-8952-D58EDC7FF82B",
+      "name": "Black",
+      "affinity": 0.6283789277076721
+    },
+    {
+      "entityId": "DBDCB7B7-B015-425F-9C3E-619C9C4245EB",
+      "name": "Adventuring",
+      "affinity": 0.627618670463562
+    },
+    {
+      "entityId": "3A9990DA-AA86-4934-AC8D-4088E91700AA",
+      "name": "News Junkie",
+      "affinity": 0.6244481801986694
+    },
+    {
+      "entityId": "E7EC95B5-91D3-4B36-90CD-868680D13C93",
+      "name": "Casual Escapists",
+      "affinity": 0.619904100894928
+    },
+    {
+      "entityId": "6BED625C-E312-47E9-A4B5-F978C7778269",
+      "name": "LGBTQ",
+      "affinity": 0.6159042716026306
+    },
+    {
+      "entityId": "E8694D82-FE70-4EA5-A87B-53B90607EA75",
+      "name": "Baseball",
+      "affinity": 0.6129238605499268
+    },
+    {
+      "entityId": "555258C9-2696-496A-B1C1-C46A6F7795C8",
+      "name": "Politically Conservative",
+      "affinity": 0.6106258630752563
+    },
+    {
+      "entityId": "61419C52-AA82-48FB-A68E-F873A417E040",
+      "name": "Single",
+      "affinity": 0.6105913519859314
+    },
+    {
+      "entityId": "784D31A2-99A5-4E8C-8B89-047B01760CC2",
+      "name": "Animal Issues",
+      "affinity": 0.6085611581802368
+    },
+    {
+      "entityId": "8371AF94-2F4C-4139-BC87-E3FBEA695D88",
+      "name": "Museums",
+      "affinity": 0.5967949628829956
+    },
+    {
+      "entityId": "AAAE9FAA-FE3D-4732-9E82-BD4CED485D60",
+      "name": "Outdoors",
+      "affinity": 0.5944883823394775
+    },
+    {
+      "entityId": "73B662F7-7DB7-4D0C-A36B-2E8E75ACDF49",
+      "name": "Hiking",
+      "affinity": 0.5924150347709656
+    },
+    {
+      "entityId": "20561289-536A-41EE-A841-23A6ED3D583B",
+      "name": "Hospitality Professional",
+      "affinity": 0.5903934836387634
+    },
+    {
+      "entityId": "109574B3-A21D-4935-AC94-1DC3C7B56BEC",
+      "name": "Sustainability",
+      "affinity": 0.5889508128166199
+    },
+    {
+      "entityId": "1B095F7B-1A06-4F65-AE32-BB9E9EAC26D6",
+      "name": "Dance",
+      "affinity": 0.5846053957939148
+    },
+    {
+      "entityId": "DA61B8AD-6D79-4B0C-BEA0-EC966C93902E",
+      "name": "AAPI",
+      "affinity": 0.5841907262802124
+    },
+    {
+      "entityId": "87A86EE9-5CA0-4C1F-8237-E3EE73C72281",
+      "name": "Islam",
+      "affinity": 0.5837846994400024
+    },
+    {
+      "entityId": "7D3C0540-10B0-42BB-93BE-676F0C37242F",
+      "name": "Retail Professional",
+      "affinity": 0.5835168957710266
+    },
+    {
+      "entityId": "FB61D98E-C4BA-4959-A571-0861FD2AC850",
+      "name": "Climate Activism",
+      "affinity": 0.5824975371360779
+    },
+    {
+      "entityId": "7CB916B9-1D27-4D76-8D97-2CC5950385CA",
+      "name": "Travel",
+      "affinity": 0.581002950668335
+    },
+    {
+      "entityId": "F488B2E4-21FE-4AFA-8B2E-0DA5A0F4E756",
+      "name": "Yoga",
+      "affinity": 0.5807783603668213
+    },
+    {
+      "entityId": "616F4741-3864-41FD-BFCF-49B76AA025C8",
+      "name": "Education Issues",
+      "affinity": 0.5807351469993591
+    },
+    {
+      "entityId": "14F62034-5661-4B52-822B-D2D88A3D1B02",
+      "name": "Wine Enthusiast",
+      "affinity": 0.579050600528717
+    },
+    {
+      "entityId": "5F4CF648-08CD-4031-A17E-491E90A4DD4C",
+      "name": "Astrology",
+      "affinity": 0.5775646567344666
+    },
+    {
+      "entityId": "EEFA88EB-0D5D-4290-B0AB-F7840DE970DB",
+      "name": "Running",
+      "affinity": 0.5720098614692688
+    }
+  ],
+  "provenance": {
+    "recordedAt": "2026-10-24T07:01:36.495Z",
+    "host": "https://hackathon.api.qloo.com",
+    "url": "https://hackathon.api.qloo.com/v2/insights?filter.type=urn%3Aaudience&signal.interests.entities=C69202E6-9A83-4BD6-A720-ECAB9DB2AE52&take=50",
+    "live": true
+  }
+}

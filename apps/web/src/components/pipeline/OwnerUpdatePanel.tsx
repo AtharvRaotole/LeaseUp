@@ -7,7 +7,7 @@ import {
   shareOwnerUpdate,
 } from '../../lib/owner-update-api';
 
-export function OwnerUpdatePanel() {
+export function OwnerUpdatePanel({ embedded = false }: { embedded?: boolean }) {
   const [properties, setProperties] = useState<string[]>([]);
   const [selected, setSelected] = useState('');
   const [preview, setPreview] = useState<OwnerUpdateSnapshot | null>(null);
@@ -38,16 +38,20 @@ export function OwnerUpdatePanel() {
 
   return (
     <section
-      className="mt-10 rounded-card border border-border bg-surface p-5"
+      className={
+        embedded
+          ? 'px-6 py-6 md:px-8 md:py-7'
+          : 'mt-10 rounded-[1.25rem] border border-border bg-surface p-6 md:p-7'
+      }
       data-testid="owner-update-panel"
     >
-      <h2 className="font-display font-semibold text-xl text-ink">Owner update</h2>
-      <p className="mt-1 text-sm text-ink-2">
+      <h2 className="font-display text-title font-semibold tracking-tight text-ink">Owner update</h2>
+      <p className="mt-2 text-body leading-relaxed text-ink-2">
         One-page status for the landlord: brands contacted, pipeline stage, and next steps from your real cards.
       </p>
 
       {properties.length === 0 ? (
-        <p className="mt-4 text-sm text-ink-2" data-testid="owner-update-empty">
+        <p className="mt-4 text-body text-ink-2" data-testid="owner-update-empty">
           Add prospects to the pipeline from a report to generate an owner update.
         </p>
       ) : (
