@@ -1185,9 +1185,9 @@ export class AnalysisService {
       prospects: [],
       dataQuality: 'insufficient',
       warnings: [
-        'Insufficient Qloo data for this location',
-        'This area may be too small, too new, or outside Qloo\'s coverage',
-        'Try a nearby larger city or well-known neighborhood',
+        'No taste-ranked brands for this pin yet',
+        'Very rural or remote sites often sit outside our store and taste coverage',
+        'Try a nearby town with retail, widen the radius, or pick a demo example on the home page',
       ],
       runId,
       timestamp: this.mode === 'demo' ? DEMO_DATA_RECORDED_AT : new Date().toISOString(),

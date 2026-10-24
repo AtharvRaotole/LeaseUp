@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AnalysisService } from '../services/analysis';
 import { getStoreBrandIds } from '@leaseup/fixtures';
+import { qlooUnavailableError } from '../providers/qloo-fetch';
 import { TASTE_UNAVAILABLE_RANKING_NOTICE } from '../lib/qloo-chain-fallback';
 import { installWorkersCacheApiStub } from './helpers/kv-counting';
 import { COLD_ANALYZE_ADDRESS } from './helpers/cold-analyze-fetch-mock';
@@ -132,5 +133,12 @@ describe('analyze Qloo resilience (fixtures only)', () => {
     expect(result.tasteDataStatus).toBe('unavailable');
     expect(result.rankingNotice).toBe(TASTE_UNAVAILABLE_RANKING_NOTICE);
     expect(result.prospects.length).toBeGreaterThan(0);
+  });
+
+  it('analyzeStreamErrorPayload preserves QLOO_UNAVAILABLE code', async () => {
+    const { analyzeStreamErrorPayload } = await import('../lib/analyze-stream-error');
+    const payload = analyzeStreamErrorPayload(qlooUnavailableError());
+    expect(payload.code).toBe('QLOO_UNAVAILABLE');
+    expect(payload.message).toMatch(/Taste data/i);
   });
 });

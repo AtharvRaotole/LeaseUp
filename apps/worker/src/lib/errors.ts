@@ -39,3 +39,13 @@ export class GeocodeNotFoundError extends Error {
     this.name = 'GeocodeNotFoundError';
   }
 }
+
+export class GeocodeInputError extends Error {
+  readonly code: 'GEOCODE_PO_BOX' | 'GEOCODE_NON_US' | 'GEOCODE_UNRECOGNIZED';
+
+  constructor(code: GeocodeInputError['code'], message: string) {
+    super(message);
+    this.name = 'GeocodeInputError';
+    this.code = code;
+  }
+}

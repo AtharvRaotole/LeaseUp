@@ -4,6 +4,7 @@ import { ZodError } from 'zod';
 import {
   ConfigurationError,
   GeocodeAmbiguousError,
+  GeocodeInputError,
   GeocodeNotFoundError,
   UpstreamError,
 } from '../lib/errors';
@@ -63,6 +64,17 @@ export const errorHandler: ErrorHandler<{ Bindings: Env }> = (err: Error, c: Con
         code: err.code,
       },
       404
+    );
+  }
+
+  if (err instanceof GeocodeInputError) {
+    return jsonError(
+      c,
+      {
+        error: err.message,
+        code: err.code,
+      },
+      400
     );
   }
 
