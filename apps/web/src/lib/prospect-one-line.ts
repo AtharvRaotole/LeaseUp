@@ -3,6 +3,11 @@ import { tasteFitMatchHerePhrase } from './fit-display';
 import { isNonRetailTasteName } from '@leaseup/fixtures';
 import { nearestChainStoreDistanceUnconfirmedLine } from '@leaseup/fixtures';
 import { localAudiencePitchHighlight } from './broker-copy';
+import {
+  nearestStoreDistanceAttribution,
+  storeDistanceDataAsOfFromAnalysis,
+  storeDistancesSnapshotOnlyFromAnalysis,
+} from './store-distance-copy';
 
 /** Broker-facing one-line summary built only from fields on the prospect payload. */
 export function prospectOneLineReason(
@@ -22,7 +27,15 @@ export function prospectOneLineReason(
   } else if (prospect.nearestExistingStoreKm !== undefined) {
     const km = prospect.nearestExistingStoreKm;
     const label = km < 10 ? km.toFixed(1) : String(Math.round(km));
-    parts.push(`Nearest tracked chain store is ${label} km away`);
+    if (storeDistancesSnapshotOnlyFromAnalysis(results)) {
+      const attribution = nearestStoreDistanceAttribution(
+        true,
+        storeDistanceDataAsOfFromAnalysis(results)
+      );
+      parts.push(`Nearest tracked chain store is ${label} km away (${attribution})`);
+    } else {
+      parts.push(`Nearest tracked chain store is ${label} km away`);
+    }
   }
 
   const pairingLine = prospect.coTenancyLine?.trim();
