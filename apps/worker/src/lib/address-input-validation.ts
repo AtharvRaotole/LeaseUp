@@ -52,20 +52,25 @@ export function rejectAddressInput(address: string): AddressInputRejection | nul
   const streetPart = parts[0] ?? trimmed;
   const hasStreetNumber = /\d/.test(streetPart);
   const hasStreetSuffix = STREET_SUFFIX_RE.test(streetPart);
-  const looksLikeAddress = parts.length >= 2 && (hasZip || hasUsState);
   const looksLikeStreetLine =
-    hasStreetNumber || (hasStreetSuffix && streetPart.length >= 6);
+    hasStreetNumber || (hasStreetSuffix && streetPart.length >= 4);
 
-  if (!looksLikeAddress || !looksLikeStreetLine) {
+  if (!looksLikeStreetLine) {
     const lettersOnly = trimmed.replace(/[^a-zA-Z]/g, '');
     const vowels = lettersOnly.replace(/[^aeiouAEIOU]/g, '').length;
     const gibberish =
-      trimmed.length < 12 ||
+      trimmed.length < 8 ||
       (lettersOnly.length >= 6 && vowels / Math.max(lettersOnly.length, 1) < 0.15);
-    if (gibberish || !looksLikeAddress) {
+    if (gibberish) {
       return { code: 'GEOCODE_UNRECOGNIZED', message: GEOCODE_UNRECOGNIZED_MESSAGE };
     }
   }
 
-  return null;
+  const wellFormedUs = parts.length >= 2 && (hasZip || hasUsState) && looksLikeStreetLine;
+  if (wellFormedUs) return null;
+
+  // Partial US typing (Main St, 1574 N Milwaukee, Chicago) goes to Nominatim for confirm or not-found.
+  if (looksLikeStreetLine) return null;
+
+  return { code: 'GEOCODE_UNRECOGNIZED', message: GEOCODE_UNRECOGNIZED_MESSAGE };
 }

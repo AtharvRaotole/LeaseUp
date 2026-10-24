@@ -30,4 +30,9 @@ describe('rejectAddressInput', () => {
       rejectAddressInput('1574 N Milwaukee Ave, Chicago, IL 60622')
     ).toBeNull();
   });
+
+  it('allows partial street lines for geocoder disambiguation', () => {
+    expect(rejectAddressInput('Main St')).toBeNull();
+    expect(rejectAddressInput('1574 N Milwaukee Ave, Chicago')).toBeNull();
+  });
 });
