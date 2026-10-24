@@ -92,7 +92,7 @@ describe('runProspectingAgentPlanner', () => {
   it('falls back to DAG mode when planner is unavailable', async () => {
     const env = {
       DB: {} as D1Database,
-      CACHE: { get: async () => null, put: async () => undefined } as KVNamespace,
+      CACHE: { get: async () => null, put: async () => undefined } as unknown as KVNamespace,
       APP_MODE: 'live',
       OPENAI_API_KEY: '',
     } as import('../index').Env;
@@ -105,7 +105,7 @@ describe('runProspectingAgentPlanner', () => {
       },
       radiusKm: 10,
       runId: 'no-planner',
-      qloo: { getBrandInsights: async () => [] } as import('../providers/qloo').QlooClient,
+      qloo: { getBrandInsights: async () => [] } as unknown as import('../providers/qloo').QlooClient,
       planner: null,
     });
 

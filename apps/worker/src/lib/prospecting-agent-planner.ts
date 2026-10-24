@@ -20,20 +20,25 @@ import {
   type ProspectingAgentToolContext,
   type ProspectingAgentToolName,
 } from './prospecting-agent-tools';
-
-export type ProspectingAgentStepLog = {
-  stepIndex: number;
-  reason: string;
-  tool: ProspectingAgentToolName;
-  toolArgs: Record<string, unknown>;
-  resultSummary: string;
-  durationMs: number;
-};
+import {
+  absenceRadiusKmForLocation,
+  applyProspectingAgentToolToState,
+  createProspectingAgentState,
+  toProspectingAgentDagHooks,
+  type ProspectingAgentAccumulatedState,
+  type ProspectingAgentDagHooks,
+  type ProspectingAgentPlannerKind,
+  type ProspectingAgentStepLog,
+} from './prospecting-agent-state';
+import { demoFixtureStratum } from '@leaseup/fixtures/worker';
 
 export type ProspectingAgentPlanResult = {
   mode: 'agent' | 'dag_fallback';
   summary: string;
   steps: ProspectingAgentStepLog[];
+  state: ProspectingAgentAccumulatedState;
+  dagHooks: ProspectingAgentDagHooks;
+  plannerQlooCalls: number;
   fallbackReason?: string;
 };
 
@@ -204,11 +209,10 @@ export class DemoProspectingPlannerClient implements ProspectingPlannerClient {
     if (this.turn === 0) {
       this.turn += 1;
       return {
-        assistantReason: 'Baseline taste read; confirm Qloo panel depth for this site.',
         toolCalls: [
           {
             name: 'qloo_brand_insights',
-            reason: 'Initial affinity panel before store absence scan.',
+            reason: 'Rule: fetch affinity panel before absence scan.',
             arguments: { take: 50 },
           },
         ],
@@ -219,13 +223,14 @@ export class DemoProspectingPlannerClient implements ProspectingPlannerClient {
     if (this.turn === 1 && fixtureId) {
       this.turn += 1;
       const candidate =
-        wickerparkFixture.insights.find((r) => r.affinity_rank <= 5)?.entity_id ?? topEntity;
+        fixtureId === 'wicker'
+          ? WICKER_NEAREST_VERIFY_ENTITY
+          : wickerparkFixture.insights.find((r) => r.affinity_rank <= 5)?.entity_id ?? topEntity;
       return {
-        assistantReason: 'Dense urban stratum; verify nearest store for a top-ranked candidate.',
         toolCalls: [
           {
             name: 'nearest_store_check',
-            reason: 'ATP/OSM may disagree on Chicago retail corridors.',
+            reason: 'Rule: reconcile nearest store for a top-ranked candidate on dense sites.',
             arguments: { entityId: candidate },
           },
         ],
@@ -236,14 +241,15 @@ export class DemoProspectingPlannerClient implements ProspectingPlannerClient {
     if (this.turn === 2) {
       this.turn += 1;
       const entityId =
-        (input.stepsSoFar.find((s) => s.tool === 'nearest_store_check')?.toolArgs.entityId as string) ??
-        wickerparkFixture.insights[0]?.entity_id;
+        fixtureId === 'wicker'
+          ? WICKER_STRATUM_BOOST_ENTITY
+          : ((input.stepsSoFar.find((s) => s.tool === 'nearest_store_check')?.toolArgs
+              .entityId as string) ?? wickerparkFixture.insights[0]?.entity_id);
       return {
-        assistantReason: 'Load stratum-specific trade-area enrichment when panel is thin.',
         toolCalls: [
           {
             name: 'enrich_site_stratum',
-            reason: 'Attach verified local audience overlap for pitch reasons.',
+            reason: 'Rule: attach stratum trade-area taste for pitch reasons.',
             arguments: entityId ? { entityId } : {},
           },
         ],
@@ -275,15 +281,31 @@ export async function runProspectingAgentPlanner(params: {
     createOpenAiProspectingPlannerClient(params.env) ??
     (mode === 'demo' && fixtureId ? new DemoProspectingPlannerClient() : null);
 
+  const emptyState = createProspectingAgentState();
+
   if (!planner) {
     return {
       mode: 'dag_fallback',
       summary: 'OpenAI planner unavailable; using fixed analysis pipeline.',
       steps: [],
+      state: emptyState,
+      dagHooks: toProspectingAgentDagHooks(emptyState),
+      plannerQlooCalls: 0,
       fallbackReason: 'no_planner',
     };
   }
 
+  const plannerKind: ProspectingAgentPlannerKind =
+    planner instanceof OpenAiProspectingPlannerClient ? 'model' : 'rule';
+
+  const siteStratum = fixtureId ? demoFixtureStratum(fixtureId) : 'urban';
+  const absenceRadiusKm = absenceRadiusKmForLocation(
+    params.location.address,
+    params.radiusKm,
+    siteStratum
+  );
+
+  const state = createProspectingAgentState();
   const ctx: ProspectingAgentToolContext = {
     env: params.env,
     location: params.location,
@@ -291,6 +313,7 @@ export async function runProspectingAgentPlanner(params: {
     runId: params.runId,
     qloo: params.qloo,
     mode,
+    state,
   };
 
   const steps: ProspectingAgentStepLog[] = [];
@@ -325,7 +348,11 @@ export async function runProspectingAgentPlanner(params: {
               const skipSummary = 'Skipped; Qloo budget exhausted. DAG will run next.';
               steps.push({
                 stepIndex: steps.length,
-                reason: 'Qloo call budget reached',
+                planner: plannerKind,
+                reason:
+                  plannerKind === 'rule'
+                    ? 'Rule: stop when Qloo call budget is reached.'
+                    : 'Qloo call budget reached',
                 tool: call.name,
                 toolArgs: call.arguments,
                 resultSummary: skipSummary,
@@ -340,8 +367,16 @@ export async function runProspectingAgentPlanner(params: {
             const t0 = Date.now();
             const result = await executeProspectingAgentTool(call, ctx);
             qlooCalls += result.qlooCalls;
+            applyProspectingAgentToolToState(
+              state,
+              call,
+              result,
+              absenceRadiusKm,
+              ctx.lastInsights
+            );
             steps.push({
               stepIndex: steps.length,
+              planner: plannerKind,
               reason: call.reason,
               tool: call.name,
               toolArgs: { ...call.arguments, ...result.payload },
@@ -368,17 +403,33 @@ export async function runProspectingAgentPlanner(params: {
       mode: 'dag_fallback',
       summary: 'Planner timed out or failed; using fixed analysis pipeline.',
       steps,
+      state,
+      dagHooks: toProspectingAgentDagHooks(state),
+      plannerQlooCalls: qlooCalls,
       fallbackReason: (err as Error).message,
     };
   }
 
   const summary =
     steps.length > 0
-      ? `Agent ran ${steps.length} tool step(s); ${qlooCalls} Qloo call(s).`
+      ? `Agent ran ${steps.length} tool step(s); ${qlooCalls} Qloo call(s); results feed analysis.`
       : 'Agent finished with no extra tools; DAG provides full analysis.';
 
-  return { mode: 'agent', summary, steps };
+  return {
+    mode: 'agent',
+    summary,
+    steps,
+    state,
+    dagHooks: toProspectingAgentDagHooks(state),
+    plannerQlooCalls: qlooCalls,
+  };
 }
 
 /** Demo wicker address for e2e parity (deterministic planner). */
 export const PROSPECTING_AGENT_DEMO_ADDRESS = DEMO_CHIP_ADDRESSES.wicker;
+
+/** Wicker pitch prospect with a reconciled near store (planner exclusion changes the DAG list). */
+const WICKER_NEAREST_VERIFY_ENTITY = '2D890327-8794-4C5A-898F-FFF0323325CF';
+const WICKER_STRATUM_BOOST_ENTITY = 'D3310425-7161-41FC-8C2C-5435AF0F0A5B';
+
+export type { ProspectingAgentStepLog } from './prospecting-agent-state';

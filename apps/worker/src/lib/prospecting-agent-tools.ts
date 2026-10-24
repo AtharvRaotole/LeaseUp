@@ -17,6 +17,7 @@ import { createStoreCatalog } from '../services/store-catalog';
 import type { OsmSnapshotCatalog } from '../services/osm-snapshot-catalog';
 import { OsmSnapshotCatalog as OsmCatalogClass } from '../services/osm-snapshot-catalog';
 import { getResponseCache } from './worker-cache';
+import type { ProspectingAgentAccumulatedState } from './prospecting-agent-state';
 
 export const PROSPECTING_AGENT_TOOL_NAMES = [
   'qloo_brand_insights',
@@ -49,6 +50,7 @@ export type ProspectingAgentToolContext = {
   mode: 'live' | 'demo';
   /** Last insights from qloo_brand_insights or chain_size_fallback (for planner context). */
   lastInsights?: QlooInsight[];
+  state: ProspectingAgentAccumulatedState;
 };
 
 function buildQlooLocation(
@@ -97,6 +99,7 @@ export async function executeProspectingAgentTool(
         runId: ctx.runId,
       });
       ctx.lastInsights = rows;
+      ctx.state.insights = rows;
       return {
         summary: `Qloo returned ${rows.length} brand insights (take=${take}).`,
         qlooCalls: 1,
@@ -137,6 +140,8 @@ export async function executeProspectingAgentTool(
     case 'chain_size_fallback': {
       const rows = buildChainSizeInsightsFromCatalog(catalog);
       ctx.lastInsights = rows;
+      ctx.state.insights = rows;
+      ctx.state.forceChainSizeRanking = true;
       return {
         summary: `Chain-size fallback panel: ${rows.length} brands ordered by national store count.`,
         qlooCalls: 0,
@@ -166,12 +171,16 @@ export async function executeProspectingAgentTool(
       );
       const audienceCount = taste?.audiences?.length ?? 0;
       const usedQloo = !fixtureId && audienceCount > 0;
+      ctx.state.stratumBoostEntityIds.add(entityId);
+      if (taste && audienceCount > 0) {
+        ctx.state.preloadedTradeAreaTaste.set(entityId, taste);
+      }
       return {
         summary: audienceCount
           ? `Stratum ${stratum}: ${audienceCount} verified local audience overlap(s) for brand ${entityId}.`
           : `Stratum ${stratum}: no verified trade-area taste overlap for ${entityId}.`,
         qlooCalls: usedQloo ? 1 : 0,
-        payload: { stratum, entityId, audienceCount },
+        payload: { stratum, entityId, audienceCount, tradeAreaTaste: taste },
       };
     }
     default:

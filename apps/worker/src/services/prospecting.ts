@@ -23,12 +23,16 @@ import {
 import { rankGeocodeCandidates } from '../lib/geocode-rank';
 import { displayBrandName } from '../lib/brand-display';
 import { getResponseCache } from '../lib/worker-cache';
-import { QlooClient } from '../providers/qloo';
+import { createQlooRunAccounting, QlooClient } from '../providers/qloo';
 import { runProspectingAgentPlanner } from '../lib/prospecting-agent-planner';
 import {
   PROSPECTING_AGENT_MAX_QLOO_CALLS,
   PROSPECTING_AGENT_MAX_STEPS,
 } from '../lib/analysis-step-budget';
+import {
+  consumeLiveQlooJudgeQuota,
+  liveQlooJudgeDailyCap,
+} from '../lib/live-qloo-judge-quota';
 
 const DEFAULT_NOMINATIM_CONTACT =
   'LeaseUp/1.0 (+https://github.com/AtharvRaotole/LeaseUp)';
@@ -237,7 +241,18 @@ export class ProspectingService {
       await this.save(job);
       await onStep?.(job);
 
-      const qloo = new QlooClient(this.env);
+      if (this.mode === 'live') {
+        const nowSec = Math.floor(Date.now() / 1000);
+        await consumeLiveQlooJudgeQuota(
+          this.db,
+          liveQlooJudgeDailyCap(this.env),
+          nowSec
+        );
+      }
+
+      const qlooAccounting = createQlooRunAccounting();
+      const qloo = new QlooClient(this.env, qlooAccounting);
+      const qlooLogicalBeforePlanner = qloo.getLogicalCallCount();
       const plan = await runProspectingAgentPlanner({
         env: this.env,
         location: job.confirmedLocation!,
@@ -245,6 +260,7 @@ export class ProspectingService {
         runId,
         qloo,
       });
+      const qlooLogicalAfterPlanner = qloo.getLogicalCallCount();
 
       await this.patchStep(job, 'agent_plan', {
         status: 'complete',
@@ -258,6 +274,12 @@ export class ProspectingService {
             maxQlooCalls: PROSPECTING_AGENT_MAX_QLOO_CALLS,
           },
           agentSteps: plan.steps,
+          dagHooksApplied: plan.mode === 'agent',
+          qlooLogicalCalls: {
+            beforePlanner: qlooLogicalBeforePlanner,
+            afterPlanner: qlooLogicalAfterPlanner,
+            plannerDelta: qlooLogicalAfterPlanner - qlooLogicalBeforePlanner,
+          },
         },
       });
       await this.save(job);
@@ -279,8 +301,26 @@ export class ProspectingService {
           });
           await this.save(job!);
           await onStep?.(job!);
+        },
+        {
+          ...(plan.mode === 'agent' ? { agentDagHooks: plan.dagHooks } : {}),
+          qlooClient: qloo,
+          judgeQuotaAlreadyConsumed: this.mode === 'live',
         }
       );
+
+      const qlooLogicalAfterFullRun = qloo.getLogicalCallCount();
+      const agentStep = job.steps.find((s) => s.id === 'agent_plan');
+      if (agentStep?.detail) {
+        agentStep.detail = {
+          ...agentStep.detail,
+          qlooLogicalCalls: {
+            ...(agentStep.detail.qlooLogicalCalls as Record<string, number>),
+            afterFullRun: qlooLogicalAfterFullRun,
+          },
+        };
+        await this.save(job);
+      }
 
       job.analysisRunId = runId;
 
