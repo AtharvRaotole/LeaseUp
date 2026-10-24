@@ -58,7 +58,7 @@ export const FALSE_POSITIVE_AUDIT_SITES: FalsePositiveAuditSite[] = [
   },
   {
     id: 'bleecker',
-    kind: 'demo_chip',
+    kind: 'eval_recorded',
     label: '350 Bleecker St demo pin',
     address: BLEECKER_NYC.address,
     lat: BLEECKER_NYC.latitude,
