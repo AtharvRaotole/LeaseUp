@@ -75,7 +75,7 @@ describe('prospectOneLineReason', () => {
       10
     );
     expect(line).not.toContain('Hotel');
-    expect(line).toContain('Shoppers here also favor Health & Beauty');
+    expect(line).toContain('Popular here with Health & Beauty');
   });
 
   it('prefers co-tenancy line over shopper-favor fallback', () => {
@@ -90,7 +90,7 @@ describe('prospectOneLineReason', () => {
       10
     );
     expect(line).toContain('Pairs well with Target nearby');
-    expect(line).not.toContain('Shoppers here also favor');
+    expect(line).not.toContain('Popular here with');
     expect(line).not.toContain('Cooking');
   });
 
@@ -123,7 +123,7 @@ describe('prospectOneLineReason', () => {
       10
     );
     expect(a).not.toBe(b);
-    expect(a).toContain('Shoppers here also favor Sneakerheads');
+    expect(a).toContain('Popular here with Sneakerheads');
     expect(b).toContain('Top 20% local match here');
     expect(b).not.toContain('Category fit');
   });

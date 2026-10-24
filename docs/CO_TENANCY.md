@@ -6,7 +6,7 @@ The pairing uses `query.explainability["signal.interests.entities"]` on the pitc
 (per-incumbent share). `query.affinity` is flat (about 0.9 for every brand) and is not used.
 Lines are shown only when an incumbent clearly stands out (see `apps/worker/src/lib/co-tenancy-pairing.ts`).
 
-When no co-tenancy line qualifies, the pitch row may show `Shoppers here also favor {audience}` only when
+When no co-tenancy line qualifies, the pitch row may show `Popular here with {audience}` only when
 that audience comes from verified brand x location overlap in `whyBrandTaste` (live-audiences recordings).
 
 Record with a live API key (no mocks). Pitches and incumbents come from the local demo worker so

@@ -1,7 +1,7 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
 import { tasteFitMatchHerePhrase } from './fit-display';
 import { isNonRetailTasteName } from '@leaseup/fixtures';
-import { shoppersAlsoFavorHighlight } from './broker-copy';
+import { localAudiencePitchHighlight } from './broker-copy';
 
 /** Broker-facing one-line summary built only from fields on the prospect payload. */
 export function prospectOneLineReason(
@@ -30,7 +30,7 @@ export function prospectOneLineReason(
     // non-retail theme such as Hotel or Self Help.
     const tasteSignal = prospect.whyBrandTaste?.signals?.find((s) => !isNonRetailTasteName(s));
     if (tasteSignal) {
-      parts.push(shoppersAlsoFavorHighlight(tasteSignal.name.trim()));
+      parts.push(localAudiencePitchHighlight(tasteSignal.name.trim()));
     }
   }
 
