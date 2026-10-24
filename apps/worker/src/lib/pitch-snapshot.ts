@@ -2,6 +2,10 @@ import type { AnalysisResponse, PitchCreate, PitchPackSnapshot } from '@leaseup/
 import { PitchPackSnapshotSchema } from '@leaseup/contracts';
 import { displayBrandName } from './brand-display';
 import { formatFitsStorefront } from './storefront-format';
+import {
+  osmSnapshotDisplayLabel,
+  osmSnapshotRecordedAt,
+} from '../services/osm-snapshot-catalog';
 
 function buildWhyLine(
   prospect: PitchCreate['results']['prospects'][0],
@@ -91,5 +95,9 @@ export function buildDemoBoulderUltaPitchSnapshot(results: AnalysisResponse): Pi
       snapshot.prospects = reordered;
     }
   }
+  const osmRecorded = osmSnapshotRecordedAt();
+  snapshot.analysisTimestamp = osmRecorded;
+  snapshot.osmSnapshotRecordedAt = osmRecorded;
+  snapshot.osmSnapshotLabel = osmSnapshotDisplayLabel();
   return PitchPackSnapshotSchema.parse(snapshot);
 }

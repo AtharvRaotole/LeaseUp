@@ -5,6 +5,7 @@ import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 import { PitchPackSnapshotSchema } from '@leaseup/contracts';
 import { AnalysisService } from '../services/analysis';
 import { buildDemoBoulderUltaPitchSnapshot } from '../lib/pitch-snapshot';
+import { liveAudiencesOnlyAssets } from './helpers/analysis-test-env';
 
 const db = {
   prepare: () => {
@@ -18,10 +19,13 @@ const db = {
 } as unknown as D1Database;
 
 describe('fixture generator', () => {
-  it.skip('writes boulder ulta demo pitch json', async () => {
+  it('writes boulder ulta demo pitch json when GEN_DEMO_PITCH_BOULDER=1', async () => {
+    if (process.env.GEN_DEMO_PITCH_BOULDER !== '1') return;
     const service = new AnalysisService({
       DB: db,
+      CACHE: { get: async () => null, put: async () => undefined } as unknown as KVNamespace,
       APP_MODE: 'demo',
+      ASSETS: liveAudiencesOnlyAssets(),
     } as import('../index').Env);
     const results = await service.analyze(
       { address: DEMO_CHIP_ADDRESSES.boulder, radius: 10 },

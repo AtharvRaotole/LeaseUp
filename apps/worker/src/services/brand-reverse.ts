@@ -252,7 +252,10 @@ export class BrandReverseService {
         neighborhood: hood,
         reportPath: buildReportPath(cell.latitude, cell.longitude),
       });
-      sourceNote = [sourceNote, 'Demo shows the top cell even when ATP stores are nearby.']
+      sourceNote = [
+        sourceNote,
+        'Demo shows the top cell even when All The Places stores are nearby.',
+      ]
         .filter(Boolean)
         .join(' ');
     }

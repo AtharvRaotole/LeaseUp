@@ -46,6 +46,17 @@ import {
   NEARBY_TENANT_LIST_CAP,
   nearbyCategoryTenantReasonLine,
 } from '../lib/nearby-category-tenant-line';
+import {
+  absenceWarningChains,
+  coverageOsmBrandNotInSnapshotNote,
+  coverageOsmFetchFailedNote,
+  coverageOsmNoStorePointsNote,
+  noStoreWithinRadiusReason,
+  verifyStepDemoAllThePlacesOnlySummary,
+  verifyStepDualSourceSummary,
+  verifyStepSingleSourceSummary,
+  VERIFY_STEP_LABEL,
+} from '../lib/all-the-places-copy';
 
 import { OSM_SNAPSHOT_RECORDED_AT } from '../data/osm-snapshot-meta';
 
@@ -296,7 +307,7 @@ export class AnalysisService {
         }
       );
 
-      await runStep(emit, 'verify', 'Double-check absence (ATP + OSM)', async () => {
+      await runStep(emit, 'verify', VERIFY_STEP_LABEL, async () => {
         const pending = prospects.filter((p) => p.brand.verified === 'verifying...').length;
         const verified = prospects.filter((p) => p.brand.verified === 'verified (2 sources)').length;
         const singleSource = prospects.filter(
@@ -309,11 +320,11 @@ export class AnalysisService {
         if (pending > 0) {
           summary = `${pending} prospects queued for OpenStreetMap verification (non-blocking)`;
         } else if (demoOsmSkipped) {
-          summary = `Demo: ATP only (${DEMO_OSM_UNRECORDED_NOTE})`;
+          summary = verifyStepDemoAllThePlacesOnlySummary(DEMO_OSM_UNRECORDED_NOTE);
         } else if (verified > 0) {
-          summary = `${verified} prospects verified by ATP + OpenStreetMap`;
+          summary = verifyStepDualSourceSummary(verified);
         } else if (singleSource > 0) {
-          summary = `${singleSource} prospects ATP-only (OSM unavailable or single-source)`;
+          summary = verifyStepSingleSourceSummary(singleSource);
         } else {
           summary = 'No prospects required OSM verification';
         }
@@ -659,15 +670,7 @@ export class AnalysisService {
         coverageNote = this.appendCoverageNote(verification.metroCoverageNote, coverageNote);
       }
       if (osmSnapshotBrandStatus(candidate.entity_id) === 'failed') {
-        coverageNote = this.appendCoverageNote(
-          'OpenStreetMap snapshot fetch failed for this brand; showing ATP only.',
-          coverageNote
-        );
-      } else if (osmSnapshotBrandStatus(candidate.entity_id) === 'missing') {
-        coverageNote = this.appendCoverageNote(
-          'No Wikidata QID for this brand in our OSM snapshot; showing ATP only.',
-          coverageNote
-        );
+        coverageNote = this.appendCoverageNote(coverageOsmFetchFailedNote(), coverageNote);
       }
 
       const formatSpec = getStorefrontFormatSpec(candidate.entity_id);
@@ -740,7 +743,7 @@ export class AnalysisService {
         sources,
         metroCoverageNote:
           status === 'missing'
-            ? 'OpenStreetMap snapshot does not include this brand; showing ATP only.'
+            ? coverageOsmBrandNotInSnapshotNote()
             : undefined,
       };
     }
@@ -751,7 +754,7 @@ export class AnalysisService {
         sources,
         metroCoverageNote:
           status === 'ok'
-            ? 'OpenStreetMap snapshot has no store points for this brand; showing ATP only.'
+            ? coverageOsmNoStorePointsNote()
             : undefined,
       };
     }
@@ -1077,7 +1080,7 @@ export class AnalysisService {
       reasons.push(`No taste score for ${displayName} in this run`);
     }
 
-    reasons.push(`No ${displayName} store within ${radiusKm} km (ATP catalog)`);
+    reasons.push(noStoreWithinRadiusReason(displayName, radiusKm));
 
     const categoryLine = nearbyCategoryTenantReasonLine(
       category,
@@ -1132,9 +1135,7 @@ export class AnalysisService {
       warnings.push('Location resolution is approximate');
     }
 
-    warnings.push(
-      `Absence uses ATP geotiles + OpenStreetMap when available (${this.catalog.getBrandIds().length} chains). Single-source absence is never shown as confirmed.`
-    );
+    warnings.push(absenceWarningChains(this.catalog.getBrandIds().length));
 
     return warnings;
   }

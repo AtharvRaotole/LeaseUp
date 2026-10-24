@@ -9,6 +9,7 @@ import {
   OUTREACH_TEMPLATE_DEMO_LABEL,
   OUTREACH_TEMPLATE_FALLBACK_LABEL,
 } from '../lib/outreach-model-labels';
+import { sanitizeWhyBrandTasteSummary } from '@leaseup/fixtures/worker';
 
 export interface OutreachDraft {
   subject: string;
@@ -25,17 +26,20 @@ export interface WhyBrandTasteFacts {
 export function buildWhyBrandTastePrompt(facts: WhyBrandTasteFacts): string {
   const lines = facts.signals.map(
     (s, i) =>
-      `${i + 1}. ${s.kind === 'tag' ? 'Taste tag' : 'Audience'}: ${s.name} (brand affinity ${s.affinity.toFixed(2)}, #${s.affinityRank} among local audiences)`
+      `${i + 1}. ${s.kind === 'tag' ? 'Taste tag' : 'Audience'}: ${s.name} (local audience rank #${s.affinityRank})`
   );
   return [
     `Brand: ${facts.brandName}`,
     '',
-    'Qloo audiences that are both in this brand\'s own top audiences and among the top audiences near the site',
-    '(use only these names, do not add new interests or stats):',
+    'Verified Qloo overlap: these names are in the brand top audiences and among top audiences near the site.',
+    'Use only these names (do not add interests, stats, or affinity scores):',
     ...lines,
     '',
-    'Write 1 or 2 short sentences for a broker explaining why this brand fits local taste.',
-    'Rules: only restate the signals above; no em dashes; no invented demographics or foot traffic.',
+    'Write exactly one short sentence for a broker pitch brief.',
+    'Rules:',
+    '- Name the audience or tag labels above in plain English; do not repeat them as a separate "Audience:" list.',
+    '- Never print decimals between 0 and 1, affinity scores, or generic praise (no "resonates well", "trendy lifestyles").',
+    '- No em dashes; no invented demographics or foot traffic.',
     'Return JSON: {"summary":"..."}',
   ].join('\n');
 }
@@ -206,7 +210,7 @@ export class OpenAIClient {
             {
               role: 'system',
               content:
-                'You summarize Qloo taste overlap in plain English. Never invent signals or statistics.',
+                'You write one factual sentence about Qloo taste overlap. Never invent signals, affinity decimals, or generic marketing language.',
             },
             { role: 'user', content: prompt },
           ],
@@ -233,7 +237,8 @@ export class OpenAIClient {
       const content = data.choices[0]?.message.content || '{}';
       const parsed = JSON.parse(content) as { summary?: string };
       const summary = parsed.summary?.trim();
-      return summary || undefined;
+      const cleaned = summary ? sanitizeWhyBrandTasteSummary(summary) : '';
+      return cleaned || undefined;
     } catch {
       return undefined;
     }

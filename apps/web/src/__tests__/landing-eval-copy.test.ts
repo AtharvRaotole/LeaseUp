@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   landingEvalProofParagraphs,
-  methodologySiteTableBridgeLine,
+  methodologyEvalCatalogIntro,
 } from '../lib/landing-eval-copy';
 
 describe('landingEvalProofParagraphs', () => {
@@ -20,13 +20,15 @@ describe('landingEvalProofParagraphs', () => {
   });
 });
 
-describe('methodologySiteTableBridgeLine', () => {
-  it('cites cohort headline percents and distinguishes demo rows', () => {
-    const line = methodologySiteTableBridgeLine();
+describe('methodologyEvalCatalogIntro', () => {
+  it('uses landing-rounded cohort percents and one demo-row sentence', () => {
+    const line = methodologyEvalCatalogIntro();
     expect(line).toContain('sanity checks');
     expect(line).toContain('54%');
     expect(line).toContain('76%');
     expect(line).toContain('83%');
     expect(line).toContain('landing proof');
+    expect(line).not.toContain('results_adaptive');
+    expect(line).not.toContain('strict-eval');
   });
 });

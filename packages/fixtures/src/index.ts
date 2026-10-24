@@ -45,6 +45,11 @@ export {
   placeFromEvalId,
 } from './eval/adaptive-eval-site-label.js';
 export {
+  WICKER_LANDING_PITCH_TOP,
+  wickerLandingPitchTopNames,
+  wickerLandingPitchTopEntityIds,
+} from './wicker-landing-pitch-order.js';
+export {
   COHORT_EVAL_AGG,
   COHORT_MID_TIER_P5,
   formatP10PercentExact,
@@ -167,6 +172,11 @@ export {
   type BrandTasteOverlapSignal,
   type QlooAudienceRow,
 } from './qloo-brand-taste-overlap.js';
+export {
+  sanitizeWhyBrandTasteSummary,
+  pitchBrandTasteFitSentence,
+  WHY_BRAND_TASTE_BANNED_PHRASES,
+} from './why-brand-taste-summary.js';
 export {
   brandExplainabilityForDemo,
   listDemoExplainabilityRecordings,
