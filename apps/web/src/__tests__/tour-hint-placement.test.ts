@@ -1,5 +1,4 @@
-// @vitest-environment jsdom
-import { describe, expect, it, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
 import { computeTourHintPlacement } from '../components/report/tour-hint-placement';
 
 describe('computeTourHintPlacement', () => {
@@ -7,34 +6,37 @@ describe('computeTourHintPlacement', () => {
   const hintH = 140;
 
   beforeEach(() => {
-    document.body.innerHTML = '';
+    vi.stubGlobal('window', { innerWidth: 1440, innerHeight: 900 });
   });
 
   afterEach(() => {
-    document.body.innerHTML = '';
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
   function mockViewport(width: number, height: number) {
-    Object.defineProperty(window, 'innerWidth', { configurable: true, value: width });
-    Object.defineProperty(window, 'innerHeight', { configurable: true, value: height });
+    vi.stubGlobal('window', { innerWidth: width, innerHeight: height });
   }
 
-  function addMapPanel(rect: { left: number; top: number; width: number; height: number }) {
-    const el = document.createElement('div');
-    el.setAttribute('data-testid', 'report-map-panel');
-    document.body.appendChild(el);
-    el.getBoundingClientRect = () =>
-      ({
-        left: rect.left,
-        top: rect.top,
-        width: rect.width,
-        height: rect.height,
-        right: rect.left + rect.width,
-        bottom: rect.top + rect.height,
-        x: rect.left,
-        y: rect.top,
-        toJSON: () => ({}),
-      }) as DOMRect;
+  function mockMapPanel(rect: { left: number; top: number; width: number; height: number }) {
+    const el = {
+      getBoundingClientRect: () =>
+        ({
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height,
+          right: rect.left + rect.width,
+          bottom: rect.top + rect.height,
+          x: rect.left,
+          y: rect.top,
+          toJSON: () => ({}),
+        }) as DOMRect,
+    };
+    vi.stubGlobal('document', {
+      querySelector: (selector: string) =>
+        selector === '[data-testid="report-map-panel"]' ? el : null,
+    } as Document);
   }
 
   function hintBox(placement: { left: number; top: number; width: number }) {
@@ -65,7 +67,7 @@ describe('computeTourHintPlacement', () => {
 
   it('keeps hint clear of right map column at 1440', () => {
     mockViewport(1440, 900);
-    addMapPanel({ left: 820, top: 120, width: 520, height: 640 });
+    mockMapPanel({ left: 820, top: 120, width: 520, height: 640 });
     const placement = computeTourHintPlacement(hintW, hintH);
     const avoid = mapBox({ left: 820, top: 120, width: 520, height: 640 });
     expect(overlaps(hintBox(placement), avoid)).toBe(false);
@@ -73,7 +75,7 @@ describe('computeTourHintPlacement', () => {
 
   it('keeps hint clear of stacked map at 1024', () => {
     mockViewport(1024, 900);
-    addMapPanel({ left: 32, top: 520, width: 960, height: 360 });
+    mockMapPanel({ left: 32, top: 520, width: 960, height: 360 });
     const placement = computeTourHintPlacement(hintW, hintH);
     const avoid = mapBox({ left: 32, top: 520, width: 960, height: 360 });
     expect(overlaps(hintBox(placement), avoid)).toBe(false);
@@ -81,7 +83,7 @@ describe('computeTourHintPlacement', () => {
 
   it('keeps hint clear of full-width map at 390', () => {
     mockViewport(390, 844);
-    addMapPanel({ left: 0, top: 200, width: 390, height: 520 });
+    mockMapPanel({ left: 0, top: 200, width: 390, height: 520 });
     const placement = computeTourHintPlacement(hintW, hintH);
     const avoid = mapBox({ left: 0, top: 200, width: 390, height: 520 });
     expect(overlaps(hintBox(placement), avoid)).toBe(false);
