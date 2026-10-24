@@ -5,18 +5,23 @@ import {
   formatBrandTasteOverlapLine,
   topBrandTasteOverlapSignals,
   audienceDisplayName,
-  genericAudienceIdsAtLocation,
+  BRAND_AUDIENCE_MIN_PANEL_LIFT,
   QLOO_AUDIENCE_DISPLAY_NAMES,
+  SENSITIVE_AUDIENCE_NAMES,
 } from '../qloo-brand-taste-overlap.js';
 import {
+  audiencePanelBaseline,
+  audiencePanelSize,
   brandExplainabilityForDemo,
-  genericAudienceIdsForDemoChip,
   listDemoExplainabilityRecordings,
 } from '../brand-explainability-loader.js';
 import chipBrands from '../brand-explainability/chip-brands.json';
 
 const ULTA = '0F77E9A4-121C-4941-ACE1-28502DBF1865';
 const TJ_MAXX = 'A94FC7B6-34D3-4970-9EA5-2D17C49E84B6';
+const MICHAELS = 'C69202E6-9A83-4BD6-A720-ECAB9DB2AE52';
+const WHOLE_FOODS = '1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23';
+const SEPHORA = '2C5054E1-8691-4F52-83CD-310D029BA6A3';
 
 const aud = (entityId: string, affinity: number) => ({ entityId, name: entityId.toUpperCase(), affinity });
 
@@ -58,7 +63,7 @@ describe('computeBrandLocalAudienceOverlap', () => {
 });
 
 describe('topBrandTasteOverlapSignals', () => {
-  it('uses audiences only, sorted by brand affinity, and ignores tags', () => {
+  it('uses audiences only, keeps the lift order it is given, and ignores tags', () => {
     const signals = topBrandTasteOverlapSignals(
       {
         tags: [{ entityId: 't1', name: 'American', affinity: 0.99, affinityRank: 1 }],
@@ -69,7 +74,7 @@ describe('topBrandTasteOverlapSignals', () => {
       },
       3
     );
-    expect(signals.map((s) => s.name)).toEqual(['Health & Beauty', 'Arts & Crafts']);
+    expect(signals.map((s) => s.name)).toEqual(['Arts & Crafts', 'Health & Beauty']);
     expect(signals.every((s) => s.kind === 'audience')).toBe(true);
   });
 
@@ -155,62 +160,78 @@ describe('audience display names', () => {
   });
 });
 
-describe('distinctiveness filter', () => {
-  const local = [
-    { entityId: 'generic', name: 'Generic', affinity: 0.99 },
-    { entityId: 'special', name: 'Special', affinity: 0.98 },
-  ];
-  const brand = (id: string, special: boolean) => ({
-    brandEntityId: id,
-    audiences: [
-      { entityId: 'generic', name: 'Generic', affinity: 0.8 },
-      ...(special ? [{ entityId: 'special', name: 'Special', affinity: 0.79 }] : []),
-    ],
-  });
+describe('lift ranking and sensitive categories', () => {
+  const local = [aud('a', 0.99), aud('b', 0.98), aud('c', 0.97), aud('d', 0.96)];
 
-  it('flags audiences that pass for more than half of the brands at a location', () => {
-    const brands = [brand('a', true), brand('b', false), brand('c', false), brand('d', false)];
-    const generic = genericAudienceIdsAtLocation(brands, local, () => undefined);
-    expect([...generic]).toEqual(['generic']);
-  });
-
-  it('exactly half is not generic', () => {
-    const brands = [brand('a', true), brand('b', true), brand('c', false), brand('d', false)];
-    expect(genericAudienceIdsAtLocation(brands, local, () => undefined).has('special')).toBe(false);
-  });
-
-  it('needs at least two brands', () => {
-    expect(genericAudienceIdsAtLocation([brand('a', true)], local, () => undefined).size).toBe(0);
-  });
-
-  it('excluded audiences never reach the card, and a brand left with none is empty', () => {
-    const rows = computeBrandLocalAudienceOverlap(brand('b', false).audiences, local, {
-      excludeAudienceIds: new Set(['generic']),
+  it('ranks by lift over the panel mean, keeps lift >= margin, shows at most 2', () => {
+    const brand = [aud('a', 0.82), aud('b', 0.8), aud('c', 0.79), aud('d', 0.78)];
+    const rows = computeBrandLocalAudienceOverlap(brand, local, {
+      panelBaseline: { a: 0.79, b: 0.7, c: 0.65, d: 0.77 },
     });
+    // lifts: a 0.03 (below margin), b 0.10, c 0.14, d 0.01
+    expect(rows.map((r) => r.entityId)).toEqual(['c', 'b']);
+    expect(
+      computeBrandLocalAudienceOverlap(brand, local, {
+        panelBaseline: { a: 0.5, b: 0.5, c: 0.5, d: 0.5 },
+        maxAudiences: 4,
+      }).length
+    ).toBe(4);
+  });
+
+  it('never shows sensitive audience categories, whatever their lift', () => {
+    const brand = [
+      { entityId: 's1', name: 'Christianity', affinity: 0.9 },
+      { entityId: 's2', name: 'Mental Health', affinity: 0.89 },
+      { entityId: 's3', name: 'Spirituality', affinity: 0.88 },
+      { entityId: 'ok', name: 'Cooking', affinity: 0.7 },
+    ];
+    const loc = brand.map((r) => ({ ...r, affinity: 0.99 }));
+    const rows = computeBrandLocalAudienceOverlap(brand, loc, { panelBaseline: {} });
+    expect(rows.map((r) => r.name)).toEqual(['Cooking']);
+    expect(
+      topBrandTasteOverlapSignals({
+        tags: [],
+        audiences: [{ entityId: 's1', name: 'Christianity', affinity: 0.9, affinityRank: 2 }],
+      })
+    ).toEqual([]);
+    expect(SENSITIVE_AUDIENCE_NAMES.size).toBeLessThanOrEqual(15);
+  });
+
+  it('a brand with nothing left returns no rows, so the section is omitted', () => {
+    const rows = computeBrandLocalAudienceOverlap([aud('a', 0.6)], local, { panelBaseline: { a: 0.59 } });
     expect(rows).toEqual([]);
     expect(topBrandTasteOverlapSignals({ tags: [], audiences: rows })).toEqual([]);
   });
 
-  it('no demo row is generic at its chip (passes for more than half the pitched brands)', () => {
+  it('panel is every recorded brand; demo rows clear the margin, at most 2, none sensitive', () => {
+    expect(audiencePanelSize()).toBe(19);
+    const baseline = audiencePanelBaseline();
     const chips = chipBrands as Record<string, string[]>;
     for (const chip of ['boulder', 'wicker', 'sevierville'] as const) {
-      const generic = genericAudienceIdsForDemoChip(chip);
       for (const id of chips[chip]!) {
-        for (const row of brandExplainabilityForDemo(chip, id)?.audiences ?? []) {
-          expect(generic.has(row.entityId)).toBe(false);
+        const rec = brandExplainabilityForDemo(chip, id);
+        if (!rec) continue;
+        expect(rec.audiences.length).toBeLessThanOrEqual(2);
+        for (const row of rec.audiences) {
+          expect(row.affinity - baseline[row.entityId]!).toBeGreaterThanOrEqual(
+            BRAND_AUDIENCE_MIN_PANEL_LIFT - 1e-9
+          );
+          expect(SENSITIVE_AUDIENCE_NAMES.has(row.name.toLowerCase())).toBe(false);
         }
       }
     }
   });
 
-  it('Wicker drops Yoga and Sneakerheads; J.Crew there is left with no section', () => {
-    const generic = genericAudienceIdsForDemoChip('wicker');
-    const names = listDemoExplainabilityRecordings()
-      .filter((r) => r.chip === 'wicker')
-      .flatMap((r) => r.audiences.map((a) => a.name));
-    expect(generic.size).toBe(2);
-    expect(names).not.toContain('Yoga');
-    expect(names).not.toContain('Sneakerheads');
-    expect(brandExplainabilityForDemo('wicker', 'A4F0BE29-87A4-4074-9ABB-21B215E532FD')!.audiences).toEqual([]);
+  it('live demo lists for key brands', () => {
+    const names = (chip: 'boulder' | 'wicker' | 'sevierville', id: string) =>
+      brandExplainabilityForDemo(chip, id)!.audiences.map((r) => r.name);
+    expect(names('boulder', ULTA)).toEqual(['Health & Beauty']);
+    expect(names('wicker', TJ_MAXX)).toEqual(['Arts & Crafts', 'Home Organization']);
+    expect(names('sevierville', MICHAELS)).toEqual([
+      'Cooking',
+      'Home Organization',
+    ]);
+    expect(names('sevierville', WHOLE_FOODS)).toEqual(['Wine Enthusiast', 'Cooking']);
+    expect(names('sevierville', SEPHORA)[0]).toBe('Health & Beauty');
   });
 });

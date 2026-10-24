@@ -2,11 +2,9 @@ import type { DemoFixtureId } from './demo-addresses.js';
 import type { BrandExplainabilityRecording } from './qloo-explainability.js';
 import {
   computeBrandLocalAudienceOverlap,
-  genericAudienceIdsAtLocation,
   type QlooAudienceRow,
 } from './qloo-brand-taste-overlap.js';
 import compact from './brand-explainability/live-audiences.compact.json';
-import chipBrands from './brand-explainability/chip-brands.json';
 
 /**
  * Live Qloo recordings (scripts/record-brand-explainability-fixture.mjs). No mock or hand-written rows:
@@ -93,16 +91,15 @@ const BRAND_BY_ID: Record<string, BrandAudienceRecording> = Object.fromEntries(
 );
 
 /**
- * Mean Qloo affinity per audience across the recorded live brand panel, leaving out `excludeBrandId`.
- * Audiences missing from a brand's top 50 count as 0.5 (Qloo's no-signal value).
+ * Mean Qloo affinity per audience across all recorded live brands (19 on Oct 24, 2026), the baseline for
+ * lift (see `BRAND_AUDIENCE_MIN_PANEL_LIFT`). Audiences missing from a brand's top 50 count as 0.5
+ * (Qloo's no-signal value).
  */
-const baselineCache = new Map<string, Record<string, number>>();
+let baselineCache: Record<string, number> | undefined;
 
-export function audiencePanelBaseline(excludeBrandId?: string): Record<string, number> {
-  const cacheKey = excludeBrandId ?? '';
-  const hit = baselineCache.get(cacheKey);
-  if (hit) return hit;
-  const panel = Object.values(BRAND_BY_ID).filter((rec) => rec.brandEntityId !== excludeBrandId);
+export function audiencePanelBaseline(): Record<string, number> {
+  if (baselineCache) return baselineCache;
+  const panel = Object.values(BRAND_BY_ID);
   const ids = new Set(panel.flatMap((rec) => rec.audiences.map((a) => a.entityId)));
   const baseline: Record<string, number> = {};
   for (const id of ids) {
@@ -110,44 +107,13 @@ export function audiencePanelBaseline(excludeBrandId?: string): Record<string, n
     for (const rec of panel) sum += rec.audiences.find((a) => a.entityId === id)?.affinity ?? 0.5;
     baseline[id] = panel.length ? sum / panel.length : 0.5;
   }
-  baselineCache.set(cacheKey, baseline);
+  baselineCache = baseline;
   return baseline;
 }
 
-const CHIP_BRAND_IDS = chipBrands as Partial<Record<DemoFixtureId, string[]>>;
-
-function recordedBrands(ids: string[]): BrandAudienceRecording[] {
-  return ids
-    .map((id) => BRAND_BY_ID[id])
-    .filter((rec): rec is BrandAudienceRecording => Boolean(rec));
-}
-
-/**
- * Audiences that pass the overlap gates for more than half of the given recorded brands against
- * `localRows` (default panel: every recorded brand). Used to drop generic audiences per location.
- */
-export function genericAudienceIdsForLocation(
-  localRows: QlooAudienceRow[],
-  brandIds: string[] = Object.keys(BRAND_BY_ID),
-): Set<string> {
-  return genericAudienceIdsAtLocation(recordedBrands(brandIds), localRows, (id) =>
-    audiencePanelBaseline(id),
-  );
-}
-
-const genericByChip = new Map<DemoFixtureId, Set<string>>();
-
-/** Generic audiences at a demo chip, judged across the brands pitched there. */
-export function genericAudienceIdsForDemoChip(chip: DemoFixtureId): Set<string> {
-  let cached = genericByChip.get(chip);
-  if (!cached) {
-    const local = LOCAL_BY_CHIP[chip];
-    cached = local
-      ? genericAudienceIdsForLocation(local.audiences, CHIP_BRAND_IDS[chip] ?? [])
-      : new Set<string>();
-    genericByChip.set(chip, cached);
-  }
-  return cached;
+/** Number of recorded live brands in the lift panel. */
+export function audiencePanelSize(): number {
+  return Object.keys(BRAND_BY_ID).length;
 }
 
 /**
@@ -169,8 +135,7 @@ export function brandExplainabilityForDemo(
     radiusKm: local.radiusKm,
     tags: [],
     audiences: computeBrandLocalAudienceOverlap(brand.audiences, local.audiences, {
-      panelBaseline: audiencePanelBaseline(brandEntityId),
-      excludeAudienceIds: genericAudienceIdsForDemoChip(chip),
+      panelBaseline: audiencePanelBaseline(),
     }),
     provenance: {
       recordedAt:
@@ -178,7 +143,7 @@ export function brandExplainabilityForDemo(
           ? brand.provenance.recordedAt
           : local.provenance.recordedAt,
       host: brand.provenance.host,
-      note: 'Live Qloo urn:audience insights: brand-only and location-only, intersected, panel-lift and distinctiveness filtered.',
+      note: 'Live Qloo urn:audience insights: brand-only and location-only, intersected, ranked by lift over the recorded brand panel, sensitive categories excluded.',
       brandUrl: brand.provenance.url,
       localUrl: local.provenance.url,
     },

@@ -153,10 +153,11 @@ export {
   BRAND_AUDIENCE_TOP_K,
   LOCAL_AUDIENCE_TOP_K,
   BRAND_AUDIENCE_MIN_PANEL_LIFT,
-  AUDIENCE_MAX_BRAND_SHARE_AT_LOCATION,
+  BRAND_AUDIENCE_MAX_SHOWN,
+  SENSITIVE_AUDIENCE_NAMES,
+  isSensitiveAudience,
   QLOO_AUDIENCE_DISPLAY_NAMES,
   audienceDisplayName,
-  genericAudienceIdsAtLocation,
   type BrandTasteOverlapSignal,
   type QlooAudienceRow,
 } from './qloo-brand-taste-overlap.js';
@@ -164,8 +165,7 @@ export {
   brandExplainabilityForDemo,
   listDemoExplainabilityRecordings,
   audiencePanelBaseline,
-  genericAudienceIdsForLocation,
-  genericAudienceIdsForDemoChip,
+  audiencePanelSize,
 } from './brand-explainability-loader.js';
 export {
   isNonRetailTasteName,

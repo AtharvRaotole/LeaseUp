@@ -62,7 +62,7 @@ const BRANDS = {
   '1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23': 'Whole Foods Market',
 };
 
-/** Pitched brands per demo chip (shared with the fixtures loader for the distinctiveness filter). */
+/** Pitched brands per demo chip (packages/fixtures/src/brand-explainability/chip-brands.json). */
 const CHIP_BRANDS = JSON.parse(
   readFileSync(
     join(process.cwd(), 'packages/fixtures/src/brand-explainability/chip-brands.json'),

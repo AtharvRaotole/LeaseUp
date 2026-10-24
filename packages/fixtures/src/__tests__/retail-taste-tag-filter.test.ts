@@ -40,10 +40,10 @@ describe('retailShopperTasteLabel', () => {
 });
 
 describe('demo chip explainability recordings (live Qloo)', () => {
-  // Brands pitched on each chip that have live recordings (Ulta, Victoria's Secret, Sephora).
+  // Brands pitched on each chip that have live recordings (Ulta, TJ Maxx, Sephora).
   const chipBrands: Array<{ chip: DemoFixtureId; entityId: string }> = [
     { chip: 'boulder', entityId: '0F77E9A4-121C-4941-ACE1-28502DBF1865' },
-    { chip: 'wicker', entityId: 'D3310425-7161-41FC-8C2C-5435AF0F0A5B' },
+    { chip: 'wicker', entityId: 'A94FC7B6-34D3-4970-9EA5-2D17C49E84B6' },
     { chip: 'sevierville', entityId: '2C5054E1-8691-4F52-83CD-310D029BA6A3' },
   ];
 

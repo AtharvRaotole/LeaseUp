@@ -58,7 +58,7 @@ Brand batches: `filter.results.entities` comma-separated, max 45 ids per request
 
 ## Brand x local audience overlap (Why this brand)
 
-The Why card lists up to three Qloo **audiences** that are characteristic of the brand AND rank high
+The Why card lists up to two Qloo **audiences** that are characteristic of the brand AND rank high
 near the pin. Two separate calls, so the overlap is checked rather than assumed:
 
 ```http
@@ -67,12 +67,27 @@ GET /v2/insights?filter.type=urn:audience&signal.location=POINT(lon%20lat)&signa
 X-Api-Key: <secret>
 ```
 
-An audience is shown only if it is in the brand's own top 12 with affinity >= 0.52 (Qloo reports 0.5 for
+An audience can pass only if it is in the brand's own top 12 with affinity >= 0.52 (Qloo reports 0.5 for
 "no signal") and also in the location's top 30 (`computeBrandLocalAudienceOverlap` in
-`packages/fixtures/src/qloo-brand-taste-overlap.ts`). The brand's affinity must also beat the mean affinity
-of the same audience across the other recorded live brands by 0.03 (`audiencePanelBaseline`), which drops
-audiences Qloo ranks high for nearly every retailer (Finance Professional for Ulta, for example). If nothing
-passes, the section is omitted.
+`packages/fixtures/src/qloo-brand-taste-overlap.ts`).
+
+Passing audiences are ranked by **lift**: the brand's affinity minus the mean affinity of the same audience
+across all 19 recorded live brands (`audiencePanelBaseline`; missing = 0.5). Only rows with lift >= 0.04
+(`BRAND_AUDIENCE_MIN_PANEL_LIFT`) are kept, and the card shows the top 2.
+
+Why 0.04: on the recorded data (Oct 24, 2026) the median lift of gate-passing rows is 0.087 (quartiles
+0.037 and 0.125). 0.04 is the smallest round margin above the Finance Professional lift (0.016 to 0.037) for
+the craft and off-price brands where it would otherwise show, and the largest that keeps Ulta's Health &
+Beauty (0.043). Raising it to 0.05 to 0.10 drops Ulta, then TJ Maxx Arts & Crafts (0.074) and Sephora Health
+& Beauty (0.080), but still keeps Yoga and Astrology on apparel brands (lift 0.12 to 0.13). On this panel,
+apparel brands really do score those audiences above average, so a margin cannot remove them.
+
+Sensitive audience categories are never shown in broker-facing copy (`SENSITIVE_AUDIENCE_NAMES`). This is a
+policy, modeled on how ad platforms restrict sensitive categories, not a tweak tuned to results. The list
+covers religion and belief (Christianity, Islam, Judaism, Spirituality), health conditions (Mental Health),
+sexual orientation (LGBTQ), race and ethnicity (AAPI, Black, Latino) and political affiliation.
+
+If nothing passes, the section is omitted.
 
 Measured Oct 2026 on the hackathon host (why the earlier method was dropped):
 

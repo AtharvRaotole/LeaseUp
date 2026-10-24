@@ -29,11 +29,52 @@ export const BRAND_AUDIENCE_TOP_K = 12;
 export const LOCAL_AUDIENCE_TOP_K = 30;
 
 /**
- * Minimum lift of the brand's affinity over the panel baseline (mean affinity of the same audience
- * across other recorded brands). Drops audiences such as Finance Professional that Qloo ranks high
- * for nearly every retailer, so they say nothing about this brand.
+ * Lift = the brand's affinity for an audience minus that audience's mean affinity across all 19 recorded
+ * live brands (`audiencePanelBaseline`; an audience missing from a brand's top 50 counts as 0.5, Qloo's
+ * no-signal value). Passing audiences are ranked by lift and need at least this margin.
+ *
+ * Why 0.04 (chosen from the recorded lift distribution, Oct 24, 2026; median lift of gate-passing rows
+ * 0.087, quartiles 0.037 and 0.125): it is the smallest round margin above every craft and off-price
+ * brand's Finance Professional lift that would otherwise reach the card (0.016 to 0.037: TJ Maxx, Old Navy,
+ * Hobby Lobby, Michaels, Marshalls, Kohl's, Trader Joe's), and the largest that keeps Ulta's Health & Beauty
+ * (0.043). Margins of 0.05 to 0.10 drop Ulta, then TJ Maxx Arts & Crafts (0.074) and Sephora Health & Beauty
+ * (0.080), without removing Yoga or Astrology from apparel brands, whose lift there is 0.12 to 0.13.
  */
-export const BRAND_AUDIENCE_MIN_PANEL_LIFT = 0.03;
+export const BRAND_AUDIENCE_MIN_PANEL_LIFT = 0.04;
+
+/** The Why card shows at most this many audiences, highest lift first. */
+export const BRAND_AUDIENCE_MAX_SHOWN = 2;
+
+/**
+ * Sensitive audience categories never shown in broker-facing copy, as a policy (not tuned to results),
+ * following how ad platforms restrict sensitive categories for targeting: religion and belief, health
+ * conditions, sexual orientation, race and ethnicity, and political affiliation. Matched on Qloo's own
+ * audience name, case-insensitive.
+ */
+export const SENSITIVE_AUDIENCE_NAMES: ReadonlySet<string> = new Set([
+  // Religion and belief
+  'christianity',
+  'islam',
+  'judaism',
+  'spirituality',
+  // Health conditions
+  'mental health',
+  // Sexual orientation
+  'lgbtq',
+  // Race and ethnicity
+  'aapi',
+  'black',
+  'latino',
+  // Political affiliation
+  'politically center',
+  'politically conservative',
+  'politically progressive',
+  'political junkie',
+]);
+
+export function isSensitiveAudience(qlooName: string): boolean {
+  return SENSITIVE_AUDIENCE_NAMES.has(qlooName.trim().toLowerCase());
+}
 
 /**
  * Cosmetic display names for Qloo audience entity ids whose raw names drop punctuation
@@ -56,21 +97,15 @@ export function audienceDisplayName(entityId: string, qlooName: string): string 
   return QLOO_AUDIENCE_DISPLAY_NAMES[entityId] ?? qlooName.trim();
 }
 
-/**
- * Distinctiveness: an audience that passes every other gate for more than this share of the brands
- * recorded at a location says nothing specific about any one of them, so it is dropped there.
- */
-export const AUDIENCE_MAX_BRAND_SHARE_AT_LOCATION = 0.5;
-
 export type AudienceOverlapOptions = {
   brandMinAffinity?: number;
   brandTopK?: number;
   localTopK?: number;
-  /** entityId -> baseline affinity across a panel of other brands (0.5 when absent). */
+  /** entityId -> mean affinity across the recorded brand panel (0.5 when absent). */
   panelBaseline?: Record<string, number>;
   minPanelLift?: number;
-  /** Audience entity ids to drop (generic at this location; see `genericAudienceIdsAtLocation`). */
-  excludeAudienceIds?: ReadonlySet<string>;
+  /** Most rows returned (default `BRAND_AUDIENCE_MAX_SHOWN`). */
+  maxAudiences?: number;
 };
 
 function sortedByAffinity(rows: QlooAudienceRow[]): QlooAudienceRow[] {
@@ -84,10 +119,11 @@ function sortedByAffinity(rows: QlooAudienceRow[]): QlooAudienceRow[] {
  * Audiences Qloo ties to BOTH the brand (brand-only insights) and the pin (location-only insights).
  *
  * A row is returned only when the audience is in the brand's own top `brandTopK` with affinity at or
- * above `brandMinAffinity`, and also in the location's top `localTopK`. With `panelBaseline`, the
- * brand's affinity must also beat the panel baseline by `minPanelLift`. Rows carry the brand-only
- * affinity and the local rank, sorted by brand affinity. Empty means no verified overlap: callers must
- * omit the taste section rather than fall back to location-only rows.
+ * above `brandMinAffinity`, also in the location's top `localTopK`, and not a sensitive category
+ * (`SENSITIVE_AUDIENCE_NAMES`). With `panelBaseline`, the lift (brand affinity minus panel mean) must be
+ * at least `minPanelLift` and rows are ranked by lift; without it they are ranked by brand affinity. At
+ * most `maxAudiences` rows. Rows carry the brand-only affinity and the local rank. Empty means no verified
+ * overlap: callers must omit the taste section rather than fall back to location-only rows.
  */
 export function computeBrandLocalAudienceOverlap(
   brandRows: QlooAudienceRow[],
@@ -99,50 +135,27 @@ export function computeBrandLocalAudienceOverlap(
   const localTopK = options.localTopK ?? LOCAL_AUDIENCE_TOP_K;
   const baseline = options.panelBaseline;
   const minLift = options.minPanelLift ?? BRAND_AUDIENCE_MIN_PANEL_LIFT;
-  const exclude = options.excludeAudienceIds;
+  const maxAudiences = options.maxAudiences ?? BRAND_AUDIENCE_MAX_SHOWN;
+  const liftOf = (row: QlooAudienceRow) => row.affinity - (baseline?.[row.entityId] ?? 0.5);
 
   const localRank = new Map<string, number>();
   sortedByAffinity(localRows)
     .slice(0, localTopK)
     .forEach((row, index) => localRank.set(row.entityId, index + 1));
 
-  return sortedByAffinity(brandRows)
+  const passing = sortedByAffinity(brandRows)
     .slice(0, brandTopK)
     .filter((row) => row.affinity >= brandMin && localRank.has(row.entityId))
-    .filter((row) => !baseline || row.affinity - (baseline[row.entityId] ?? 0.5) >= minLift)
-    .filter((row) => !exclude?.has(row.entityId))
-    .map((row) => ({
-      entityId: row.entityId,
-      name: audienceDisplayName(row.entityId, row.name),
-      affinity: row.affinity,
-      affinityRank: localRank.get(row.entityId)!,
-    }));
-}
+    .filter((row) => !isSensitiveAudience(row.name))
+    .filter((row) => !baseline || liftOf(row) >= minLift - 1e-9);
+  if (baseline) passing.sort((a, b) => liftOf(b) - liftOf(a));
 
-/**
- * Audience ids that pass the overlap gates (including panel lift) for more than
- * `AUDIENCE_MAX_BRAND_SHARE_AT_LOCATION` of the given brands at one location. Needs at least two brands;
- * with fewer there is no basis to call anything generic.
- */
-export function genericAudienceIdsAtLocation(
-  brands: Array<{ brandEntityId: string; audiences: QlooAudienceRow[] }>,
-  localRows: QlooAudienceRow[],
-  baselineFor: (brandEntityId: string) => Record<string, number> | undefined,
-  maxShare = AUDIENCE_MAX_BRAND_SHARE_AT_LOCATION
-): Set<string> {
-  const generic = new Set<string>();
-  if (brands.length < 2) return generic;
-  const counts = new Map<string, number>();
-  for (const brand of brands) {
-    const rows = computeBrandLocalAudienceOverlap(brand.audiences, localRows, {
-      panelBaseline: baselineFor(brand.brandEntityId),
-    });
-    for (const row of rows) counts.set(row.entityId, (counts.get(row.entityId) ?? 0) + 1);
-  }
-  for (const [id, count] of counts) {
-    if (count > brands.length * maxShare) generic.add(id);
-  }
-  return generic;
+  return passing.slice(0, maxAudiences).map((row) => ({
+    entityId: row.entityId,
+    name: audienceDisplayName(row.entityId, row.name),
+    affinity: row.affinity,
+    affinityRank: localRank.get(row.entityId)!,
+  }));
 }
 
 function toSignal(row: TradeAreaTasteRow): BrandTasteOverlapSignal {
@@ -157,13 +170,14 @@ function toSignal(row: TradeAreaTasteRow): BrandTasteOverlapSignal {
 /**
  * Top verified brand x local overlap signals for the Why card.
  *
- * Reads only `taste.audiences`, which must come from `computeBrandLocalAudienceOverlap`.
+ * Reads only `taste.audiences`, which must come from `computeBrandLocalAudienceOverlap` (already ranked
+ * by lift, so order is kept).
  * `taste.tags` is ignored on purpose: Qloo tag insights for a brand + location return generic
  * cross-domain tags with near-identical affinity, so they cannot show brand-specific overlap.
  */
 export function topBrandTasteOverlapSignals(
   taste: TradeAreaTasteContext | undefined,
-  take = 3
+  take = BRAND_AUDIENCE_MAX_SHOWN
 ): BrandTasteOverlapSignal[] {
   if (!taste) return [];
   return taste.audiences
@@ -173,10 +187,9 @@ export function topBrandTasteOverlapSignals(
         row.affinity >= BRAND_AUDIENCE_MIN_AFFINITY &&
         Number.isInteger(row.affinityRank) &&
         row.affinityRank >= 1 &&
-        row.affinityRank <= LOCAL_AUDIENCE_TOP_K
+        row.affinityRank <= LOCAL_AUDIENCE_TOP_K &&
+        !isSensitiveAudience(row.name)
     )
-    .slice()
-    .sort((a, b) => b.affinity - a.affinity)
     .slice(0, take)
     .map(toSignal);
 }

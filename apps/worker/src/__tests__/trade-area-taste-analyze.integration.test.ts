@@ -53,16 +53,11 @@ describe('tradeAreaTaste on analyze response', () => {
     expect(tj?.whyBrandTaste?.signals.map((s) => s.name)).toEqual(['Arts & Crafts', 'Home Organization']);
     expect(tj?.whyBrandTaste?.summary).toMatch(/TJ Maxx/i);
 
-    // Distinctiveness: Yoga and Sneakerheads pass for most brands pitched at Wicker, so they are dropped;
-    // J.Crew is left with nothing and its Why card omits the taste section.
-    const jcrew = wicker.prospects.find(
-      (p) => p.brand.entityId === 'A4F0BE29-87A4-4074-9ABB-21B215E532FD'
-    );
-    if (jcrew) expect(jcrew.whyBrandTaste).toBeUndefined();
-    for (const p of wicker.prospects) {
+    // Ranked by lift, at most 2 signals, never a sensitive category (religion, health conditions...).
+    for (const p of [...boulder.prospects, ...wicker.prospects]) {
       const names = p.whyBrandTaste?.signals.map((s) => s.name) ?? [];
-      expect(names).not.toContain('Yoga');
-      expect(names).not.toContain('Sneakerheads');
+      expect(names.length).toBeLessThanOrEqual(2);
+      for (const n of ['Christianity', 'Spirituality', 'Mental Health']) expect(names).not.toContain(n);
     }
   });
 
