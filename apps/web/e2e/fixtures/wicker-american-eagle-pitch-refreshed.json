@@ -25,15 +25,12 @@
           "verified": "verified (2 sources)"
         },
         "outreachDraft": "",
-        "reasons": [
-          "No American Eagle store within 3 km (All The Places store data)"
-        ],
-        "nearestExistingStoreKm": 1.9509521972612018,
-        "nearestExistingStoreUnconfirmed": true
+        "reasons": [],
+        "nearestExistingStoreKm": 1.9509521972612018
       },
       "whyLine": "Why"
     }
   ],
-  "storeDistanceDataAsOf": "2026-10-20T00:00:00.000Z",
+  "storeDistanceDataAsOf": "2026-10-24T14:34:14.478Z",
   "storeDistancesSnapshotOnly": false
 }

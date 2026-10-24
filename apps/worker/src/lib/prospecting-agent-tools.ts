@@ -41,6 +41,14 @@ export type ProspectingAgentToolResult = {
   payload?: Record<string, unknown>;
 };
 
+export function isProspectingAgentEntityId(entityId: string): boolean {
+  const trimmed = entityId.trim();
+  if (!trimmed) return false;
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+    trimmed
+  );
+}
+
 export type ProspectingAgentToolContext = {
   env: Env;
   location: Location;
@@ -107,19 +115,40 @@ export async function executeProspectingAgentTool(
       };
     }
     case 'store_presence_lookup': {
-      const entityId = String(call.arguments.entityId ?? '');
+      const entityId = String(call.arguments.entityId ?? '').trim();
       const radiusKm = Number(call.arguments.radiusKm) || ctx.radiusKm;
+      if (!isProspectingAgentEntityId(entityId)) {
+        return {
+          summary:
+            'Store presence not checked (missing brand id). Use nearest_store_check once a brand is selected.',
+          qlooCalls: 0,
+          payload: { entityId: entityId || undefined, checked: false, radiusKm },
+        };
+      }
       const nearby = await presence.storesNearby(entityId, radiusKm);
       return {
         summary: nearby.length
           ? `${nearby.length} store(s) within ${radiusKm} km; nearest ${nearby[0]!.distance.toFixed(2)} km.`
           : `No stores within ${radiusKm} km.`,
         qlooCalls: 0,
-        payload: { entityId, count: nearby.length, nearestKm: nearby[0]?.distance },
+        payload: {
+          entityId,
+          checked: true,
+          count: nearby.length,
+          nearestKm: nearby[0]?.distance,
+          radiusKm,
+        },
       };
     }
     case 'nearest_store_check': {
-      const entityId = String(call.arguments.entityId ?? '');
+      const entityId = String(call.arguments.entityId ?? '').trim();
+      if (!isProspectingAgentEntityId(entityId)) {
+        return {
+          summary: 'Nearest store not checked (missing brand id).',
+          qlooCalls: 0,
+          payload: { entityId: entityId || undefined, checked: false },
+        };
+      }
       const reconciled = await reconcileNearestStoreKm(
         entityId,
         ctx.location,
@@ -134,7 +163,7 @@ export async function executeProspectingAgentTool(
       return {
         summary,
         qlooCalls: 0,
-        payload: { entityId, km, unconfirmed: reconciled.unconfirmed },
+        payload: { entityId, checked: true, km, unconfirmed: reconciled.unconfirmed },
       };
     }
     case 'chain_size_fallback': {

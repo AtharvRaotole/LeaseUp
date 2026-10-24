@@ -272,14 +272,18 @@ export async function runProspectingAgentPlanner(params: {
   runId: string;
   qloo: QlooClient;
   planner?: ProspectingPlannerClient | null;
+  /** Demo chip match on the user-entered address (confirmed pin may differ). */
+  fixtureAddress?: string;
 }): Promise<ProspectingAgentPlanResult> {
   const mode = params.env.APP_MODE === 'live' ? 'live' : 'demo';
-  const fixtureId = matchDemoFixtureId(params.location.address);
+  const fixtureId =
+    (params.fixtureAddress ? matchDemoFixtureId(params.fixtureAddress) : null) ??
+    matchDemoFixtureId(params.location.address);
 
   const planner: ProspectingPlannerClient | OpenAiProspectingPlannerClient | null =
     params.planner ??
-    createOpenAiProspectingPlannerClient(params.env) ??
-    (mode === 'demo' && fixtureId ? new DemoProspectingPlannerClient() : null);
+    (fixtureId ? new DemoProspectingPlannerClient() : null) ??
+    createOpenAiProspectingPlannerClient(params.env);
 
   const emptyState = createProspectingAgentState();
 

@@ -40,10 +40,13 @@ export function ProspectingPage() {
   return (
     <div className="min-h-screen bg-bg">
       <TopBar />
-      <main className="mx-auto max-w-[720px] px-4 py-10" data-testid="prospecting-page">
-        <h1 className="font-display font-semibold text-display text-ink">Full prospecting run</h1>
-        <p className="mt-2 text-ink-2">
-          Autonomous agent: geocode, bounded tool planner, taste, store scan, verification, outreach drafts, pitch pack.
+      <main className="mx-auto max-w-[720px] px-3 py-8 sm:px-4 sm:py-10" data-testid="prospecting-page">
+        <h1 className="font-display text-h2 font-semibold text-ink sm:text-display">
+          Full prospecting run
+        </h1>
+        <p className="mt-2 text-sm text-ink-2 break-words sm:text-base">
+          Autonomous agent: geocode, bounded tool planner, taste, store scan, verification, outreach
+          drafts, pitch pack.
         </p>
 
         {error && (

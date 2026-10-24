@@ -80,6 +80,7 @@ export function applyProspectingAgentToolToState(
       }
       break;
     case 'nearest_store_check': {
+      if (payload.checked === false) break;
       const entityId = String(payload.entityId ?? call.arguments.entityId ?? '');
       const km = payload.km as number | undefined;
       if (entityId && km !== undefined && km <= absenceRadiusKm + 0.05) {
@@ -88,6 +89,7 @@ export function applyProspectingAgentToolToState(
       break;
     }
     case 'store_presence_lookup': {
+      if (payload.checked === false) break;
       const entityId = String(payload.entityId ?? call.arguments.entityId ?? '');
       const count = Number(payload.count ?? 0);
       const nearestKm = payload.nearestKm as number | undefined;
