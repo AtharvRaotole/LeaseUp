@@ -9,6 +9,7 @@ import { heatmapWeightsFromAffinity } from '../../lib/heatmap-scale';
 import { HEATMAP_COLOR_EXPRESSION } from '../../lib/heatmap-map-paint';
 import { Switch } from '../ui/Switch';
 import { cn } from '../../lib/cn';
+import { mapMarkerColor } from '../../lib/map-accent';
 import type { MapBrandSelection, ReportMapCaptureRef } from './ReportMap';
 
 const MAP_LEGEND_OPEN_MIN_WIDTH_PX = 1600;
@@ -61,7 +62,7 @@ export default function ReportMapInner({
       preserveDrawingBuffer: true,
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
-    new maplibregl.Marker({ color: '#0f6b4f' })
+    new maplibregl.Marker({ color: mapMarkerColor() })
       .setLngLat([results.location.longitude, results.location.latitude])
       .addTo(map);
     map.on('load', () => {
@@ -85,7 +86,7 @@ export default function ReportMapInner({
         source: 'site-pin',
         paint: {
           'circle-radius': 8,
-          'circle-color': '#0f6b4f',
+          'circle-color': mapMarkerColor(),
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff',
         },
@@ -253,7 +254,7 @@ export default function ReportMapInner({
       }
     };
 
-    upsert('stores-pitch', { type: 'FeatureCollection', features: pitchFeatures }, '#0f6b4f');
+    upsert('stores-pitch', { type: 'FeatureCollection', features: pitchFeatures }, mapMarkerColor());
     upsert('stores-other', { type: 'FeatureCollection', features: otherFeatures }, '#8fa3c4');
     resizeMap();
   }, [results.mapStores, mapReady, resizeMap, pitchIdSet]);

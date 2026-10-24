@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { GeocodeCandidate, Location } from '@leaseup/contracts';
+import { mapMarkerColor } from '../../lib/map-accent';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { cn } from '../../lib/cn';
@@ -67,7 +68,7 @@ export function GeocodeConfirmPanel({
       touchPitch: false,
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
-    const marker = new maplibregl.Marker({ color: '#0f6b4f', draggable: true })
+    const marker = new maplibregl.Marker({ color: mapMarkerColor(), draggable: true })
       .setLngLat([pin.lng, pin.lat])
       .addTo(map);
     marker.on('dragend', () => {
