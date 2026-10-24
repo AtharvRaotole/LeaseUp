@@ -6,7 +6,6 @@ import {
   seviervilleFixture,
   parseQlooAudienceRows,
   computeBrandLocalAudienceOverlap,
-  audiencePanelBaseline,
   TRADE_AREA_SHOPPER_TAG_SUBTYPES,
   type TradeAreaTasteRow,
 } from '@leaseup/fixtures/worker';
@@ -273,6 +272,8 @@ export class QlooClient {
     location: QlooLocation;
     brandEntityId: string;
     runId?: string;
+    /** Recorded live brand panel baseline (loadLiveAudiences). */
+    panelBaseline: Record<string, number>;
   }): Promise<{ tags: TradeAreaTasteRow[]; audiences: TradeAreaTasteRow[] } | null> {
     if (this.mode === 'demo') {
       return null;
@@ -287,7 +288,7 @@ export class QlooClient {
       const audiences = computeBrandLocalAudienceOverlap(
         parseQlooAudienceRows(brandJson),
         parseQlooAudienceRows(localJson),
-        { panelBaseline: audiencePanelBaseline() }
+        { panelBaseline: params.panelBaseline }
       );
       if (audiences.length === 0) return null;
       return { tags: [], audiences };
@@ -507,6 +508,50 @@ export class QlooClient {
     await this.cache.putJsonIfChanged(cacheKey, cells, 86400);
 
     return cells;
+  }
+
+  /**
+   * Co-tenancy: pitched brand at location with incumbent brands as taste context
+   * (`signal.interests.entities`). Live only; demo shares come from ASSETS.
+   */
+  async getBrandCoAffinityWithIncumbents(params: {
+    location: QlooLocation;
+    pitchEntityId: string;
+    incumbentEntityIds: string[];
+    runId?: string;
+  }): Promise<unknown | null> {
+    if (params.incumbentEntityIds.length === 0 || this.mode === 'demo' || !this.apiKey) {
+      return null;
+    }
+
+    const url = new URL('/v2/insights', this.baseUrl);
+    url.searchParams.set('filter.type', 'urn:entity:brand');
+    url.searchParams.set('filter.results.entities', params.pitchEntityId);
+    applyQlooInsightsLocationParams(url, params.location);
+    url.searchParams.set('signal.interests.entities', params.incumbentEntityIds.join(','));
+    url.searchParams.set('take', '1');
+    url.searchParams.set('feature.explainability', 'true');
+
+    const start = Date.now();
+    const response = await fetchQlooWithRetry(
+      url.toString(),
+      this.apiKey,
+      undefined,
+      QLOO_FETCH_ENRICHMENT_OPTIONS
+    );
+    await recordApiMetric(this.db, {
+      runId: params.runId,
+      provider: 'qloo',
+      endpoint: '/v2/insights',
+      statusCode: response.status,
+      latencyMs: Date.now() - start,
+      cached: false,
+    });
+    if (response.ok) return response.json();
+    if (response.status === 429 || response.status >= 500) {
+      throw this.mapQlooHttpError(response.status, response.statusText, 'co-tenancy');
+    }
+    return null;
   }
 
   /** Fallback when heatmap is empty or errors: sample affinity on a lat/lng grid. */

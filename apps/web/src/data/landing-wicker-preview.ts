@@ -2749,10 +2749,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
         "minStorefrontSqFt": 800
       },
       "tenantMixScore": {
-        "score": 0,
-        "coAffinityMean": 0,
-        "categoryFit": "Apparel",
-        "explanation": ""
+        "categoryFit": "Apparel"
       },
       "outreachDraft": "",
       "reasons": [
@@ -2783,10 +2780,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
         "minStorefrontSqFt": 800
       },
       "tenantMixScore": {
-        "score": 0,
-        "coAffinityMean": 0,
-        "categoryFit": "Retail",
-        "explanation": ""
+        "categoryFit": "Retail"
       },
       "outreachDraft": "",
       "reasons": [
@@ -2817,10 +2811,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
         "minStorefrontSqFt": 800
       },
       "tenantMixScore": {
-        "score": 0,
-        "coAffinityMean": 0,
-        "categoryFit": "Apparel",
-        "explanation": ""
+        "categoryFit": "Apparel"
       },
       "outreachDraft": "",
       "reasons": [
@@ -2851,10 +2842,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
         "minStorefrontSqFt": 800
       },
       "tenantMixScore": {
-        "score": 0,
-        "coAffinityMean": 0,
-        "categoryFit": "Apparel",
-        "explanation": ""
+        "categoryFit": "Apparel"
       },
       "outreachDraft": "",
       "reasons": [
@@ -2884,10 +2872,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
         "minStorefrontSqFt": 800
       },
       "tenantMixScore": {
-        "score": 0,
-        "coAffinityMean": 0,
-        "categoryFit": "Apparel",
-        "explanation": ""
+        "categoryFit": "Apparel"
       },
       "outreachDraft": "",
       "reasons": [

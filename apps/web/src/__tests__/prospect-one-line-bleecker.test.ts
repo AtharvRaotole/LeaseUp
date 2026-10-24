@@ -19,12 +19,7 @@ describe('prospectOneLineReason Bleecker-like taste', () => {
         tags: BLEECKER_LIKE_NON_RETAIL_TASTE,
         audiences: [],
       },
-      tenantMixScore: {
-        score: 0,
-        coAffinityMean: 0,
-        categoryFit: 'Home',
-        explanation: '',
-      },
+      tenantMixScore: { categoryFit: 'Home' },
     } as ProspectPack;
 
     const results = {
@@ -43,6 +38,6 @@ describe('prospectOneLineReason Bleecker-like taste', () => {
     expect(line).not.toContain('Hotel');
     expect(line).not.toContain('Self Help');
     expect(line).not.toContain('American');
-    expect(line).toContain('Home');
+    expect(line).not.toContain('Category fit');
   });
 });

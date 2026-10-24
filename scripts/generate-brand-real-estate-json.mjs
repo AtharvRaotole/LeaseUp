@@ -15,7 +15,6 @@ const byName = new Map(resolved.map((r) => [r.name.toLowerCase(), r]));
 const VERIFIED = [
   ['7-Eleven', 'https://www.7-eleven.com/real-estate'],
   ['Abercrombie & Fitch', 'https://www.abercrombie.com/shop/us/real-estate'],
-  ['Academy Sports + Outdoors', 'https://www.academy.com/real-estate'],
   ['Bath & Body Works', 'https://www.bathandbodyworks.com/real-estate'],
   ['Blaze Pizza', 'https://www.blazepizza.com/real-estate'],
   ['Burger King', 'https://www.bk.com/real-estate'],
@@ -114,7 +113,7 @@ entries.sort((a, b) => a.name.localeCompare(b.name));
 
 const out = {
   version: 1,
-  updatedAt: '2026-10-23',
+  updatedAt: '2026-10-24',
   entries,
 };
 

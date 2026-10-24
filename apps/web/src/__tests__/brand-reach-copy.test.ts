@@ -9,7 +9,8 @@ describe('brandReachPlainLine', () => {
       source: 'https://example.com/real-estate',
     });
     expect(line).toContain('How to reach them');
-    expect(line).toContain('https://example.com/real-estate');
+    expect(line).toContain('example.com');
+    expect(line).not.toContain('https://');
   });
 
   it('uses plain copy when not verified', () => {

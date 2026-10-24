@@ -37,14 +37,15 @@ describe('prospectOneLineReason', () => {
     const line = prospectOneLineReason(
       prospect({
         nearestExistingStoreKm: 12,
-        tenantMixScore: { score: 1, coAffinityMean: 1, categoryFit: 'Apparel', explanation: '' },
+        tenantMixScore: { categoryFit: 'Apparel' },
       }),
       baseResults,
       10
     );
     expect(line).toContain('Top 6% local match here');
     expect(line).toContain('Nearest store is 12 km away');
-    expect(line).toContain('Apparel');
+    expect(line).not.toContain('Category fit');
+    expect(line).not.toContain('Apparel');
     expect(line).not.toContain('taste-aware blend');
   });
 
@@ -100,7 +101,7 @@ describe('prospectOneLineReason', () => {
           tasteFitBeyondChainPercentile: 82,
         },
         nearestExistingStoreKm: 4.2,
-        tenantMixScore: { score: 1, coAffinityMean: 1, categoryFit: 'Coffee', explanation: '' },
+        tenantMixScore: { categoryFit: 'Coffee' },
       }),
       baseResults,
       10
@@ -108,6 +109,6 @@ describe('prospectOneLineReason', () => {
     expect(a).not.toBe(b);
     expect(a).toContain('Sneakerheads');
     expect(b).toContain('Top 20% local match here');
-    expect(b).toContain('Coffee');
+    expect(b).not.toContain('Category fit');
   });
 });

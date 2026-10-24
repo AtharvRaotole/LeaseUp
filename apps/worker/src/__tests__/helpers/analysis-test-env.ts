@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { vi } from 'vitest';
@@ -64,4 +64,25 @@ export function offlineDemoAnalyzeEnv(
     APP_MODE: 'demo',
     ASSETS: assets,
   } as import('../../index').Env;
+}
+
+/**
+ * ASSETS stub that serves only apps/worker/public/brand-explainability (the live audience recordings
+ * the Why card needs) and 404s everything else, so other asset-backed paths behave as with no ASSETS.
+ */
+export function liveAudiencesOnlyAssets(): Fetcher {
+  const publicDir = join(__dirname, '../../../public');
+  return {
+    fetch: async (input: RequestInfo | URL) => {
+      const path = new URL(String(input)).pathname;
+      if (path.startsWith('/brand-explainability/')) {
+        try {
+          return new Response(readFileSync(join(publicDir, path)));
+        } catch {
+          /* fall through */
+        }
+      }
+      return new Response('not found', { status: 404 });
+    },
+  } as unknown as Fetcher;
 }

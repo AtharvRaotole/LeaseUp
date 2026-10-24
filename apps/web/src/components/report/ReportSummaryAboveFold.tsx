@@ -4,6 +4,8 @@ import { Card } from '../ui/Card';
 import { HeadlineCard } from './HeadlineCard';
 import { displayBrandName } from '../../lib/brand-display';
 import { prospectOneLineReason } from '../../lib/prospect-one-line';
+import { prospectBrandCategoryLabel } from '../../lib/prospect-brand-category';
+import { ProspectCategoryChip } from './ProspectCategoryChip';
 import { AddToPipelineButton } from '../pipeline/AddToPipelineButton';
 import { pipelineCardFromProspect } from '../../lib/build-pipeline-card';
 import { buildReportPath } from '../../lib/report-params';
@@ -81,6 +83,10 @@ export function ReportSummaryAboveFold({
               const reason = showBrandPitchDetails
                 ? prospectOneLineReason(prospect, results, radiusKm)
                 : '';
+              const categoryTag =
+                showBrandPitchDetails && !prospect.coTenancyLine?.trim()
+                  ? prospectBrandCategoryLabel(prospect)
+                  : undefined;
               const isSelected = selected?.brand.entityId === prospect.brand.entityId;
               return (
                 <li key={prospect.brand.entityId} className="group">
@@ -106,9 +112,12 @@ export function ReportSummaryAboveFold({
                           <span className="text-meta font-medium text-ink-3">#{index + 1}</span>
                           <span className="font-medium text-body text-ink sm:text-body-lg">{name}</span>
                         </span>
-                        {showBrandPitchDetails && reason ? (
-                          <span className="mt-0.5 block text-small leading-snug text-ink-2 sm:text-body">
-                            {reason}
+                        {showBrandPitchDetails && (reason || categoryTag) ? (
+                          <span className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-small leading-snug text-ink-2 sm:text-body">
+                            {reason ? <span className="min-w-0">{reason}</span> : null}
+                            {categoryTag ? (
+                              <ProspectCategoryChip label={categoryTag} data-testid="prospect-category-chip" />
+                            ) : null}
                           </span>
                         ) : null}
                       </span>

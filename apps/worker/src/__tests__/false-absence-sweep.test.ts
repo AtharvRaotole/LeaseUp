@@ -104,6 +104,7 @@ function mockLiveOfflineAnalyze(
   vi.spyOn(service['qloo'], 'getBrandInsights').mockResolvedValue(insightsForDemo(site));
   vi.spyOn(service['qloo'], 'getTradeAreaTasteContext').mockResolvedValue(null);
   vi.spyOn(service['qloo'], 'getTradeAreaShopperTagInsights').mockResolvedValue(undefined);
+  vi.spyOn(service['qloo'], 'getBrandCoAffinityWithIncumbents').mockResolvedValue(null);
 }
 
 async function analyzeSite(site: (typeof FALSE_ABSENCE_SWEEP_SITES)[number]) {
