@@ -9,7 +9,7 @@ export function orderProspectsForRankingMode(
     return results.prospects;
   }
   const rankByEntity = new Map(
-    results.rankings.map((row) => [row.entityId, row.baselineRank ?? row.qlooRank])
+    results.rankings.map((row) => [row.entityId, row.baselineRank ?? row.blendedRank])
   );
   return [...results.prospects].sort((a, b) => {
     const rankA = rankByEntity.get(a.brand.entityId) ?? Number.POSITIVE_INFINITY;
