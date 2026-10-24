@@ -184,6 +184,16 @@ export class WatchlistService {
     return { address: space.address, radiusKm: space.radius_km };
   }
 
+  async remove(watchId: string, workspaceId: string): Promise<boolean> {
+    const space = await this.getWatchRow(watchId, workspaceId);
+    if (!space) return false;
+    await this.db.prepare('DELETE FROM watch_snapshots WHERE watch_id = ?').bind(watchId).run();
+    await this.db.prepare('DELETE FROM watch_spaces WHERE watch_id = ? AND workspace_id = ?')
+      .bind(watchId, workspaceId)
+      .run();
+    return true;
+  }
+
   async recheck(
     watchId: string,
     workspaceId: string,

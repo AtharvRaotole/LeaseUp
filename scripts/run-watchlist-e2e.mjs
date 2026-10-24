@@ -31,6 +31,7 @@ const worker = spawn(
     env: {
       ...process.env,
       APP_MODE: 'demo',
+      WATCH_RECHECK_COOLDOWN_SEC: '1',
       WRANGLER_SEND_ERROR_REPORTS: 'false',
       CI: 'true',
     },

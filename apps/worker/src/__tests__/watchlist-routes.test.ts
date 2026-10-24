@@ -29,14 +29,28 @@ function minimalAnalysis(): AnalysisResponse {
   };
 }
 
-const { workspaceIdFromRequest, analyzeMock } = vi.hoisted(() => ({
-  workspaceIdFromRequest: vi.fn(),
+const { visitorIdFromRequest, analyzeMock } = vi.hoisted(() => ({
+  visitorIdFromRequest: vi.fn(),
   analyzeMock: vi.fn(),
 }));
 
-vi.mock('../lib/workspace-cookie', () => ({
-  workspaceIdFromRequest: () => workspaceIdFromRequest(),
+vi.mock('../lib/visitor-cookie', () => ({
+  visitorIdFromRequest: () => visitorIdFromRequest(),
 }));
+
+function countingKv(): KVNamespace {
+  const data = new Map<string, string>();
+  return {
+    get: async (key: string) => data.get(key) ?? null,
+    put: async (key: string, value: string) => {
+      data.set(key, value);
+    },
+    delete: async (key: string) => {
+      data.delete(key);
+    },
+    list: async () => ({ keys: [], list_complete: true, cacheStatus: null }),
+  } as unknown as KVNamespace;
+}
 
 vi.mock('../services/analysis', () => ({
   AnalysisService: vi.fn().mockImplementation(() => ({
@@ -54,7 +68,7 @@ function appWithEnv(db: D1Database) {
           ...init,
           headers: { 'Content-Type': 'application/json', ...init?.headers },
         }),
-        { DB: db, APP_MODE: 'demo' } as import('../index').Env
+        { DB: db, CACHE: countingKv(), APP_MODE: 'demo' } as import('../index').Env
       ),
   };
 }
@@ -64,15 +78,15 @@ describe('watchlist routes', () => {
     resetWatchlistTestDb();
     analyzeMock.mockReset();
     analyzeMock.mockImplementation(async () => minimalAnalysis());
-    workspaceIdFromRequest.mockReset();
-    workspaceIdFromRequest.mockImplementation(async () => 'ws-default');
+    visitorIdFromRequest.mockReset();
+    visitorIdFromRequest.mockImplementation(async () => 'visitor-default');
   });
 
   it('does not list another visitor watched spaces', async () => {
     const db = createWatchlistTestDb();
     const app = appWithEnv(db);
 
-    workspaceIdFromRequest.mockResolvedValue('ws-owner');
+    visitorIdFromRequest.mockResolvedValue('visitor-owner');
     const saveRes = await app.fetch('/api/watchlist', {
       method: 'POST',
       body: JSON.stringify({
@@ -83,7 +97,7 @@ describe('watchlist routes', () => {
     });
     expect(saveRes.status).toBe(200);
 
-    workspaceIdFromRequest.mockResolvedValue('ws-other');
+    visitorIdFromRequest.mockResolvedValue('visitor-other');
     const listRes = await app.fetch('/api/watchlist');
     const listBody = (await listRes.json()) as { spaces: unknown[] };
     expect(listBody.spaces).toEqual([]);
@@ -93,7 +107,7 @@ describe('watchlist routes', () => {
     const db = createWatchlistTestDb();
     const app = appWithEnv(db);
 
-    workspaceIdFromRequest.mockResolvedValue('ws-owner');
+    visitorIdFromRequest.mockResolvedValue('visitor-owner');
     const saveRes = await app.fetch('/api/watchlist', {
       method: 'POST',
       body: JSON.stringify({
@@ -104,7 +118,7 @@ describe('watchlist routes', () => {
     });
     const saved = (await saveRes.json()) as { watchId: string };
 
-    workspaceIdFromRequest.mockResolvedValue('ws-other');
+    visitorIdFromRequest.mockResolvedValue('visitor-other');
     const detailRes = await app.fetch(`/api/watchlist/${saved.watchId}`);
     expect(detailRes.status).toBe(404);
   });
@@ -113,7 +127,7 @@ describe('watchlist routes', () => {
     const db = createWatchlistTestDb();
     const app = appWithEnv(db);
 
-    workspaceIdFromRequest.mockResolvedValue('ws-1');
+    visitorIdFromRequest.mockResolvedValue('visitor-1');
     const saveRes = await app.fetch('/api/watchlist', {
       method: 'POST',
       body: JSON.stringify({
@@ -133,5 +147,32 @@ describe('watchlist routes', () => {
     const body = (await second.json()) as { code: string };
     expect(body.code).toBe('RECHECK_COOLDOWN');
     expect(analyzeMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('deletes a saved space for the owning visitor only', async () => {
+    const db = createWatchlistTestDb();
+    const app = appWithEnv(db);
+
+    visitorIdFromRequest.mockResolvedValue('visitor-owner');
+    const saveRes = await app.fetch('/api/watchlist', {
+      method: 'POST',
+      body: JSON.stringify({
+        address: '1574 N Milwaukee Ave, Chicago, IL 60622',
+        radiusKm: 10,
+        analysis: minimalAnalysis(),
+      }),
+    });
+    const saved = (await saveRes.json()) as { watchId: string };
+
+    const delRes = await app.fetch(`/api/watchlist/${saved.watchId}`, { method: 'DELETE' });
+    expect(delRes.status).toBe(200);
+
+    const listRes = await app.fetch('/api/watchlist');
+    const listBody = (await listRes.json()) as { spaces: unknown[] };
+    expect(listBody.spaces).toEqual([]);
+
+    visitorIdFromRequest.mockResolvedValue('visitor-other');
+    const delAgain = await app.fetch(`/api/watchlist/${saved.watchId}`, { method: 'DELETE' });
+    expect(delAgain.status).toBe(404);
   });
 });
