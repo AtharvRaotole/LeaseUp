@@ -29,6 +29,9 @@ jobs:
       - name: Run lint
         run: pnpm lint
 
+      - name: Check SUBMISSION.md and integration head
+        run: node scripts/check-submission-doc.mjs
+
   typecheck:
     name: Type Check
     runs-on: ubuntu-latest
