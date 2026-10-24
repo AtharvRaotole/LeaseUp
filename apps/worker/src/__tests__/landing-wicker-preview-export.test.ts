@@ -3,18 +3,11 @@ import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { DEMO_CHIP_ADDRESSES } from '@leaseup/fixtures';
 import { AnalysisService } from '../services/analysis';
+import {
+  createDemoPublicAssetsFetcher,
+  offlineDemoAnalyzeEnv,
+} from './helpers/analysis-test-env';
 import { installWorkersCacheApiStub } from './helpers/kv-counting';
-
-const db = {
-  prepare: () => {
-    const stmt = {
-      bind: () => stmt,
-      run: async () => ({}),
-      first: async () => null,
-    };
-    return stmt;
-  },
-} as unknown as D1Database;
 
 const kv = {
   get: async () => null,
@@ -22,15 +15,13 @@ const kv = {
 } as unknown as KVNamespace;
 
 describe('landing wicker preview export harness', () => {
-  it('writes landing preview + pitch order when EXPORT_LANDING_WICKER_PREVIEW=1', async () => {
+  it('writes landing preview + prospect order when EXPORT_LANDING_WICKER_PREVIEW=1', async () => {
     if (process.env.EXPORT_LANDING_WICKER_PREVIEW !== '1') return;
 
     installWorkersCacheApiStub();
-    const service = new AnalysisService({
-      DB: db,
-      CACHE: kv,
-      APP_MODE: 'demo',
-    } as import('../index').Env);
+    const service = new AnalysisService(
+      offlineDemoAnalyzeEnv(createDemoPublicAssetsFetcher(), kv)
+    );
 
     const results = await service.analyze(
       { address: DEMO_CHIP_ADDRESSES.wicker, radius: 10, storefrontSqFt: 2500 },
@@ -54,7 +45,7 @@ export const LANDING_WICKER_SLUG = 'wicker';
       entityId: p.brand.entityId,
       name: p.brand.name,
     }));
-    const orderPath = join(repoRoot, 'packages/fixtures/src/wicker-landing-pitch-order.json');
+    const orderPath = join(repoRoot, 'packages/fixtures/src/wicker-landing-prospect-order.json');
     writeFileSync(orderPath, JSON.stringify({ top }, null, 2) + '\n', 'utf8');
 
     console.log('Wrote', previewPath, 'top:', top.map((r) => r.name).join(', '));

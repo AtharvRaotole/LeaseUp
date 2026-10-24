@@ -721,6 +721,35 @@ export class AnalysisService {
     return { packs: prospectPacks, formatFilteredCount, funnel };
   }
 
+  private demoOverpassConflictStatus(
+    entityId: string,
+    location: Location,
+    radiusKm: number,
+    qlooName?: string,
+    sources: string[] = ['All The Places (CC0)']
+  ): {
+    status: 'conflict - likely present';
+    sources: string[];
+    metroCoverageNote?: string;
+  } | null {
+    if (this.mode !== 'demo') return null;
+    const fixtureId = matchDemoFixtureId(location.address);
+    if (!fixtureId) return null;
+    const demoKm = nearestDemoOverpassMatchKm(
+      fixtureId,
+      entityId,
+      location.latitude,
+      location.longitude,
+      radiusKm,
+      qlooName
+    );
+    if (demoKm === undefined) return null;
+    return {
+      status: 'conflict - likely present',
+      sources: [...sources, 'OpenStreetMap (wikidata cross-check)'],
+    };
+  }
+
   private async verifyFromOsmSnapshot(
     entityId: string,
     location: Location,
@@ -737,6 +766,14 @@ export class AnalysisService {
     const sources: string[] = ['All The Places (CC0)'];
     const snapshotLabel = osmSnapshotDisplayLabel();
     const status = osmSnapshotBrandStatus(entityId);
+    const demoOverpassConflict = this.demoOverpassConflictStatus(
+      entityId,
+      location,
+      radiusKm,
+      qlooName,
+      sources
+    );
+    if (demoOverpassConflict) return demoOverpassConflict;
     if (status === 'failed' || status === 'missing' || !this.osmSnapshot) {
       return {
         status: 'unverified (1 source)',
@@ -771,25 +808,14 @@ export class AnalysisService {
       };
     }
 
-    if (this.mode === 'demo') {
-      const fixtureId = matchDemoFixtureId(location.address);
-      if (fixtureId) {
-        const demoKm = nearestDemoOverpassMatchKm(
-          fixtureId,
-          entityId,
-          location.latitude,
-          location.longitude,
-          radiusKm,
-          qlooName
-        );
-        if (demoKm !== undefined) {
-          return {
-            status: 'conflict - likely present',
-            sources: [...sources, 'OpenStreetMap (wikidata cross-check)'],
-          };
-        }
-      }
-    }
+    const demoConflictAfterSnapshot = this.demoOverpassConflictStatus(
+      entityId,
+      location,
+      radiusKm,
+      qlooName,
+      sources
+    );
+    if (demoConflictAfterSnapshot) return demoConflictAfterSnapshot;
 
     const nationalCount = await this.catalog.getNationalStoreCount(entityId);
     const atpNearby = await this.catalog.findStoresNearby(
