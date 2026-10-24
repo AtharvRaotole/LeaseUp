@@ -1,18 +1,16 @@
 import type { AnalysisResponse, ProspectPack } from '@leaseup/contracts';
-import { analysisStoreDataDateLabel } from './store-data-dates';
-import { whyBrandBulletLines } from './why-brand-lines';
-import { pitchCheckedSourcesLabel } from './copy';
+import { whyBrandTasteSection } from './why-brand-taste-ui';
 
+/** Plain-text lines for pitch PDF / share (taste-first, no duplicate absence blocks). */
 export function pitchExpandedLines(
   prospect: ProspectPack,
   results: AnalysisResponse,
-  radiusKm: number
+  _radiusKm: number
 ): string[] {
-  const lines = whyBrandBulletLines(prospect, results, radiusKm);
-
-  lines.push(
-    `${pitchCheckedSourcesLabel(prospect)} as of ${analysisStoreDataDateLabel(results)}.`
-  );
-
+  const lines: string[] = [];
+  const taste = whyBrandTasteSection(prospect, results);
+  if (taste.summary) lines.push(taste.summary);
+  lines.push(...taste.signalLines);
+  if (taste.rankLine) lines.push(taste.rankLine);
   return lines;
 }

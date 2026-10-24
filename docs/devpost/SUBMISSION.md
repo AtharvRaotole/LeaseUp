@@ -6,7 +6,7 @@
 
 **On the live landing today:** the same headline appears above a short helper line from the app: "Enter an address to see which brands local shoppers want nearby, then check real store locations before you pitch." (`LANDING_PLAIN_SUMMARY` in `apps/web/src/lib/broker-copy.ts`).
 
-**Production reference:** Cloudflare Pages at commit **`3368b9e`** (demo chips + live mode). **Mobile Lighthouse (GitHub Actions LHCI only):** median of **3** mobile runs per URL in Actions run [**40058723762**](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40058723762): landing performance **93**, Wicker report **90**. Do not cite local preview Lighthouse scores in Devpost copy; use that CI median line only.
+**Production reference:** Cloudflare Pages at commit **`d5c4040`** (integration head). **Mobile Lighthouse (GitHub Actions LHCI only):** median of **3** mobile runs on `ubuntu-latest` in Actions run [**40074283024**](https://github.com/AtharvRaotole/LeaseUp/actions/runs/40074283024): landing performance **93**; Wicker report performance **89**, accessibility **96**. Do not cite local preview Lighthouse scores in Devpost copy; details in `docs/qa/a11y-perf.md`.
 
 Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` (40 US addresses, live Qloo API; metrics refreshed Oct 24, 2026 per PR #103).
 
@@ -93,7 +93,7 @@ Eval numbers below are only from `data/qloo-eval-40/QLOO_LIFT_EVAL.md` and `pack
 | Pipeline statuses, notes, reminders | ✓ | ✓ | ✓ | | `apps/web/src/lib/pipeline-status.ts`, `apps/web/src/components/pipeline/PipelineCardDialog.tsx` |
 | Plain-language broker copy pass | | ✓ | ✓ | | `apps/web/src/lib/broker-visible-jargon.ts`, `e2e/broker-jargon.spec.ts` |
 | How LeaseUp uses Qloo (`/methodology/qloo`) | ✓ | ✓ | | ✓ | `apps/web/src/pages/HowLeaseUpUsesQlooPage.tsx`, `apps/web/src/lib/qloo-broker-explainer-copy.ts` |
-| Mobile Lighthouse (GitHub Actions LHCI) | ✓ | ✓ | | | Actions run **40058723762**: median of 3 mobile runs (landing perf **93**, report perf **90**; `LHCI_MEDIANS` in CI logs) |
+| Mobile Lighthouse (GitHub Actions LHCI) | ✓ | ✓ | | | Actions run **40074283024**: median of 3 mobile runs (landing perf **93**, report perf **89**, report a11y **96**; `LHCI_MEDIANS` in CI logs) |
 | Trade area shopper tags (location insights) | ✓ | ✓ | ✓ | | `apps/worker/src/lib/trade-area-shoppers.ts`, `apps/web/src/components/report/WhoShopsHereCard.tsx` |
 | Store presence checks (ATP + OSM + wikidata false-absence cross-check) | ✓ | ✓ | ✓ | | `apps/worker/src/lib/osm-wikidata-absence-crosscheck.ts`, `apps/worker/src/lib/false-absence-sweep.ts`, `data/qloo-eval-40/FALSE_ABSENCE_AUDIT.md`; PR #89 false-positive audit: removed 4 known false positives across 13 sites (not zero FP; OSM covers 25/227 chains) |
 | Summary-first report + collapsible depth | | ✓ | ✓ | | `apps/web/src/components/report/ReportSummaryAboveFold.tsx`, `ReportDeepSections.tsx` |
@@ -131,7 +131,7 @@ Brokers and landlords lose time pitching chains that already operate inside the 
 
 ## What it does
 
-LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped live at **`3368b9e`**:
+LeaseUp turns a storefront address into a broker-ready pitch workflow. Shipped live at **`ecf55c0`**:
 
 ### Landing redesign
 
@@ -209,7 +209,7 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 - **Web:** React, Vite, MapLibre GL, TanStack Query on Cloudflare Pages.
 - **API:** Cloudflare Worker (Hono), response cache for successful upstream calls, D1 for portfolio, pipeline, and metrics.
-- **Quality:** Playwright e2e (broker jargon, pipeline loop, Qloo-down, CRM, `report-brands-visible`, `qloo-ranking-toggle`, `demo-pitch-smoke`), Lighthouse CI (GitHub Actions run **40058723762**: mobile median of 3 runs, landing perf **93**, report perf **90**), CSP regression, worker bundle guard, Vitest on copy, ranking mode, prospect funnel, adaptive absence radius, and false-absence sweep.
+- **Quality:** Playwright e2e (broker jargon, pipeline loop, Qloo-down, CRM, `report-brands-visible`, `qloo-ranking-toggle`, `demo-pitch-smoke`), Lighthouse CI (GitHub Actions LHCI median of 3 mobile runs, run **40074283024**: landing perf **93**, report perf **89**, report a11y **96**; `docs/qa/a11y-perf.md`), CSP regression, worker bundle guard, Vitest on copy, ranking mode, prospect funnel, adaptive absence radius, and false-absence sweep.
 
 ### Exactly how Qloo is used
 
@@ -242,9 +242,9 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 ## Accomplishments
 
-- Live at **`757b8f9`** (integration): compact summary with prospect funnel and **3 km** dense absence radius, default **fitted taste blend** with **Compare ranking** toggle (**83%** vs **76%** on the 40-address eval), non-blocking tour, stable **`/pitch/demo-boulder-ulta`**, OSM wikidata false-absence cross-check, pipeline evidence loop, watchlist hardening (#107), and **Qloo-down fallback**.
+- Live at **`ecf55c0`**: compact summary with prospect funnel, search vs absence radius explainer, default **fitted taste blend** with **Compare ranking** toggle (**83%** vs **76%** on the 40-address eval), non-blocking tour, stable **`/pitch/demo-boulder-ulta`**, OSM wikidata false-absence cross-check, **`brands-to-pitch`**, pipeline evidence loop, watchlist hardening (#107), and **Qloo-down fallback**.
 - Trade area shopper tags; brand reach lines; vacancy cost on report, share dialog, and pitch snapshot; owner update share links.
-- Plain-language broker pass + **`/methodology/qloo`** explainer; methodology shows exact cohort percents (82.5% vs 76%, +6.5 pp); mobile Lighthouse **93** landing / **90** report (GitHub Actions LHCI medians, run **40058723762**).
+- Plain-language broker pass + **`/methodology/qloo`** explainer; methodology shows exact cohort percents (82.5% vs 76%, +6.5 pp); mobile Lighthouse landing perf **93** / report perf **89** / report a11y **96** (GitHub Actions LHCI medians, run **40074283024**).
 - Preregistered **40-address** live Qloo evaluation (refreshed Oct 24, 2026): mean top-10 presence **54% / 76% / 83%** (raw Qloo / chain / blend; exact **0.538 / 0.760 / 0.825**) per ATP/OSM; same-size tier AUC **0.664**; mid-size tier **P@5 0.53 vs 0.23**.
 
 ---

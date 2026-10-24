@@ -22,6 +22,25 @@ export type VacancyCostResult = {
   extraCostWithoutShortlist?: number;
 };
 
+export function isVacancyMonthlyRateComplete(
+  draft: VacancyCalculatorDraft
+): draft is VacancyCalculatorDraft & { squareFeet: number; rentPerSqFtYear: number } {
+  const { squareFeet, rentPerSqFtYear } = draft;
+  return (
+    squareFeet !== undefined &&
+    rentPerSqFtYear !== undefined &&
+    Number.isFinite(squareFeet) &&
+    Number.isFinite(rentPerSqFtYear) &&
+    squareFeet >= 0 &&
+    rentPerSqFtYear >= 0
+  );
+}
+
+export function monthlyCarryingFromDraft(draft: VacancyCalculatorDraft): number | null {
+  if (!isVacancyMonthlyRateComplete(draft)) return null;
+  return (draft.squareFeet * draft.rentPerSqFtYear) / 12;
+}
+
 export function isVacancyInputComplete(
   draft: VacancyCalculatorDraft
 ): draft is VacancyCalculatorDraft & VacancyCalculatorInput {

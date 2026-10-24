@@ -120,6 +120,22 @@ export const TradeAreaShoppersSnapshotSchema = z.object({
 
 export type TradeAreaShoppersSnapshot = z.infer<typeof TradeAreaShoppersSnapshotSchema>;
 
+export const BrandTasteOverlapSignalSchema = z.object({
+  kind: z.enum(['tag', 'audience']),
+  name: z.string(),
+  affinity: z.number(),
+  affinityRank: z.number(),
+});
+
+export type BrandTasteOverlapSignal = z.infer<typeof BrandTasteOverlapSignalSchema>;
+
+export const WhyBrandTasteSchema = z.object({
+  signals: z.array(BrandTasteOverlapSignalSchema).max(3),
+  summary: z.string().max(600).optional(),
+});
+
+export type WhyBrandTaste = z.infer<typeof WhyBrandTasteSchema>;
+
 export const ProspectPackSchema = z.object({
   coverageNote: z.string().optional(),
   brand: BrandAffinitySchema,
@@ -133,6 +149,7 @@ export const ProspectPackSchema = z.object({
   nearestExistingStoreKm: z.number().optional(),
   qlooSignals: z.array(z.string()).optional(),
   tradeAreaTaste: TradeAreaTasteContextSchema.optional(),
+  whyBrandTaste: WhyBrandTasteSchema.optional(),
   brandReach: BrandReachContactSchema.optional(),
   /** Qloo co-affinity with OSM incumbents; omitted when unknown. */
   coTenancyLine: z.string().max(200).optional(),
