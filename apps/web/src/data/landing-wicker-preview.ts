@@ -2942,7 +2942,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
   "heatmapAvailable": false,
   "prospects": [
     {
-      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
       "brandReach": {
         "status": "not_yet_found",
         "searchUrl": "https://www.google.com/search?q=TJ%20Maxx%20retail%20real%20estate%20site%20submission"
@@ -2969,7 +2969,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "outreachDraft": "",
       "reasons": [
         "TJ Maxx: LeaseUp rank #35 (top 16% of 224 brands) for Wicker Park",
-        "No TJ Maxx store within 3 km (ATP catalog)",
+        "No TJ Maxx store within 3 km (All The Places store data)",
         "Established chain with 1281 US locations"
       ],
       "nearestExistingStoreKm": 3.702381830590345,
@@ -3005,7 +3005,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "outreachDraft": "",
       "reasons": [
         "Crumbl: LeaseUp rank #57 of 224 brands for Wicker Park; Qloo taste rank #49 of 224",
-        "No Crumbl store within 3 km (ATP catalog)",
+        "No Crumbl store within 3 km (All The Places store data)",
         "Established chain with 890 US locations"
       ],
       "nearestExistingStoreKm": 5.039849287112551,
@@ -3015,7 +3015,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       ]
     },
     {
-      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
       "brandReach": {
         "status": "not_yet_found",
         "searchUrl": "https://www.google.com/search?q=Victoria's%20Secret%20retail%20real%20estate%20site%20submission"
@@ -3042,7 +3042,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "outreachDraft": "",
       "reasons": [
         "Victoria's Secret: LeaseUp rank #60 of 224 brands for Wicker Park; Qloo taste rank #9 of 224",
-        "No Victoria's Secret store within 3 km (ATP catalog)",
+        "No Victoria's Secret store within 3 km (All The Places store data)",
         "Established chain with 768 US locations"
       ],
       "nearestExistingStoreKm": 4.596216256042221,
@@ -3052,7 +3052,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       ]
     },
     {
-      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
       "brandReach": {
         "status": "not_yet_found",
         "searchUrl": "https://www.google.com/search?q=J.Crew%20retail%20real%20estate%20site%20submission"
@@ -3079,7 +3079,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "outreachDraft": "",
       "reasons": [
         "J.Crew: LeaseUp rank #65 of 224 brands for Wicker Park; Qloo taste rank #20 of 224",
-        "No J.Crew store within 3 km (ATP catalog)",
+        "No J.Crew store within 3 km (All The Places store data)",
         "Established chain with 693 US locations"
       ],
       "nearestExistingStoreKm": 3.643146486346599,
@@ -3115,7 +3115,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "outreachDraft": "",
       "reasons": [
         "American Eagle Outfitters: LeaseUp rank #68 of 224 brands for Wicker Park; Qloo taste rank #52 of 224",
-        "No American Eagle Outfitters store within 3 km (ATP catalog)",
+        "No American Eagle Outfitters store within 3 km (All The Places store data)",
         "Established chain with 712 US locations"
       ],
       "nearestExistingStoreKm": 17.23241769016111,
@@ -3125,7 +3125,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       ]
     },
     {
-      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
       "brandReach": {
         "status": "not_yet_found",
         "searchUrl": "https://www.google.com/search?q=H%26M%20retail%20real%20estate%20site%20submission"
@@ -3152,7 +3152,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "outreachDraft": "",
       "reasons": [
         "H&M: LeaseUp rank #81 of 224 brands for Wicker Park; Qloo taste rank #18 of 224",
-        "No H&M store within 3 km (ATP catalog)",
+        "No H&M store within 3 km (All The Places store data)",
         "Established chain with 478 US locations"
       ],
       "nearestExistingStoreKm": 4.712288958576044,
@@ -3162,7 +3162,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       ]
     },
     {
-      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
       "brandReach": {
         "status": "not_yet_found",
         "searchUrl": "https://www.google.com/search?q=Vans%20retail%20real%20estate%20site%20submission"
@@ -3189,7 +3189,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "outreachDraft": "",
       "reasons": [
         "Vans: LeaseUp rank #88 of 224 brands for Wicker Park; Qloo taste rank #13 of 224",
-        "No Vans store within 3 km (ATP catalog)",
+        "No Vans store within 3 km (All The Places store data)",
         "Established chain with 397 US locations"
       ],
       "nearestExistingStoreKm": 12.191706680907302,
@@ -3199,7 +3199,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       ]
     },
     {
-      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
       "brandReach": {
         "status": "not_yet_found",
         "searchUrl": "https://www.google.com/search?q=Express%20retail%20real%20estate%20site%20submission"
@@ -3226,7 +3226,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "outreachDraft": "",
       "reasons": [
         "Express: LeaseUp rank #90 of 224 brands for Wicker Park; Qloo taste rank #44 of 224",
-        "No Express store within 3 km (ATP catalog)",
+        "No Express store within 3 km (All The Places store data)",
         "Established chain with 387 US locations"
       ],
       "nearestExistingStoreKm": 4.684471202799807,
@@ -3236,7 +3236,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       ]
     },
     {
-      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
       "brandReach": {
         "status": "not_yet_found",
         "searchUrl": "https://www.google.com/search?q=Aerie%20retail%20real%20estate%20site%20submission"
@@ -3263,7 +3263,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "outreachDraft": "",
       "reasons": [
         "Aerie: LeaseUp rank #102 of 224 brands for Wicker Park; Qloo taste rank #39 of 224",
-        "No Aerie store within 3 km (ATP catalog)",
+        "No Aerie store within 3 km (All The Places store data)",
         "Established chain with 328 US locations"
       ],
       "nearestExistingStoreKm": 17.35370955548852,
@@ -3273,7 +3273,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       ]
     },
     {
-      "coverageNote": "OpenStreetMap snapshot does not include this brand; showing ATP only. No Wikidata QID for this brand in our OSM snapshot; showing ATP only.",
+      "coverageNote": "Store locations from All The Places; this brand is not in our OpenStreetMap snapshot.",
       "brandReach": {
         "status": "not_yet_found",
         "searchUrl": "https://www.google.com/search?q=Coach%20retail%20real%20estate%20site%20submission"
@@ -3300,7 +3300,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
       "outreachDraft": "",
       "reasons": [
         "Coach: LeaseUp rank #108 of 224 brands for Wicker Park; Qloo taste rank #36 of 224",
-        "No Coach store within 3 km (ATP catalog)",
+        "No Coach store within 3 km (All The Places store data)",
         "Established chain with 305 US locations"
       ],
       "nearestExistingStoreKm": 4.795280360306419,
@@ -3312,7 +3312,7 @@ export const LANDING_WICKER_PREVIEW: AnalysisResponse = {
   ],
   "dataQuality": "high",
   "warnings": [
-    "Absence uses ATP geotiles + OpenStreetMap when available (227 chains). Single-source absence is never shown as confirmed."
+    "Absence uses All The Places geotiles and OpenStreetMap when available (227 chains). Single-source absence is never shown as confirmed."
   ],
   "runId": "export-landing-wicker",
   "timestamp": "2026-10-24T04:32:32.498Z",

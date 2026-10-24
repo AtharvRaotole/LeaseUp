@@ -262,7 +262,7 @@ export class ProspectingService {
         );
       result.prospects = verified;
       const verifyLine = osmSummary.unavailable
-        ? 'OpenStreetMap unavailable; ATP only'
+        ? 'OpenStreetMap unavailable; All The Places store data only'
         : `${osmSummary.verifiedTwoSource} verified (2 sources), ${osmSummary.singleSource} single source`;
       await this.patchStep(job, 'verify_osm', {
         status: 'complete',

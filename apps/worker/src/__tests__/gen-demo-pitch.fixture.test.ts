@@ -19,7 +19,8 @@ const db = {
 } as unknown as D1Database;
 
 describe('fixture generator', () => {
-  it.skip('writes boulder ulta demo pitch json', async () => {
+  it('writes boulder ulta demo pitch json when GEN_DEMO_PITCH_BOULDER=1', async () => {
+    if (process.env.GEN_DEMO_PITCH_BOULDER !== '1') return;
     const service = new AnalysisService({
       DB: db,
       CACHE: { get: async () => null, put: async () => undefined } as unknown as KVNamespace,
