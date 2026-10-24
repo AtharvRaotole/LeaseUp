@@ -2,11 +2,10 @@ import type { NearbyTenant, ProspectPack } from '@leaseup/contracts';
 import { matchDemoFixtureId } from '@leaseup/fixtures/worker';
 import type { QlooClient, QlooLocation } from '../providers/qloo';
 import type { ResponseCache } from './response-cache';
-import { sha256Short } from './cache-key';
 import { encodeGeohash } from './geohash';
 import {
+  coTenancyFixtureKey,
   coTenancyLineFromPicked,
-  compactCoTenancyInsights,
   incumbentEntityIdsForCoAffinity,
   parseCoAffinityFromInsights,
   pickPairingsForReport,
@@ -15,6 +14,42 @@ import {
 
 const MAX_PROSPECTS = 10;
 
+/**
+ * Recorded demo shares live in public/co-tenancy/recorded.json (served by ASSETS, kept
+ * out of the worker bundle). Per chip: `ids` lists incumbent entity ids once; each
+ * entry, keyed by coTenancyFixtureKey, holds `[index into ids, share]` pairs.
+ */
+export type CoTenancyDemoChip = { ids: string[]; entries: Record<string, { s: [number, number][] }> };
+
+export function demoSharesFromChip(
+  chip: CoTenancyDemoChip | undefined,
+  key: string
+): IncumbentAffinity[] {
+  const rows = chip?.entries?.[key]?.s ?? [];
+  return rows.flatMap(([i, affinity]) => {
+    const id = chip?.ids[i];
+    return id ? [{ entityId: id.toUpperCase(), affinity }] : [];
+  });
+}
+
+let demoManifest: Promise<Record<string, CoTenancyDemoChip> | null> | undefined;
+
+async function demoShares(
+  assets: Fetcher | undefined,
+  demoId: string,
+  pitchEntityId: string,
+  incumbentIds: string[]
+): Promise<IncumbentAffinity[]> {
+  if (!assets) return [];
+  demoManifest ??= assets
+    .fetch('https://osm.local/co-tenancy/recorded.json')
+    .then((r) => (r.ok ? (r.json() as Promise<Record<string, CoTenancyDemoChip>>) : null))
+    .catch(() => null);
+  const manifest = await demoManifest;
+  if (!manifest) demoManifest = undefined;
+  return demoSharesFromChip(manifest?.[demoId], await coTenancyFixtureKey(pitchEntityId, incumbentIds));
+}
+
 async function coAffinityCacheKey(
   location: { latitude: number; longitude: number },
   radiusKm: number,
@@ -22,8 +57,7 @@ async function coAffinityCacheKey(
   incumbentIds: string[]
 ): Promise<string> {
   const hash = encodeGeohash(location.latitude, location.longitude, 7);
-  const inc = await sha256Short(incumbentIds.slice().sort().join(','));
-  return `co-tenancy:v2:${hash}:${radiusKm}:${pitchEntityId}:${inc}`;
+  return `co-tenancy:v3:${hash}:${radiusKm}:${await coTenancyFixtureKey(pitchEntityId, incumbentIds)}`;
 }
 
 export async function enrichProspectsWithCoTenancy(params: {
@@ -36,6 +70,7 @@ export async function enrichProspectsWithCoTenancy(params: {
   nearbyTenants: NearbyTenant[];
   prospects: ProspectPack[];
   tasteUnavailable: boolean;
+  assets?: Fetcher;
 }): Promise<ProspectPack[]> {
   if (params.tasteUnavailable || params.nearbyTenants.length === 0) {
     return params.prospects;
@@ -60,46 +95,36 @@ export async function enrichProspectsWithCoTenancy(params: {
       );
       if (incumbentIds.length === 0) return { pack, affinities: [] as IncumbentAffinity[] };
 
-      let raw: unknown;
       if (demoId) {
-        raw = await params.qloo.getBrandCoAffinityWithIncumbents({
-          location: qlooLocation,
-          pitchEntityId: pack.brand.entityId,
-          incumbentEntityIds: incumbentIds,
-          runId: params.runId,
-          demoFixtureId: demoId,
-        });
-      } else {
-        const cacheKey = await coAffinityCacheKey(
-          params.location,
-          params.radiusKm,
-          pack.brand.entityId,
-          incumbentIds
-        );
-        const cached = await params.responseCache.get(cacheKey, 'text');
-        if (typeof cached === 'string') {
-          raw = JSON.parse(cached) as unknown;
-        } else {
-          raw = await params.qloo.getBrandCoAffinityWithIncumbents({
-            location: qlooLocation,
-            pitchEntityId: pack.brand.entityId,
-            incumbentEntityIds: incumbentIds,
-            runId: params.runId,
-          });
-          const compact = raw ? compactCoTenancyInsights(raw, pack.brand.entityId) : null;
-          if (compact) {
-            await params.responseCache.putTextIfChanged(
-              cacheKey,
-              JSON.stringify(compact),
-              86400
-            );
-          }
-        }
+        return {
+          pack,
+          affinities: await demoShares(params.assets, demoId, pack.brand.entityId, incumbentIds),
+        };
       }
+      if (params.mode === 'demo') return { pack, affinities: [] as IncumbentAffinity[] };
 
+      const cacheKey = await coAffinityCacheKey(
+        params.location,
+        params.radiusKm,
+        pack.brand.entityId,
+        incumbentIds
+      );
+      const cached = await params.responseCache.get(cacheKey, 'text');
+      if (typeof cached === 'string') {
+        return { pack, affinities: JSON.parse(cached) as IncumbentAffinity[] };
+      }
+      const raw = await params.qloo.getBrandCoAffinityWithIncumbents({
+        location: qlooLocation,
+        pitchEntityId: pack.brand.entityId,
+        incumbentEntityIds: incumbentIds,
+        runId: params.runId,
+      });
       const affinities = raw
         ? parseCoAffinityFromInsights(raw, incumbentIds, pack.brand.entityId)
         : [];
+      if (affinities.length > 0) {
+        await params.responseCache.putTextIfChanged(cacheKey, JSON.stringify(affinities), 86400);
+      }
       return { pack, affinities };
     })
   );

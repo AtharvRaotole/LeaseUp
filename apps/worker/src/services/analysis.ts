@@ -108,6 +108,7 @@ export class AnalysisService {
   private mode: 'live' | 'demo';
   private catalog: StoreCatalog;
   private osmSnapshot: OsmSnapshotCatalog | null;
+  private assets?: Fetcher;
   private verifyInflight = new Map<string, Promise<unknown>>();
 
   constructor(env: Env) {
@@ -123,6 +124,7 @@ export class AnalysisService {
     );
     this.db = env.DB;
     this.catalog = createStoreCatalog(env, this.mode);
+    this.assets = env.ASSETS;
     this.osmSnapshot = env.ASSETS
       ? new OsmSnapshotCatalog(env.ASSETS, this.responseCache)
       : null;
@@ -416,6 +418,7 @@ export class AnalysisService {
           nearbyTenants,
           prospects: enrichedProspects,
           tasteUnavailable,
+          assets: this.assets,
         }),
         ANALYZE_ENRICHMENT_QLOO_BUDGET_MS,
         'co-tenancy enrichment'

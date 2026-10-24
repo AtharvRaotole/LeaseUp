@@ -1,10 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
-  buildCoTenancyLineFromAffinities,
-  compactCoTenancyInsights,
-  formatCoTenancyPairingLine,
+  coTenancyLineFromPicked,
+  pairingCandidates,
   parseCoAffinityFromInsights,
-  pickPairingIncumbents,
   pickPairingsForReport,
   type IncumbentAffinity,
 } from '../lib/co-tenancy-pairing';
@@ -15,24 +13,8 @@ const IDS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(
 );
 
 function shares(values: number[]): IncumbentAffinity[] {
-  return values.map((affinity, i) => ({ entityId: IDS[i] ?? `x${i}`, name: `B${i}`, affinity }));
+  return values.map((affinity, i) => ({ entityId: IDS[i] ?? `x${i}`, affinity }));
 }
-
-describe('formatCoTenancyPairingLine', () => {
-  it('formats one, two, and many incumbent names', () => {
-    expect(formatCoTenancyPairingLine(['Lululemon'])).toBe('Pairs well with Lululemon nearby');
-    expect(formatCoTenancyPairingLine(['Lululemon', 'Sweetgreen'])).toBe(
-      'Pairs well with Lululemon and Sweetgreen nearby'
-    );
-    expect(formatCoTenancyPairingLine(['A', 'B', 'C'])).toBe(
-      'Pairs well with A, B, and C nearby'
-    );
-  });
-
-  it('returns undefined when no names', () => {
-    expect(formatCoTenancyPairingLine([])).toBeUndefined();
-  });
-});
 
 describe('parseCoAffinityFromInsights', () => {
   const raw = {
@@ -70,33 +52,27 @@ describe('parseCoAffinityFromInsights', () => {
       []
     );
   });
-
-  it('compacts a response to what the parser needs', () => {
-    const compact = compactCoTenancyInsights(raw, PITCH);
-    expect(parseCoAffinityFromInsights(compact, [IDS[0]!, IDS[1]!], PITCH)).toHaveLength(2);
-    expect(JSON.stringify(compact)).not.toContain('properties');
-  });
 });
 
-describe('pickPairingIncumbents', () => {
+describe('pairingCandidates', () => {
   it('omits pairings when shares are close to uniform', () => {
     const flat = shares([0.13, 0.126, 0.125, 0.124, 0.124, 0.124, 0.124, 0.123]);
-    expect(pickPairingIncumbents(flat)).toEqual([]);
+    expect(pairingCandidates(flat)).toEqual([]);
   });
 
   it('keeps incumbents that clearly beat the uniform share, strongest first', () => {
     const rows = shares([0.16, 0.11, 0.15, 0.115, 0.115, 0.115, 0.115, 0.12]);
-    expect(pickPairingIncumbents(rows).map((r) => r.entityId)).toEqual([IDS[0], IDS[2]]);
+    expect(pairingCandidates(rows).map((r) => r.entityId)).toEqual([IDS[0], IDS[2]]);
   });
 
   it('omits an incumbent that every pitched brand rates this high', () => {
     const rows = shares([0.16, 0.12, 0.12, 0.12, 0.12, 0.12, 0.12, 0.12]);
     const peers = [rows, rows, rows];
-    expect(pickPairingIncumbents(rows, peers)).toEqual([]);
+    expect(pairingCandidates(rows, peers)).toEqual([]);
   });
 
   it('omits when too few incumbents carry a share', () => {
-    expect(pickPairingIncumbents(shares([0.7, 0.2, 0.1]))).toEqual([]);
+    expect(pairingCandidates(shares([0.7, 0.2, 0.1]))).toEqual([]);
   });
 });
 
@@ -113,12 +89,20 @@ describe('pickPairingsForReport', () => {
   });
 });
 
-describe('buildCoTenancyLineFromAffinities', () => {
+describe('coTenancyLineFromPicked', () => {
   it('uses OSM names when available', () => {
     const rows = shares([0.2, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]);
-    const line = buildCoTenancyLineFromAffinities(rows, [
+    const line = coTenancyLineFromPicked(pairingCandidates(rows).slice(0, 2), [
       { entityId: IDS[0]!, name: 'OSM Name', distanceKm: 0.5 },
     ]);
     expect(line).toBe('Pairs well with OSM Name nearby');
+  });
+
+  it('formats two names and returns undefined for none', () => {
+    const rows = shares([0.2, 0.18, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]);
+    expect(coTenancyLineFromPicked(pairingCandidates(rows).slice(0, 2), [])).toMatch(
+      /^Pairs well with \S+ and \S+ nearby$/
+    );
+    expect(coTenancyLineFromPicked([], [])).toBeUndefined();
   });
 });

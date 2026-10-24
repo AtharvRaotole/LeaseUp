@@ -146,16 +146,6 @@ export {
   type TradeAreaShopperFixture,
 } from './trade-area-shoppers-loader.js';
 export {
-  coTenancyRecordedRaw,
-  coTenancyRecordedKeys,
-  packCoTenancyChip,
-  unpackCoTenancyEntry,
-} from './co-tenancy-recorded-loader.js';
-export type {
-  PackedCoTenancyChip,
-  PackedCoTenancyEntry,
-} from './co-tenancy-recorded-loader.js';
-export {
   parseQlooTradeAreaTagInsights,
   TRADE_AREA_SHOPPER_TAG_SUBTYPES,
   WICKER_TRADE_AREA_TAG_INSIGHTS_SAMPLE,

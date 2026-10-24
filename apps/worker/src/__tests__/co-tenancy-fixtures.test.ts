@@ -1,34 +1,29 @@
 import { describe, it, expect } from 'vitest';
-import { coTenancyRecordedKeys, coTenancyRecordedRaw } from '@leaseup/fixtures/worker';
-import { parseCoAffinityFromInsights } from '../lib/co-tenancy-pairing';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { demoSharesFromChip, type CoTenancyDemoChip } from '../lib/co-tenancy-enrich';
 
-type Body = {
-  results?: {
-    entities?: Array<{
-      query?: { explainability?: Record<string, Array<{ entity_id?: string }>> };
-    }>;
-  };
-};
+const manifest = JSON.parse(
+  readFileSync(join(__dirname, '../../public/co-tenancy/recorded.json'), 'utf8')
+) as Record<string, CoTenancyDemoChip>;
 
-describe('co-tenancy recorded fixtures', () => {
+describe('co-tenancy recorded demo shares', () => {
   for (const chip of ['wicker', 'boulder', 'sevierville'] as const) {
-    it(`${chip} expands to bodies with per-incumbent shares`, () => {
-      const keys = coTenancyRecordedKeys(chip);
+    it(`${chip} has per-incumbent shares for each recorded pitch`, () => {
+      const keys = Object.keys(manifest[chip]?.entries ?? {});
       expect(keys.length).toBeGreaterThan(0);
       for (const key of keys) {
-        const pitch = key.split(':')[0] ?? '';
-        const body = coTenancyRecordedRaw(chip, key) as Body | null;
-        expect(body).not.toBeNull();
-        const ids = (
-          body?.results?.entities?.[0]?.query?.explainability?.['signal.interests.entities'] ?? []
-        ).map((e) => String(e.entity_id));
-        const rows = parseCoAffinityFromInsights(body, ids, pitch);
+        const rows = demoSharesFromChip(manifest[chip], key);
         expect(rows.length).toBeGreaterThanOrEqual(4);
+        const total = rows.reduce((s, r) => s + r.affinity, 0);
+        expect(total).toBeGreaterThan(0.9);
+        expect(total).toBeLessThan(1.1);
       }
     });
   }
 
-  it('returns null for unknown keys and non-chip demos', () => {
-    expect(coTenancyRecordedRaw('wicker', 'missing:key')).toBeNull();
+  it('returns no shares for unknown keys', () => {
+    expect(demoSharesFromChip(manifest.wicker, 'missing:key')).toEqual([]);
+    expect(demoSharesFromChip(undefined, 'missing:key')).toEqual([]);
   });
 });

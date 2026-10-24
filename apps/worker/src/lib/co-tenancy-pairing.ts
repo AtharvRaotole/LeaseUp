@@ -15,55 +15,33 @@ import { sha256Short } from './cache-key';
  * incumbent clearly stands out for this brand (guards below).
  */
 
-/** Share must beat the uniform share (1 / incumbents) by this factor. */
-export const CO_TENANCY_SHARE_LIFT_MIN = 1.15;
-/**
- * Share must beat this incumbent's mean share across the other pitched brands on
- * the same report by this factor, so an incumbent that tops every brand (a
- * popular chain) is not shown as a pairing for all of them.
+/*
+ * Guards (inlined as literals to keep the worker bundle small):
+ * - at least 4 incumbents with a share, or the split means nothing;
+ * - share must beat the uniform share (1 / incumbents) by 15%;
+ * - with 3+ other pitched brands on the report, share must beat this
+ *   incumbent's mean share across them by 5%, so a popular chain that tops
+ *   every brand is not shown as a pairing for all of them;
+ * - one incumbent is named for at most 2 pitched brands per report.
  */
-export const CO_TENANCY_CROSS_LIFT_MIN = 1.05;
-/** Cross-pitch guard needs this many other pitched brands with data. */
-export const CO_TENANCY_CROSS_MIN_PEERS = 3;
-/** One incumbent may be named for at most this many pitched brands per report. */
-export const CO_TENANCY_MAX_REPEAT = 2;
-/** Need at least this many incumbents with a share for the split to mean anything. */
-export const CO_TENANCY_MIN_INCUMBENTS = 4;
 
 export type IncumbentAffinity = {
   entityId: string;
-  name: string;
   /** Explainability share for this incumbent (0..1, sums to about 1). */
   affinity: number;
 };
-
-export function formatCoTenancyPairingLine(brandNames: string[]): string | undefined {
-  const names = brandNames.map((n) => n.trim()).filter(Boolean);
-  if (names.length === 0) return undefined;
-  if (names.length === 1) return `Pairs well with ${names[0]} nearby`;
-  if (names.length === 2) return `Pairs well with ${names[0]} and ${names[1]} nearby`;
-  const head = names.slice(0, -1).join(', ');
-  const last = names[names.length - 1];
-  return `Pairs well with ${head}, and ${last} nearby`;
-}
 
 type ExplainRow = { entity_id?: string; score?: number };
 type InsightsRow = {
   entity_id?: string;
   id?: string;
-  name?: string;
-  query?: { affinity?: number; explainability?: Record<string, ExplainRow[] | undefined> };
+  query?: { explainability?: Record<string, ExplainRow[] | undefined> };
 };
 
 function pitchRow(raw: unknown, pitchEntityId: string): InsightsRow | undefined {
-  const entities = (raw as { results?: { entities?: unknown[] } })?.results?.entities ?? [];
+  const rows = (raw as { results?: { entities?: InsightsRow[] } })?.results?.entities;
   const pitch = pitchEntityId.toUpperCase();
-  for (const row of entities) {
-    if (!row || typeof row !== 'object') continue;
-    const id = String((row as InsightsRow).entity_id ?? (row as InsightsRow).id ?? '').toUpperCase();
-    if (id === pitch) return row as InsightsRow;
-  }
-  return undefined;
+  return rows?.find((row) => String(row?.entity_id ?? row?.id).toUpperCase() === pitch);
 }
 
 /** Per-incumbent explainability shares for the pitched brand row. */
@@ -76,41 +54,13 @@ export function parseCoAffinityFromInsights(
   const explain = row?.query?.explainability?.['signal.interests.entities'];
   if (!Array.isArray(explain)) return [];
   const wanted = new Set(incumbentIds.map((id) => id.toUpperCase()));
-  const out: IncumbentAffinity[] = [];
-  for (const item of explain) {
-    const entityId = String(item?.entity_id ?? '').toUpperCase();
-    const score = item?.score;
-    if (!wanted.has(entityId)) continue;
-    if (typeof score !== 'number' || !Number.isFinite(score) || score <= 0) continue;
-    out.push({ entityId, name: entityId, affinity: score });
-  }
-  return out;
-}
-
-/** Keep only what the parser needs (demo fixtures stay small). */
-export function compactCoTenancyInsights(raw: unknown, pitchEntityId: string): unknown | null {
-  const row = pitchRow(raw, pitchEntityId);
-  const explain = row?.query?.explainability?.['signal.interests.entities'];
-  if (!row || !Array.isArray(explain)) return null;
-  return {
-    results: {
-      entities: [
-        {
-          entity_id: row.entity_id ?? row.id,
-          name: row.name,
-          query: {
-            affinity: row.query?.affinity,
-            explainability: {
-              'signal.interests.entities': explain.map((e) => ({
-                entity_id: e.entity_id,
-                score: e.score,
-              })),
-            },
-          },
-        },
-      ],
-    },
-  };
+  return explain.flatMap((item) => {
+    const entityId = String(item?.entity_id).toUpperCase();
+    const affinity = item?.score;
+    return wanted.has(entityId) && typeof affinity === 'number' && affinity > 0
+      ? [{ entityId, affinity }]
+      : [];
+  });
 }
 
 export async function coTenancyFixtureKey(
@@ -148,44 +98,23 @@ export function pairingCandidates(
   affinities: IncumbentAffinity[],
   peers: IncumbentAffinity[][] = []
 ): PairingCandidate[] {
-  if (affinities.length < CO_TENANCY_MIN_INCUMBENTS) return [];
-  const total = affinities.reduce((s, r) => s + r.affinity, 0);
-  if (!(total > 0)) return [];
-  const uniform = 1 / affinities.length;
-
-  const peerShares = (entityId: string): number[] => {
-    const out: number[] = [];
-    for (const list of peers) {
-      const peerTotal = list.reduce((s, r) => s + r.affinity, 0);
-      const hit = list.find((r) => r.entityId === entityId);
-      if (hit && peerTotal > 0) out.push(hit.affinity / peerTotal);
-    }
-    return out;
-  };
-
+  const sum = (list: IncumbentAffinity[]) => list.reduce((s, r) => s + r.affinity, 0);
+  const total = sum(affinities);
+  if (affinities.length < 4 || !(total > 0)) return [];
   const out: PairingCandidate[] = [];
   for (const row of affinities) {
     const share = row.affinity / total;
-    if (share < uniform * CO_TENANCY_SHARE_LIFT_MIN) continue;
-    const others = peerShares(row.entityId);
-    let crossLift = 1;
-    if (others.length >= CO_TENANCY_CROSS_MIN_PEERS) {
-      const mean = others.reduce((s, v) => s + v, 0) / others.length;
-      crossLift = mean > 0 ? share / mean : 1;
-      if (crossLift < CO_TENANCY_CROSS_LIFT_MIN) continue;
-    }
+    if (share * affinities.length < 1.15) continue;
+    const others = peers.flatMap((list) => {
+      const hit = list.find((r) => r.entityId === row.entityId);
+      return hit ? [hit.affinity / sum(list)] : [];
+    });
+    const crossLift =
+      others.length >= 3 ? (share * others.length) / others.reduce((s, v) => s + v, 0) : 1;
+    if (others.length >= 3 && !(crossLift >= 1.05)) continue;
     out.push({ ...row, share, crossLift });
   }
   return out.sort((a, b) => b.share - a.share);
-}
-
-/** Single-brand pick (no report context): top names that clear the guards. */
-export function pickPairingIncumbents(
-  affinities: IncumbentAffinity[],
-  peers: IncumbentAffinity[][] = [],
-  maxNames = 2
-): IncumbentAffinity[] {
-  return pairingCandidates(affinities, peers).slice(0, maxNames);
 }
 
 /**
@@ -197,7 +126,7 @@ export function pickPairingIncumbents(
 export function pickPairingsForReport(
   lists: IncumbentAffinity[][],
   maxNames = 2,
-  maxRepeat = CO_TENANCY_MAX_REPEAT
+  maxRepeat = 2
 ): IncumbentAffinity[][] {
   const candidates = lists.map((list, idx) =>
     pairingCandidates(
@@ -205,25 +134,19 @@ export function pickPairingsForReport(
       lists.filter((other, j) => j !== idx && other.length > 0)
     )
   );
-  const allowed = new Map<string, Set<number>>();
-  const byIncumbent = new Map<string, Array<{ idx: number; crossLift: number }>>();
-  candidates.forEach((rows, idx) => {
-    for (const row of rows) {
-      const bucket = byIncumbent.get(row.entityId) ?? [];
-      bucket.push({ idx, crossLift: row.crossLift });
-      byIncumbent.set(row.entityId, bucket);
-    }
-  });
-  for (const [entityId, hits] of byIncumbent) {
-    const keep = hits
-      .slice()
-      .sort((a, b) => b.crossLift - a.crossLift)
-      .slice(0, maxRepeat)
-      .map((h) => h.idx);
-    allowed.set(entityId, new Set(keep));
+  const hits = candidates
+    .flatMap((rows, idx) => rows.map((r) => ({ id: r.entityId, idx, lift: r.crossLift })))
+    .sort((x, y) => y.lift - x.lift);
+  const used = new Map<string, number>();
+  const keep = new Set<string>();
+  for (const h of hits) {
+    const n = used.get(h.id) ?? 0;
+    if (n >= maxRepeat) continue;
+    used.set(h.id, n + 1);
+    keep.add(`${h.idx}:${h.id}`);
   }
   return candidates.map((rows, idx) =>
-    rows.filter((row) => allowed.get(row.entityId)?.has(idx)).slice(0, maxNames)
+    rows.filter((r) => keep.has(`${idx}:${r.entityId}`)).slice(0, maxNames)
   );
 }
 
@@ -231,21 +154,9 @@ export function coTenancyLineFromPicked(
   picked: IncumbentAffinity[],
   incumbentLookup: NearbyTenant[]
 ): string | undefined {
-  if (picked.length === 0) return undefined;
   const names = picked.map((row) => {
-    const fromOsm = incumbentLookup.find(
-      (t) => t.entityId.toUpperCase() === row.entityId.toUpperCase()
-    );
-    const label = fromOsm?.name ?? row.name;
-    return displayBrandName(row.entityId, label);
+    const osm = incumbentLookup.find((t) => t.entityId.toUpperCase() === row.entityId);
+    return displayBrandName(row.entityId, osm?.name ?? row.entityId);
   });
-  return formatCoTenancyPairingLine(names);
-}
-
-export function buildCoTenancyLineFromAffinities(
-  affinities: IncumbentAffinity[],
-  incumbentLookup: NearbyTenant[],
-  peers: IncumbentAffinity[][] = []
-): string | undefined {
-  return coTenancyLineFromPicked(pickPairingIncumbents(affinities, peers), incumbentLookup);
+  return names.length > 0 ? `Pairs well with ${names.join(' and ')} nearby` : undefined;
 }

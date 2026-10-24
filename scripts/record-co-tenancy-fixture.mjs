@@ -8,12 +8,13 @@
  *   (cd apps/worker && wrangler dev --local --port 8787)   # APP_MODE=demo
  *   QLOO_API_KEY=... node scripts/record-co-tenancy-fixture.mjs wicker boulder sevierville
  *
- * Stores only the per-incumbent explainability shares for each pitched brand, packed
- * per chip (incumbent id table + [index, score] pairs, scores rounded to 4 places) to
- * keep the worker bundle small. See packCoTenancyChip in packages/fixtures.
+ * Writes apps/worker/public/co-tenancy/recorded.json (served via ASSETS, not bundled):
+ * per chip { ids, entries: { key: { s: [[index into ids, share]] } } }, shares rounded
+ * to 4 places. See docs/CO_TENANCY.md.
  * Keys: `${pitchEntityId}:${sha256(incumbents)}` (see coTenancyFixtureKey in worker).
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { join } from 'node:path';
 import { importWorkerModules } from './lib-worker-bundle.mjs';
 
@@ -30,21 +31,38 @@ const CHIPS = {
 };
 
 const root = process.cwd();
-const manifestPath = join(root, 'packages/fixtures/src/co-tenancy-recorded/manifest.json');
+const manifestPath = join(root, 'apps/worker/public/co-tenancy/recorded.json');
 
 const {
   incumbentEntityIdsForCoAffinity,
   coTenancyFixtureKey,
-  compactCoTenancyInsights,
-  packCoTenancyChip,
-  unpackCoTenancyEntry,
+  parseCoAffinityFromInsights,
+  demoSharesFromChip,
 } = await importWorkerModules(root, {
   incumbentEntityIdsForCoAffinity: 'apps/worker/src/lib/co-tenancy-pairing.ts',
   coTenancyFixtureKey: 'apps/worker/src/lib/co-tenancy-pairing.ts',
-  compactCoTenancyInsights: 'apps/worker/src/lib/co-tenancy-pairing.ts',
-  packCoTenancyChip: 'packages/fixtures/src/co-tenancy-recorded-loader.ts',
-  unpackCoTenancyEntry: 'packages/fixtures/src/co-tenancy-recorded-loader.ts',
+  parseCoAffinityFromInsights: 'apps/worker/src/lib/co-tenancy-pairing.ts',
+  demoSharesFromChip: 'apps/worker/src/lib/co-tenancy-enrich.ts',
 });
+
+/** @param {Record<string, Array<{entityId: string, affinity: number}>>} byKey */
+function packChip(byKey) {
+  const ids = [];
+  const index = new Map();
+  const entries = {};
+  for (const key of Object.keys(byKey).sort()) {
+    entries[key] = {
+      s: byKey[key].map((row) => {
+        if (!index.has(row.entityId)) {
+          index.set(row.entityId, ids.length);
+          ids.push(row.entityId);
+        }
+        return [index.get(row.entityId), Math.round(row.affinity * 1e4) / 1e4];
+      }),
+    };
+  }
+  return { ids, entries };
+}
 
 let calls = 0;
 
@@ -93,24 +111,24 @@ async function recordChip(chipId, manifest) {
       continue;
     }
     const cacheKey = await coTenancyFixtureKey(pitchEntityId, incumbentIds);
-    const previous = unpackCoTenancyEntry(previousChip, cacheKey);
-    if (previous) {
+    const previous = demoSharesFromChip(previousChip, cacheKey);
+    if (previous.length > 0) {
       bucket[cacheKey] = previous;
       console.log('  keep', pack.brand.name);
       continue;
     }
     console.log('  fetch', pack.brand.name, 'incumbents', incumbentIds.length);
     const body = await fetchCoAffinity(site, pitchEntityId, incumbentIds);
-    const compact = compactCoTenancyInsights(body, pitchEntityId);
-    if (!compact) {
-      console.log('    no pitch row in response; not stored');
+    const shares = parseCoAffinityFromInsights(body, incumbentIds, pitchEntityId);
+    if (shares.length === 0) {
+      console.log('    no explainability shares in response; not stored');
       continue;
     }
-    bucket[cacheKey] = compact;
+    bucket[cacheKey] = shares;
     await new Promise((r) => setTimeout(r, 350));
   }
 
-  manifest[chipId] = packCoTenancyChip(bucket);
+  manifest[chipId] = packChip(bucket);
 }
 
 async function main() {
@@ -120,8 +138,9 @@ async function main() {
   }
   const selected = process.argv.slice(2).filter((a) => a in CHIPS);
   const chipIds = selected.length > 0 ? selected : Object.keys(CHIPS);
-  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+  const manifest = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, 'utf8')) : {};
   for (const chipId of chipIds) await recordChip(chipId, manifest);
+  mkdirSync(dirname(manifestPath), { recursive: true });
   writeFileSync(manifestPath, JSON.stringify(manifest) + '\n');
   console.log(`\nWrote ${manifestPath} (${calls} Qloo calls)`);
 }

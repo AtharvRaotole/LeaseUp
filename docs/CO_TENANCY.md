@@ -1,4 +1,4 @@
-# Co-tenancy Qloo fixtures (demo mode)
+# Co-tenancy pairing (Qloo)
 
 One `/v2/insights` call per pitched brand: `filter.results.entities` = pitched brand,
 `signal.interests.entities` = nearest OSM incumbents (up to 8), `feature.explainability=true`.
@@ -14,7 +14,11 @@ fixture keys match the report:
 QLOO_API_KEY=... node scripts/record-co-tenancy-fixture.mjs wicker boulder sevierville
 ```
 
-Only the explainability shares are stored, packed per chip as `{ ids, entries }`: `ids` lists each incumbent entity id once and every entry (keyed by `${pitchEntityId}:${sha256(incumbents)}`) holds the pitch name `n` and `[index, score]` pairs `s` with scores rounded to 4 places. `coTenancyRecordedRaw` expands an entry back into the compact insights shape the worker parses.
+Demo shares live in `apps/worker/public/co-tenancy/recorded.json`, served through the worker
+`ASSETS` binding so they stay out of the worker bundle. Packed per chip as `{ ids, entries }`:
+`ids` lists each incumbent entity id once; each entry (keyed by
+`${pitchEntityId}:${sha256(sorted incumbents)}`) holds `s`, `[index into ids, share]` pairs
+with shares rounded to 4 places. Live mode caches the parsed shares per site and brand.
 
 Probe a single call first:
 

@@ -1,3 +1,4 @@
+import type { NearbyTenant } from '@leaseup/contracts';
 import { coveringGeohash3 } from '../lib/geohash';
 import type { ResponseCache } from '../lib/response-cache';
 import {
@@ -144,35 +145,25 @@ export class OsmSnapshotCatalog {
     lon: number,
     radiusKm: number,
     limit = 24
-  ): Promise<Array<{ entityId: string; name: string; distanceKm: number }>> {
+  ): Promise<NearbyTenant[]> {
     const index = await this.loadBrandsIndex();
     if (!index) return [];
 
-    const best = new Map<string, number>();
-    const tiles = coveringGeohash3(lat, lon, radiusKm);
-    for (const gh of tiles) {
+    const best = new Map<string, NearbyTenant>();
+    for (const gh of coveringGeohash3(lat, lon, radiusKm)) {
       const tile = await this.loadTile(gh);
-      if (!tile) continue;
-      for (const [bIdx, tLat, tLon] of tile.stores) {
+      for (const [bIdx, tLat, tLon] of tile?.stores ?? []) {
         const brand = index.brands[bIdx];
-        if (!brand) continue;
-        if (osmSnapshotBrandStatus(brand.id) !== 'ok') continue;
-        const d = haversineKm(lat, lon, tLat, tLon);
-        if (d > radiusKm) continue;
+        if (!brand || osmSnapshotBrandStatus(brand.id) !== 'ok') continue;
+        const distanceKm = Math.round(haversineKm(lat, lon, tLat, tLon) * 100) / 100;
         const prev = best.get(brand.id);
-        if (prev === undefined || d < prev) best.set(brand.id, d);
+        if (distanceKm <= radiusKm && !(prev && prev.distanceKm <= distanceKm)) {
+          best.set(brand.id, { entityId: brand.id, name: brand.name, distanceKm });
+        }
       }
     }
 
-    return [...best.entries()]
-      .map(([entityId, distanceKm]) => {
-        const row = index.brands.find((b) => b.id === entityId);
-        return {
-          entityId,
-          name: row?.name ?? entityId,
-          distanceKm: Math.round(distanceKm * 100) / 100,
-        };
-      })
+    return [...best.values()]
       .sort((a, b) => a.distanceKm - b.distanceKm)
       .slice(0, limit);
   }

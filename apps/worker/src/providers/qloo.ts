@@ -8,11 +8,8 @@ import {
   computeBrandLocalAudienceOverlap,
   audiencePanelBaseline,
   TRADE_AREA_SHOPPER_TAG_SUBTYPES,
-  coTenancyRecordedRaw,
-  type DemoFixtureId,
   type TradeAreaTasteRow,
 } from '@leaseup/fixtures/worker';
-import { coTenancyFixtureKey } from '../lib/co-tenancy-pairing';
 import { ConfigurationError, UpstreamError } from '../lib/errors';
 import {
   fetchQlooWithRetry,
@@ -514,24 +511,17 @@ export class QlooClient {
 
   /**
    * Co-tenancy: pitched brand at location with incumbent brands as taste context
-   * (`signal.interests.entities`). Cached in live mode by caller.
+   * (`signal.interests.entities`). Live only; demo shares come from ASSETS.
    */
   async getBrandCoAffinityWithIncumbents(params: {
     location: QlooLocation;
     pitchEntityId: string;
     incumbentEntityIds: string[];
     runId?: string;
-    demoFixtureId?: DemoFixtureId;
   }): Promise<unknown | null> {
-    if (params.incumbentEntityIds.length === 0) return null;
-
-    if (this.mode === 'demo') {
-      if (!params.demoFixtureId) return null;
-      const key = await coTenancyFixtureKey(params.pitchEntityId, params.incumbentEntityIds);
-      return coTenancyRecordedRaw(params.demoFixtureId, key);
+    if (params.incumbentEntityIds.length === 0 || this.mode === 'demo' || !this.apiKey) {
+      return null;
     }
-
-    if (!this.apiKey) return null;
 
     const url = new URL('/v2/insights', this.baseUrl);
     url.searchParams.set('filter.type', 'urn:entity:brand');
@@ -548,33 +538,19 @@ export class QlooClient {
       undefined,
       QLOO_FETCH_ENRICHMENT_OPTIONS
     );
-    const latency = Date.now() - start;
-
-    if (!response.ok) {
-      await recordApiMetric(this.db, {
-        runId: params.runId,
-        provider: 'qloo',
-        endpoint: '/v2/insights',
-        statusCode: response.status,
-        latencyMs: latency,
-        cached: false,
-      });
-      if (response.status === 429 || response.status >= 500) {
-        throw this.mapQlooHttpError(response.status, response.statusText, 'co-tenancy');
-      }
-      return null;
-    }
-
-    const data = await response.json();
     await recordApiMetric(this.db, {
       runId: params.runId,
       provider: 'qloo',
       endpoint: '/v2/insights',
-      statusCode: 200,
-      latencyMs: latency,
+      statusCode: response.status,
+      latencyMs: Date.now() - start,
       cached: false,
     });
-    return data;
+    if (response.ok) return response.json();
+    if (response.status === 429 || response.status >= 500) {
+      throw this.mapQlooHttpError(response.status, response.statusText, 'co-tenancy');
+    }
+    return null;
   }
 
   /** Fallback when heatmap is empty or errors: sample affinity on a lat/lng grid. */
