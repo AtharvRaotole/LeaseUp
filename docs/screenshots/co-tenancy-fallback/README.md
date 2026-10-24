@@ -1,6 +1,6 @@
 # Co-tenancy audience fallback (PR #127)
 
-1440px crops of **Top brands to pitch** on demo reports after copy uses `Popular here with {audience}` when `coTenancyLine` is absent.
+1440px crops of **Top brands to pitch** on demo reports after copy uses `Shared local audience: {audience}` when `coTenancyLine` is absent.
 
 | File | Site |
 |------|------|

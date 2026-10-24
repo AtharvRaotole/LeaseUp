@@ -75,7 +75,7 @@ describe('prospectOneLineReason', () => {
       10
     );
     expect(line).not.toContain('Hotel');
-    expect(line).toContain('Popular here with Health & Beauty');
+    expect(line).toContain('Shared local audience: Health & Beauty');
   });
 
   it('prefers co-tenancy line over shopper-favor fallback', () => {
@@ -90,7 +90,7 @@ describe('prospectOneLineReason', () => {
       10
     );
     expect(line).toContain('Pairs well with Target nearby');
-    expect(line).not.toContain('Popular here with');
+    expect(line).not.toContain('Shared local audience');
     expect(line).not.toContain('Cooking');
   });
 
@@ -123,7 +123,7 @@ describe('prospectOneLineReason', () => {
       10
     );
     expect(a).not.toBe(b);
-    expect(a).toContain('Popular here with Sneakerheads');
+    expect(a).toContain('Shared local audience: Sneakerheads');
     expect(b).toContain('Top 20% local match here');
     expect(b).not.toContain('Category fit');
   });

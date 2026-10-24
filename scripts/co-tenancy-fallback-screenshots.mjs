@@ -17,7 +17,7 @@ const WORKER_PORT = process.env.VQA_WORKER_PORT || '8796';
 const PREVIEW_PORT = process.env.VQA_PREVIEW_PORT || '4184';
 const BASE = `http://127.0.0.1:${PREVIEW_PORT}`;
 
-const SITES = [
+const ALL_SITES = [
   {
     id: 'boulder',
     address: '1300 Pearl St, Boulder, CO 80302',
@@ -29,6 +29,11 @@ const SITES = [
     path: `/r/wicker?address=${encodeURIComponent('1574 N Milwaukee Ave, Chicago, IL 60622')}&radius=10&screenshot=1`,
   },
 ];
+
+const only = process.env.ONLY_SITES?.split(',').map((s) => s.trim()).filter(Boolean);
+const SITES = only?.length
+  ? ALL_SITES.filter((site) => only.includes(site.id))
+  : ALL_SITES;
 
 let worker;
 let preview;

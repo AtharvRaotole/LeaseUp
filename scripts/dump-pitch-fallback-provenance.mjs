@@ -32,7 +32,7 @@ for (const site of SITES) {
       : primary
         ? 'live-audiences.compact.json (brand x location overlap, distinct primary)'
         : '(no pairing line)';
-    console.log(`- **${name}**: ${co || (primary ? `Popular here with ${primary}` : 'no line')} | ${source}`);
+    console.log(`- **${name}**: ${co || (primary ? `Shared local audience: ${primary}` : 'no line')} | ${source}`);
     if (sig) {
       console.log(`  - whyBrandTaste signal: ${sig.name} (kind ${sig.kind}, local rank #${sig.affinityRank})`);
     }

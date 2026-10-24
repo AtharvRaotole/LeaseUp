@@ -73,12 +73,7 @@ export function audienceOverlapHighlight(audience: string): string {
 
 /** Pitch-row fallback when co-tenancy is missing but whyBrandTaste overlap is verified. */
 export function localAudiencePitchHighlight(audience: string): string {
-  return `Popular here with ${audience}`;
-}
-
-/** @deprecated use localAudiencePitchHighlight */
-export function shoppersAlsoFavorHighlight(audience: string): string {
-  return localAudiencePitchHighlight(audience);
+  return `Shared local audience: ${audience}`;
 }
 
 export function dataConfidenceStatTooltip(): string {
