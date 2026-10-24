@@ -128,7 +128,8 @@ export function PipelineCardDialog({
                     type="button"
                     size="sm"
                     variant={prospectStatus === col.id ? 'primary' : 'secondary'}
-                    disabled={busy || prospectStatus === col.id}
+                    disabled={busy}
+                    aria-current={prospectStatus === col.id ? 'true' : undefined}
                     onClick={() => {
                       setProspectStatus(col.id);
                       void moveTo(col.id);
