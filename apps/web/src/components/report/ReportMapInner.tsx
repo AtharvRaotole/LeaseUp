@@ -11,6 +11,8 @@ import { Switch } from '../ui/Switch';
 import { cn } from '../../lib/cn';
 import type { MapBrandSelection, ReportMapCaptureRef } from './ReportMap';
 
+const MAP_LEGEND_OPEN_MIN_WIDTH_PX = 1600;
+
 function mapStyle() {
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     return 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
@@ -38,7 +40,9 @@ export default function ReportMapInner({
   const [showRadius, setShowRadius] = useState(true);
   const [mapReady, setMapReady] = useState(false);
   const [legendOpen, setLegendOpen] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia(`(min-width: ${MAP_LEGEND_OPEN_MIN_WIDTH_PX}px)`).matches
   );
 
   const pitchIdSet = useMemo(() => new Set(pitchBrandIds), [pitchBrandIds]);
@@ -298,14 +302,19 @@ export default function ReportMapInner({
         </div>
         <button
           type="button"
-          className="mt-3 flex w-full items-center justify-between border-t border-border pt-2 text-left text-[11px] font-medium text-ink-2 md:pointer-events-none"
+          className="mt-3 flex w-full items-center justify-between gap-2 rounded-md border border-transparent py-1 text-left text-[11px] font-semibold text-ink hover:border-border/60 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           onClick={() => setLegendOpen((o) => !o)}
           aria-expanded={legendOpen}
+          aria-controls="report-map-legend-panel"
+          data-testid="report-map-legend-toggle"
         >
           <span>Legend</span>
-          <ChevronDown className={cn('h-4 w-4 transition-transform md:hidden', legendOpen && 'rotate-180')} />
+          <ChevronDown
+            className={cn('h-4 w-4 shrink-0 text-ink-3 transition-transform', legendOpen && 'rotate-180')}
+            aria-hidden
+          />
         </button>
-        <div className={cn(!legendOpen && 'hidden', 'md:block')}>
+        <div id="report-map-legend-panel" className={cn(!legendOpen && 'hidden')} data-testid="report-map-legend-panel">
             <div className="mt-2 grid grid-cols-[auto_1fr_auto] items-center gap-x-2 pr-1">
               <span className="text-[10px] leading-none text-ink-3">Less</span>
               <div

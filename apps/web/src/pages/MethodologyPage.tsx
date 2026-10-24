@@ -11,6 +11,7 @@ import {
 } from '@leaseup/fixtures';
 import { TopBar } from '../components/layout/TopBar';
 import { SiteFooter } from '../components/layout/SiteFooter';
+import { MethodologyTableScroll } from '../components/methodology/MethodologyTableScroll';
 import { TableMetricLabel } from '../components/ui/TableMetricLabel';
 import { InfoTooltip } from '../components/ui/InfoTooltip';
 import {
@@ -152,8 +153,8 @@ export function MethodologyPage() {
             >
               {methodologySiteTableBridgeLine()}
             </p>
-            <div className="mt-6 overflow-x-auto rounded-card border border-border" tabIndex={0}>
-              <table className="w-full min-w-[720px] border-collapse text-left text-sm">
+            <MethodologyTableScroll className="mt-6">
+              <table className="w-full min-w-[1000px] border-collapse text-left text-sm">
                 <caption className="sr-only">Evaluation metrics by site (Qloo / chain)</caption>
                 <thead>
                   <tr className="border-b border-border bg-surface-2 text-label uppercase text-ink-3">
@@ -205,7 +206,7 @@ export function MethodologyPage() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </MethodologyTableScroll>
             <p className="mt-3 text-xs text-ink-3">
               Demo-chip sanity checks: <code className="rounded bg-surface-2 px-1">node scripts/strict-eval.mjs</code>.
               Preregistered 40-site bundle:{' '}
@@ -234,7 +235,7 @@ export function MethodologyPage() {
               <InfoTooltip label={methodologyLikelyRangeTooltip()} />
               ). Taste scores can still reflect brands that already operate nearby.
             </p>
-            <div className="mt-6 overflow-x-auto rounded-card border border-border" tabIndex={0}>
+            <MethodologyTableScroll className="mt-6">
               <table className="w-full min-w-[960px] border-collapse text-left text-sm">
                 <caption className="sr-only">Adaptive-radius eval by address</caption>
                 <thead>
@@ -290,7 +291,7 @@ export function MethodologyPage() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </MethodologyTableScroll>
             <p className="mt-3 text-xs text-ink-3">
               Source table:{' '}
               <code className="rounded bg-surface-2 px-1">packages/fixtures/src/eval/tables.md</code>
