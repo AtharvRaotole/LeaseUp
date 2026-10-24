@@ -222,10 +222,9 @@ export function MethodologyPage() {
               </span>
               . Cohort mean top-10 presence: {formatP10PercentRounded(qlooLift.rawQlooPrecisionAt10)} raw
               Qloo, {formatP10PercentRounded(qlooLift.chainSizePrecisionAt10)} chain size,{' '}
-              {formatP10PercentRounded(qlooLift.logisticBlendPrecisionAt10)} logistic blend (exact P@10{' '}
-              {qlooLift.rawQlooPrecisionAt10} / {qlooLift.chainSizePrecisionAt10} /{' '}
-              {qlooLift.logisticBlendPrecisionAt10}; +{qlooLift.logisticBlendLiftVsChainPp} pp vs chain).
-              Per-address top-10 hit rates and rank match are in the table; cohort means match the headline
+              {formatP10PercentRounded(qlooLift.logisticBlendPrecisionAt10)} taste blend (about{' '}
+              {qlooLift.logisticBlendLiftVsChainPp} percentage points higher than chain size alone). Per-address
+              top-10 hit rates and rank match are in the table; cohort means match the headline
               figures in Evaluation metric catalog above. Likely range on rank match uses the same method as
               the landing proof block
               <InfoTooltip label={methodologyLikelyRangeTooltip()} />
