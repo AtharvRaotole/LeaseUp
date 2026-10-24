@@ -46,6 +46,7 @@ import {
   NEARBY_TENANT_LIST_CAP,
   nearbyCategoryTenantReasonLine,
 } from '../lib/nearby-category-tenant-line';
+import { stripFalseAbsenceReasons } from '../lib/nearest-store-reconcile';
 import {
   absenceWarningChains,
   coverageOsmBrandNotInSnapshotNote,
@@ -373,14 +374,17 @@ export class AnalysisService {
               presence
             ),
         buildMapStores(location, insights, request.radius, this.catalog, 10, presence),
-        enrichProspectsWithNearest(prospects, location, this.catalog, presence),
+        enrichProspectsWithNearest(prospects, location, this.catalog, presence, this.osmSnapshot),
       ]);
 
-      let enrichedProspects = nearestEnriched;
+      const absenceRadiusKm = prospectFunnel?.absenceRadiusKm ?? request.radius;
+      let enrichedProspects = nearestEnriched.map((pack) =>
+        stripFalseAbsenceReasons(pack, absenceRadiusKm)
+      );
       if (!tasteUnavailable) {
         const tasteEnriched = await withSoftTimeout(
           Promise.all(
-            nearestEnriched.map(async (pack) => {
+            enrichedProspects.map(async (pack) => {
               const insight = insights.find((i) => i.entity_id === pack.brand.entityId);
               const signals = insight ? extractQlooSignals(insight) : [];
               const tradeAreaTaste = await loadTradeAreaTasteForProspect(

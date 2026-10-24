@@ -41,10 +41,13 @@ export function pitchTradeAreaFacts(snapshot: PitchPackSnapshot): string[] {
 }
 
 export function pitchNearestStoreBriefLine(prospect: ProspectPack): string | null {
+  const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
+  if (prospect.nearestExistingStoreUnconfirmed) {
+    return `Nearest ${name} distance is unconfirmed (ATP and OSM snapshot disagree).`;
+  }
   const km = prospect.nearestExistingStoreKm;
   if (km === undefined) return null;
-  const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
-  return `Nearest ${name} is ${km.toFixed(1)} km away (All The Places store data).`;
+  return `Nearest ${name} is ${km.toFixed(1)} km away (tracked chain store data).`;
 }
 
 export function isPitchRankSummaryLine(line: string): boolean {
@@ -111,14 +114,17 @@ export function pitchProspectFact(
 ): string {
   const absenceKm = results ? absenceRadiusKm(results, searchRadiusKm) : searchRadiusKm;
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
+  if (prospect.nearestExistingStoreUnconfirmed) {
+    return `Nearest ${name} distance is unconfirmed (ATP and OSM snapshot disagree).`;
+  }
   const km = prospect.nearestExistingStoreKm;
   if (km !== undefined) {
     if (km > absenceKm) {
-      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (no store within ${absenceKm} km).`;
+      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (no tracked chain store within ${absenceKm} km).`;
     }
     return `Nearest ${name} is ${km.toFixed(1)} km from this pin.`;
   }
-  return `No ${name} store within ${absenceKm} km of this pin in our store data.`;
+  return `No ${name} tracked chain store within ${absenceKm} km of this pin in our store data.`;
 }
 
 export function pitchProspectFactFromSnapshot(
@@ -127,14 +133,17 @@ export function pitchProspectFactFromSnapshot(
 ): string {
   const absenceKm = pitchPackAbsenceRadiusKm(snapshot);
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
+  if (prospect.nearestExistingStoreUnconfirmed) {
+    return `Nearest ${name} distance is unconfirmed (ATP and OSM snapshot disagree).`;
+  }
   const km = prospect.nearestExistingStoreKm;
   if (km !== undefined) {
     if (km > absenceKm) {
-      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (no store within ${absenceKm} km).`;
+      return `Nearest ${name} is ${km.toFixed(1)} km from this pin (no tracked chain store within ${absenceKm} km).`;
     }
     return `Nearest ${name} is ${km.toFixed(1)} km from this pin.`;
   }
-  return `No ${name} store within ${absenceKm} km of this pin in our store data.`;
+  return `No ${name} tracked chain store within ${absenceKm} km of this pin in our store data.`;
 }
 
 /** Matches worker pitch why lines and other nearest-store distance copy. */

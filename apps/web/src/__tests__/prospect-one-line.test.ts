@@ -43,7 +43,7 @@ describe('prospectOneLineReason', () => {
       10
     );
     expect(line).toContain('Top 6% local match here');
-    expect(line).toContain('Nearest store is 12 km away');
+    expect(line).toContain('Nearest tracked chain store is 12 km away');
     expect(line).not.toContain('Category fit');
     expect(line).not.toContain('Apparel');
     expect(line).not.toContain('taste-aware blend');

@@ -1,7 +1,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { coveringGeohash3 } from './geohash';
-import { DEMO_CHIP_ADDRESSES, type DemoFixtureId } from '@leaseup/fixtures/worker';
+import { BLEECKER_NYC, DEMO_CHIP_ADDRESSES, type DemoFixtureId } from '@leaseup/fixtures/worker';
 
 export type AuditSiteKind = 'demo_chip' | 'eval_recorded';
 
@@ -55,6 +55,17 @@ export const FALSE_POSITIVE_AUDIT_SITES: FalsePositiveAuditSite[] = [
     category: 'tourist',
     demoFixture: 'sevierville',
     evalId: 'sevierville_tn',
+  },
+  {
+    id: 'bleecker',
+    kind: 'demo_chip',
+    label: '350 Bleecker St demo pin',
+    address: BLEECKER_NYC.address,
+    lat: BLEECKER_NYC.latitude,
+    lon: BLEECKER_NYC.longitude,
+    radiusKm: 10,
+    category: 'dense_urban',
+    evalId: 'nyc_williamsburg',
   },
   {
     id: 'chi_lakeview',

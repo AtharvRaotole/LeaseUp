@@ -21,6 +21,8 @@ import {
   type EvalSiteDensity,
 } from '@leaseup/fixtures/worker';
 import type { StoreCatalog } from '../services/store-catalog';
+import type { OsmSnapshotCatalog } from '../services/osm-snapshot-catalog';
+import { reconcileNearestStoreKm } from './nearest-store-reconcile';
 import { displayBrandName } from './brand-display';
 import { NearbyPresenceCache } from './nearby-presence-cache';
 
@@ -227,15 +229,23 @@ export async function enrichProspectsWithNearest(
   prospects: ProspectPack[],
   location: Location,
   catalog: StoreCatalog,
-  presence?: NearbyPresenceCache
+  presence?: NearbyPresenceCache,
+  osmSnapshot?: OsmSnapshotCatalog
 ): Promise<ProspectPack[]> {
   const cache = presence ?? new NearbyPresenceCache(catalog, location);
   return Promise.all(
     prospects.map(async (pack) => {
-      const nearby = await cache.storesNearby(pack.brand.entityId, 50);
+      const reconciled = await reconcileNearestStoreKm(
+        pack.brand.entityId,
+        location,
+        catalog,
+        cache,
+        osmSnapshot
+      );
       return {
         ...pack,
-        nearestExistingStoreKm: nearby[0]?.distance,
+        nearestExistingStoreKm: reconciled.km,
+        nearestExistingStoreUnconfirmed: reconciled.unconfirmed ? true : undefined,
       };
     })
   );

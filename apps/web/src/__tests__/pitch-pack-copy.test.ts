@@ -89,10 +89,10 @@ describe('pitch pack copy', () => {
     expect(joined).not.toMatch(/ATP catalog/i);
     expect(joined).not.toMatch(/Audience:\s/i);
     expect(joined).not.toMatch(/\b0\.\d{2}\b/);
-    expect(lines.some((l) => l.includes('All The Places store data') && l.includes('11.3'))).toBe(
+    expect(lines.some((l) => l.includes('tracked chain store data') && l.includes('11.3'))).toBe(
       true
     );
-    expect(pitchNearestStoreBriefLine(ultaPack.prospect)).toContain('All The Places store data');
+    expect(pitchNearestStoreBriefLine(ultaPack.prospect)).toContain('tracked chain store data');
   });
 
   it('uses one taste sentence instead of summary plus audience bullets', () => {

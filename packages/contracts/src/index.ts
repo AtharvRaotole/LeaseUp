@@ -145,6 +145,7 @@ export const ProspectPackSchema = z.object({
   outreachDraft: z.string(),
   reasons: z.array(z.string()),
   nearestExistingStoreKm: z.number().optional(),
+  nearestExistingStoreUnconfirmed: z.boolean().optional(),
   qlooSignals: z.array(z.string()).optional(),
   tradeAreaTaste: TradeAreaTasteContextSchema.optional(),
   whyBrandTaste: WhyBrandTasteSchema.optional(),

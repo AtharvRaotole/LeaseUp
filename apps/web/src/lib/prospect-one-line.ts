@@ -16,10 +16,12 @@ export function prospectOneLineReason(
   const tasteLine = tasteFitMatchHerePhrase(rank, totalScored);
   if (tasteLine) parts.push(tasteLine);
 
-  if (prospect.nearestExistingStoreKm !== undefined) {
+  if (prospect.nearestExistingStoreUnconfirmed) {
+    parts.push('Nearest chain store distance is unconfirmed (ATP and OSM disagree)');
+  } else if (prospect.nearestExistingStoreKm !== undefined) {
     const km = prospect.nearestExistingStoreKm;
     const label = km < 10 ? km.toFixed(1) : String(Math.round(km));
-    parts.push(`Nearest store is ${label} km away`);
+    parts.push(`Nearest tracked chain store is ${label} km away`);
   }
 
   const pairingLine = prospect.coTenancyLine?.trim();
