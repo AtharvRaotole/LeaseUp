@@ -6,6 +6,8 @@ import {
 } from '@leaseup/contracts';
 import { ProspectingService } from '../services/prospecting';
 import { analyzeStreamErrorPayload } from '../lib/analyze-stream-error';
+import { withSubrequestMeter } from '../lib/subrequest-meter';
+import { liveOffloadBinding } from '../lib/live-offload-client';
 
 export const prospectingRouter = new Hono<{ Bindings: Env }>();
 
@@ -46,7 +48,12 @@ prospectingRouter.post('/prospecting/:id/run', async (c) => {
   const id = c.req.param('id');
   const ip = c.req.header('cf-connecting-ip') || 'unknown';
   const ipHash = await hashIP(ip);
-  const service = new ProspectingService(c.env);
+  // ctx.exports.LiveOffload is a free loopback service binding to this Worker; each call
+  // runs in its own invocation with its own Workers Free subrequest budget.
+  const service = new ProspectingService({
+    ...c.env,
+    LIVE_OFFLOAD: liveOffloadBinding(() => c.executionCtx),
+  });
 
   const { readable, writable } = new TransformStream();
   const writer = writable.getWriter();
@@ -63,9 +70,11 @@ prospectingRouter.post('/prospecting/:id/run', async (c) => {
   const run = async () => {
     try {
       await send('start', { jobId: id });
-      const job = await service.run(id, ipHash, async (snapshot) => {
-        await send('step', snapshot);
-      });
+      const { result: job } = await withSubrequestMeter(() =>
+        service.run(id, ipHash, async (snapshot) => {
+          await send('step', snapshot);
+        })
+      );
       await send('complete', job);
     } catch (error) {
       // Same payload as the analyze stream, so the page can tell the daily cap apart.

@@ -1,3 +1,4 @@
+import { meterSubrequest } from './subrequest-meter';
 const CACHE_ORIGIN = 'https://leaseup-edge-cache.internal';
 
 export type ResponseCacheGetType = 'text' | 'json' | 'arrayBuffer';
@@ -33,6 +34,7 @@ export class ResponseCache {
 
   async get(key: string, type: ResponseCacheGetType = 'text'): Promise<string | ArrayBuffer | unknown | null> {
     try {
+      meterSubrequest('cache');
       const res = await caches.default.match(cacheUrl(key));
       if (!res) {
         this.noteMiss(key);
@@ -68,6 +70,7 @@ export class ResponseCache {
           'Content-Type': contentType,
         },
       });
+      meterSubrequest('cache');
       await caches.default.put(cacheUrl(key), res);
       this.recentMisses.delete(key);
     } catch (err) {

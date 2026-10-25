@@ -39,6 +39,8 @@ export interface Env {
   CI?: string;
   /** Max live-mode analyzes that call Qloo per UTC day (shared worker key). */
   LIVE_QLOO_JUDGE_DAILY_CAP?: string;
+  /** Loopback binding to this Worker (ctx.exports.LiveOffload), set per request, never configured. */
+  LIVE_OFFLOAD?: Fetcher;
 }
 
 const app = new Hono<{ Bindings: Env }>();
@@ -162,3 +164,5 @@ app.notFound((c) => {
 });
 
 export default app;
+
+export { LiveOffload } from './services/live-offload-handler';

@@ -1,3 +1,4 @@
+import { meterSubrequest } from './subrequest-meter';
 import type { NearbyTenant, ProspectPack } from '@leaseup/contracts';
 import { matchDemoFixtureId } from '@leaseup/fixtures/worker';
 import type { QlooClient, QlooLocation } from '../providers/qloo';
@@ -41,6 +42,7 @@ async function demoShares(
   incumbentIds: string[]
 ): Promise<IncumbentAffinity[]> {
   if (!assets) return [];
+  if (!demoManifest) meterSubrequest('assets');
   demoManifest ??= assets
     .fetch('https://osm.local/co-tenancy/recorded.json')
     .then((r) => (r.ok ? (r.json() as Promise<Record<string, CoTenancyDemoChip>>) : null))
@@ -58,6 +60,40 @@ async function coAffinityCacheKey(
 ): Promise<string> {
   const hash = encodeGeohash(location.latitude, location.longitude, 7);
   return `co-tenancy:v3:${hash}:${radiusKm}:${await coTenancyFixtureKey(pitchEntityId, incumbentIds)}`;
+}
+
+const CO_AFFINITY_MEMO_TTL_MS = 60 * 60 * 1000;
+const CO_AFFINITY_MEMO_MAX = 64;
+// Settled values only: a pending Promise must never be shared across Worker requests.
+const coAffinityMemo = new Map<string, { at: number; value: IncumbentAffinity[] }>();
+
+/** Exposed for tests: number of memoized co-tenancy lookups in this isolate. */
+export function coAffinityMemoSize(): number {
+  return coAffinityMemo.size;
+}
+
+export function clearCoAffinityMemo(): void {
+  coAffinityMemo.clear();
+}
+
+async function memoCoAffinity(
+  key: string,
+  load: () => Promise<IncumbentAffinity[]>
+): Promise<IncumbentAffinity[]> {
+  const hit = coAffinityMemo.get(key);
+  if (hit && Date.now() - hit.at < CO_AFFINITY_MEMO_TTL_MS) {
+    coAffinityMemo.delete(key);
+    coAffinityMemo.set(key, hit);
+    return hit.value;
+  }
+  const value = await load();
+  coAffinityMemo.set(key, { at: Date.now(), value });
+  while (coAffinityMemo.size > CO_AFFINITY_MEMO_MAX) {
+    const oldest = coAffinityMemo.keys().next().value;
+    if (oldest === undefined) break;
+    coAffinityMemo.delete(oldest);
+  }
+  return value;
 }
 
 export async function enrichProspectsWithCoTenancy(params: {
@@ -109,22 +145,18 @@ export async function enrichProspectsWithCoTenancy(params: {
         pack.brand.entityId,
         incumbentIds
       );
-      const cached = await params.responseCache.get(cacheKey, 'text');
-      if (typeof cached === 'string') {
-        return { pack, affinities: JSON.parse(cached) as IncumbentAffinity[] };
-      }
-      const raw = await params.qloo.getBrandCoAffinityWithIncumbents({
-        location: qlooLocation,
-        pitchEntityId: pack.brand.entityId,
-        incumbentEntityIds: incumbentIds,
-        runId: params.runId,
+      // In-isolate memo (no Cache API ops): a live prospecting run must stay
+      // under the Workers Free 50-subrequest cap, and repeat keys in one run
+      // or a quick rerun reuse the in-flight or settled result.
+      const affinities = await memoCoAffinity(cacheKey, async () => {
+        const raw = await params.qloo.getBrandCoAffinityWithIncumbents({
+          location: qlooLocation,
+          pitchEntityId: pack.brand.entityId,
+          incumbentEntityIds: incumbentIds,
+          runId: params.runId,
+        });
+        return raw ? parseCoAffinityFromInsights(raw, incumbentIds, pack.brand.entityId) : [];
       });
-      const affinities = raw
-        ? parseCoAffinityFromInsights(raw, incumbentIds, pack.brand.entityId)
-        : [];
-      if (affinities.length > 0) {
-        await params.responseCache.putTextIfChanged(cacheKey, JSON.stringify(affinities), 86400);
-      }
       return { pack, affinities };
     })
   );
