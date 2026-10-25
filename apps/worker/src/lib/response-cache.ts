@@ -9,11 +9,36 @@ function cacheUrl(key: string): string {
 /**
  * Ephemeral HTTP response cache (Workers Cache API). No KV daily op limits.
  */
+/** A miss this recent is trusted by putTextIfChanged, so it does not match() the same key twice. */
+const RECENT_MISS_MS = 30_000;
+const MAX_RECENT_MISSES = 256;
+
 export class ResponseCache {
+  private recentMisses = new Map<string, number>();
+
+  private noteMiss(key: string): void {
+    this.recentMisses.delete(key);
+    this.recentMisses.set(key, Date.now());
+    while (this.recentMisses.size > MAX_RECENT_MISSES) {
+      const oldest = this.recentMisses.keys().next().value;
+      if (oldest === undefined) break;
+      this.recentMisses.delete(oldest);
+    }
+  }
+
+  private missedRecently(key: string): boolean {
+    const at = this.recentMisses.get(key);
+    return at !== undefined && Date.now() - at < RECENT_MISS_MS;
+  }
+
   async get(key: string, type: ResponseCacheGetType = 'text'): Promise<string | ArrayBuffer | unknown | null> {
     try {
       const res = await caches.default.match(cacheUrl(key));
-      if (!res) return null;
+      if (!res) {
+        this.noteMiss(key);
+        return null;
+      }
+      this.recentMisses.delete(key);
       const body = res.clone();
       if (type === 'arrayBuffer') return await body.arrayBuffer();
       if (type === 'json') return await body.json();
@@ -44,6 +69,7 @@ export class ResponseCache {
         },
       });
       await caches.default.put(cacheUrl(key), res);
+      this.recentMisses.delete(key);
     } catch (err) {
       console.warn(
         JSON.stringify({
@@ -57,6 +83,10 @@ export class ResponseCache {
 
   /** Skip put when serialized body matches cached entry (saves Cache API writes too). */
   async putTextIfChanged(key: string, body: string, ttlSeconds: number): Promise<boolean> {
+    if (this.missedRecently(key)) {
+      await this.put(key, body, ttlSeconds);
+      return true;
+    }
     const prev = await this.get(key, 'text');
     if (prev === body) return false;
     await this.put(key, body, ttlSeconds);

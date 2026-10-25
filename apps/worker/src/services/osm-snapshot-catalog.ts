@@ -1,3 +1,4 @@
+import { loadStaticAssetJson } from '../lib/static-asset-memo';
 import type { NearbyTenant } from '@leaseup/contracts';
 import { coveringGeohash3 } from '../lib/geohash';
 import type { ResponseCache } from '../lib/response-cache';
@@ -55,15 +56,14 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): nu
 
 export class OsmSnapshotCatalog {
   private assets: Fetcher;
-  private cache: ResponseCache;
   private brandsIndex: BrandsIndex | null = null;
   private brandsIndexLoad: Promise<BrandsIndex | null> | null = null;
   private tileMemory = new Map<string, TilePayload>();
   private tileLoads = new Map<string, Promise<TilePayload | null>>();
 
-  constructor(assets: Fetcher, cache: ResponseCache) {
+  /** The response cache argument is kept for callers; static tiles no longer use the Cache API. */
+  constructor(assets: Fetcher, _cache?: ResponseCache) {
     this.assets = assets;
-    this.cache = cache;
   }
 
   private loadBrandsIndex(): Promise<BrandsIndex | null> {
@@ -76,16 +76,12 @@ export class OsmSnapshotCatalog {
   }
 
   private async fetchBrandsIndex(): Promise<BrandsIndex | null> {
-    const cached = (await this.cache.get('osm-tiles:brands', 'json')) as BrandsIndex | null;
-    if (cached) {
-      this.brandsIndex = cached;
-      return cached;
-    }
-    const res = await this.assets.fetch('https://osm.local/osm-tiles/brands.json');
-    if (!res.ok) return null;
-    const data = (await res.json()) as BrandsIndex;
-    this.brandsIndex = data;
-    await this.cache.putJsonIfChanged('osm-tiles:brands', data, 86400);
+    const data = await loadStaticAssetJson<BrandsIndex>(this.assets, 'osm-tiles:brands', async () => {
+      const res = await this.assets.fetch('https://osm.local/osm-tiles/brands.json');
+      if (!res.ok) return null;
+      return (await res.json()) as BrandsIndex;
+    });
+    if (data) this.brandsIndex = data;
     return data;
   }
 
@@ -102,17 +98,12 @@ export class OsmSnapshotCatalog {
   }
 
   private async fetchTile(gh: string): Promise<TilePayload | null> {
-    const kvKey = `osm-tiles:${gh}`;
-    const cached = (await this.cache.get(kvKey, 'json')) as TilePayload | null;
-    if (cached) {
-      this.tileMemory.set(gh, cached);
-      return cached;
-    }
-    const res = await this.assets.fetch(`https://osm.local/osm-tiles/${gh}.json`);
-    if (!res.ok) return null;
-    const data = (await res.json()) as TilePayload;
-    this.tileMemory.set(gh, data);
-    await this.cache.putJsonIfChanged(kvKey, data, 86400);
+    const data = await loadStaticAssetJson<TilePayload>(this.assets, `osm-tiles:${gh}`, async () => {
+      const res = await this.assets.fetch(`https://osm.local/osm-tiles/${gh}.json`);
+      if (!res.ok) return null;
+      return (await res.json()) as TilePayload;
+    });
+    if (data) this.tileMemory.set(gh, data);
     return data;
   }
 
