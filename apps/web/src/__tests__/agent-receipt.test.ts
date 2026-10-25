@@ -191,4 +191,31 @@ describe('agent receipt', () => {
     expect(buildReviewReceiptSection(DEMO_PROSPECTING_RECEIPT_JOB)).toBeNull();
     expect(agentReceiptMarkdown(DEMO_PROSPECTING_RECEIPT_JOB)).not.toContain('Review after ranking');
   });
+
+  it('keeps rule planner reasons readable after sanitizing', () => {
+    const job = {
+      ...DEMO_PROSPECTING_RECEIPT_JOB,
+      steps: [
+        {
+          id: 'agent_plan' as const,
+          label: 'Plan site checks',
+          status: 'complete' as const,
+          detail: {
+            mode: 'agent',
+            agentSteps: [
+              {
+                planner: 'rule',
+                tool: 'nearest_store_check',
+                reason: 'Rule: reconcile the nearest store for the strongest taste match.',
+                resultSummary: 'Nearest Whole Foods Market store 2.01 km.',
+              },
+            ],
+          },
+        },
+      ],
+    };
+    expect(buildPlannerReceiptSection(job).decisions[0]?.reason).toBe(
+      'reconcile the nearest store for the strongest taste match.'
+    );
+  });
 });

@@ -224,7 +224,7 @@ export class DemoProspectingPlannerClient implements ProspectingPlannerClient {
         toolCalls: [
           {
             name: 'nearest_store_check',
-            reason: 'Rule: reconcile the nearest store for the top panel brand.',
+            reason: 'Rule: reconcile the nearest store for the strongest taste match.',
             arguments: { entityId: topEntity },
           },
         ],
@@ -238,7 +238,7 @@ export class DemoProspectingPlannerClient implements ProspectingPlannerClient {
         toolCalls: [
           {
             name: 'enrich_site_stratum',
-            reason: 'Rule: look for verified local audience overlap for the top panel brand.',
+            reason: 'Rule: look for verified local audience overlap for the strongest taste match.',
             arguments: { entityId: topEntity },
           },
         ],
