@@ -19,7 +19,8 @@ test.describe('Prospecting agent receipt', () => {
     await receipt.scrollIntoViewIfNeeded();
     await expect(receipt).toBeVisible({ timeout: 15_000 });
     await expect(page.getByTestId('agent-receipt-planner-decision-0')).toContainText('Rule:');
-    await expect(page.getByTestId('agent-receipt-planner')).not.toContainText(/for \./);
+    await expect(page.getByTestId('agent-receipt-planner')).not.toContainText(/for \.|that brand/);
+    await expect(page.getByTestId('agent-receipt-planner')).toContainText('strongest taste match');
 
     const review = page.getByTestId('agent-receipt-review');
     await expect(review).toBeVisible();
