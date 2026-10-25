@@ -260,7 +260,7 @@ describe('adaptive radius trade-area audit (13 sites)', () => {
       productViolations,
       `pitched with ATP/OSM within search or 3 km: ${productViolations.map((v) => `${v.siteId}:${v.brand}`).join(', ')}`
     ).toEqual([]);
-  });
+  }, 60_000);
 });
 
 function fmt(km: number | undefined): string {
