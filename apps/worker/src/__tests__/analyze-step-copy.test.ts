@@ -39,3 +39,14 @@ describe('formatBacktestStepSummary', () => {
     expect(summary).toContain('random ~4.2/10');
   });
 });
+
+describe('formatBacktestStepSummary with taste twins', () => {
+  it('names the twin blend only when the live order used it', () => {
+    const r = { totalStores: 5, predictedStores: 5, accuracy: 0.5, precisionAt10: 0.5, presentInTop10: 5, examples: [] };
+    const base = { adaptiveRadiusKm: 3, raw: r, blended: r, randomExpectedPresentAt10: 4 };
+    expect(formatBacktestStepSummary(base).summary).not.toContain('taste twins');
+    const out = formatBacktestStepSummary({ ...base, tasteTwinCount: 5 });
+    expect(out.summary).toContain('blend uses 5 taste twins');
+    expect(out.detail.tasteTwinCount).toBe(5);
+  });
+});
