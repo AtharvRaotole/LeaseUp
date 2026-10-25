@@ -219,3 +219,23 @@ export function qlooProofHitRateTieSubtitle(
   if (!detail) return 'Tied on nearby-store match; taste still changes order.';
   return detail;
 }
+
+/** Leave one address out, 40 test sites, all scored brands (the analyze pool) (data/qloo-eval-40/TWIN_RANK_EVAL.md). */
+export const TWIN_RANK_EVAL_TOP10 = { standard: 8.2, twins: 9.0 } as const;
+
+function joinLabels(labels: string[]): string {
+  if (labels.length <= 1) return labels.join('');
+  return `${labels.slice(0, -1).join(', ')} and ${labels[labels.length - 1]}`;
+}
+
+/** One line naming the taste twins that shaped this live order, or null for demo chips and fallbacks. */
+export function twinRankingLine(results: AnalysisResponse): string | null {
+  const model = results.rankingModel;
+  if (model?.kind !== 'taste_twins' || !model.twins?.length) return null;
+  const labels = model.twins.map((t) => t.label);
+  return (
+    `Order also weighs which brands already trade in the ${labels.length} test markets whose Qloo taste is closest to this site: ` +
+    `${joinLabels(labels)}. Across 40 test sites this lifted top 10 hits from ${TWIN_RANK_EVAL_TOP10.standard} to ` +
+    `${TWIN_RANK_EVAL_TOP10.twins} of 10 (leave one out).`
+  );
+}

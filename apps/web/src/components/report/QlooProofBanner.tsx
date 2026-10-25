@@ -6,6 +6,7 @@ import {
   qlooProofSentence,
   qlooProofSentenceTechnical,
   qlooProofTieDetailTechnical,
+  twinRankingLine,
 } from '../../lib/qloo-proof';
 
 export function QlooProofBanner({
@@ -23,6 +24,7 @@ export function QlooProofBanner({
   const legacySentence = qlooProofSentence(blend, baseline);
   const technical = qlooProofSentenceTechnical(blend, baseline);
   const tieTechnical = qlooProofTieDetailTechnical(results.rankings);
+  const twinLine = twinRankingLine(results);
 
   if (compact) {
     return (
@@ -32,6 +34,11 @@ export function QlooProofBanner({
         </p>
         <p className="mt-2 text-sm text-ink-2">{cohortLine}</p>
         {tieNote && <p className="mt-1 text-sm text-ink-2">{tieNote}</p>}
+        {twinLine && (
+          <p className="mt-1 text-sm text-ink-2" data-testid="twin-ranking-line">
+            {twinLine}
+          </p>
+        )}
         <ShowMethod>
           <p>{methodDetail}</p>
           <p>{caveat}</p>
@@ -48,6 +55,11 @@ export function QlooProofBanner({
       <p className="font-display font-semibold text-lg text-ink">{headline}</p>
       <p className="mt-2 text-sm text-ink-2">{cohortLine}</p>
       {tieNote && <p className="mt-2 text-sm text-ink-2">{tieNote}</p>}
+      {twinLine && (
+        <p className="mt-2 text-sm text-ink-2" data-testid="twin-ranking-line">
+          {twinLine}
+        </p>
+      )}
       <ShowMethod>
         <p className="mt-3 text-sm text-ink-2">{methodDetail}</p>
         <p className="mt-2 text-xs text-ink-3">{caveat}</p>

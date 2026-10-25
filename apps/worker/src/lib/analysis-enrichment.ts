@@ -25,6 +25,41 @@ import type { OsmSnapshotCatalog } from '../services/osm-snapshot-catalog';
 import { reconcileNearestStoreKm } from './nearest-store-reconcile';
 import { displayBrandName } from './brand-display';
 import { NearbyPresenceCache } from './nearby-presence-cache';
+import { findTasteTwins, type TasteTwinSet } from './taste-twins';
+import { orderInsightsByTwinBlend } from './twin-rank';
+
+const twinMemo = new WeakMap<object, { key: string; set: TasteTwinSet | null }>();
+
+/** Taste twins for this run's insights (static panel, no Qloo calls), memoized per insights array. */
+export function tasteTwinsForRun(
+  location: Pick<Location, 'latitude' | 'longitude'>,
+  insights: QlooInsight[] | Array<{ entity_id: string; query?: { affinity?: number } }>
+): TasteTwinSet | null {
+  const key = `${location.latitude},${location.longitude}`;
+  const hit = twinMemo.get(insights);
+  if (hit && hit.key === key) return hit.set;
+  const set = findTasteTwins(location.latitude, location.longitude, insights);
+  twinMemo.set(insights, { key, set });
+  return set;
+}
+
+export type RankingModel = 'taste_twins' | 'standard';
+
+/**
+ * Production order for a site. Live addresses with taste twins use the twin blend; the recorded demo
+ * chips and runs without twins keep the standard logistic blend.
+ */
+export function orderInsightsForSite<
+  T extends { entity_id: string; name: string; query?: { affinity?: number } },
+>(
+  insights: T[],
+  location: Pick<Location, 'latitude' | 'longitude' | 'address'>,
+  blendSite: Parameters<typeof orderInsightsByLogisticBlend>[1]
+): { ordered: Array<T & { qlooRank: number; blendedRank: number }>; model: RankingModel; twins: TasteTwinSet | null } {
+  const twins = matchDemoFixtureId(location.address) ? null : tasteTwinsForRun(location, insights);
+  if (twins) return { ordered: orderInsightsByTwinBlend(insights, twins), model: 'taste_twins', twins };
+  return { ordered: orderInsightsByLogisticBlend(insights, blendSite), model: 'standard', twins: null };
+}
 
 function stratumToBlendDensity(densityOrStratum: EvalSiteDensity | EvalDensityStratum): EvalSiteDensity {
   if (densityOrStratum === 'dense_urban') return 'urban';
@@ -66,7 +101,7 @@ export async function buildBrandRankings(
         qlooRank: index + 1,
         blendedRank: index + 1,
       }))
-    : orderInsightsByLogisticBlend(insights, logisticSiteForBlend(location, densityOrStratum, radiusKm));
+    : orderInsightsForSite(insights, location, logisticSiteForBlend(location, densityOrStratum, radiusKm)).ordered;
   const brandIds = new Set(catalog.getBrandIds());
   const tierFit = buildTierFitByEntityId(insights.map((i) => i.entity_id));
   const scoreRadiusKm = presenceRadiusKm(densityOrStratum, radiusKm);
@@ -183,10 +218,11 @@ export async function buildTripleBacktest(
     brandIds
   );
 
-  const blendedOrder = orderInsightsByLogisticBlend(
+  const blendedOrder = orderInsightsForSite(
     insights,
+    location,
     logisticSiteForBlend(location, densityOrStratum, radiusKm)
-  );
+  ).ordered;
   const blended = computeBacktest(
     blendedOrder,
     location.latitude,
