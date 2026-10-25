@@ -93,6 +93,7 @@ import {
   osmSnapshotDisplayLabel,
   osmSnapshotRecordedAt,
 } from './osm-snapshot-catalog';
+import { findTasteTwins, withTasteTwinEvidence } from '../lib/taste-twins';
 import { lookupTradeAreaTasteForProspect } from '../lib/trade-area-taste';
 import { enrichProspectWhyBrandTaste } from '../lib/why-brand-taste-enrichment';
 import { getResponseCache } from '../lib/worker-cache';
@@ -454,6 +455,11 @@ export class AnalysisService {
             tasteEnriched.map((pack) => enrichProspectWhyBrandTaste(pack, this.openai, this.mode))
           );
         }
+      }
+
+      if (!tasteUnavailable) {
+        const tasteTwinSet = findTasteTwins(location.latitude, location.longitude, insights);
+        enrichedProspects = enrichedProspects.map((pack) => withTasteTwinEvidence(pack, tasteTwinSet));
       }
 
       const tradeAreaShoppers = await withSoftTimeout(

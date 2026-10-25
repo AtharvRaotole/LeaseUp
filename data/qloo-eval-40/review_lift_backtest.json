@@ -1,0 +1,99 @@
+{
+ "per_chip": {
+  "chi_wicker": {
+   "n_brands": 19,
+   "present": 2,
+   "with_overlap": 15,
+   "top8_before": [
+    "Ulta (present, 1 overlaps)",
+    "TJ Maxx (absent, 2 overlaps)",
+    "Michaels (absent, 2 overlaps)",
+    "Marshalls (absent, 1 overlaps)",
+    "Old Navy (absent, 1 overlaps)",
+    "Kohl's (present, 1 overlaps)",
+    "Hobby Lobby (absent, 2 overlaps)",
+    "HomeGoods (absent, 2 overlaps)"
+   ],
+   "rule_move": null,
+   "P3_before": 0.3333333333333333,
+   "P3_after": 0.3333333333333333,
+   "P5_before": 0.2,
+   "P5_after": 0.2,
+   "P10_before": 0.2,
+   "P10_after": 0.2,
+   "valid_lifts": []
+  },
+  "boulder_co": {
+   "n_brands": 19,
+   "present": 7,
+   "with_overlap": 14,
+   "top8_before": [
+    "Ulta (absent, 1 overlaps)",
+    "TJ Maxx (absent, 2 overlaps)",
+    "Michaels (present, 2 overlaps)",
+    "Old Navy (absent, 2 overlaps)",
+    "Hobby Lobby (absent, 2 overlaps)",
+    "Marshalls (present, 1 overlaps)",
+    "Kohl's (absent, 1 overlaps)",
+    "HomeGoods (present, 2 overlaps)"
+   ],
+   "rule_move": null,
+   "P3_before": 0.3333333333333333,
+   "P3_after": 0.3333333333333333,
+   "P5_before": 0.2,
+   "P5_after": 0.2,
+   "P10_before": 0.4,
+   "P10_after": 0.4,
+   "valid_lifts": []
+  },
+  "sevierville_tn": {
+   "n_brands": 19,
+   "present": 9,
+   "with_overlap": 15,
+   "top8_before": [
+    "Ulta (present, 1 overlaps)",
+    "TJ Maxx (present, 2 overlaps)",
+    "Michaels (absent, 2 overlaps)",
+    "Marshalls (present, 1 overlaps)",
+    "Old Navy (present, 2 overlaps)",
+    "Kohl's (absent, 1 overlaps)",
+    "Hobby Lobby (absent, 2 overlaps)",
+    "HomeGoods (absent, 2 overlaps)"
+   ],
+   "rule_move": null,
+   "P3_before": 0.6666666666666666,
+   "P3_after": 0.6666666666666666,
+   "P5_before": 0.8,
+   "P5_after": 0.8,
+   "P10_before": 0.6,
+   "P10_after": 0.6,
+   "valid_lifts": []
+  }
+ },
+ "notes": "Backtest of the shipped review-after-ranking lift policy (apps/worker/src/lib/prospecting-agent-review.ts).",
+ "rule_mean": {
+  "P3_before": 0.4444444444444444,
+  "P3_after": 0.4444444444444444,
+  "P5_before": 0.4000000000000001,
+  "P5_after": 0.4000000000000001,
+  "P10_before": 0.4000000000000001,
+  "P10_after": 0.4000000000000001
+ },
+ "any_valid_lift": {
+  "count": 0,
+  "mean_dP5": null,
+  "helpful": 0,
+  "harmful": 0,
+  "neutral": 0
+ },
+ "presence_rate_by_overlap": {
+  "with_overlap": {
+   "n": 44,
+   "present_rate": 0.3409090909090909
+  },
+  "without_overlap": {
+   "n": 13,
+   "present_rate": 0.23076923076923078
+  }
+ }
+}

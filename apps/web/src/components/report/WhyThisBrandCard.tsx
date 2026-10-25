@@ -7,6 +7,7 @@ import { whyCardStoreCheckLine } from '../../lib/absence-verification-copy';
 import { whyBrandTasteSection } from '../../lib/why-brand-taste-ui';
 import { BrandReachLink } from './BrandReachLink';
 import { analysisStoreDataDateLabel } from '../../lib/store-data-dates';
+import { tasteTwinCopy } from '../../lib/taste-twin-copy';
 
 export function WhyThisBrandCard({
   prospect,
@@ -26,6 +27,7 @@ export function WhyThisBrandCard({
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   const taste = whyBrandTasteSection(prospect, results);
   const hasTaste = taste.signalLines.length > 0 || Boolean(taste.summary);
+  const twins = tasteTwinCopy(prospect, name);
 
   return (
     <Card className={cn('mb-4 print-pitch-block md:mb-4', className)} data-testid="why-this-brand">
@@ -54,6 +56,14 @@ export function WhyThisBrandCard({
         </div>
       ) : taste.rankLine ? (
         <p className="mt-3 text-sm text-ink-2">{taste.rankLine}</p>
+      ) : null}
+
+      {twins ? (
+        <div className="mt-3" data-testid="why-taste-twins">
+          <p className="text-xs font-medium uppercase tracking-wide text-ink-3">Closest taste markets</p>
+          <p className="mt-2 text-sm text-ink-2">{twins.headline}</p>
+          <p className="mt-1 text-xs text-ink-3">{twins.markets} {twins.note}</p>
+        </div>
       ) : null}
 
       <p className="mt-3 text-sm text-ink-2" data-testid="why-absence-verification">
