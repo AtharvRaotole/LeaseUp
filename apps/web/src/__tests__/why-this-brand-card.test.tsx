@@ -97,6 +97,31 @@ describe('WhyThisBrandCard', () => {
     expect(html).not.toContain('top 8%');
   });
 
+  it('shows taste-twin markets as evidence when present', () => {
+    const withTwins: ProspectPack = {
+      ...prospect,
+      tasteTwins: {
+        presentIn: 3,
+        of: 5,
+        presentSites: ['Ann Arbor, MI', 'State St, Madison', 'Ithaca, NY'],
+        twins: ['Ann Arbor, MI', 'State St, Madison', 'Ithaca, NY', 'Athens, GA', 'Chapel Hill, NC'],
+      },
+    };
+    const html = renderToStaticMarkup(
+      <WhyThisBrandCard prospect={withTwins} results={results} radiusKm={10} />
+    );
+    expect(html).toContain('data-testid="why-taste-twins"');
+    expect(html).toContain('REI trades in 3 of the 5 test markets whose Qloo taste is closest to this site: Ann Arbor, MI; State St, Madison; Ithaca, NY.');
+    expect(html).toContain('it does not change the ranking');
+    expect(html).not.toMatch(/[\u2013\u2014]/);
+    const none = renderToStaticMarkup(
+      <WhyThisBrandCard prospect={{ ...withTwins, tasteTwins: { ...withTwins.tasteTwins!, presentIn: 0, presentSites: [] } }} results={results} radiusKm={10} />
+    );
+    expect(none).toContain('REI has no store in any of the 5 test markets');
+    const plain = renderToStaticMarkup(<WhyThisBrandCard prospect={prospect} results={results} radiusKm={10} />);
+    expect(plain).not.toContain('why-taste-twins');
+  });
+
   it('renders nothing without a prospect', () => {
     const html = renderToStaticMarkup(
       <WhyThisBrandCard prospect={null} results={results} radiusKm={10} />
