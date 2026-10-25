@@ -118,7 +118,7 @@ const checks = [
     'walkthrough pending re-record',
     submission.includes('pending re-record') || submission.includes('Walkthrough video pending re-record'),
   ],
-  ['deploy34 production label', submission.includes('deploy34')],
+  ['deploy41 production label', submission.includes('deploy41')],
   [
     'agent receipt documented',
     submission.includes('Agent receipt') && submission.includes('agent-receipt'),
