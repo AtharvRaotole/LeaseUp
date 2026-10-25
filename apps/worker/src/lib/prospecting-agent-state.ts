@@ -103,11 +103,9 @@ export function applyProspectingAgentToolToState(
       const entityId = String(payload.entityId ?? call.arguments.entityId ?? '');
       const audienceCount = Number(payload.audienceCount ?? 0);
       const taste = payload.tradeAreaTaste as TradeAreaTasteContext | undefined;
-      if (entityId) {
+      if (entityId && taste && audienceCount > 0) {
         state.stratumBoostEntityIds.add(entityId);
-        if (taste && audienceCount > 0) {
-          state.preloadedTradeAreaTaste.set(entityId, taste);
-        }
+        state.preloadedTradeAreaTaste.set(entityId, taste);
       }
       break;
     }

@@ -2,7 +2,6 @@ import type { Location } from '@leaseup/contracts';
 import {
   DEMO_CHIP_ADDRESSES,
   matchDemoFixtureId,
-  wickerparkFixture,
 } from '@leaseup/fixtures/worker';
 import type { Env } from '../index';
 import type { QlooClient } from '../providers/qloo';
@@ -103,6 +102,8 @@ class OpenAiProspectingPlannerClient implements ProspectingPlannerClient {
           'You are a commercial retail prospecting planner.',
           `Budget: at most ${PROSPECTING_AGENT_MAX_STEPS} tool steps and ${PROSPECTING_AGENT_MAX_QLOO_CALLS} Qloo API calls.`,
           'Choose only useful extra checks before the main analysis pipeline runs.',
+          'qloo_brand_insights returns the top brands with their entityId values; use those ids for nearest_store_check and enrich_site_stratum.',
+          'A brand is only boosted when enrich_site_stratum finds verified local audience overlap.',
           'Always pass a short reason in each tool call.',
           'When no more checks are needed, reply with a brief plan summary and no tool calls.',
         ].join(' '),
@@ -200,11 +201,8 @@ export class DemoProspectingPlannerClient implements ProspectingPlannerClient {
     qlooCallsUsed: number;
     fixtureId: string | null;
   }): Promise<ProspectingPlannerTurn> {
-    const fixtureId = input.fixtureId ?? matchDemoFixtureId(input.location.address);
-    const topEntity =
-      fixtureId === 'wicker'
-        ? wickerparkFixture.insights[0]?.entity_id
-        : input.stepsSoFar.find((s) => s.tool === 'qloo_brand_insights')?.toolArgs?.topEntityId;
+    const topEntity = input.stepsSoFar.find((s) => s.tool === 'qloo_brand_insights')?.toolArgs
+      ?.topEntityId as string | undefined;
 
     if (this.turn === 0) {
       this.turn += 1;
@@ -220,37 +218,28 @@ export class DemoProspectingPlannerClient implements ProspectingPlannerClient {
       };
     }
 
-    if (this.turn === 1 && fixtureId) {
+    if (this.turn === 1 && topEntity) {
       this.turn += 1;
-      const candidate =
-        fixtureId === 'wicker'
-          ? WICKER_NEAREST_VERIFY_ENTITY
-          : wickerparkFixture.insights.find((r) => r.affinity_rank <= 5)?.entity_id ?? topEntity;
       return {
         toolCalls: [
           {
             name: 'nearest_store_check',
-            reason: 'Rule: reconcile nearest store for a top-ranked candidate on dense sites.',
-            arguments: { entityId: candidate },
+            reason: 'Rule: reconcile the nearest store for the top panel brand.',
+            arguments: { entityId: topEntity },
           },
         ],
         done: false,
       };
     }
 
-    if (this.turn === 2) {
+    if (this.turn === 2 && topEntity) {
       this.turn += 1;
-      const entityId =
-        fixtureId === 'wicker'
-          ? WICKER_STRATUM_BOOST_ENTITY
-          : ((input.stepsSoFar.find((s) => s.tool === 'nearest_store_check')?.toolArgs
-              .entityId as string) ?? wickerparkFixture.insights[0]?.entity_id);
       return {
         toolCalls: [
           {
             name: 'enrich_site_stratum',
-            reason: 'Rule: attach stratum trade-area taste for pitch reasons.',
-            arguments: entityId ? { entityId } : {},
+            reason: 'Rule: look for verified local audience overlap for the top panel brand.',
+            arguments: { entityId: topEntity },
           },
         ],
         done: false,
@@ -388,7 +377,10 @@ export async function runProspectingAgentPlanner(params: {
               durationMs: Date.now() - t0,
             });
             if (toolCallIds[i]) {
-              toolResultRows.push({ toolCallId: toolCallIds[i]!, summary: result.summary });
+              toolResultRows.push({
+                toolCallId: toolCallIds[i]!,
+                summary: result.observation ?? result.summary,
+              });
             }
           }
 
@@ -414,10 +406,12 @@ export async function runProspectingAgentPlanner(params: {
     };
   }
 
+  const modelSteps = steps.filter((s) => s.planner === 'model').length;
+  const actor = modelSteps > 0 ? 'Agent' : 'Rule planner';
   const summary =
     steps.length > 0
-      ? `Agent ran ${steps.length} tool step(s); ${qlooCalls} Qloo call(s); results feed analysis.`
-      : 'Agent finished with no extra tools; DAG provides full analysis.';
+      ? `${actor} ran ${steps.length} tool step(s); ${qlooCalls} Qloo call(s); results feed analysis.`
+      : `${actor} finished with no extra tools; DAG provides full analysis.`;
 
   return {
     mode: 'agent',
@@ -431,9 +425,5 @@ export async function runProspectingAgentPlanner(params: {
 
 /** Demo wicker address for e2e parity (deterministic planner). */
 export const PROSPECTING_AGENT_DEMO_ADDRESS = DEMO_CHIP_ADDRESSES.wicker;
-
-/** Wicker pitch prospect with a reconciled near store (planner exclusion changes the DAG list). */
-const WICKER_NEAREST_VERIFY_ENTITY = '2D890327-8794-4C5A-898F-FFF0323325CF';
-const WICKER_STRATUM_BOOST_ENTITY = 'D3310425-7161-41FC-8C2C-5435AF0F0A5B';
 
 export type { ProspectingAgentStepLog } from './prospecting-agent-state';
