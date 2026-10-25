@@ -36,7 +36,7 @@ export type PlannerReceiptSection = {
 
 export type ReviewReceiptAction = {
   plannerLabel: 'Rule' | 'Agent';
-  outcome: 'lifted' | 'rejected';
+  outcome: 'lifted' | 'rejected' | 'declined';
   reason: string;
   resultSummary: string;
 };
@@ -192,7 +192,7 @@ export function buildReviewReceiptSection(job: ProspectingJob): ReviewReceiptSec
       const label: 'Rule' | 'Agent' = a.planner === 'model' ? 'Agent' : 'Rule';
       actions.push({
         plannerLabel: label,
-        outcome: a.outcome === 'lifted' ? 'lifted' : 'rejected',
+        outcome: a.outcome === 'lifted' || a.outcome === 'declined' ? a.outcome : 'rejected',
         reason: receiptToolReason(label, String(a.reason ?? '')),
         resultSummary: sanitizePlannerResultSummary(String(a.resultSummary ?? '')),
       });
@@ -319,7 +319,9 @@ export function agentReceiptMarkdown(job: ProspectingJob): string {
     lines.push(review.summary);
     for (const action of review.actions) {
       lines.push(`- ${action.plannerLabel}: ${action.reason}`);
-      if (action.resultSummary) lines.push(`  - Result: ${action.resultSummary}`);
+      const label =
+        action.outcome === 'lifted' ? 'Result' : action.outcome === 'declined' ? 'Decision' : 'Blocked';
+      if (action.resultSummary) lines.push(`  - ${label}: ${action.resultSummary}`);
     }
     if (review.usageLine) lines.push(review.usageLine);
     if (review.standard.length) lines.push(`Top 5, standard ranking: ${review.standard.join(', ')}`);

@@ -4,10 +4,11 @@ import { displayBrandName } from './brand-display';
 import { withTimeout } from './analysis-step-budget';
 
 /**
- * Review after ranking: the planner sees the ranked shortlist with the evidence the
- * pipeline already gathered (verified local audience overlap, nearest store) and may lift
- * an evidence-backed pitch above a top-five pitch that has none. Every lift is validated
- * on the server. No Qloo calls; the model path uses gpt-4o-mini only.
+ * Review after ranking: the server lists every lift the evidence check would allow (a
+ * shortlisted brand with verified local audience overlap ranked below a top-five brand that
+ * was checked and has none). The reviewer must accept or decline each one with a reason;
+ * both decisions are logged. Every lift is still validated on the server. When no lift is
+ * eligible the model is not called. No Qloo calls; the model path uses gpt-4o-mini only.
  */
 
 export const PROSPECTING_REVIEW_SHORTLIST = 8;
@@ -15,6 +16,8 @@ export const PROSPECTING_REVIEW_TOP = 5;
 export const PROSPECTING_REVIEW_MAX_LIFTS = 2;
 export const PROSPECTING_REVIEW_MAX_TURNS = 3;
 export const PROSPECTING_REVIEW_TIMEOUT_MS = 10_000;
+/** Most eligible lifts shown to the reviewer in one run. */
+export const PROSPECTING_REVIEW_MAX_ELIGIBLE = 6;
 
 export type ProspectingReviewPlanner = 'model' | 'rule';
 
@@ -25,14 +28,26 @@ export type ProspectingReviewBrand = {
 
 export type ProspectingReviewAction = {
   planner: ProspectingReviewPlanner;
-  tool: 'lift_pitch';
+  tool: 'lift_pitch' | 'decline_lift';
   entityId: string;
   brandName: string;
   aboveEntityId: string;
   aboveBrandName: string;
   reason: string;
-  outcome: 'lifted' | 'rejected';
+  /** lifted: applied; rejected: blocked by the evidence check; declined: reviewer kept the order. */
+  outcome: 'lifted' | 'rejected' | 'declined';
   resultSummary: string;
+};
+
+/** A lift the server evidence check would accept, offered to the reviewer to accept or decline. */
+export type ProspectingReviewEligibleLift = {
+  entityId: string;
+  name: string;
+  fromRank: number;
+  localAudienceOverlaps: string[];
+  aboveEntityId: string;
+  aboveName: string;
+  aboveRank: number;
 };
 
 export type ProspectingReviewModelUsage = {
@@ -59,6 +74,8 @@ export type ProspectingReviewResult = {
   after: ProspectingReviewBrand[];
   changed: boolean;
   summary: string;
+  /** Lifts the evidence check allowed on the ranked shortlist before review (0 means nothing to decide). */
+  eligibleLifts?: number;
   fallbackReason?: string;
   modelUsage?: ProspectingReviewModelUsage;
   outcome: ProspectingReviewOutcome;
@@ -72,6 +89,7 @@ export type ProspectingReviewLiftRequest = {
 
 export type ProspectingReviewTurn = {
   lifts: Array<ProspectingReviewLiftRequest & { toolCallId?: string }>;
+  declines?: Array<ProspectingReviewLiftRequest & { toolCallId?: string }>;
   done: boolean;
 };
 
@@ -91,6 +109,7 @@ export interface ProspectingReviewClient {
   readonly kind: ProspectingReviewPlanner;
   nextTurn(input: {
     shortlist: ProspectingReviewShortlistRow[];
+    eligibleLifts: ProspectingReviewEligibleLift[];
     actionsSoFar: ProspectingReviewAction[];
     neighborhood?: string;
   }): Promise<ProspectingReviewTurn>;
@@ -122,6 +141,35 @@ export function reviewShortlist(prospects: ProspectPack[]): ProspectingReviewSho
         ? Math.round(pack.nearestExistingStoreKm * 10) / 10
         : undefined,
   }));
+}
+
+/**
+ * Every lift the server guardrail (`applyReviewLift`) would accept on this shortlist, nearest
+ * pairs first. Uses the same rules: displaced brand in the top 5, checked, no overlap; lifted
+ * brand below it on the shortlist with at least one verified overlap.
+ */
+export function eligibleReviewLifts(
+  shortlist: ProspectingReviewShortlistRow[]
+): ProspectingReviewEligibleLift[] {
+  const out: ProspectingReviewEligibleLift[] = [];
+  for (const above of shortlist.slice(0, PROSPECTING_REVIEW_TOP)) {
+    if (above.audienceCheck !== 'none') continue;
+    for (const row of shortlist) {
+      if (row.rank <= above.rank || row.localAudienceOverlaps.length === 0) continue;
+      out.push({
+        entityId: row.entityId,
+        name: row.name,
+        fromRank: row.rank,
+        localAudienceOverlaps: row.localAudienceOverlaps,
+        aboveEntityId: above.entityId,
+        aboveName: above.name,
+        aboveRank: above.rank,
+      });
+    }
+  }
+  return out
+    .sort((a, b) => a.fromRank - a.aboveRank - (b.fromRank - b.aboveRank) || a.aboveRank - b.aboveRank)
+    .slice(0, PROSPECTING_REVIEW_MAX_ELIGIBLE);
 }
 
 function topBrands(prospects: ProspectPack[]): ProspectingReviewBrand[] {
@@ -241,6 +289,22 @@ const REVIEW_TOOLS = [
       },
     },
   },
+  {
+    type: 'function' as const,
+    function: {
+      name: 'decline_lift',
+      description: 'Keep the ranked order for one eligible lift, with the reason it should not move.',
+      parameters: {
+        type: 'object',
+        properties: {
+          reason: { type: 'string', description: 'One short sentence citing the evidence.' },
+          entityId: { type: 'string', description: 'Brand that would have been lifted.' },
+          aboveEntityId: { type: 'string', description: 'Top-5 brand that keeps its place.' },
+        },
+        required: ['reason', 'entityId', 'aboveEntityId'],
+      },
+    },
+  },
 ];
 
 export class OpenAiProspectingReviewClient implements ProspectingReviewClient {
@@ -262,6 +326,7 @@ export class OpenAiProspectingReviewClient implements ProspectingReviewClient {
 
   async nextTurn(input: {
     shortlist: ProspectingReviewShortlistRow[];
+    eligibleLifts: ProspectingReviewEligibleLift[];
     neighborhood?: string;
   }): Promise<ProspectingReviewTurn> {
     if (!this.seeded) {
@@ -269,17 +334,21 @@ export class OpenAiProspectingReviewClient implements ProspectingReviewClient {
       this.messages.push({
         role: 'system',
         content: [
-          'You review a ranked shortlist of retail brands to pitch for one storefront.',
-          'The order comes from a backtested ranking; change it only when it makes the top 5 easier to pitch.',
-          `You may call lift_pitch at most ${PROSPECTING_REVIEW_MAX_LIFTS} times.`,
-          'A lift is only accepted when the lifted brand has verified local audience overlap and the brand it passes, inside the top 5, has audienceCheck "none" (checked, no overlap).',
-          'audienceCheck "unchecked" means unknown, never evidence against a brand.',
-          'Always give a short reason. Reply with no tool calls when the order is fine.',
+          'You review a ranked shortlist of retail brands a leasing broker will pitch for one storefront.',
+          'The order comes from a ranking of brand taste fit and chain size. You add one signal it does not use: Qloo local audience overlap, meaning audiences that are over-represented in this trade area and also over-index for the brand.',
+          'eligibleLifts lists every move the server evidence check allows: a brand with verified overlap ranked below a top-5 brand that was checked and has none.',
+          'Decide every eligible lift: call lift_pitch when the local audience evidence makes the lower brand the stronger pitch for this site, or decline_lift when something outweighs it, for example a large rank gap or a lifted brand whose nearest store is much closer.',
+          'In a 40-site backtest, brands with overlap had a store in similar trade areas somewhat more often (34% vs 23%, small sample), so treat overlap as a pitch argument, not proof.',
+          `At most ${PROSPECTING_REVIEW_MAX_LIFTS} lifts are applied. Every reason is one short sentence that names the evidence. Never propose a move that is not in eligibleLifts.`,
         ].join(' '),
       });
       this.messages.push({
         role: 'user',
-        content: JSON.stringify({ neighborhood: input.neighborhood, shortlist: input.shortlist }),
+        content: JSON.stringify({
+          neighborhood: input.neighborhood,
+          shortlist: input.shortlist,
+          eligibleLifts: input.eligibleLifts,
+        }),
       });
     }
 
@@ -311,22 +380,26 @@ export class OpenAiProspectingReviewClient implements ProspectingReviewClient {
     this.messages.push({ role: 'assistant', content: msg.content ?? null, tool_calls: msg.tool_calls });
 
     const lifts: ProspectingReviewTurn['lifts'] = [];
+    const declines: NonNullable<ProspectingReviewTurn['declines']> = [];
     for (const tc of msg.tool_calls ?? []) {
-      if (tc.function.name !== 'lift_pitch') continue;
+      const name = tc.function.name;
       let parsed: Record<string, unknown>;
       try {
         parsed = JSON.parse(tc.function.arguments) as Record<string, unknown>;
       } catch {
         parsed = {};
       }
-      lifts.push({
+      const row = {
         toolCallId: tc.id,
         entityId: String(parsed.entityId ?? ''),
         aboveEntityId: String(parsed.aboveEntityId ?? ''),
-        reason: String(parsed.reason ?? msg.content ?? 'Model chose this lift'),
-      });
+        reason: String(parsed.reason ?? msg.content ?? ''),
+      };
+      if (name === 'lift_pitch') lifts.push({ ...row, reason: row.reason || 'Model chose this lift' });
+      else if (name === 'decline_lift') declines.push({ ...row, reason: row.reason || 'Model kept the order' });
+      else this.messages.push({ role: 'tool', tool_call_id: tc.id, content: 'Unknown tool.' });
     }
-    return { lifts, done: lifts.length === 0 };
+    return { lifts, declines, done: lifts.length === 0 };
   }
 }
 
@@ -371,15 +444,24 @@ export function reviewOutcome(
   return { standardTop5: standard, finalTop5: final, top3Changed, top5Changed, enteredTop5, leftTop5, summary };
 }
 
-function reviewSummary(actions: ProspectingReviewAction[], changed: boolean): string {
+function plural(n: number, word: string): string {
+  return `${n} ${word}${n === 1 ? '' : 's'}`;
+}
+
+function reviewSummary(actions: ProspectingReviewAction[], changed: boolean, eligible: number): string {
   const lifted = actions.filter((a) => a.outcome === 'lifted').length;
-  const rejected = actions.length - lifted;
-  if (!changed) {
-    return rejected > 0
-      ? `Review kept the ranked top 5 (${rejected} proposed change${rejected === 1 ? '' : 's'} rejected by the evidence check).`
-      : 'Review kept the ranked top 5.';
+  const rejected = actions.filter((a) => a.outcome === 'rejected').length;
+  const declined = actions.filter((a) => a.outcome === 'declined').length;
+  if (eligible === 0 && actions.length === 0) {
+    return 'Review kept the ranked top 5: no lift passes the evidence check.';
   }
-  return `Review changed the top 5 with ${lifted} evidence-backed lift${lifted === 1 ? '' : 's'}.`;
+  const notes: string[] = [];
+  if (actions.length === 0) notes.push(`${plural(eligible, 'eligible lift')}, no decision returned`);
+  if (declined > 0) notes.push(`${plural(declined, 'eligible lift')} declined with a reason`);
+  if (rejected > 0) notes.push(`${plural(rejected, 'proposed change')} rejected by the evidence check`);
+  const tail = notes.length ? ` (${notes.join('; ')})` : '';
+  if (!changed) return `Review kept the ranked top 5${tail}.`;
+  return `Review changed the top 5 with ${plural(lifted, 'evidence-backed lift')}${tail}.`;
 }
 
 export async function runProspectingAgentReview(params: {
@@ -394,15 +476,45 @@ export async function runProspectingAgentReview(params: {
   let planner: ProspectingReviewPlanner = params.client.kind;
   let fallbackReason: string | undefined;
 
+  const eligibleAtStart = eligibleReviewLifts(reviewShortlist(params.prospects)).length;
+
   const loop = async (client: ProspectingReviewClient) => {
     for (let turnIndex = 0; turnIndex < PROSPECTING_REVIEW_MAX_TURNS; turnIndex++) {
+      const shortlist = reviewShortlist(current);
+      // Pairs the model already declined are not offered again.
+      const declined = new Set(
+        actions.filter((a) => a.outcome === 'declined').map((a) => `${a.entityId}>${a.aboveEntityId}`)
+      );
+      const eligibleLifts = eligibleReviewLifts(shortlist).filter(
+        (e) => !declined.has(`${e.entityId}>${e.aboveEntityId}`)
+      );
+      // Nothing the evidence check would allow: do not spend a model call.
+      if (eligibleLifts.length === 0) break;
       const turn = await client.nextTurn({
-        shortlist: reviewShortlist(current),
+        shortlist,
+        eligibleLifts,
         actionsSoFar: actions,
         neighborhood: params.neighborhood,
       });
-      if (turn.done || turn.lifts.length === 0) break;
       const results: Array<{ toolCallId: string; summary: string }> = [];
+      for (const decline of turn.declines ?? []) {
+        const liftedName = shortlist.find((r) => r.entityId === decline.entityId)?.name ?? 'Unknown brand';
+        const aboveName = shortlist.find((r) => r.entityId === decline.aboveEntityId)?.name ?? 'Unknown brand';
+        const summary = `Kept ${aboveName} above ${liftedName}.`;
+        actions.push({
+          planner: client.kind,
+          tool: 'decline_lift',
+          entityId: decline.entityId,
+          brandName: liftedName,
+          aboveEntityId: decline.aboveEntityId,
+          aboveBrandName: aboveName,
+          reason: decline.reason,
+          outcome: 'declined',
+          resultSummary: summary,
+        });
+        if (decline.toolCallId) results.push({ toolCallId: decline.toolCallId, summary });
+      }
+      if (turn.done || turn.lifts.length === 0) break;
       for (const lift of turn.lifts) {
         const used = actions.filter((a) => a.outcome === 'lifted').length;
         const names = reviewShortlist(current);
@@ -455,7 +567,8 @@ export async function runProspectingAgentReview(params: {
       before,
       after,
       changed,
-      summary: reviewSummary(actions, changed),
+      summary: reviewSummary(actions, changed, eligibleAtStart),
+      eligibleLifts: eligibleAtStart,
       ...(fallbackReason ? { fallbackReason } : {}),
       ...(usage && usage.calls > 0 ? { modelUsage: { ...usage } } : {}),
       outcome: reviewOutcome(standard, after),

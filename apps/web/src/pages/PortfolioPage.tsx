@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import type { PortfolioResponse, PortfolioRow } from '@leaseup/contracts';
 import { Building2, Upload } from 'lucide-react';
 import { TopBar } from '../components/layout/TopBar';
-import { Button } from '../components/ui/Button';
+import { Button, buttonClassName } from '../components/ui/Button';
 import { PageEmptyState } from '../components/ui/PageEmptyState';
 import { PortfolioLoadingSkeleton } from '../components/portfolio/PortfolioLoadingSkeleton';
 import { portfolioEmptyAction, portfolioEmptyLine } from '../lib/empty-state-copy';
@@ -321,8 +321,11 @@ export function PortfolioPage() {
                         Run analyses
                       </Button>
                     )}
-                    <a href={apiUrl(`/api/portfolio/${portfolio.id}/export.csv`)}>
-                      <Button type="button" variant="secondary">Export CSV</Button>
+                    <a
+                      href={apiUrl(`/api/portfolio/${portfolio.id}/export.csv`)}
+                      className={buttonClassName({ variant: 'secondary' })}
+                    >
+                      Export CSV
                     </a>
                   </div>
                 </section>

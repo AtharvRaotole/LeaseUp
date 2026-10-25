@@ -23,17 +23,23 @@ const variants: Record<Variant, string> = {
   ghost: 'text-ink-2 hover:bg-surface-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-accent',
 };
 
+const base =
+  'ui-transition inline-flex items-center justify-center gap-2 rounded-control font-medium disabled:opacity-50 focus-visible:outline-none';
+
+/** Button styling for a router Link, so navigation is a link and never a button nested in a link. */
+export function buttonClassName(
+  options: { variant?: Variant; size?: Size; className?: string } = {}
+): string {
+  const { variant = 'primary', size = 'md', className } = options;
+  return cn(base, sizes[size], variants[variant], className);
+}
+
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', type = 'button', ...props }, ref) => (
     <button
       ref={ref}
       type={type}
-      className={cn(
-        'ui-transition inline-flex items-center justify-center gap-2 rounded-control font-medium disabled:opacity-50 focus-visible:outline-none',
-        sizes[size],
-        variants[variant],
-        className
-      )}
+      className={buttonClassName({ variant, size, className })}
       {...props}
     />
   )

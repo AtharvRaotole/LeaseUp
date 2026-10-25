@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { ApiErrorInfo } from '../../lib/api-error';
 import { calmErrorHeadline, calmErrorNextStep, AUTO_RETRY_STATUS } from '../../lib/calm-error-copy';
-import { Button } from './Button';
+import { Button, buttonClassName } from './Button';
 
 export function CalmErrorPanel({
   error,
@@ -48,8 +48,8 @@ export function CalmErrorPanel({
             Try again
           </Button>
         )}
-        <Link to={homeHref}>
-          <Button type="button" size="sm" variant="ghost">Back to home</Button>
+        <Link to={homeHref} className={buttonClassName({ variant: 'ghost', size: 'sm' })}>
+          Back to home
         </Link>
       </div>
     </div>

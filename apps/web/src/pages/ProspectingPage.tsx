@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { TopBar } from '../components/layout/TopBar';
 import { Button } from '../components/ui/Button';
 import { AgentReceipt } from '../components/prospecting/AgentReceipt';
+import { ReviewDecisionCallout } from '../components/prospecting/ReviewDecisionCallout';
 import { ProspectingTimeline } from '../components/prospecting/ProspectingTimeline';
 import { useProspectingRun } from '../hooks/useProspectingRun';
 import { apiUrl } from '../lib/api';
@@ -78,6 +79,7 @@ export function ProspectingPage() {
           </div>
         )}
 
+        {job?.status === 'complete' && <ReviewDecisionCallout job={job} />}
         {job?.status === 'complete' && <AgentReceipt job={job} />}
 
         {job?.pitchId && (
