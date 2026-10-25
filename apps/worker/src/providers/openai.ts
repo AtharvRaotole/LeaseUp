@@ -110,6 +110,49 @@ export function buildOutreachPrompt(facts: OutreachFacts): string {
   return lines.join('\n');
 }
 
+/** Max "why this brand" sentences per batched call. */
+export const WHY_BRAND_BATCH_MAX = 5;
+
+export function buildWhyBrandTasteBatchPrompt(facts: WhyBrandTasteFacts[]): string {
+  const sections = facts.map((f, i) =>
+    [
+      `### Brand ${i + 1}`,
+      buildWhyBrandTastePrompt(f).replace(/\nReturn JSON: \{"summary":"\.\.\."\}$/, ''),
+    ].join('\n')
+  );
+  return [
+    `Write one sentence per brand section below (${facts.length} sections). Use only that section's names.`,
+    '',
+    ...sections,
+    '',
+    `Return JSON: {"summaries":["..."]} with exactly ${facts.length} strings in section order.`,
+  ].join('\n');
+}
+
+/** Max drafts per batched call; keeps max_tokens bounded. */
+export const OUTREACH_BATCH_MAX = 3;
+
+/**
+ * One gpt-4o-mini prompt for several outreach drafts, so a live prospecting
+ * run spends one subrequest on drafts instead of one per brand.
+ */
+export function buildOutreachBatchPrompt(facts: OutreachFacts[]): string {
+  const sections = facts.map((f, i) =>
+    [
+      `### Draft ${i + 1}`,
+      buildOutreachPrompt(f).replace(/\n\nFormat your response as JSON[^\n]*$/, ''),
+    ].join('\n')
+  );
+  return [
+    `Write ${facts.length} separate broker outreach emails, one per section below.`,
+    'Each section has its own brand and its own verified facts; never mix facts across sections.',
+    '',
+    ...sections,
+    '',
+    `Format your response as JSON: {"drafts":[{"subject":"...","body":"..."}]} with exactly ${facts.length} drafts in section order.`,
+  ].join('\n');
+}
+
 export class OpenAIClient {
   private apiKey: string;
   private model: string;
@@ -184,8 +227,131 @@ export class OpenAIClient {
     }
   }
 
+  /**
+   * Batched drafts: one model call for up to OUTREACH_BATCH_MAX brands. Any draft
+   * the model does not return falls back to the labelled template, so labels stay honest.
+   */
+  async generateOutreachBatch(items: OutreachFacts[]): Promise<OutreachDraft[]> {
+    const facts = items.slice(0, OUTREACH_BATCH_MAX);
+    if (facts.length === 0) return [];
+    if (this.mode === 'demo') {
+      return facts.map((f) => this.getDemoOutreach(f));
+    }
+    const start = Date.now();
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: this.model,
+          messages: [
+            {
+              role: 'system',
+              content:
+                'You write terse, factual commercial real estate outreach. Never use placeholders or filler greetings. Never invent statistics.',
+            },
+            { role: 'user', content: buildOutreachBatchPrompt(facts) },
+          ],
+          temperature: 0.4,
+          max_tokens: 300 * facts.length,
+          response_format: { type: 'json_object' },
+        }),
+      });
+      await recordApiMetric(this.db, {
+        runId: facts[0]?.runId,
+        provider: 'openai',
+        endpoint: '/chat/completions',
+        statusCode: response.status,
+        latencyMs: Date.now() - start,
+        cached: false,
+      });
+      if (!response.ok) {
+        throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+      }
+      const data = (await response.json()) as {
+        choices: Array<{ message: { content: string } }>;
+      };
+      const parsed = JSON.parse(data.choices[0]?.message.content || '{}') as {
+        drafts?: Array<{ subject?: unknown; body?: unknown }>;
+      };
+      const drafts = Array.isArray(parsed.drafts) ? parsed.drafts : [];
+      return facts.map((f, i) => {
+        const d = drafts[i];
+        if (!d || typeof d.subject !== 'string' || typeof d.body !== 'string' || !d.body.trim()) {
+          return this.getTemplateOutreach(f, OUTREACH_TEMPLATE_FALLBACK_LABEL);
+        }
+        return {
+          ...polishOutreachDraft(d.subject, d.body, f),
+          model: this.model,
+        };
+      });
+    } catch (err) {
+      console.error('OpenAI batch outreach error:', err);
+      return facts.map((f) => this.getTemplateOutreach(f, OUTREACH_TEMPLATE_FALLBACK_LABEL));
+    }
+  }
+
   getModelName(): string {
     return this.model;
+  }
+
+  /** One gpt-4o-mini call for several "why this brand" sentences; undefined entries fall back. */
+  async summarizeWhyBrandTasteBatch(
+    items: WhyBrandTasteFacts[]
+  ): Promise<Array<string | undefined>> {
+    const facts = items.slice(0, WHY_BRAND_BATCH_MAX);
+    if (this.mode === 'demo' || facts.length === 0) return facts.map(() => undefined);
+    const start = Date.now();
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: this.model,
+          messages: [
+            {
+              role: 'system',
+              content:
+                'You write one factual sentence per brand about Qloo taste overlap. Never invent signals, affinity decimals, or generic marketing language.',
+            },
+            { role: 'user', content: buildWhyBrandTasteBatchPrompt(facts) },
+          ],
+          temperature: 0.2,
+          max_tokens: 100 * facts.length,
+          response_format: { type: 'json_object' },
+        }),
+      });
+      await recordApiMetric(this.db, {
+        runId: facts[0]?.runId,
+        provider: 'openai',
+        endpoint: '/chat/completions',
+        statusCode: response.status,
+        latencyMs: Date.now() - start,
+        cached: false,
+      });
+      if (!response.ok) return facts.map(() => undefined);
+      const data = (await response.json()) as {
+        choices: Array<{ message: { content: string } }>;
+      };
+      const parsed = JSON.parse(data.choices[0]?.message.content || '{}') as {
+        summaries?: unknown[];
+      };
+      const rows = Array.isArray(parsed.summaries) ? parsed.summaries : [];
+      return facts.map((_, i) => {
+        const raw = rows[i];
+        if (typeof raw !== 'string') return undefined;
+        const cleaned = sanitizeWhyBrandTasteSummary(raw.trim());
+        return cleaned || undefined;
+      });
+    } catch {
+      return facts.map(() => undefined);
+    }
   }
 
   async summarizeWhyBrandTaste(facts: WhyBrandTasteFacts): Promise<string | undefined> {

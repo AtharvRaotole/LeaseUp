@@ -23,12 +23,15 @@ import {
 import { rankGeocodeCandidates } from '../lib/geocode-rank';
 import { displayBrandName } from '../lib/brand-display';
 import { getResponseCache } from '../lib/worker-cache';
+import { callLiveOffload } from '../lib/live-offload-client';
+import { currentSubrequestCounts } from '../lib/subrequest-meter';
+import {
+  runReviewAndDrafts,
+  type ReviewDraftsInput,
+  type ReviewDraftsResult,
+} from './live-offload-handler';
 import { createQlooRunAccounting, QlooClient } from '../providers/qloo';
 import { runProspectingAgentPlanner } from '../lib/prospecting-agent-planner';
-import {
-  createProspectingReviewClient,
-  runProspectingAgentReview,
-} from '../lib/prospecting-agent-review';
 import {
   PROSPECTING_AGENT_MAX_QLOO_CALLS,
   PROSPECTING_AGENT_MAX_STEPS,
@@ -379,15 +382,33 @@ export class ProspectingService {
         detail: { osmSummary, prospects: verified.map((p) => p.brand) },
       });
 
-      const reviewed = await runProspectingAgentReview({
+      const finishInput: ReviewDraftsInput = {
         prospects: result.prospects,
-        client: createProspectingReviewClient(this.env),
         neighborhood: result.location.neighborhood,
-      });
-      result.prospects = reviewed.prospects;
+        address: result.location.address,
+        runId,
+      };
+      // Review and drafts run in their own loopback invocation when available.
+      const offloaded =
+        this.mode === 'live'
+          ? await callLiveOffload<ReviewDraftsResult>(
+              this.env.LIVE_OFFLOAD,
+              'review-drafts',
+              finishInput
+            )
+          : undefined;
+      const finished =
+        offloaded && !offloaded.failed
+          ? offloaded.result
+          : await runReviewAndDrafts(this.env, finishInput);
+      result.prospects = finished.prospects;
       const reviewStep = job.steps.find((s) => s.id === 'agent_plan');
       if (reviewStep) {
-        reviewStep.detail = { ...(reviewStep.detail ?? {}), review: reviewed.review };
+        reviewStep.detail = {
+          ...(reviewStep.detail ?? {}),
+          review: finished.review,
+          ...(offloaded?.failed ? { reviewOffloadError: offloaded.error } : {}),
+        };
       }
 
       const top5 = result.prospects.slice(0, 5);
@@ -404,20 +425,15 @@ export class ProspectingService {
         },
       });
 
+      const draftPacks = result.prospects.slice(0, 3);
+      const draftResults = finished.drafts;
       const drafts = [];
-      for (const pack of result.prospects.slice(0, 3)) {
+      for (const [idx, pack] of draftPacks.entries()) {
         const name = displayBrandName(pack.brand.entityId, pack.brand.name);
-        const { draft, model } = await analysisService.generateOutreachForBrand(
-          name,
-          result.location.address,
-          pack.reasons,
-          runId,
-          {
-            affinityRank: pack.brand.affinityRank,
-            neighborhood: result.location.neighborhood,
-            nearestStoreKm: pack.nearestExistingStoreKm,
-          }
-        );
+        const { draft, model } = draftResults[idx] ?? {
+          draft: '',
+          model: 'Template, AI unavailable',
+        };
         const [subjectLine, ...bodyLines] = draft.split('\n\n');
         const subject = subjectLine?.startsWith('Subject:')
           ? subjectLine.replace(/^Subject:\s*/, '')
@@ -435,7 +451,12 @@ export class ProspectingService {
       await this.patchStep(job, 'draft_outreach', {
         status: 'complete',
         summary: `Drafted ${drafts.length} outreach emails (not sent)`,
-        detail: { drafts: drafts.map((d) => ({ brandName: d.brandName, subject: d.subject })) },
+        detail: {
+          drafts: drafts.map((d) => ({
+            brandName: d.brandName,
+            subject: d.subject,
+          })),
+        },
       });
 
       const pitch = await new PitchService(this.env).create({
@@ -448,6 +469,13 @@ export class ProspectingService {
         summary: `Pitch pack ready`,
         detail: { pitchId: pitch.id },
       });
+
+      const meter = currentSubrequestCounts();
+      const meterStep = job.steps.find((s) => s.id === 'agent_plan');
+      if (meter && meterStep) {
+        // Measured per invocation; Workers Free allows 50 each.
+        meterStep.detail = { ...(meterStep.detail ?? {}), subrequests: meter };
+      }
 
       job.status = 'complete';
       job.runningStartedAt = undefined;

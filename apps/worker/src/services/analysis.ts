@@ -95,7 +95,7 @@ import {
 } from './osm-snapshot-catalog';
 import { findTasteTwins, withTasteTwinEvidence } from '../lib/taste-twins';
 import { lookupTradeAreaTasteForProspect } from '../lib/trade-area-taste';
-import { enrichProspectWhyBrandTaste } from '../lib/why-brand-taste-enrichment';
+import { enrichProspectsWhyBrandTaste } from '../lib/why-brand-taste-enrichment';
 import { getResponseCache } from '../lib/worker-cache';
 import type { ResponseCache } from '../lib/response-cache';
 import { tryAcquireOverpassRefreshLock } from '../lib/overpass-refresh-lock';
@@ -113,6 +113,12 @@ import {
   TASTE_UNAVAILABLE_RANKING_NOTICE,
 } from '../lib/qloo-chain-fallback';
 import { enrichProspectsWithCoTenancy } from '../lib/co-tenancy-enrich';
+import { callLiveOffload } from '../lib/live-offload-client';
+import type {
+  CoTenancyOffloadInput,
+  TradeAreaTasteOffloadInput,
+  TradeAreaTasteOffloadResult,
+} from './live-offload-handler';
 import type { NearbyTenant } from '@leaseup/contracts';
 
 const DEFAULT_NOMINATIM_CONTACT =
@@ -125,6 +131,9 @@ export type AnalyzeWithStepsOptions = {
   judgeQuotaAlreadyConsumed?: boolean;
 };
 
+/** Brands per trade-area taste offload call (3 subrequests each, under 40 per callee). */
+const TASTE_OFFLOAD_CHUNK = 12;
+
 export class AnalysisService {
   private qloo: QlooClient;
   private openai: OpenAIClient;
@@ -136,6 +145,7 @@ export class AnalysisService {
   private catalog: StoreCatalog;
   private osmSnapshot: OsmSnapshotCatalog | null;
   private assets?: Fetcher;
+  private offload?: Fetcher;
   private verifyInflight = new Map<string, Promise<unknown>>();
   private env: Env;
   /** When true, the run never writes analysis_runs rows (recorded demo chip replays). */
@@ -157,6 +167,7 @@ export class AnalysisService {
     this.db = env.DB;
     this.catalog = createStoreCatalog(env, this.mode);
     this.assets = env.ASSETS;
+    this.offload = env.LIVE_OFFLOAD;
     this.osmSnapshot = env.ASSETS
       ? new OsmSnapshotCatalog(env.ASSETS, this.responseCache)
       : null;
@@ -227,7 +238,11 @@ export class AnalysisService {
             const tasteLabel = tasteLocationLabel(location, qlooLocation);
             return {
               summary: `${rows.length} brands ranked for ${tasteLabel} (agent panel cache)`,
-              detail: { brandCount: rows.length, query: tasteLabel, agentSeeded: true },
+              detail: {
+                brandCount: rows.length,
+                query: tasteLabel,
+                agentSeeded: true,
+              },
               result: rows,
             };
           }
@@ -423,22 +438,68 @@ export class AnalysisService {
         stripFalseAbsenceReasons(pack, absenceRadiusKm)
       );
       if (!tasteUnavailable) {
+        // Live runs fan the per-brand audience lookups out to a loopback invocation,
+        // so this invocation stays under the Workers Free 50 subrequest cap.
+        const offloadIds = enrichedProspects
+          .map((pack) => pack.brand.entityId)
+          .filter((id) => !agentDagHooks?.preloadedTradeAreaTaste?.get(id));
+        const tasteLocation = {
+          latitude: location.latitude,
+          longitude: location.longitude,
+          address: location.address,
+        };
+        // At most 12 brands per offload call: 3 subrequests each plus the shared location
+        // audience and panel asset stays at or under 40 inside the callee.
+        const offloadChunks: string[][] = [];
+        for (let i = 0; i < offloadIds.length; i += TASTE_OFFLOAD_CHUNK) {
+          offloadChunks.push(offloadIds.slice(i, i + TASTE_OFFLOAD_CHUNK));
+        }
+        const offloadedTaste =
+          this.mode === 'live' && this.offload && offloadIds.length > 0
+            ? await withSoftTimeout(
+                Promise.all(
+                  offloadChunks.map((entityIds) =>
+                    callLiveOffload<TradeAreaTasteOffloadResult>(this.offload, 'trade-area-taste', {
+                      location: tasteLocation,
+                      entityIds,
+                      radiusKm: request.radius,
+                      runId,
+                    } satisfies TradeAreaTasteOffloadInput)
+                  )
+                ),
+                ANALYZE_ENRICHMENT_QLOO_BUDGET_MS,
+                'trade-area taste offload'
+              )
+            : undefined;
+        const offloadedById = new Map(
+          (offloadedTaste ?? []).flatMap((chunk) =>
+            chunk && !chunk.failed ? chunk.result.map((row) => [row.entityId, row] as const) : []
+          )
+        );
+        // With a binding, a failed or timed out offload leaves brands unchecked; it never
+        // retries inline, which would spend this invocation's budget.
+        const offloadTried = this.mode === 'live' && Boolean(this.offload) && offloadIds.length > 0;
         const tasteEnriched = await withSoftTimeout(
           Promise.all(
             enrichedProspects.map(async (pack) => {
               const insight = insights.find((i) => i.entity_id === pack.brand.entityId);
               const signals = insight ? extractQlooSignals(insight) : [];
               const preloaded = agentDagHooks?.preloadedTradeAreaTaste?.get(pack.brand.entityId);
+              const offloaded = offloadedById.get(pack.brand.entityId);
               const lookup = preloaded
                 ? { taste: preloaded, checked: true }
-                : await lookupTradeAreaTasteForProspect(
-                    qloo,
-                    location,
-                    pack.brand.entityId,
-                    request.radius,
-                    runId,
-                    this.assets
-                  );
+                : offloaded
+                  ? { taste: offloaded.taste, checked: offloaded.checked }
+                  : offloadTried
+                    ? { taste: undefined, checked: false }
+                    : await lookupTradeAreaTasteForProspect(
+                        qloo,
+                        location,
+                        pack.brand.entityId,
+                        request.radius,
+                        runId,
+                        this.assets
+                      );
               return {
                 ...pack,
                 qlooSignals: signals.length > 0 ? signals : undefined,
@@ -451,8 +512,10 @@ export class AnalysisService {
           'trade-area taste enrichment'
         );
         if (tasteEnriched) {
-          enrichedProspects = await Promise.all(
-            tasteEnriched.map((pack) => enrichProspectWhyBrandTaste(pack, this.openai, this.mode))
+          enrichedProspects = await enrichProspectsWhyBrandTaste(
+            tasteEnriched,
+            this.openai,
+            this.mode
           );
         }
       }
@@ -478,22 +541,50 @@ export class AnalysisService {
         );
       }
 
-      const coTenancyEnriched = await withSoftTimeout(
-        enrichProspectsWithCoTenancy({
-          qloo,
-          responseCache: this.responseCache,
-          location,
-          radiusKm: request.radius,
-          runId,
-          mode: this.mode,
-          nearbyTenants,
-          prospects: enrichedProspects,
-          tasteUnavailable,
-          assets: this.assets,
-        }),
-        ANALYZE_ENRICHMENT_QLOO_BUDGET_MS,
-        'co-tenancy enrichment'
-      );
+      const coTenancyOffloadable =
+        this.mode === 'live' &&
+        Boolean(this.offload) &&
+        !tasteUnavailable &&
+        nearbyTenants.length > 0;
+      const coTenancyOffload = coTenancyOffloadable
+        ? await withSoftTimeout(
+            callLiveOffload<ProspectPack[]>(this.offload, 'co-tenancy', {
+              location: {
+                latitude: location.latitude,
+                longitude: location.longitude,
+                address: location.address,
+              },
+              radiusKm: request.radius,
+              runId,
+              mode: this.mode,
+              nearbyTenants,
+              prospects: enrichedProspects,
+              tasteUnavailable,
+            } satisfies CoTenancyOffloadInput),
+            ANALYZE_ENRICHMENT_QLOO_BUDGET_MS,
+            'co-tenancy offload'
+          )
+        : undefined;
+      const coTenancyEnriched = coTenancyOffloadable
+        ? coTenancyOffload && !coTenancyOffload.failed
+          ? coTenancyOffload.result
+          : undefined
+        : await withSoftTimeout(
+            enrichProspectsWithCoTenancy({
+              qloo,
+              responseCache: this.responseCache,
+              location,
+              radiusKm: request.radius,
+              runId,
+              mode: this.mode,
+              nearbyTenants,
+              prospects: enrichedProspects,
+              tasteUnavailable,
+              assets: this.assets,
+            }),
+            ANALYZE_ENRICHMENT_QLOO_BUDGET_MS,
+            'co-tenancy enrichment'
+          );
       if (coTenancyEnriched) enrichedProspects = coTenancyEnriched;
 
       const effectiveBacktest =
@@ -622,7 +713,11 @@ export class AnalysisService {
     storefrontSqFt?: number,
     tasteUnavailable = false,
     agentDagHooks?: ProspectingAgentDagHooks
-  ): Promise<{ packs: ProspectPack[]; formatFilteredCount: number; funnel: ProspectFunnel }> {
+  ): Promise<{
+    packs: ProspectPack[];
+    formatFilteredCount: number;
+    funnel: ProspectFunnel;
+  }> {
     const sqFt = storefrontSqFt ?? 2_500;
     let formatFilteredCount = 0;
     const prospectPacks: ProspectPack[] = [];
@@ -1274,6 +1369,37 @@ export class AnalysisService {
       runId,
       timestamp: this.mode === 'demo' ? DEMO_DATA_RECORDED_AT : new Date().toISOString(),
     };
+  }
+
+  /** One batched gpt-4o-mini call for the top prospects' drafts (live run subrequest budget). */
+  async generateOutreachForBrands(
+    items: Array<{
+      brandName: string;
+      address: string;
+      reasons: string[];
+      affinityRank?: number;
+      neighborhood?: string;
+      nearestStoreKm?: number;
+      brandEntityId?: string;
+    }>,
+    runId: string
+  ): Promise<Array<{ draft: string; model: string }>> {
+    const results = await this.openai.generateOutreachBatch(
+      items.map((item) => ({
+        brandName: item.brandName,
+        address: item.address,
+        reasons: item.reasons,
+        runId,
+        affinityRank: item.affinityRank,
+        neighborhood: item.neighborhood,
+        nearestStoreKm: item.nearestStoreKm,
+        brandReach: item.brandEntityId ? brandReachForEntity(item.brandEntityId) : undefined,
+      }))
+    );
+    return results.map((r) => ({
+      draft: `${r.subject}\n\n${r.body}`,
+      model: r.model,
+    }));
   }
 
   async generateOutreachForBrand(

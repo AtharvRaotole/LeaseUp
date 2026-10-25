@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import type { Env } from '../index';
 import { BUILD_GIT_SHA, BUILD_TIME } from '../build-meta';
 import { corsHeadersForRequest } from '../middleware/cors-headers';
+import { liveOffloadBinding } from '../lib/live-offload-client';
 
 export const healthRouter = new Hono<{ Bindings: Env }>();
 
@@ -22,6 +23,8 @@ healthRouter.get('/', async (c) => {
       qloo: mode === 'live' && hasQlooKey ? 'configured' : 'demo',
       openai: mode === 'live' && hasOpenAIKey ? 'configured' : 'demo',
     },
+    // Loopback binding for live prospecting fan-out (no I/O, just presence).
+    liveOffload: liveOffloadBinding(() => c.executionCtx) ? 'loopback' : 'inline',
     timestamp: new Date().toISOString(),
   });
 });
