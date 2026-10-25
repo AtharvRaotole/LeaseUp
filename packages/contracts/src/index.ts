@@ -136,6 +136,14 @@ export const WhyBrandTasteSchema = z.object({
 
 export type WhyBrandTaste = z.infer<typeof WhyBrandTasteSchema>;
 
+export const TasteTwinEvidenceSchema = z.object({
+  presentIn: z.number().int().nonnegative(),
+  of: z.number().int().positive(),
+  presentSites: z.array(z.string()),
+  twins: z.array(z.string()),
+});
+export type TasteTwinEvidence = z.infer<typeof TasteTwinEvidenceSchema>;
+
 export const ProspectPackSchema = z.object({
   coverageNote: z.string().optional(),
   brand: BrandAffinitySchema,
@@ -150,7 +158,11 @@ export const ProspectPackSchema = z.object({
   nearestExistingStoreUnconfirmed: z.boolean().optional(),
   qlooSignals: z.array(z.string()).optional(),
   tradeAreaTaste: TradeAreaTasteContextSchema.optional(),
+  /** True when local audience overlap was checked (recorded pair or live Qloo); absent means unknown. */
+  tradeAreaTasteChecked: z.boolean().optional(),
   whyBrandTaste: WhyBrandTasteSchema.optional(),
+  /** Presence among the panel test markets whose Qloo taste is closest to this site (static panel, no extra Qloo calls). */
+  tasteTwins: TasteTwinEvidenceSchema.optional(),
   brandReach: BrandReachContactSchema.optional(),
   /** Qloo co-affinity with OSM incumbents; omitted when unknown. */
   coTenancyLine: z.string().max(200).optional(),

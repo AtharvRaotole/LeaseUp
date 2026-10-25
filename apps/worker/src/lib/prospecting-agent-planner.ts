@@ -103,6 +103,7 @@ class OpenAiProspectingPlannerClient implements ProspectingPlannerClient {
           `Budget: at most ${PROSPECTING_AGENT_MAX_STEPS} tool steps and ${PROSPECTING_AGENT_MAX_QLOO_CALLS} Qloo API calls.`,
           'Choose only useful extra checks before the main analysis pipeline runs.',
           'qloo_brand_insights returns the top brands with their entityId values; use those ids for nearest_store_check and enrich_site_stratum.',
+          'Call qloo_brand_insights by itself first, then check only brands it returned; brands outside that panel cannot be checked.',
           'A brand is only boosted when enrich_site_stratum finds verified local audience overlap.',
           'Always pass a short reason in each tool call.',
           'When no more checks are needed, reply with a brief plan summary and no tool calls.',

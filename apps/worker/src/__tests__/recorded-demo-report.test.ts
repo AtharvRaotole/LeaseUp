@@ -142,6 +142,20 @@ describe('recorded demo chip reports', () => {
     expect(res.status).toBe(404);
   });
 
+  it('adds taste-twin markets to recorded chip pitches without any network call', async () => {
+    const env = liveEnv([]);
+    for (const chip of ['wicker', 'boulder', 'sevierville'] as const) {
+      const report = await recordedDemoReport(env, chip);
+      const withTwins = report.prospects.filter((p) => p.tasteTwins);
+      expect(withTwins.length).toBeGreaterThan(0);
+      for (const p of withTwins) {
+        expect(p.tasteTwins!.of).toBe(5);
+        expect(p.tasteTwins!.twins).not.toContain(chip === 'wicker' ? 'Wicker Park, Chicago' : chip === 'boulder' ? 'Pearl St, Boulder' : 'Sevierville, TN');
+      }
+    }
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
   it('memoizes per isolate so repeat loads reuse one replay', async () => {
     const env = liveEnv([]);
     const a = recordedDemoReport(env, 'boulder');

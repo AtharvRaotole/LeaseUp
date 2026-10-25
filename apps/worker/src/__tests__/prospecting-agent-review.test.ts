@@ -1,8 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { ProspectPack } from '@leaseup/contracts';
+import type { Env } from '../index';
 import {
   applyReviewLift,
   OpenAiProspectingReviewClient,
+  createProspectingReviewClient,
   RuleProspectingReviewClient,
   runProspectingAgentReview,
   type ProspectingReviewClient,
@@ -10,9 +12,10 @@ import {
 
 const ID = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
 
-function pack(n: number, overlaps: number): ProspectPack {
+function pack(n: number, overlaps: number, checked = true, rank = n): ProspectPack {
   return {
-    brand: { entityId: ID(n), name: `Brand ${n}`, affinity: 0.5, affinityRank: n },
+    brand: { entityId: ID(n), name: `Brand ${n}`, affinity: 0.5, affinityRank: rank },
+    tradeAreaTasteChecked: checked,
     tradeAreaTaste: overlaps
       ? {
           tags: [],
@@ -39,7 +42,15 @@ describe('applyReviewLift guardrails', () => {
     const out = applyReviewLift(LIST, { entityId: ID(6), aboveEntityId: ID(2), reason: 'x' });
     expect(out.ok).toBe(true);
     expect(out.prospects.map((p) => p.brand.name).slice(0, 3)).toEqual(['Brand 1', 'Brand 6', 'Brand 2']);
-    expect(out.summary).toBe('Brand 6 moved from #6 to #2 (2 verified local audience overlaps); Brand 2 has none.');
+    expect(out.summary).toBe('Brand 6 moved from #6 to #2 (2 verified local audience overlaps); Brand 2 was checked and has none.');
+  });
+
+  it('never displaces a brand whose overlap was not checked (unknown is not evidence)', () => {
+    const list = [pack(1, 2), pack(2, 0, false), pack(3, 0), pack(4, 1), pack(5, 1), pack(6, 2)];
+    const out = applyReviewLift(list, { entityId: ID(6), aboveEntityId: ID(2), reason: 'x' });
+    expect(out.ok).toBe(false);
+    expect(out.summary).toMatch(/was not checked, so it is unknown/);
+    expect(applyReviewLift(list, { entityId: ID(6), aboveEntityId: ID(3), reason: 'x' }).ok).toBe(true);
   });
 
   it.each([
@@ -67,6 +78,51 @@ describe('runProspectingAgentReview', () => {
     expect(prospects[0]!.brand.entityId).toBe(ID(1));
     expect(review.after.map((b) => b.name)).toEqual(['Brand 1', 'Brand 3', 'Brand 2', 'Brand 4', 'Brand 5']);
     expect(review.summary).toBe('Review changed the top 5 with 1 evidence-backed lift.');
+  });
+
+  it('rule reviewer skips unchecked brands and the outcome compares with the standard ranking', async () => {
+    const list = [pack(1, 2), pack(2, 0, false), pack(3, 0), pack(4, 1), pack(5, 1), pack(6, 2)];
+    const { review } = await runProspectingAgentReview({
+      prospects: list,
+      client: new RuleProspectingReviewClient(),
+    });
+    expect(review.after.map((b) => b.name)).toEqual(['Brand 1', 'Brand 2', 'Brand 4', 'Brand 3', 'Brand 5']);
+    expect(review.outcome.standardTop5.map((b) => b.name)).toEqual([
+      'Brand 1',
+      'Brand 2',
+      'Brand 3',
+      'Brand 4',
+      'Brand 5',
+    ]);
+    expect(review.outcome.top3Changed).toBe(true);
+    expect(review.outcome.enteredTop5).toEqual([]);
+    expect(review.outcome.leftTop5).toEqual([]);
+    expect(review.outcome.summary).toBe('Changed vs the standard ranking: Brand 4 #4 to #3; Brand 3 #3 to #4.');
+  });
+
+  it('standard ranking ignores a planner boost already in the list order', async () => {
+    const boosted = [pack(4, 1, true, 4), pack(1, 1), pack(2, 1), pack(3, 1), pack(5, 1)];
+    const { review } = await runProspectingAgentReview({
+      prospects: boosted,
+      client: new RuleProspectingReviewClient(),
+    });
+    expect(review.changed).toBe(false);
+    expect(review.outcome.standardTop5.map((b) => b.name)).toEqual([
+      'Brand 1',
+      'Brand 2',
+      'Brand 3',
+      'Brand 4',
+      'Brand 5',
+    ]);
+    expect(review.outcome.top3Changed).toBe(true);
+    expect(review.outcome.top5Changed).toBe(true);
+  });
+
+  it('uses the model reviewer on every live run, demo chips included, and the rule otherwise', () => {
+    const live = { APP_MODE: 'live', OPENAI_API_KEY: 'k' } as unknown as Env;
+    expect(createProspectingReviewClient(live).kind).toBe('model');
+    expect(createProspectingReviewClient({ ...live, APP_MODE: 'demo' } as Env).kind).toBe('rule');
+    expect(createProspectingReviewClient({ ...live, OPENAI_API_KEY: '' } as Env).kind).toBe('rule');
   });
 
   it('keeps the order and says so when every top-5 pitch has evidence', async () => {
@@ -102,7 +158,10 @@ describe('runProspectingAgentReview', () => {
       vi.fn(async (_url: string, init: { body: string }) => {
         bodies.push(JSON.parse(init.body));
         const message = responses.shift()!;
-        return new Response(JSON.stringify({ choices: [{ message }] }), { status: 200 });
+        return new Response(
+          JSON.stringify({ choices: [{ message }], usage: { prompt_tokens: 100, completion_tokens: 20 } }),
+          { status: 200 }
+        );
       })
     );
     const client = new OpenAiProspectingReviewClient('k', 'gpt-4o-mini');
@@ -111,6 +170,7 @@ describe('runProspectingAgentReview', () => {
     expect(review.actions.map((a) => a.outcome)).toEqual(['rejected', 'lifted']);
     expect(review.after.map((b) => b.name)).toEqual(['Brand 1', 'Brand 2', 'Brand 3', 'Brand 6', 'Brand 4']);
     expect(bodies).toHaveLength(3);
+    expect(review.modelUsage).toEqual({ calls: 3, promptTokens: 300, completionTokens: 60 });
     expect(JSON.stringify(bodies[1]!.messages)).toContain('no verified local audience overlap');
     expect(bodies.every((b) => (b as unknown as { model: string }).model === 'gpt-4o-mini')).toBe(true);
   });

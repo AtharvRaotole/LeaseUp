@@ -1,5 +1,4 @@
 import type { ProspectPack } from '@leaseup/contracts';
-import { matchDemoFixtureId } from '@leaseup/fixtures/worker';
 import type { Env } from '../index';
 import { displayBrandName } from './brand-display';
 import { withTimeout } from './analysis-step-budget';
@@ -36,6 +35,23 @@ export type ProspectingReviewAction = {
   resultSummary: string;
 };
 
+export type ProspectingReviewModelUsage = {
+  calls: number;
+  promptTokens: number;
+  completionTokens: number;
+};
+
+/** Final top 5 compared with the standard ranking (blended rank order, no planner or review). */
+export type ProspectingReviewOutcome = {
+  standardTop5: ProspectingReviewBrand[];
+  finalTop5: ProspectingReviewBrand[];
+  top3Changed: boolean;
+  top5Changed: boolean;
+  enteredTop5: string[];
+  leftTop5: string[];
+  summary: string;
+};
+
 export type ProspectingReviewResult = {
   planner: ProspectingReviewPlanner;
   actions: ProspectingReviewAction[];
@@ -44,6 +60,8 @@ export type ProspectingReviewResult = {
   changed: boolean;
   summary: string;
   fallbackReason?: string;
+  modelUsage?: ProspectingReviewModelUsage;
+  outcome: ProspectingReviewOutcome;
 };
 
 export type ProspectingReviewLiftRequest = {
@@ -62,8 +80,12 @@ export type ProspectingReviewShortlistRow = {
   entityId: string;
   name: string;
   localAudienceOverlaps: string[];
+  /** overlap: verified overlap; none: checked, no overlap; unchecked: not recorded or Qloo unavailable. */
+  audienceCheck: ProspectingReviewAudienceCheck;
   nearestStoreKm?: number;
 };
+
+export type ProspectingReviewAudienceCheck = 'overlap' | 'none' | 'unchecked';
 
 export interface ProspectingReviewClient {
   readonly kind: ProspectingReviewPlanner;
@@ -83,12 +105,18 @@ function audienceNames(pack: ProspectPack): string[] {
   return (pack.tradeAreaTaste?.audiences ?? []).map((a) => a.name).filter(Boolean);
 }
 
+function audienceCheck(pack: ProspectPack): ProspectingReviewAudienceCheck {
+  if (audienceNames(pack).length > 0) return 'overlap';
+  return pack.tradeAreaTasteChecked === true ? 'none' : 'unchecked';
+}
+
 export function reviewShortlist(prospects: ProspectPack[]): ProspectingReviewShortlistRow[] {
   return prospects.slice(0, PROSPECTING_REVIEW_SHORTLIST).map((pack, index) => ({
     rank: index + 1,
     entityId: pack.brand.entityId,
     name: packName(pack),
     localAudienceOverlaps: audienceNames(pack),
+    audienceCheck: audienceCheck(pack),
     nearestStoreKm:
       pack.nearestExistingStoreKm !== undefined
         ? Math.round(pack.nearestExistingStoreKm * 10) / 10
@@ -108,8 +136,8 @@ function overlapPhrase(count: number): string {
 
 /**
  * Server-side guardrail for one lift. Allowed only when the lifted pitch has verified local
- * audience overlap, the displaced pitch has none, the displaced pitch is in the top five,
- * and the lifted pitch currently ranks below it in the shortlist.
+ * audience overlap, the displaced pitch was checked and has none (never when its overlap is
+ * unknown), the displaced pitch is in the top five, and the lifted pitch ranks below it.
  */
 export function applyReviewLift(
   prospects: ProspectPack[],
@@ -141,17 +169,24 @@ export function applyReviewLift(
       summary: `Not lifted: ${packName(displaced)} already has ${overlapPhrase(displacedOverlaps)}.`,
     };
   }
+  if (displaced.tradeAreaTasteChecked !== true) {
+    return {
+      prospects,
+      ok: false,
+      summary: `Not lifted: local audience overlap for ${packName(displaced)} was not checked, so it is unknown.`,
+    };
+  }
   const next = [...prospects];
   next.splice(from, 1);
   next.splice(to, 0, lifted);
   return {
     prospects: next,
     ok: true,
-    summary: `${packName(lifted)} moved from #${from + 1} to #${to + 1} (${overlapPhrase(liftedOverlaps)}); ${packName(displaced)} has none.`,
+    summary: `${packName(lifted)} moved from #${from + 1} to #${to + 1} (${overlapPhrase(liftedOverlaps)}); ${packName(displaced)} was checked and has none.`,
   };
 }
 
-/** Deterministic reviewer for demo chips, tests, and servers without OpenAI. */
+/** Deterministic reviewer for demo mode, tests, servers without OpenAI, and model fallback. */
 export class RuleProspectingReviewClient implements ProspectingReviewClient {
   readonly kind = 'rule' as const;
   private turn = 0;
@@ -160,7 +195,7 @@ export class RuleProspectingReviewClient implements ProspectingReviewClient {
     if (this.turn > 0) return { lifts: [], done: true };
     this.turn += 1;
     const top = input.shortlist.slice(0, PROSPECTING_REVIEW_TOP);
-    const displaced = top.find((row) => row.rank > 1 && row.localAudienceOverlaps.length === 0);
+    const displaced = top.find((row) => row.rank > 1 && row.audienceCheck === 'none');
     if (!displaced) return { lifts: [], done: true };
     const candidate = input.shortlist.find(
       (row) => row.rank > displaced.rank && row.localAudienceOverlaps.length > 0
@@ -212,6 +247,7 @@ export class OpenAiProspectingReviewClient implements ProspectingReviewClient {
   readonly kind = 'model' as const;
   private readonly messages: ReviewChatMessage[] = [];
   private seeded = false;
+  readonly usage: ProspectingReviewModelUsage = { calls: 0, promptTokens: 0, completionTokens: 0 };
 
   constructor(
     private readonly apiKey: string,
@@ -236,7 +272,8 @@ export class OpenAiProspectingReviewClient implements ProspectingReviewClient {
           'You review a ranked shortlist of retail brands to pitch for one storefront.',
           'The order comes from a backtested ranking; change it only when it makes the top 5 easier to pitch.',
           `You may call lift_pitch at most ${PROSPECTING_REVIEW_MAX_LIFTS} times.`,
-          'A lift is only accepted when the lifted brand has verified local audience overlap and the brand it passes, inside the top 5, has none.',
+          'A lift is only accepted when the lifted brand has verified local audience overlap and the brand it passes, inside the top 5, has audienceCheck "none" (checked, no overlap).',
+          'audienceCheck "unchecked" means unknown, never evidence against a brand.',
           'Always give a short reason. Reply with no tool calls when the order is fine.',
         ].join(' '),
       });
@@ -257,8 +294,10 @@ export class OpenAiProspectingReviewClient implements ProspectingReviewClient {
         max_tokens: 300,
       }),
     });
+    this.usage.calls += 1;
     if (!response.ok) throw new Error(`OpenAI review error: ${response.status}`);
     const data = (await response.json()) as {
+      usage?: { prompt_tokens?: number; completion_tokens?: number };
       choices: Array<{
         message: {
           content?: string | null;
@@ -266,6 +305,8 @@ export class OpenAiProspectingReviewClient implements ProspectingReviewClient {
         };
       }>;
     };
+    this.usage.promptTokens += data.usage?.prompt_tokens ?? 0;
+    this.usage.completionTokens += data.usage?.completion_tokens ?? 0;
     const msg = data.choices[0]!.message;
     this.messages.push({ role: 'assistant', content: msg.content ?? null, tool_calls: msg.tool_calls });
 
@@ -289,12 +330,10 @@ export class OpenAiProspectingReviewClient implements ProspectingReviewClient {
   }
 }
 
-export function createProspectingReviewClient(
-  env: Env,
-  fixtureAddress: string
-): ProspectingReviewClient {
+/** Live runs (demo chips included) use the gpt-4o-mini reviewer; demo mode and keyless servers use the rule. */
+export function createProspectingReviewClient(env: Env): ProspectingReviewClient {
   const apiKey = env.OPENAI_API_KEY || '';
-  if (env.APP_MODE === 'live' && apiKey && !matchDemoFixtureId(fixtureAddress)) {
+  if (env.APP_MODE === 'live' && apiKey) {
     return new OpenAiProspectingReviewClient(apiKey, env.OPENAI_MODEL || 'gpt-4o-mini');
   }
   return new RuleProspectingReviewClient();
@@ -302,6 +341,34 @@ export function createProspectingReviewClient(
 
 function sameOrder(a: ProspectingReviewBrand[], b: ProspectingReviewBrand[]): boolean {
   return a.length === b.length && a.every((row, i) => row.entityId === b[i]?.entityId);
+}
+
+function standardTop5(prospects: ProspectPack[]): ProspectingReviewBrand[] {
+  return prospects
+    .map((p, index) => ({ p, index }))
+    .sort((a, b) => a.p.brand.affinityRank - b.p.brand.affinityRank || a.index - b.index)
+    .slice(0, PROSPECTING_REVIEW_TOP)
+    .map(({ p }) => ({ entityId: p.brand.entityId, name: packName(p) }));
+}
+
+export function reviewOutcome(
+  standard: ProspectingReviewBrand[],
+  final: ProspectingReviewBrand[]
+): ProspectingReviewOutcome {
+  const ids = (rows: ProspectingReviewBrand[]) => rows.map((r) => r.entityId);
+  const top3Changed = !sameOrder(standard.slice(0, 3), final.slice(0, 3));
+  const top5Changed = !sameOrder(standard, final);
+  const enteredTop5 = final.filter((r) => !ids(standard).includes(r.entityId)).map((r) => r.name);
+  const leftTop5 = standard.filter((r) => !ids(final).includes(r.entityId)).map((r) => r.name);
+  let summary = 'Same top 5 as the standard ranking.';
+  if (top5Changed) {
+    const moved = final
+      .map((r, i) => ({ r, i, s: ids(standard).indexOf(r.entityId) }))
+      .filter(({ i, s }) => s !== i)
+      .map(({ r, i, s }) => (s < 0 ? `${r.name} new at #${i + 1}` : `${r.name} #${s + 1} to #${i + 1}`));
+    summary = `Changed vs the standard ranking: ${moved.join('; ')}.`;
+  }
+  return { standardTop5: standard, finalTop5: final, top3Changed, top5Changed, enteredTop5, leftTop5, summary };
 }
 
 function reviewSummary(actions: ProspectingReviewAction[], changed: boolean): string {
@@ -321,6 +388,7 @@ export async function runProspectingAgentReview(params: {
   neighborhood?: string;
 }): Promise<{ prospects: ProspectPack[]; review: ProspectingReviewResult }> {
   const before = topBrands(params.prospects);
+  const standard = standardTop5(params.prospects);
   let current = params.prospects;
   const actions: ProspectingReviewAction[] = [];
   let planner: ProspectingReviewPlanner = params.client.kind;
@@ -378,6 +446,7 @@ export async function runProspectingAgentReview(params: {
 
   const after = topBrands(current);
   const changed = !sameOrder(before, after);
+  const usage = params.client instanceof OpenAiProspectingReviewClient ? params.client.usage : undefined;
   return {
     prospects: current,
     review: {
@@ -388,6 +457,8 @@ export async function runProspectingAgentReview(params: {
       changed,
       summary: reviewSummary(actions, changed),
       ...(fallbackReason ? { fallbackReason } : {}),
+      ...(usage && usage.calls > 0 ? { modelUsage: { ...usage } } : {}),
+      outcome: reviewOutcome(standard, after),
     },
   };
 }
