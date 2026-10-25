@@ -26,6 +26,10 @@ import { getResponseCache } from '../lib/worker-cache';
 import { createQlooRunAccounting, QlooClient } from '../providers/qloo';
 import { runProspectingAgentPlanner } from '../lib/prospecting-agent-planner';
 import {
+  createProspectingReviewClient,
+  runProspectingAgentReview,
+} from '../lib/prospecting-agent-review';
+import {
   PROSPECTING_AGENT_MAX_QLOO_CALLS,
   PROSPECTING_AGENT_MAX_STEPS,
 } from '../lib/analysis-step-budget';
@@ -374,6 +378,17 @@ export class ProspectingService {
         summary: verifyLine,
         detail: { osmSummary, prospects: verified.map((p) => p.brand) },
       });
+
+      const reviewed = await runProspectingAgentReview({
+        prospects: result.prospects,
+        client: createProspectingReviewClient(this.env, job.input.address),
+        neighborhood: result.location.neighborhood,
+      });
+      result.prospects = reviewed.prospects;
+      const reviewStep = job.steps.find((s) => s.id === 'agent_plan');
+      if (reviewStep) {
+        reviewStep.detail = { ...(reviewStep.detail ?? {}), review: reviewed.review };
+      }
 
       const top5 = result.prospects.slice(0, 5);
       await this.patchStep(job, 'explain_top5', {
