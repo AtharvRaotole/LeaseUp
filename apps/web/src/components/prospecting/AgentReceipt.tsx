@@ -139,7 +139,11 @@ export function AgentReceipt({ job }: { job: ProspectingJob }) {
                       {action.resultSummary && (
                         <p className="mt-1 text-sm text-ink-2 break-words">
                           <span className="font-medium text-ink">
-                            {action.outcome === 'lifted' ? 'Result: ' : 'Blocked: '}
+                            {action.outcome === 'lifted'
+                              ? 'Result: '
+                              : action.outcome === 'declined'
+                                ? 'Decision: '
+                                : 'Blocked: '}
                           </span>
                           {action.resultSummary}
                         </p>

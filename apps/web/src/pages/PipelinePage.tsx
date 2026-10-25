@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { KanbanSquare } from 'lucide-react';
 import type { PipelineBoard, PipelinePublicBoard } from '@leaseup/contracts';
 import { TopBar } from '../components/layout/TopBar';
-import { Button } from '../components/ui/Button';
+import { Button, buttonClassName } from '../components/ui/Button';
 import { PageEmptyState } from '../components/ui/PageEmptyState';
 import { PipelineKanban } from '../components/pipeline/PipelineKanban';
 import { OwnerUpdatePanel } from '../components/pipeline/OwnerUpdatePanel';
@@ -124,8 +124,8 @@ export function PipelinePage() {
                 <div className="overflow-hidden rounded-[1.25rem] border border-border bg-surface-2">
                   <PageEmptyState icon={KanbanSquare} title="Nothing in your pipeline yet" testId="pipeline-empty">
                     <p>{pipelineEmptyLine}</p>
-                    <Link to="/" className="mt-6 inline-block">
-                      <Button type="button" variant="primary" size="md">{pipelineEmptyAction}</Button>
+                    <Link to="/" className={buttonClassName({ className: 'mt-6' })}>
+                      {pipelineEmptyAction}
                     </Link>
                   </PageEmptyState>
                   {!readOnly && (

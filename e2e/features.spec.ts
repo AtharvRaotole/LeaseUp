@@ -40,7 +40,7 @@ test.describe('LeaseUp feature pages (demo)', () => {
     await expect(page.getByText('Complete').first()).toBeVisible({ timeout: 60000 });
     const [download] = await Promise.all([
       page.waitForEvent('download'),
-      page.getByRole('button', { name: 'Export CSV' }).click(),
+      page.getByRole('link', { name: 'Export CSV' }).click(),
     ]);
     expect(download.suggestedFilename()).toContain('leaseup-portfolio');
   });

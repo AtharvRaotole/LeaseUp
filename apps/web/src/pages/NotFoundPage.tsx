@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Logo } from '../components/brand/Logo';
-import { Button } from '../components/ui/Button';
+import { buttonClassName } from '../components/ui/Button';
 import { TopBar } from '../components/layout/TopBar';
 import { notFoundLine } from '../lib/empty-state-copy';
 
@@ -21,8 +21,8 @@ export function NotFoundPage() {
         <Logo variant="mark" size="lg" className="mb-6 opacity-90" />
         <h1 className="font-display font-semibold text-h2 text-ink">Page not found</h1>
         <p className="mt-3 max-w-md text-ink-2">{notFoundLine}</p>
-        <Link to="/" className="mt-8">
-          <Button size="lg">Back to LeaseUp</Button>
+        <Link to="/" className={buttonClassName({ size: 'lg', className: 'mt-8' })}>
+          Back to LeaseUp
         </Link>
       </main>
       <footer className="py-8 text-center text-meta text-ink-3">

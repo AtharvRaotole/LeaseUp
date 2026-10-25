@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import type { PipelineCard, PipelineProspectStatus } from '@leaseup/contracts';
 import * as Dialog from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
-import { Button } from '../ui/Button';
+import { Button, buttonClassName } from '../ui/Button';
 import {
   PIPELINE_STATUSES,
   nextProspectStatus,
@@ -302,10 +302,8 @@ export function PipelineCardDialog({
                           Copy draft
                         </Button>
                         {mailtoHref && (
-                          <a href={mailtoHref}>
-                            <Button type="button" size="sm" variant="primary">
-                              Open in mail app
-                            </Button>
+                          <a href={mailtoHref} className={buttonClassName({ size: 'sm' })}>
+                            Open in mail app
                           </a>
                         )}
                       </div>
