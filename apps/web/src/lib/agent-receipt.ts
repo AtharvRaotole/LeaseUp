@@ -49,6 +49,12 @@ export type ReviewReceiptSection = {
   after: string[];
   actions: ReviewReceiptAction[];
   fallbackLine: string | null;
+  /** Top 5 by the standard ranking (no planner, no review); empty on older runs. */
+  standard: string[];
+  /** Final top 5 vs the standard ranking, as logged by the server. */
+  outcomeLine: string | null;
+  /** gpt-4o-mini calls and tokens the review used (model runs only). */
+  usageLine: string | null;
 };
 
 export const PLANNER_UNAVAILABLE_LINE = 'Planner unavailable, used the standard steps.';
@@ -193,6 +199,12 @@ export function buildReviewReceiptSection(job: ProspectingJob): ReviewReceiptSec
     }
   }
   const fallback = typeof r.fallbackReason === 'string' && r.fallbackReason.trim();
+  const outcome =
+    r.outcome && typeof r.outcome === 'object' ? (r.outcome as Record<string, unknown>) : null;
+  const usage =
+    r.modelUsage && typeof r.modelUsage === 'object' ? (r.modelUsage as Record<string, unknown>) : null;
+  const usageCalls = Number(usage?.calls ?? 0);
+  const usageTokens = Number(usage?.promptTokens ?? 0) + Number(usage?.completionTokens ?? 0);
   return {
     plannerLabel,
     summary: plainProspectingStepResult(String(r.summary ?? '')),
@@ -203,6 +215,15 @@ export function buildReviewReceiptSection(job: ProspectingJob): ReviewReceiptSec
     fallbackLine: fallback
       ? `Model review unavailable (${sanitizePlannerReasonText(fallback)}). Rule review used.`
       : null,
+    standard: outcome ? reviewNames(outcome.standardTop5) : [],
+    outcomeLine:
+      outcome && typeof outcome.summary === 'string' && outcome.summary.trim()
+        ? plainProspectingStepResult(outcome.summary)
+        : null,
+    usageLine:
+      usageCalls > 0
+        ? `Model review used ${usageCalls} gpt-4o-mini call${usageCalls === 1 ? '' : 's'}, ${usageTokens.toLocaleString('en-US')} tokens.`
+        : null,
   };
 }
 
@@ -300,8 +321,11 @@ export function agentReceiptMarkdown(job: ProspectingJob): string {
       lines.push(`- ${action.plannerLabel}: ${action.reason}`);
       if (action.resultSummary) lines.push(`  - Result: ${action.resultSummary}`);
     }
+    if (review.usageLine) lines.push(review.usageLine);
+    if (review.standard.length) lines.push(`Top 5, standard ranking: ${review.standard.join(', ')}`);
     lines.push(`Top 5 before review: ${review.before.join(', ')}`);
     lines.push(`Top 5 after review: ${review.after.join(', ')}`);
+    if (review.outcomeLine) lines.push(review.outcomeLine);
   }
   lines.push('', '## Run steps', '');
   for (const row of rows) {

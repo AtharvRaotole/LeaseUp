@@ -318,7 +318,7 @@ export class QlooClient {
           maxAudiences: BRAND_AUDIENCE_MAX_SHOWN,
         }
       );
-      if (audiences.length === 0) return null;
+      // Empty audiences means checked with no verified overlap; null means not checked.
       return { tags: [], audiences };
     } catch (err) {
       if (isQlooUnavailableError(err)) return null;

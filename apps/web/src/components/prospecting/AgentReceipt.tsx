@@ -119,6 +119,11 @@ export function AgentReceipt({ job }: { job: ProspectingJob }) {
               <p className="mt-2 text-sm text-ink-2 break-words" data-testid="agent-receipt-review-summary">
                 {review.summary}
               </p>
+              {review.usageLine && (
+                <p className="mt-1 text-xs text-ink-3 break-words" data-testid="agent-receipt-review-usage">
+                  {review.usageLine}
+                </p>
+              )}
               {review.actions.length > 0 && (
                 <ul className="mt-3 space-y-2.5">
                   {review.actions.map((action, index) => (
@@ -144,6 +149,15 @@ export function AgentReceipt({ job }: { job: ProspectingJob }) {
                 </ul>
               )}
               <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+                {review.standard.length > 0 && (
+                  <div
+                    className="rounded-control border border-border px-3 py-2.5 sm:col-span-2"
+                    data-testid="agent-receipt-review-standard"
+                  >
+                    <dt className="text-xs text-ink-3">Top 5, standard ranking (no planner, no review)</dt>
+                    <dd className="mt-1 text-ink-2 break-words">{review.standard.join(', ')}</dd>
+                  </div>
+                )}
                 <div
                   className="rounded-control border border-border px-3 py-2.5"
                   data-testid="agent-receipt-review-before"
@@ -159,6 +173,11 @@ export function AgentReceipt({ job }: { job: ProspectingJob }) {
                   <dd className="mt-1 text-ink-2 break-words">{review.after.join(', ')}</dd>
                 </div>
               </dl>
+              {review.outcomeLine && (
+                <p className="mt-2 text-sm text-ink-2 break-words" data-testid="agent-receipt-review-outcome">
+                  {review.outcomeLine}
+                </p>
+              )}
             </div>
           )}
 
