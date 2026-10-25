@@ -42,7 +42,7 @@ Production stills from `docs/devpost/gallery/`, captured from https://leaseup-59
 
 **Full prospecting run and Agent receipt**
 
-![Full prospecting run with Agent receipt and planner decisions](docs/devpost/gallery/prospecting-receipt-1440.png)
+![Full prospecting run with Agent receipt, planner decisions, and review after ranking](docs/devpost/gallery/prospecting-receipt-1440.png)
 
 **Pitch pack (Boulder sample)**
 
