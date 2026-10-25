@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Bookmark } from 'lucide-react';
 import type { WatchSpaceDetail, WatchSpaceSummary } from '@leaseup/contracts';
 import { TopBar } from '../components/layout/TopBar';
-import { Button } from '../components/ui/Button';
+import { Button, buttonClassName } from '../components/ui/Button';
 import { PageEmptyState } from '../components/ui/PageEmptyState';
 import { WatchDiffPanel } from '../components/watchlist/WatchDiffPanel';
 import {
@@ -150,8 +150,8 @@ export function WatchlistPage() {
               <div className="overflow-hidden rounded-[1.25rem] border border-border bg-surface-2">
                 <PageEmptyState icon={Bookmark} title="No saved spaces yet" testId="watchlist-empty">
                   <p>{watchlistEmptyLine}</p>
-                  <Link to="/" className="mt-6 inline-block">
-                    <Button type="button" variant="primary" size="md">{watchlistEmptyAction}</Button>
+                  <Link to="/" className={buttonClassName({ className: 'mt-6' })}>
+                    {watchlistEmptyAction}
                   </Link>
                 </PageEmptyState>
               </div>

@@ -6,16 +6,16 @@ import type { PitchPackSnapshot, ProspectPack } from '@leaseup/contracts';
 describe('store distance copy', () => {
   it('labels snapshot-only distances with the snapshot date', () => {
     expect(
-      nearestStoreDistanceAttribution(true, '2026-10-20T00:00:00.000Z')
+      nearestStoreDistanceAttribution(true, '2026-10-20T12:00:00.000Z')
     ).toContain('snapshot');
   });
 
   it('states refreshed distances when reconcile ran on read', () => {
-    const now = new Date('2026-10-24T15:00:00.000Z');
+    const now = new Date('2026-10-24T13:00:00.000Z');
     const line = pitchFreshnessHonestyLine(
       {
-        createdAt: '2026-10-20T00:00:00.000Z',
-        analysisTimestamp: '2026-10-20T00:00:00.000Z',
+        createdAt: '2026-10-20T12:00:00.000Z',
+        analysisTimestamp: '2026-10-20T12:00:00.000Z',
         storeDistanceDataAsOf: '2026-10-24T12:00:00.000Z',
         storeDistancesSnapshotOnly: false,
       } as PitchPackSnapshot,
@@ -25,13 +25,13 @@ describe('store distance copy', () => {
   });
 
   it('shows refreshed today when serve meta uses reconcile time not OSM snapshot date', () => {
-    const now = new Date('2026-10-24T15:00:00.000Z');
+    const now = new Date('2026-10-24T13:00:00.000Z');
     const line = pitchFreshnessHonestyLine(
       {
-        createdAt: '2026-10-20T00:00:00.000Z',
-        analysisTimestamp: '2026-10-20T00:00:00.000Z',
+        createdAt: '2026-10-20T12:00:00.000Z',
+        analysisTimestamp: '2026-10-20T12:00:00.000Z',
         osmSnapshotRecordedAt: '2026-10-23T00:00:00.000Z',
-        storeDistanceDataAsOf: '2026-10-24T15:00:00.000Z',
+        storeDistanceDataAsOf: '2026-10-24T13:00:00.000Z',
         storeDistancesSnapshotOnly: false,
       } as PitchPackSnapshot,
       now
@@ -42,9 +42,9 @@ describe('store distance copy', () => {
 
   it('states snapshot-only distances with snapshot date', () => {
     const line = pitchFreshnessHonestyLine({
-      createdAt: '2026-10-20T00:00:00.000Z',
-      analysisTimestamp: '2026-10-20T00:00:00.000Z',
-      storeDistanceDataAsOf: '2026-10-20T00:00:00.000Z',
+      createdAt: '2026-10-20T12:00:00.000Z',
+      analysisTimestamp: '2026-10-20T12:00:00.000Z',
+      storeDistanceDataAsOf: '2026-10-20T12:00:00.000Z',
       storeDistancesSnapshotOnly: true,
     } as PitchPackSnapshot);
     expect(line).toBe('Saved Oct 20, 2026. Store distances from snapshot Oct 20, 2026.');
@@ -65,7 +65,7 @@ describe('store distance copy', () => {
     };
     const snapshot = {
       storeDistancesSnapshotOnly: true,
-      analysisTimestamp: '2026-10-20T00:00:00.000Z',
+      analysisTimestamp: '2026-10-20T12:00:00.000Z',
     } as PitchPackSnapshot;
     const line = pitchNearestStoreBriefLine(prospect, snapshot);
     expect(line).toContain('17.3');

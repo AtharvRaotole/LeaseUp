@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Button } from '../components/ui/Button';
+import { buttonClassName } from '../components/ui/Button';
 import { PreviewSampleBanner } from '../components/layout/PreviewSampleBanner';
 import { shareLinkExpiredLine } from '../lib/empty-state-copy';
 
@@ -12,8 +12,8 @@ export function PitchErrorPreviewPage() {
       </div>
       <h1 className="mt-6 font-display font-semibold text-h2 text-ink">Pitch unavailable</h1>
       <p className="mt-3 mx-auto max-w-md text-ink-2">{shareLinkExpiredLine}</p>
-      <Link to="/" className="mt-6 inline-block">
-        <Button size="lg">Back to home</Button>
+      <Link to="/" className={buttonClassName({ size: 'lg', className: 'mt-6' })}>
+        Back to home
       </Link>
     </div>
   );

@@ -142,20 +142,19 @@ describe('live prospecting model path subrequest budget (non-demo address)', () 
             reviewTurns += 1;
             if (reviewTurns === 1) {
               const user = req.messages.find((m) => m.role === 'user');
-              const shortlist = (JSON.parse(user?.content ?? '{}').shortlist ?? []) as Array<{
+              const eligible = (JSON.parse(user?.content ?? '{}').eligibleLifts ?? []) as Array<{
                 entityId: string;
+                aboveEntityId: string;
               }>;
-              const lifted = shortlist[3]?.entityId ?? 'none';
-              const above = shortlist[2]?.entityId ?? 'none';
               return chat({
                 content: null,
-                tool_calls: [
+                tool_calls: eligible.slice(0, 1).map((e) =>
                   toolCall('rv1', 'lift_pitch', {
                     reason: 'Verified local audience overlap.',
-                    entityId: lifted,
-                    aboveEntityId: above,
-                  }),
-                ],
+                    entityId: e.entityId,
+                    aboveEntityId: e.aboveEntityId,
+                  })
+                ),
               });
             }
             return chat({ content: 'Order is fine.' });
@@ -226,6 +225,21 @@ describe('live prospecting model path subrequest budget (non-demo address)', () 
         }
         if (url.includes('/v2/insights') || url.includes('qloo')) {
           bump('qloo');
+          const params = new URL(url).searchParams;
+          if (params.get('filter.type') === 'urn:audience') {
+            // Location audiences A1..A10; about half the brands share them (verified overlap),
+            // the rest index on other audiences (checked, none), so the review has a real choice.
+            const brand = params.get('signal.interests.entities');
+            let h = 7;
+            for (const ch of brand ?? '') h = (h * 31 + ch.charCodeAt(0)) % 9973;
+            const prefix = !brand || h % 2 === 1 ? 'a' : 'b';
+            const rows = Array.from({ length: 10 }, (_, i) => ({
+              entity_id: `urn:audience:test:${prefix}${i + 1}`,
+              name: `Test audience ${prefix.toUpperCase()}${i + 1}`,
+              query: { affinity: (brand ? 0.8 : 0.9) - i * 0.01 },
+            }));
+            return new Response(JSON.stringify({ results: { entities: rows } }));
+          }
           // Realistic panel: each batch returns only the brands it asked for, so the
           // shortlist holds distinct brands (per-brand fan-out shows up in the count).
           const asked = new URL(url).searchParams.get('filter.results.entities');
@@ -324,6 +338,8 @@ describe('live prospecting model path subrequest budget (non-demo address)', () 
     expect(sum('openaiPlanner')).toBeGreaterThan(1);
     expect(review?.planner).toBe('model');
     expect(review?.fallbackReason).toBeUndefined();
+    expect(review?.eligibleLifts).toBeGreaterThan(0);
+    expect((review?.actions as Array<{ outcome: string }>).some((a) => a.outcome === 'lifted')).toBe(true);
     expect(sum('openaiDrafts')).toBe(1);
     expect(job.outreachDrafts).toHaveLength(3);
     for (const d of job.outreachDrafts ?? []) expect(d.model).toBe('gpt-4o-mini');

@@ -37,3 +37,20 @@ The dump showed that "no overlap" for a chip brand often meant "not recorded", n
 The review now requires `tradeAreaTasteChecked` before it may displace a pitch (#172); unknown overlap is
 never treated as evidence. Production runs record the model's moves and the final top 5 against the
 standard ranking in the receipt, so real effects can be measured run by run.
+
+## Rejected alternative: lift on taste twin evidence (Oct 25)
+
+`twin_lift_backtest.py` (needs numpy and scikit-learn) tested a second lift signal on all 40 eval sites:
+lift a brand present at 3 or more of the site's 5 taste twins above a top 5 brand present at none,
+thresholds fixed before running. Ranking is the leave-one-address-out blend without the twin feature.
+
+- Lifts at the preset threshold: **0** of 40 sites. Sensitivity (2 of 5, 4 of 5, displaced at most 1 of 5):
+  also 0. P@3 0.983, P@5 0.95, P@10 0.885 before and after.
+- The blend already ranks twin-supported brands high, so the rule never fires. It was not shipped.
+
+## Review decisions (Oct 25)
+
+The server now computes every lift the guardrail would accept (`eligibleLifts`, at most 6) and gives the
+list to gpt-4o-mini, which must lift or decline each one with a reason. Declines are logged in the
+receipt. When no lift is eligible the model is not called. The guardrail is unchanged, so this does not
+change which moves are possible, only that each possible move gets an explicit, logged decision.

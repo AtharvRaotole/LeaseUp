@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import type { OwnerUpdateSnapshot } from '@leaseup/contracts';
 import { Logo } from '../components/brand/Logo';
-import { Button } from '../components/ui/Button';
+import { Button, buttonClassName } from '../components/ui/Button';
 import { fetchSharedOwnerUpdate } from '../lib/owner-update-api';
 import { formatUserFacingDate } from '../lib/format-date';
 import { shareLinkExpiredLine } from '../lib/empty-state-copy';
@@ -24,8 +24,8 @@ export function OwnerUpdatePage() {
       <div className="min-h-screen bg-bg px-4 py-24 text-center" data-testid="owner-update-error">
         <h1 className="font-display font-semibold text-h2 text-ink">Update unavailable</h1>
         <p className="mt-3 text-ink-2">{error}</p>
-        <Link to="/pipeline" className="mt-6 inline-block">
-          <Button>Back to pipeline</Button>
+        <Link to="/pipeline" className={buttonClassName({ className: 'mt-6' })}>
+          Back to pipeline
         </Link>
       </div>
     );

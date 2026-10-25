@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Button } from '../ui/Button';
+import { buttonClassName } from '../ui/Button';
 import {
   reportShortListCategoryAction,
   reportShortListLine,
@@ -33,16 +33,15 @@ export function ReportShortListNotice({
       <p>{reportShortListLine(count, absenceKm)}</p>
       <div className="mt-3 flex flex-wrap gap-2">
         {radiusKm < 25 && (
-          <Link to={buildReportPath({ ...request, radius: wider }, slug)}>
-            <Button type="button" variant="secondary" size="sm">
-              {reportShortListWidenAction}
-            </Button>
+          <Link
+            to={buildReportPath({ ...request, radius: wider }, slug)}
+            className={buttonClassName({ variant: 'secondary', size: 'sm' })}
+          >
+            {reportShortListWidenAction}
           </Link>
         )}
-        <Link to="/">
-          <Button type="button" variant="ghost" size="sm">
-            {reportShortListCategoryAction}
-          </Button>
+        <Link to="/" className={buttonClassName({ variant: 'ghost', size: 'sm' })}>
+          {reportShortListCategoryAction}
         </Link>
       </div>
     </div>

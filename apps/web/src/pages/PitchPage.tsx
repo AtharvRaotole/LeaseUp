@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import type { PitchPackSnapshot } from '@leaseup/contracts';
 import { Logo } from '../components/brand/Logo';
-import { Button } from '../components/ui/Button';
+import { Button, buttonClassName } from '../components/ui/Button';
 import { VacancyCostCalculator } from '../components/report/VacancyCostCalculator';
 import { PitchPackBrief } from '../components/pitch/PitchPackBrief';
 import { PitchPackLoadingSkeleton } from '../components/pitch/PitchPackLoadingSkeleton';
@@ -94,8 +94,8 @@ export function PitchPage() {
               Try again
             </Button>
           )}
-          <Link to="/" className="inline-block">
-            <Button size="lg">Back to home</Button>
+          <Link to="/" className={buttonClassName({ size: 'lg' })}>
+            Back to home
           </Link>
         </div>
       </div>

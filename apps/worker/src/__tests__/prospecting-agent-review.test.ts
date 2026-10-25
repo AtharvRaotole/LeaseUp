@@ -3,6 +3,8 @@ import type { ProspectPack } from '@leaseup/contracts';
 import type { Env } from '../index';
 import {
   applyReviewLift,
+  eligibleReviewLifts,
+  reviewShortlist,
   OpenAiProspectingReviewClient,
   createProspectingReviewClient,
   RuleProspectingReviewClient,
@@ -133,7 +135,7 @@ describe('runProspectingAgentReview', () => {
     });
     expect(review.changed).toBe(false);
     expect(review.actions).toHaveLength(0);
-    expect(review.summary).toBe('Review kept the ranked top 5.');
+    expect(review.summary).toBe('Review kept the ranked top 5: no lift passes the evidence check.');
   });
 
   it('logs model lifts the guardrail rejects and feeds results back to the model', async () => {
@@ -200,5 +202,65 @@ describe('runProspectingAgentReview', () => {
     };
     const { review } = await runProspectingAgentReview({ prospects: LIST, client: greedy });
     expect(review.actions.filter((a) => a.outcome === 'lifted').length).toBeLessThanOrEqual(2);
+  });
+
+  it('lists only the moves the guardrail would accept, widest rank gap first', () => {
+    const eligible = eligibleReviewLifts(reviewShortlist(LIST));
+    expect(eligible.map((e) => `${e.name}>${e.aboveName}`)).toEqual([
+      'Brand 3>Brand 2',
+      'Brand 6>Brand 5',
+      'Brand 6>Brand 4',
+      'Brand 6>Brand 2',
+    ]);
+    for (const e of eligible) {
+      expect(applyReviewLift(LIST, { entityId: e.entityId, aboveEntityId: e.aboveEntityId, reason: 'x' }).ok).toBe(true);
+    }
+  });
+
+  it('skips the model call entirely when no move is eligible', async () => {
+    const all = [pack(1, 1), pack(2, 1), pack(3, 1), pack(4, 1), pack(5, 1), pack(6, 2)];
+    const nextTurn = vi.fn();
+    expect(eligibleReviewLifts(reviewShortlist(all))).toEqual([]);
+    const { review } = await runProspectingAgentReview({
+      prospects: all,
+      client: { kind: 'model', nextTurn } as unknown as ProspectingReviewClient,
+    });
+    expect(nextTurn).not.toHaveBeenCalled();
+    expect(review.eligibleLifts).toBe(0);
+    expect(review.changed).toBe(false);
+  });
+
+  it('records a model decline with its reason and keeps the order', async () => {
+    const responses = [
+      {
+        content: null,
+        tool_calls: [
+          { id: 'd1', type: 'function', function: { name: 'decline_lift', arguments: JSON.stringify({ entityId: ID(3), aboveEntityId: ID(2), reason: 'One overlap is thin evidence.' }) } },
+        ],
+      },
+      { content: 'Done.', tool_calls: undefined },
+    ];
+    const bodies: string[] = [];
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (_url: string, init: { body: string }) => {
+        bodies.push(init.body);
+        return new Response(
+          JSON.stringify({ choices: [{ message: responses.shift()! }], usage: { prompt_tokens: 10, completion_tokens: 5 } }),
+          { status: 200 }
+        );
+      })
+    );
+    const { review } = await runProspectingAgentReview({
+      prospects: LIST,
+      client: new OpenAiProspectingReviewClient('k', 'gpt-4o-mini'),
+    });
+    expect(bodies[0]).toContain('eligibleLifts');
+    expect(review.eligibleLifts).toBe(4);
+    expect(review.changed).toBe(false);
+    expect(review.actions).toHaveLength(1);
+    expect(review.actions[0]).toMatchObject({ outcome: 'declined', reason: 'One overlap is thin evidence.' });
+    expect(review.actions[0]!.resultSummary).toBe('Kept Brand 2 above Brand 3.');
+    expect(review.summary).toMatch(/declined/);
   });
 });
