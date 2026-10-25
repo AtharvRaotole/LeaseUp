@@ -232,7 +232,7 @@ describe('live prospecting model path subrequest budget (non-demo address)', () 
             const brand = params.get('signal.interests.entities');
             let h = 7;
             for (const ch of brand ?? '') h = (h * 31 + ch.charCodeAt(0)) % 9973;
-            const prefix = !brand || h % 2 === 1 ? 'a' : 'b';
+            const prefix = !brand || h % 2 === 0 ? 'a' : 'b';
             const rows = Array.from({ length: 10 }, (_, i) => ({
               entity_id: `urn:audience:test:${prefix}${i + 1}`,
               name: `Test audience ${prefix.toUpperCase()}${i + 1}`,

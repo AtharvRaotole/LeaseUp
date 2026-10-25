@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { ProspectPack } from '@leaseup/contracts';
 import panel from '../lib/taste-twin-panel.json';
+import parity from './fixtures/twin-rank-parity.json';
 import {
   findTasteTwins,
   siteTasteVector,
@@ -36,7 +37,27 @@ describe('taste twins', () => {
     const site = sites.find((s) => s.id === 'boulder_co')!;
     const v = siteTasteVector(insightsFor(site));
     const i = site.dev.findIndex((d) => d !== null);
-    expect(v.get(i)).toBeCloseTo(site.dev[i]!, 1);
+    expect(v.vector.get(i)).toBeCloseTo(site.dev[i]!, 1);
+  });
+
+  it('matches the Python eval twins on a top 50 brand pool (consistent subset z scores)', () => {
+    for (const [id, expected] of Object.entries(parity as Record<string, { pool: string[]; twins: string[] }>)) {
+      const site = sites.find((s) => s.id === id)!;
+      const pool = new Set(expected.pool);
+      const insights = insightsFor(site).filter((row) => pool.has(row.entity_id));
+      expect(insights).toHaveLength(expected.pool.length);
+      const set = findTasteTwins(site.lat, site.lon, insights, 5, { excludePanelIds: new Set([id]) })!;
+      expect(set.twins.map((t) => t.id)).toEqual(expected.twins);
+    }
+  });
+
+  it('does not match a Brooklyn top 50 run with rural western towns (Bedford regression)', () => {
+    const wb = sites.find((s) => s.id === 'nyc_williamsburg')!;
+    const top50 = [...insightsFor(wb)].sort((a, b) => b.query.affinity - a.query.affinity).slice(0, 50);
+    const ids = findTasteTwins(40.6872, -73.9418, top50, 5, { excludePanelIds: new Set([wb.id]) })!.twins.map((t) => t.id);
+    for (const rural of ['elko_nv', 'laramie_wy', 'ottumwa_ia', 'fillmore_ut', 'sedalia_mo', 'bemidji_mn']) {
+      expect(ids).not.toContain(rural);
+    }
   });
 
   it('never picks the site itself or a panel site within 50 km', () => {

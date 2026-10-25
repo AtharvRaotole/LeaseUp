@@ -70,3 +70,25 @@ describe('qlooProofSentence', () => {
     expect(detail).toMatch(/LeaseUp #1/);
   });
 });
+
+describe('twinRankingLine', () => {
+  it('names the taste twins only when the live order used them', async () => {
+    const { twinRankingLine } = await import('../lib/qloo-proof');
+    const base = LANDING_WICKER_PREVIEW as AnalysisResponse;
+    expect(twinRankingLine(base)).toBeNull();
+    expect(twinRankingLine({ ...base, rankingModel: { kind: 'standard' } })).toBeNull();
+    const line = twinRankingLine({
+      ...base,
+      rankingModel: {
+        kind: 'taste_twins',
+        twins: [
+          { id: 'a', label: 'Wellesley, MA' },
+          { id: 'b', label: 'Bethesda, MD' },
+        ],
+      },
+    });
+    expect(line).toMatch(/2 test markets whose Qloo taste is closest to this site: Wellesley, MA and Bethesda, MD\./);
+    expect(line).toMatch(/from 8\.2 to 9 of 10/);
+    expect(line).not.toMatch(/[\u2013\u2014]/);
+  });
+});

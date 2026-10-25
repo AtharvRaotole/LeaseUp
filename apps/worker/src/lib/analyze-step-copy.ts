@@ -16,12 +16,16 @@ export function formatBacktestStepSummary(input: {
   raw: BacktestResult;
   blended: BacktestResult;
   randomExpectedPresentAt10: number;
+  /** Number of taste twins in the live order (0 or undefined: standard logistic blend). */
+  tasteTwinCount?: number;
 }): { summary: string; detail: Record<string, number> } {
   const rawN = input.raw.presentInTop10 ?? Math.round(input.raw.precisionAt10 * 10);
   const blendN = input.blended.presentInTop10 ?? Math.round(input.blended.precisionAt10 * 10);
   const randomN = input.randomExpectedPresentAt10;
+  const twins = input.tasteTwinCount ?? 0;
   const summary =
-    `Adaptive ${input.adaptiveRadiusKm} km · raw ${rawN}/10 · blend ${blendN}/10 · random ~${randomN.toFixed(1)}/10`;
+    `Adaptive ${input.adaptiveRadiusKm} km · raw ${rawN}/10 · blend ${blendN}/10 · random ~${randomN.toFixed(1)}/10` +
+    (twins > 0 ? ` · blend uses ${twins} taste twins` : '');
   return {
     summary,
     detail: {
@@ -31,6 +35,7 @@ export function formatBacktestStepSummary(input: {
       randomExpectedPresentAt10: randomN,
       rawPrecisionAt10: input.raw.precisionAt10,
       blendedPrecisionAt10: input.blended.precisionAt10,
+      ...(twins > 0 ? { tasteTwinCount: twins } : {}),
     },
   };
 }

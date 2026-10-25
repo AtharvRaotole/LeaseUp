@@ -19,7 +19,6 @@ import {
   wickerparkFixture,
   boulderFixture,
   seviervilleFixture,
-  orderInsightsByLogisticBlend,
   DEMO_LOGISTIC_SITE_CONTEXT,
   defaultLogisticSiteContext,
   buildTierFitByEntityId,
@@ -77,6 +76,8 @@ import {
   buildTripleBacktest,
   enrichProspectsWithNearest,
   extractQlooSignals,
+  orderInsightsForSite,
+  tasteTwinsForRun,
 } from '../lib/analysis-enrichment';
 import { buildStrictEvalSnapshot } from '../lib/strict-eval-snapshot';
 import { emitAnalyzeKickoff, runStep, type StepEmitter } from '../lib/analysis-steps';
@@ -93,7 +94,7 @@ import {
   osmSnapshotDisplayLabel,
   osmSnapshotRecordedAt,
 } from './osm-snapshot-catalog';
-import { findTasteTwins, withTasteTwinEvidence } from '../lib/taste-twins';
+import { withTasteTwinEvidence, type TasteTwinSet } from '../lib/taste-twins';
 import { lookupTradeAreaTasteForProspect } from '../lib/trade-area-taste';
 import { enrichProspectsWhyBrandTaste } from '../lib/why-brand-taste-enrichment';
 import { getResponseCache } from '../lib/worker-cache';
@@ -317,6 +318,9 @@ export class AnalysisService {
             raw: triple.raw,
             blended: triple.blended,
             randomExpectedPresentAt10: randomExpected,
+            tasteTwinCount: tasteUnavailable || demoFixtureIdForDensity
+              ? 0
+              : (tasteTwinsForRun(location, insights)?.twins.length ?? 0),
           });
           return {
             summary: backtestCopy.summary,
@@ -520,8 +524,9 @@ export class AnalysisService {
         }
       }
 
+      const runTwins = tasteUnavailable ? null : tasteTwinsForRun(location, insights);
       if (!tasteUnavailable) {
-        const tasteTwinSet = findTasteTwins(location.latitude, location.longitude, insights);
+        const tasteTwinSet = runTwins;
         enrichedProspects = enrichedProspects.map((pack) => withTasteTwinEvidence(pack, tasteTwinSet));
       }
 
@@ -626,6 +631,7 @@ export class AnalysisService {
         tradeAreaShoppers,
         tasteDataStatus: tasteUnavailable ? 'unavailable' : 'ok',
         rankingNotice: tasteUnavailable ? TASTE_UNAVAILABLE_RANKING_NOTICE : undefined,
+        rankingModel: rankingModelFor(tasteUnavailable, demoFixtureId, runTwins),
         prospectFunnel,
         nearbyTenants: nearbyTenants.length > 0 ? nearbyTenants : undefined,
       };
@@ -750,7 +756,7 @@ export class AnalysisService {
       : defaultLogisticSiteContext(siteDensity, radius);
     const blended = tasteUnavailable
       ? chainRankedInsights(insights)
-      : orderInsightsByLogisticBlend(insights, blendSite);
+      : orderInsightsForSite(insights, location, blendSite).ordered;
     const tierFit = buildTierFitByEntityId(insights.map((i) => i.entity_id));
     const rankedCount = insights.length;
     const affinities = insights.map((i) => i.query?.affinity ?? 0).filter((a) => a > 0);
@@ -1439,4 +1445,16 @@ export class AnalysisService {
       model: result.model,
     };
   }
+}
+
+function rankingModelFor(
+  tasteUnavailable: boolean,
+  demoFixtureId: string | null | undefined,
+  twins: TasteTwinSet | null
+): AnalysisResponse['rankingModel'] {
+  if (tasteUnavailable) return undefined;
+  if (!demoFixtureId && twins) {
+    return { kind: 'taste_twins', twins: twins.twins.map((t) => ({ id: t.id, label: t.label })) };
+  }
+  return { kind: 'standard' };
 }

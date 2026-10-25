@@ -304,6 +304,13 @@ export const AnalysisResponseSchema = z.object({
   rankings: z.array(BrandRankingRowSchema).optional(),
   mapStores: z.array(MapStorePointSchema).optional(),
   heatmapAvailable: z.boolean().optional(),
+  /** Which order ranked this run: taste twin blend (live addresses) or the standard logistic blend. */
+  rankingModel: z
+    .object({
+      kind: z.enum(['taste_twins', 'standard']),
+      twins: z.array(z.object({ id: z.string(), label: z.string() })).optional(),
+    })
+    .optional(),
   prospects: z.array(ProspectPackSchema),
   dataQuality: z.enum(['high', 'medium', 'low', 'insufficient']),
   warnings: z.array(z.string()),

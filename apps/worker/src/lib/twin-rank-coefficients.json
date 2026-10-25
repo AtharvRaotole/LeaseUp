@@ -1,0 +1,39 @@
+{
+  "source": "scripts/eval/build-twin-rank-coefficients.py; eval data/qloo-eval-40/TWIN_RANK_EVAL.md",
+  "k": 5,
+  "excludeKm": 50,
+  "minCommonBrands": 30,
+  "rows": 10636,
+  "features": [
+    "logChainSize",
+    "qlooAffinityZ",
+    "twinShare"
+  ],
+  "coefficients": {
+    "logChainSize": 0.398039,
+    "qlooAffinityZ": 0.302968,
+    "twinShare": 0.87968
+  },
+  "mean": {
+    "logChainSize": 6.372227,
+    "qlooAffinityZ": -0.0,
+    "twinShare": 0.323148
+  },
+  "std": {
+    "logChainSize": 1.299292,
+    "qlooAffinityZ": 1.0,
+    "twinShare": 0.29937
+  },
+  "fullModel": {
+    "intercept": -0.959961,
+    "coefficients": {
+      "logChainSize": 0.398039,
+      "logRadiusKm": 0.870136,
+      "logDensity3km": 0.979981,
+      "tierUrban": -0.45532,
+      "tierSuburban": -0.29105,
+      "qlooAffinityZ": 0.302968,
+      "twinShare": 0.87968
+    }
+  }
+}
