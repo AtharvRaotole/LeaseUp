@@ -1,3 +1,4 @@
+import { meterSubrequest } from '../lib/subrequest-meter';
 import { loadStaticAssetJson } from '../lib/static-asset-memo';
 import type { NearbyTenant } from '@leaseup/contracts';
 import { coveringGeohash3 } from '../lib/geohash';
@@ -77,6 +78,7 @@ export class OsmSnapshotCatalog {
 
   private async fetchBrandsIndex(): Promise<BrandsIndex | null> {
     const data = await loadStaticAssetJson<BrandsIndex>(this.assets, 'osm-tiles:brands', async () => {
+      meterSubrequest('assets');
       const res = await this.assets.fetch('https://osm.local/osm-tiles/brands.json');
       if (!res.ok) return null;
       return (await res.json()) as BrandsIndex;
@@ -99,6 +101,7 @@ export class OsmSnapshotCatalog {
 
   private async fetchTile(gh: string): Promise<TilePayload | null> {
     const data = await loadStaticAssetJson<TilePayload>(this.assets, `osm-tiles:${gh}`, async () => {
+      meterSubrequest('assets');
       const res = await this.assets.fetch(`https://osm.local/osm-tiles/${gh}.json`);
       if (!res.ok) return null;
       return (await res.json()) as TilePayload;

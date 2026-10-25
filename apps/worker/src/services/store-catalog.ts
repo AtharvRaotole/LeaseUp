@@ -1,3 +1,4 @@
+import { meterSubrequest } from '../lib/subrequest-meter';
 import { loadStaticAssetJson } from '../lib/static-asset-memo';
 import {
   findStoresNearby as demoFindStoresNearby,
@@ -92,6 +93,7 @@ export class GeoTileStoreCatalog implements StoreCatalog {
   private async loadBrandsIndex(): Promise<BrandsIndex> {
     if (this.brandsIndex) return this.brandsIndex;
     const data = await loadStaticAssetJson<BrandsIndex>(this.assets, 'tiles:brands', async () => {
+      meterSubrequest('assets');
       const res = await this.assets.fetch('https://tiles.local/tiles/brands.json');
       if (!res.ok) {
         throw new Error(`Failed to load brands.json (${res.status})`);
@@ -108,6 +110,7 @@ export class GeoTileStoreCatalog implements StoreCatalog {
       return this.tileMemory.get(gh)!;
     }
     const data = await loadStaticAssetJson<TilePayload>(this.assets, `tiles:${gh}`, async () => {
+      meterSubrequest('assets');
       const res = await this.assets.fetch(`https://tiles.local/tiles/${gh}.json`);
       if (!res.ok) return null;
       return (await res.json()) as TilePayload;

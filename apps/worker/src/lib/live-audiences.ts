@@ -1,3 +1,4 @@
+import { meterSubrequest } from './subrequest-meter';
 import {
   createBrandExplainabilityStore,
   type BrandExplainabilityStore,
@@ -14,6 +15,7 @@ export async function loadLiveAudiences(
   assets: Fetcher | undefined
 ): Promise<BrandExplainabilityStore | null> {
   if (!assets) return null;
+  if (!pending) meterSubrequest('assets');
   pending ??= assets
     .fetch('https://osm.local/brand-explainability/live-audiences.compact.json')
     .then((r) => (r.ok ? (r.json() as Promise<LiveAudiencesCompact>) : null))
