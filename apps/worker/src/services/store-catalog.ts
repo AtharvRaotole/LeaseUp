@@ -1,3 +1,4 @@
+import { loadStaticAssetJson } from '../lib/static-asset-memo';
 import {
   findStoresNearby as demoFindStoresNearby,
   getNationalStoreCount as demoGetNationalStoreCount,
@@ -75,14 +76,13 @@ type TilePayload = { gh: string; stores: Array<[number, number, number]> };
 
 export class GeoTileStoreCatalog implements StoreCatalog {
   private assets: Fetcher;
-  private cache: ResponseCache;
   private brandsIndex: BrandsIndex | null = null;
   private tileMemory = new Map<string, TilePayload>();
   private demoFallback = new DemoStoreCatalog();
 
-  constructor(assets: Fetcher, cache: ResponseCache) {
+  /** The response cache argument is kept for callers; static tiles no longer use the Cache API. */
+  constructor(assets: Fetcher, _cache?: ResponseCache) {
     this.assets = assets;
-    this.cache = cache;
   }
 
   getBrandIds(): string[] {
@@ -91,18 +91,15 @@ export class GeoTileStoreCatalog implements StoreCatalog {
 
   private async loadBrandsIndex(): Promise<BrandsIndex> {
     if (this.brandsIndex) return this.brandsIndex;
-    const cached = (await this.cache.get('tiles:brands', 'json')) as BrandsIndex | null;
-    if (cached) {
-      this.brandsIndex = cached;
-      return cached;
-    }
-    const res = await this.assets.fetch('https://tiles.local/tiles/brands.json');
-    if (!res.ok) {
-      throw new Error(`Failed to load brands.json (${res.status})`);
-    }
-    const data = (await res.json()) as BrandsIndex;
+    const data = await loadStaticAssetJson<BrandsIndex>(this.assets, 'tiles:brands', async () => {
+      const res = await this.assets.fetch('https://tiles.local/tiles/brands.json');
+      if (!res.ok) {
+        throw new Error(`Failed to load brands.json (${res.status})`);
+      }
+      return (await res.json()) as BrandsIndex;
+    });
+    if (!data) throw new Error('Failed to load brands.json');
     this.brandsIndex = data;
-    await this.cache.putJsonIfChanged('tiles:brands', data, 86400);
     return data;
   }
 
@@ -110,17 +107,12 @@ export class GeoTileStoreCatalog implements StoreCatalog {
     if (this.tileMemory.has(gh)) {
       return this.tileMemory.get(gh)!;
     }
-    const kvKey = `tiles:${gh}`;
-    const cached = (await this.cache.get(kvKey, 'json')) as TilePayload | null;
-    if (cached) {
-      this.tileMemory.set(gh, cached);
-      return cached;
-    }
-    const res = await this.assets.fetch(`https://tiles.local/tiles/${gh}.json`);
-    if (!res.ok) return null;
-    const data = (await res.json()) as TilePayload;
-    this.tileMemory.set(gh, data);
-    await this.cache.putJsonIfChanged(kvKey, data, 86400);
+    const data = await loadStaticAssetJson<TilePayload>(this.assets, `tiles:${gh}`, async () => {
+      const res = await this.assets.fetch(`https://tiles.local/tiles/${gh}.json`);
+      if (!res.ok) return null;
+      return (await res.json()) as TilePayload;
+    });
+    if (data) this.tileMemory.set(gh, data);
     return data;
   }
 

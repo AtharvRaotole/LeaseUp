@@ -52,6 +52,51 @@ export function isProspectingAgentEntityId(entityId: string): boolean {
   );
 }
 
+function normalizeBrandKey(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '');
+}
+
+export type AgentEntityResolution =
+  | { ok: true; entityId: string; resolvedFromName?: string }
+  | { ok: false; reason: 'missing' | 'not_in_panel'; asked?: string };
+
+/**
+ * The model sometimes passes a brand name instead of the panel id. Resolve it against the
+ * fetched Qloo panel; never guess outside it.
+ */
+export function resolveAgentEntityId(
+  raw: unknown,
+  insights?: QlooInsight[]
+): AgentEntityResolution {
+  const value = String(raw ?? '').trim();
+  if (!value) return { ok: false, reason: 'missing' };
+  if (isProspectingAgentEntityId(value)) return { ok: true, entityId: value };
+  const key = normalizeBrandKey(value);
+  const row = key
+    ? insights?.find(
+        (i) =>
+          normalizeBrandKey(i.name ?? '') === key ||
+          normalizeBrandKey(displayBrandName(i.entity_id, i.name)) === key
+      )
+    : undefined;
+  if (row && isProspectingAgentEntityId(row.entity_id)) {
+    return { ok: true, entityId: row.entity_id, resolvedFromName: value };
+  }
+  return { ok: false, reason: 'not_in_panel', asked: value.slice(0, 60) };
+}
+
+function unresolvedSummary(res: Extract<AgentEntityResolution, { ok: false }>): string {
+  return res.reason === 'not_in_panel'
+    ? `Not checked: ${res.asked} is not in the fetched Qloo panel.`
+    : 'Not checked (missing brand id).';
+}
+
+const UNRESOLVED_OBSERVATION =
+  'Not checked. Pass an entityId from topByAffinity in the qloo_brand_insights result.';
+
 /** Display name for a brand id from the fetched panel (never a bare id in receipt text). */
 export function agentBrandName(entityId: string, insights?: QlooInsight[]): string {
   const row = insights?.find((i) => i.entity_id === entityId);
@@ -138,16 +183,17 @@ export async function executeProspectingAgentTool(
       };
     }
     case 'store_presence_lookup': {
-      const entityId = String(call.arguments.entityId ?? '').trim();
       const radiusKm = Number(call.arguments.radiusKm) || ctx.radiusKm;
-      if (!isProspectingAgentEntityId(entityId)) {
+      const resolved = resolveAgentEntityId(call.arguments.entityId, ctx.lastInsights);
+      if (!resolved.ok) {
         return {
-          summary:
-            'Store presence not checked (missing brand id). Use nearest_store_check once a brand is selected.',
+          summary: unresolvedSummary(resolved),
+          observation: UNRESOLVED_OBSERVATION,
           qlooCalls: 0,
-          payload: { entityId: entityId || undefined, checked: false, radiusKm },
+          payload: { asked: resolved.asked, checked: false, radiusKm, reason: resolved.reason },
         };
       }
+      const entityId = resolved.entityId;
       const nearby = await presence.storesNearby(entityId, radiusKm);
       return {
         summary: nearby.length
@@ -164,14 +210,16 @@ export async function executeProspectingAgentTool(
       };
     }
     case 'nearest_store_check': {
-      const entityId = String(call.arguments.entityId ?? '').trim();
-      if (!isProspectingAgentEntityId(entityId)) {
+      const resolved = resolveAgentEntityId(call.arguments.entityId, ctx.lastInsights);
+      if (!resolved.ok) {
         return {
-          summary: 'Nearest store not checked (missing brand id).',
+          summary: unresolvedSummary(resolved),
+          observation: UNRESOLVED_OBSERVATION,
           qlooCalls: 0,
-          payload: { entityId: entityId || undefined, checked: false },
+          payload: { asked: resolved.asked, checked: false, reason: resolved.reason },
         };
       }
+      const entityId = resolved.entityId;
       const reconciled = await reconcileNearestStoreKm(
         entityId,
         ctx.location,
