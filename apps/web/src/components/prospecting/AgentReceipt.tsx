@@ -6,6 +6,7 @@ import {
   agentReceiptMarkdown,
   buildPipelineReceiptRows,
   buildPlannerReceiptSection,
+  buildReviewReceiptSection,
   downloadAgentReceiptFile,
   loggedProspectingSteps,
 } from '../../lib/agent-receipt';
@@ -13,6 +14,7 @@ import { cn } from '../../lib/cn';
 
 export function AgentReceipt({ job }: { job: ProspectingJob }) {
   const planner = useMemo(() => buildPlannerReceiptSection(job), [job]);
+  const review = useMemo(() => buildReviewReceiptSection(job), [job]);
   const rows = useMemo(() => buildPipelineReceiptRows(job), [job]);
   const loggedCount = loggedProspectingSteps(job.steps).length;
   const [open, setOpen] = useState(true);
@@ -107,6 +109,58 @@ export function AgentReceipt({ job }: { job: ProspectingJob }) {
               </ul>
             )}
           </div>
+
+          {review && (
+            <div className="mt-6" data-testid="agent-receipt-review">
+              <h3 className="text-sm font-semibold text-ink">Review after ranking</h3>
+              {review.fallbackLine && (
+                <p className="mt-2 text-sm text-ink-2 break-words">{review.fallbackLine}</p>
+              )}
+              <p className="mt-2 text-sm text-ink-2 break-words" data-testid="agent-receipt-review-summary">
+                {review.summary}
+              </p>
+              {review.actions.length > 0 && (
+                <ul className="mt-3 space-y-2.5">
+                  {review.actions.map((action, index) => (
+                    <li
+                      key={`review-${index}`}
+                      className="rounded-control border border-border bg-surface-2/40 px-3 py-2.5 sm:px-4"
+                      data-testid={`agent-receipt-review-action-${index}`}
+                    >
+                      <p className="text-sm text-ink-2 break-words">
+                        <span className="font-medium text-ink">{action.plannerLabel}: </span>
+                        {action.reason}
+                      </p>
+                      {action.resultSummary && (
+                        <p className="mt-1 text-sm text-ink-2 break-words">
+                          <span className="font-medium text-ink">
+                            {action.outcome === 'lifted' ? 'Result: ' : 'Blocked: '}
+                          </span>
+                          {action.resultSummary}
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+                <div
+                  className="rounded-control border border-border px-3 py-2.5"
+                  data-testid="agent-receipt-review-before"
+                >
+                  <dt className="text-xs text-ink-3">Top 5 before review</dt>
+                  <dd className="mt-1 text-ink-2 break-words">{review.before.join(', ')}</dd>
+                </div>
+                <div
+                  className="rounded-control border border-border px-3 py-2.5"
+                  data-testid="agent-receipt-review-after"
+                >
+                  <dt className="text-xs text-ink-3">Top 5 after review</dt>
+                  <dd className="mt-1 text-ink-2 break-words">{review.after.join(', ')}</dd>
+                </div>
+              </dl>
+            </div>
+          )}
 
           <h3 className="mt-6 text-sm font-semibold text-ink">Run steps</h3>
           <ol className="mt-3 space-y-3" data-testid="agent-receipt-steps">

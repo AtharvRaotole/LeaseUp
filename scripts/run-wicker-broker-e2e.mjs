@@ -80,7 +80,7 @@ try {
   await waitFor(`http://127.0.0.1:${WORKER_PORT}/api/health`);
   await waitFor(`http://127.0.0.1:${PREVIEW_PORT}/`);
   run(
-    `PLAYWRIGHT_BASE_URL=http://127.0.0.1:${PREVIEW_PORT} PLAYWRIGHT_API_URL=http://127.0.0.1:${WORKER_PORT} pnpm exec playwright test e2e/wicker-broker-report.spec.ts e2e/report-brands-visible.spec.ts`
+    `PLAYWRIGHT_BASE_URL=http://127.0.0.1:${PREVIEW_PORT} PLAYWRIGHT_API_URL=http://127.0.0.1:${WORKER_PORT} pnpm exec playwright test e2e/wicker-broker-report.spec.ts e2e/report-brands-visible.spec.ts e2e/prospecting-receipt-review.spec.ts`
   );
 } finally {
   worker.kill('SIGTERM');

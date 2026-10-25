@@ -34,6 +34,23 @@ export type PlannerReceiptSection = {
   planSummary: string | null;
 };
 
+export type ReviewReceiptAction = {
+  plannerLabel: 'Rule' | 'Agent';
+  outcome: 'lifted' | 'rejected';
+  reason: string;
+  resultSummary: string;
+};
+
+export type ReviewReceiptSection = {
+  plannerLabel: 'Rule' | 'Agent';
+  summary: string;
+  changed: boolean;
+  before: string[];
+  after: string[];
+  actions: ReviewReceiptAction[];
+  fallbackLine: string | null;
+};
+
 export const PLANNER_UNAVAILABLE_LINE = 'Planner unavailable, used the standard steps.';
 
 /** Steps the server actually logged (never invent rows). */
@@ -142,6 +159,53 @@ export function buildPlannerReceiptSection(job: ProspectingJob): PlannerReceiptS
   };
 }
 
+function reviewNames(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((row) =>
+      row && typeof row === 'object' ? String((row as { name?: unknown }).name ?? '').trim() : ''
+    )
+    .filter(Boolean)
+    .map((name) => plainProspectingStepResult(name));
+}
+
+/** Post-ranking review the server logged on the agent_plan step (null on older runs). */
+export function buildReviewReceiptSection(job: ProspectingJob): ReviewReceiptSection | null {
+  const review = agentPlanDetail(job)?.review;
+  if (!review || typeof review !== 'object') return null;
+  const r = review as Record<string, unknown>;
+  const before = reviewNames(r.before);
+  const after = reviewNames(r.after);
+  if (before.length === 0) return null;
+  const plannerLabel: 'Rule' | 'Agent' = r.planner === 'model' ? 'Agent' : 'Rule';
+  const actions: ReviewReceiptAction[] = [];
+  if (Array.isArray(r.actions)) {
+    for (const entry of r.actions) {
+      if (!entry || typeof entry !== 'object') continue;
+      const a = entry as Record<string, unknown>;
+      const label: 'Rule' | 'Agent' = a.planner === 'model' ? 'Agent' : 'Rule';
+      actions.push({
+        plannerLabel: label,
+        outcome: a.outcome === 'lifted' ? 'lifted' : 'rejected',
+        reason: receiptToolReason(label, String(a.reason ?? '')),
+        resultSummary: sanitizePlannerResultSummary(String(a.resultSummary ?? '')),
+      });
+    }
+  }
+  const fallback = typeof r.fallbackReason === 'string' && r.fallbackReason.trim();
+  return {
+    plannerLabel,
+    summary: plainProspectingStepResult(String(r.summary ?? '')),
+    changed: r.changed === true,
+    before,
+    after: after.length ? after : before,
+    actions,
+    fallbackLine: fallback
+      ? `Model review unavailable (${sanitizePlannerReasonText(fallback)}). Rule review used.`
+      : null,
+  };
+}
+
 function buildPipelineStepRow(step: ProspectingStep, job: ProspectingJob): AgentReceiptStepRow {
   return {
     id: step.id,
@@ -175,6 +239,7 @@ export type AgentReceiptExport = {
   pitchId?: string;
   analysisRunId?: string;
   planner: PlannerReceiptSection;
+  review: ReviewReceiptSection | null;
   steps: AgentReceiptStepRow[];
 };
 
@@ -187,6 +252,7 @@ export function agentReceiptExport(job: ProspectingJob): AgentReceiptExport {
     pitchId: job.pitchId,
     analysisRunId: job.analysisRunId,
     planner: buildPlannerReceiptSection(job),
+    review: buildReviewReceiptSection(job),
     steps: buildPipelineReceiptRows(job),
   };
 }
@@ -224,6 +290,18 @@ export function agentReceiptMarkdown(job: ProspectingJob): string {
   for (const tool of planner.decisions) {
     lines.push(`- ${tool.plannerLabel}: ${tool.reason}`);
     if (tool.resultSummary) lines.push(`  - Result: ${tool.resultSummary}`);
+  }
+  const review = buildReviewReceiptSection(job);
+  if (review) {
+    lines.push('', '## Review after ranking', '');
+    if (review.fallbackLine) lines.push(review.fallbackLine);
+    lines.push(review.summary);
+    for (const action of review.actions) {
+      lines.push(`- ${action.plannerLabel}: ${action.reason}`);
+      if (action.resultSummary) lines.push(`  - Result: ${action.resultSummary}`);
+    }
+    lines.push(`Top 5 before review: ${review.before.join(', ')}`);
+    lines.push(`Top 5 after review: ${review.after.join(', ')}`);
   }
   lines.push('', '## Run steps', '');
   for (const row of rows) {

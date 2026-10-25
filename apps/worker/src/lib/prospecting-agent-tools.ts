@@ -10,6 +10,7 @@ import { DemoModeRequiredError } from './demo-mode';
 import type { Env } from '../index';
 import type { QlooClient, QlooInsight, QlooLocation } from '../providers/qloo';
 import { reconcileNearestStoreKm } from './nearest-store-reconcile';
+import { displayBrandName } from './brand-display';
 import { buildChainSizeInsightsFromCatalog } from './qloo-chain-fallback';
 import { loadTradeAreaTasteForProspect } from './trade-area-taste';
 import { NearbyPresenceCache } from './nearby-presence-cache';
@@ -37,6 +38,8 @@ export type ProspectingAgentToolCall = {
 
 export type ProspectingAgentToolResult = {
   summary: string;
+  /** Longer result sent back to the model planner (defaults to summary). */
+  observation?: string;
   qlooCalls: number;
   payload?: Record<string, unknown>;
 };
@@ -47,6 +50,25 @@ export function isProspectingAgentEntityId(entityId: string): boolean {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
     trimmed
   );
+}
+
+/** Display name for a brand id from the fetched panel (never a bare id in receipt text). */
+export function agentBrandName(entityId: string, insights?: QlooInsight[]): string {
+  const row = insights?.find((i) => i.entity_id === entityId);
+  return row ? displayBrandName(entityId, row.name) : 'the selected brand';
+}
+
+/** Top of the fetched panel so the model can pick real brand ids for follow-up checks. */
+export function panelObservation(rows: QlooInsight[], limit = 12): string {
+  const top = [...rows]
+    .sort((a, b) => (a.query?.affinity_rank ?? 9999) - (b.query?.affinity_rank ?? 9999))
+    .slice(0, limit)
+    .map((r) => ({
+      entityId: r.entity_id,
+      name: displayBrandName(r.entity_id, r.name),
+      affinityRank: r.query?.affinity_rank,
+    }));
+  return JSON.stringify({ brandCount: rows.length, topByAffinity: top });
 }
 
 export type ProspectingAgentToolContext = {
@@ -110,6 +132,7 @@ export async function executeProspectingAgentTool(
       ctx.state.insights = rows;
       return {
         summary: `Qloo returned ${rows.length} brand insights (take=${take}).`,
+        observation: panelObservation(rows),
         qlooCalls: 1,
         payload: { brandCount: rows.length, topEntityId: rows[0]?.entity_id },
       };
@@ -156,10 +179,11 @@ export async function executeProspectingAgentTool(
         osmSnapshot
       );
       const km = reconciled.km;
+      const brandName = agentBrandName(entityId, ctx.lastInsights);
       const summary =
         km === undefined
-          ? 'No nearest store found in ATP/OSM scan.'
-          : `Nearest store ${km.toFixed(2)} km${reconciled.unconfirmed ? ' (ATP/OSM disagree)' : ''}.`;
+          ? `No nearest ${brandName} store found in ATP/OSM scan.`
+          : `Nearest ${brandName} store ${km.toFixed(2)} km${reconciled.unconfirmed ? ' (ATP/OSM disagree)' : ''}.`;
       return {
         summary,
         qlooCalls: 0,
@@ -200,14 +224,16 @@ export async function executeProspectingAgentTool(
       );
       const audienceCount = taste?.audiences?.length ?? 0;
       const usedQloo = !fixtureId && audienceCount > 0;
-      ctx.state.stratumBoostEntityIds.add(entityId);
+      const brandName = agentBrandName(entityId, ctx.lastInsights);
+      // Only verified overlap earns a ranking boost; a check that finds nothing changes nothing.
       if (taste && audienceCount > 0) {
+        ctx.state.stratumBoostEntityIds.add(entityId);
         ctx.state.preloadedTradeAreaTaste.set(entityId, taste);
       }
       return {
         summary: audienceCount
-          ? `Stratum ${stratum}: ${audienceCount} verified local audience overlap(s) for brand ${entityId}.`
-          : `Stratum ${stratum}: no verified trade-area taste overlap for ${entityId}.`,
+          ? `Stratum ${stratum}: ${audienceCount} verified local audience overlap(s) for ${brandName}.`
+          : `Stratum ${stratum}: no verified trade-area taste overlap for ${brandName}; ranking unchanged.`,
         qlooCalls: usedQloo ? 1 : 0,
         payload: { stratum, entityId, audienceCount, tradeAreaTaste: taste },
       };

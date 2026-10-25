@@ -6,6 +6,7 @@ import {
   buildPipelineReceiptRows,
   buildPlannerReceiptSection,
   buildPlannerUnavailableLine,
+  buildReviewReceiptSection,
   loggedProspectingSteps,
   parseAgentToolDecisions,
   plainProspectingStepResult,
@@ -137,5 +138,84 @@ describe('agent receipt', () => {
     expect(blob).not.toMatch(/\bQID\b/i);
     expect(blob).not.toMatch(/P@10/);
     expect(blob).not.toMatch(/41\.909/);
+  });
+
+  it('shows the post-ranking review with before and after top 5', () => {
+    const plan = DEMO_PROSPECTING_RECEIPT_JOB.steps.find((st) => st.id === 'agent_plan')!;
+    const names = (xs: string[]) => xs.map((name, i) => ({ entityId: `id-${i}`, name }));
+    const job = {
+      ...DEMO_PROSPECTING_RECEIPT_JOB,
+      steps: DEMO_PROSPECTING_RECEIPT_JOB.steps.map((st) =>
+        st.id === 'agent_plan'
+          ? {
+              ...plan,
+              detail: {
+                ...(plan.detail as object),
+                review: {
+                  planner: 'rule',
+                  changed: true,
+                  summary: 'Review changed the top 5 with 1 evidence-backed lift.',
+                  before: names(['TJ Maxx', "Victoria's Secret", 'J.Crew', 'H&M', 'Vans']),
+                  after: names(['TJ Maxx', 'Vans', "Victoria's Secret", 'J.Crew', 'H&M']),
+                  actions: [
+                    {
+                      planner: 'rule',
+                      tool: 'lift_pitch',
+                      outcome: 'lifted',
+                      reason:
+                        "Rule: put a pitch with local audience evidence (Vans) ahead of one without (Victoria's Secret).",
+                      resultSummary:
+                        "Vans moved from #5 to #2 (2 verified local audience overlaps); Victoria's Secret has none.",
+                    },
+                  ],
+                },
+              },
+            }
+          : st
+      ),
+    };
+    const review = buildReviewReceiptSection(job)!;
+    expect(review.plannerLabel).toBe('Rule');
+    expect(review.actions[0]?.reason).toBe(
+      "put a pitch with local audience evidence (Vans) ahead of one without (Victoria's Secret)."
+    );
+    expect(review.after[1]).toBe('Vans');
+    const md = agentReceiptMarkdown(job);
+    expect(md).toContain('## Review after ranking');
+    expect(md).toContain("Top 5 before review: TJ Maxx, Victoria's Secret, J.Crew, H&M, Vans");
+    expect(md).toContain("Top 5 after review: TJ Maxx, Vans, Victoria's Secret, J.Crew, H&M");
+    expect(JSON.parse(agentReceiptJson(job)).review.changed).toBe(true);
+  });
+
+  it('omits the review section on older runs without review detail', () => {
+    expect(buildReviewReceiptSection(DEMO_PROSPECTING_RECEIPT_JOB)).toBeNull();
+    expect(agentReceiptMarkdown(DEMO_PROSPECTING_RECEIPT_JOB)).not.toContain('Review after ranking');
+  });
+
+  it('keeps rule planner reasons readable after sanitizing', () => {
+    const job = {
+      ...DEMO_PROSPECTING_RECEIPT_JOB,
+      steps: [
+        {
+          id: 'agent_plan' as const,
+          label: 'Plan site checks',
+          status: 'complete' as const,
+          detail: {
+            mode: 'agent',
+            agentSteps: [
+              {
+                planner: 'rule',
+                tool: 'nearest_store_check',
+                reason: 'Rule: reconcile the nearest store for the strongest taste match.',
+                resultSummary: 'Nearest Whole Foods Market store 2.01 km.',
+              },
+            ],
+          },
+        },
+      ],
+    };
+    expect(buildPlannerReceiptSection(job).decisions[0]?.reason).toBe(
+      'reconcile the nearest store for the strongest taste match.'
+    );
   });
 });
