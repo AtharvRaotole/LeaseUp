@@ -381,7 +381,7 @@ export class ProspectingService {
 
       const reviewed = await runProspectingAgentReview({
         prospects: result.prospects,
-        client: createProspectingReviewClient(this.env, job.input.address),
+        client: createProspectingReviewClient(this.env),
         neighborhood: result.location.neighborhood,
       });
       result.prospects = reviewed.prospects;

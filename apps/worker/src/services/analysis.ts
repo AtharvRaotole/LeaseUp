@@ -93,7 +93,7 @@ import {
   osmSnapshotDisplayLabel,
   osmSnapshotRecordedAt,
 } from './osm-snapshot-catalog';
-import { loadTradeAreaTasteForProspect } from '../lib/trade-area-taste';
+import { lookupTradeAreaTasteForProspect } from '../lib/trade-area-taste';
 import { enrichProspectWhyBrandTaste } from '../lib/why-brand-taste-enrichment';
 import { getResponseCache } from '../lib/worker-cache';
 import type { ResponseCache } from '../lib/response-cache';
@@ -427,20 +427,22 @@ export class AnalysisService {
             enrichedProspects.map(async (pack) => {
               const insight = insights.find((i) => i.entity_id === pack.brand.entityId);
               const signals = insight ? extractQlooSignals(insight) : [];
-              const tradeAreaTaste =
-                agentDagHooks?.preloadedTradeAreaTaste?.get(pack.brand.entityId) ??
-                (await loadTradeAreaTasteForProspect(
-                  qloo,
-                  location,
-                  pack.brand.entityId,
-                  request.radius,
-                  runId,
-                  this.assets
-                ));
+              const preloaded = agentDagHooks?.preloadedTradeAreaTaste?.get(pack.brand.entityId);
+              const lookup = preloaded
+                ? { taste: preloaded, checked: true }
+                : await lookupTradeAreaTasteForProspect(
+                    qloo,
+                    location,
+                    pack.brand.entityId,
+                    request.radius,
+                    runId,
+                    this.assets
+                  );
               return {
                 ...pack,
                 qlooSignals: signals.length > 0 ? signals : undefined,
-                tradeAreaTaste,
+                tradeAreaTaste: lookup.taste,
+                tradeAreaTasteChecked: lookup.checked,
               };
             })
           ),

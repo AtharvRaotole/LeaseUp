@@ -168,6 +168,16 @@ describe('agent receipt', () => {
                         "Vans moved from #5 to #2 (2 verified local audience overlaps); Victoria's Secret has none.",
                     },
                   ],
+                  modelUsage: { calls: 2, promptTokens: 900, completionTokens: 120 },
+                  outcome: {
+                    standardTop5: names(['TJ Maxx', "Victoria's Secret", 'J.Crew', 'H&M', 'Vans']),
+                    finalTop5: names(['TJ Maxx', 'Vans', "Victoria's Secret", 'J.Crew', 'H&M']),
+                    top3Changed: true,
+                    top5Changed: true,
+                    enteredTop5: [],
+                    leftTop5: [],
+                    summary: "Changed vs the standard ranking: Vans #5 to #2; Victoria's Secret #2 to #3.",
+                  },
                 },
               },
             }
@@ -175,6 +185,9 @@ describe('agent receipt', () => {
       ),
     };
     const review = buildReviewReceiptSection(job)!;
+    expect(review.standard[4]).toBe('Vans');
+    expect(review.outcomeLine).toBe("Changed vs the standard ranking: Vans #5 to #2; Victoria's Secret #2 to #3.");
+    expect(review.usageLine).toBe('Model review used 2 gpt-4o-mini calls, 1,020 tokens.');
     expect(review.plannerLabel).toBe('Rule');
     expect(review.actions[0]?.reason).toBe(
       "put a pitch with local audience evidence (Vans) ahead of one without (Victoria's Secret)."
@@ -184,7 +197,10 @@ describe('agent receipt', () => {
     expect(md).toContain('## Review after ranking');
     expect(md).toContain("Top 5 before review: TJ Maxx, Victoria's Secret, J.Crew, H&M, Vans");
     expect(md).toContain("Top 5 after review: TJ Maxx, Vans, Victoria's Secret, J.Crew, H&M");
+    expect(md).toContain("Top 5, standard ranking: TJ Maxx, Victoria's Secret, J.Crew, H&M, Vans");
+    expect(md).toContain('Changed vs the standard ranking: Vans #5 to #2');
     expect(JSON.parse(agentReceiptJson(job)).review.changed).toBe(true);
+    expect(JSON.parse(agentReceiptJson(job)).raw.agentPlanDetail.review.outcome.top3Changed).toBe(true);
   });
 
   it('omits the review section on older runs without review detail', () => {

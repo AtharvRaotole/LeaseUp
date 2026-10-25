@@ -150,6 +150,8 @@ export const ProspectPackSchema = z.object({
   nearestExistingStoreUnconfirmed: z.boolean().optional(),
   qlooSignals: z.array(z.string()).optional(),
   tradeAreaTaste: TradeAreaTasteContextSchema.optional(),
+  /** True when local audience overlap was checked (recorded pair or live Qloo); absent means unknown. */
+  tradeAreaTasteChecked: z.boolean().optional(),
   whyBrandTaste: WhyBrandTasteSchema.optional(),
   brandReach: BrandReachContactSchema.optional(),
   /** Qloo co-affinity with OSM incumbents; omitted when unknown. */
