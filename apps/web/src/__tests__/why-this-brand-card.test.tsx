@@ -120,6 +120,15 @@ describe('WhyThisBrandCard', () => {
     expect(none).toContain('REI has no store in any of the 5 test markets');
     const plain = renderToStaticMarkup(<WhyThisBrandCard prospect={prospect} results={results} radiusKm={10} />);
     expect(plain).not.toContain('why-taste-twins');
+    const ranked = renderToStaticMarkup(
+      <WhyThisBrandCard
+        prospect={withTwins}
+        results={{ ...results, rankingModel: { kind: 'taste_twins', twins: [{ id: 'a2', label: 'Ann Arbor, MI' }] } }}
+        radiusKm={10}
+      />
+    );
+    expect(ranked).toContain('one input to the pitch order on this run');
+    expect(ranked).not.toContain('it does not change the ranking');
   });
 
   it('renders nothing without a prospect', () => {
