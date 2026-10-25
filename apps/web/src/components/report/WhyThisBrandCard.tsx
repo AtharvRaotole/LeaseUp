@@ -27,7 +27,7 @@ export function WhyThisBrandCard({
   const name = displayBrandName(prospect.brand.entityId, prospect.brand.name);
   const taste = whyBrandTasteSection(prospect, results);
   const hasTaste = taste.signalLines.length > 0 || Boolean(taste.summary);
-  const twins = tasteTwinCopy(prospect, name);
+  const twins = tasteTwinCopy(prospect, name, results?.rankingModel?.kind === 'taste_twins');
 
   return (
     <Card className={cn('mb-4 print-pitch-block md:mb-4', className)} data-testid="why-this-brand">

@@ -266,7 +266,7 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 1. After geocoding, WKT `POINT(lon lat)` plus `signal.location.radius` in meters (2, 5, or 10 km).
 2. **`GET /v2/insights`** per brand batch: `filter.type=urn:entity:brand`, up to **45** entity IDs per request, **227** tracked chains, `take` capped at **50**, `feature.explainability=true` where supported.
-3. Insights merged and re-ranked with **`orderInsightsByLogisticBlend`** (coefficients in `packages/fixtures/src/eval/live-qloo-lift/logistic-coefficients.json`).
+3. Insights merged and re-ranked with **`orderInsightsByLogisticBlend`** (coefficients in `packages/fixtures/src/eval/live-qloo-lift/logistic-coefficients.json`), or with the taste twin blend on live non-demo addresses (below).
 4. Heatmap is not used to order the pitch list (offline eval showed no ranking lift vs insights alone).
 
 **Trade area shoppers (tags):**
@@ -278,7 +278,8 @@ Demo chips use recorded Qloo JSON so judge demos stay fast.
 
 1. The brand insights from step 2 above become a site taste vector (per-site z-score minus each brand's panel mean).
 2. Pearson similarity against the **40** recorded panel markets (static `taste-twin-panel.json`, built from `data/qloo-eval-40` by `scripts/eval/build-taste-twin-panel.py`), skipping any within **50 km**; the closest **5** are the twins.
-3. Each pitch gets `tasteTwins` (present in N of 5, which markets). Evidence only; ranking unchanged.
+3. Each pitch gets `tasteTwins` (present in N of 5, which markets).
+4. On live addresses that are not one of the three demo chips, the pitch order uses a twin blend (`orderInsightsByTwinBlend` in `apps/worker/src/lib/twin-rank.ts`): chain size, Qloo affinity and the share of twins where the brand trades. Leave one site out on the 40 panel, top 10 hits rose from 8.2 to 9.0 of 10 (all brands) and from 6.4 to 7.3 (top 50 pool); details in `data/qloo-eval-40/TWIN_RANK_EVAL.md`. The run says which model it used (`rankingModel`). Demo chips keep the logistic blend.
 
 **Demo mode:** recorded brand insights and shopper tag fixtures for Wicker, Boulder, and Sevierville.
 
