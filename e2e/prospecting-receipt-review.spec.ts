@@ -30,9 +30,15 @@ test.describe('Prospecting agent receipt', () => {
     await expect(page.getByTestId('agent-receipt-review-summary')).toContainText(
       'eligible lifts declined with a reason'
     );
+    // The first call is a decline with its comparable market numbers; a later one is the lift.
     await expect(page.getByTestId('agent-receipt-review-action-0')).toContainText(
-      'Vans moved from #5 to #4'
+      'Rule: keep the order; overlap alone is weak and Vans trades in fewer comparable markets'
     );
+    await expect(
+      page
+        .locator('[data-testid^="agent-receipt-review-action-"]')
+        .filter({ hasText: 'Vans moved from #5 to #4' })
+    ).toHaveCount(1);
     await expect(page.getByTestId('agent-receipt-review-before')).toContainText(
       "TJ Maxx, Victoria's Secret, J.Crew, H&M, Vans"
     );
