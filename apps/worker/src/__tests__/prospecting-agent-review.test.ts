@@ -299,6 +299,13 @@ describe('runProspectingAgentReview', () => {
     expect(plainReviewReason('panelMarketShare is missing; twinMarketsWithStore is 3 of 5 twinMarkets.')).toBe(
       'Share of panel markets is missing; taste twin markets with a store is 3 of 5 taste twin markets.'
     );
+    // deploy48 live wording, and the model naming the field on both sides.
+    expect(plainReviewReason("Vans's panelMarketShare of 0.19 is below Nike's of 0.24 minus 0.10.")).toBe(
+      "Vans's share of panel markets (19%) is below Nike's 24% minus 10 points."
+    );
+    expect(
+      plainReviewReason("Vans's panelMarketShare of 0.19 is below Nike's panelMarketShare of 0.24 minus 0.10.")
+    ).toBe("Vans's share of panel markets (19%) is below Nike's 24% minus 10 points.");
     expect(endSentence('Kept Nike above Tiffany & Co.')).toBe('Kept Nike above Tiffany & Co.');
     expect(endSentence('Kept Nike above Vans')).toBe('Kept Nike above Vans.');
   });

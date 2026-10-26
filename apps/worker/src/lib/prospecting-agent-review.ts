@@ -90,6 +90,9 @@ export function plainReviewReason(reason: string): string {
     .replace(/\btwinMarketsWithStore\b/g, 'taste twin markets with a store')
     .replace(/\btwinMarkets\b/g, 'taste twin markets')
     .replace(/\bcomparableMarkets\b/g, 'comparable markets')
+    .replace(/(\d+%\)?) minus 0?\.10?\b/g, '$1 minus 10 points')
+    // "Nike's of 24%" or "Nike's share of panel markets (24%) minus" read as "Nike's 24% minus".
+    .replace(/'s (?:of |share of panel markets \()(\d+%)\)?(?= minus)/g, "'s $1")
     .replace(/^[a-z]/, (c) => c.toUpperCase());
 }
 
