@@ -8,6 +8,8 @@ import {
   type Location,
 } from '@leaseup/contracts';
 import { analyzeStreamErrorPayload } from '../lib/analyze-stream-error';
+import { liveOffloadBinding } from '../lib/live-offload-client';
+import { withSubrequestMeter } from '../lib/subrequest-meter';
 import { AnalysisService } from '../services/analysis';
 import { randomUUID } from 'node:crypto';
 import {
@@ -18,6 +20,15 @@ import {
 
 /** Browsers and the edge may reuse a recorded demo report briefly; it only changes on deploy. */
 const RECORDED_DEMO_CACHE_CONTROL = 'public, max-age=300';
+
+/**
+ * ctx.exports.LiveOffload, the free loopback binding prospecting runs already use, so a live
+ * analyze fans its per brand audience and co-tenancy lookups out to their own invocations
+ * instead of spending this invocation's Workers Free budget of 50 subrequests.
+ */
+function withLiveOffload(c: Context<{ Bindings: Env }>): Env {
+  return { ...c.env, LIVE_OFFLOAD: liveOffloadBinding(() => c.executionCtx) };
+}
 
 function scheduleOsmWarmup(
   c: Context<{ Bindings: Env }>,
@@ -89,7 +100,7 @@ analysisRouter.post('/analyze', async (c) => {
   const ip = c.req.header('cf-connecting-ip') || 'unknown';
   const ipHash = await hashIP(ip);
 
-  const service = new AnalysisService(c.env);
+  const service = new AnalysisService(withLiveOffload(c));
   const result = await service.analyze(request, runId, ipHash);
   scheduleOsmWarmup(
     c,
@@ -140,31 +151,38 @@ analysisRouter.post('/analyze/stream', async (c) => {
     });
   }
 
-  const service = new AnalysisService(c.env);
+  const service = new AnalysisService(withLiveOffload(c));
 
   void (async () => {
     try {
-      const result = await service.analyzeWithSteps(request, runId, ipHash, async (step) => {
-        await send('step', step);
-      });
-      scheduleOsmWarmup(
-        c,
-        result.location,
-        request.radius,
-        result.prospects,
-        result.prospectFunnel?.absenceRadiusKm
-      );
-      await send('complete', result);
-      const needsOsm = result.prospects.some((p) => p.brand.verified === 'verifying...');
-      if (needsOsm) {
-        const { prospects: verified, summary } = await service.applyOsmVerification(
+      // Metered like prospecting runs (Workers Free: 50 subrequests per invocation); the counts
+      // go to the client as a last event and to the Worker log. No KV or D1 writes. The OSM
+      // warmup runs in waitUntil after this snapshot; the CI budget test counts it too.
+      const { counts } = await withSubrequestMeter(async () => {
+        const result = await service.analyzeWithSteps(request, runId, ipHash, async (step) => {
+          await send('step', step);
+        });
+        scheduleOsmWarmup(
+          c,
           result.location,
           request.radius,
           result.prospects,
-          result.prospectFunnel?.absenceRadiusKm ?? request.radius
+          result.prospectFunnel?.absenceRadiusKm
         );
-        await send('verification', { runId, prospects: verified, osmSummary: summary });
-      }
+        await send('complete', result);
+        const needsOsm = result.prospects.some((p) => p.brand.verified === 'verifying...');
+        if (needsOsm) {
+          const { prospects: verified, summary } = await service.applyOsmVerification(
+            result.location,
+            request.radius,
+            result.prospects,
+            result.prospectFunnel?.absenceRadiusKm ?? request.radius
+          );
+          await send('verification', { runId, prospects: verified, osmSummary: summary });
+        }
+      });
+      await send('subrequests', { runId, ...counts });
+      console.log(JSON.stringify({ event: 'analyze_subrequests', runId, ...counts }));
     } catch (error) {
       await send('error', analyzeStreamErrorPayload(error));
     } finally {

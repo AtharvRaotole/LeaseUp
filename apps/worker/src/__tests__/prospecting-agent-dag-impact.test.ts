@@ -49,6 +49,7 @@ async function planAndReview(chip: keyof typeof CHIPS) {
   const reviewed = await runProspectingAgentReview({
     prospects: result.prospects,
     client: new RuleProspectingReviewClient(),
+    location: { latitude: CHIPS[chip].latitude, longitude: CHIPS[chip].longitude },
   });
   return { plan, result, reviewed, callsBeforeReview, qloo };
 }
@@ -78,13 +79,15 @@ describe('prospecting agent impact on demo chips', () => {
     expect(review.changed).toBe(true);
     expect(review.after[0]?.entityId).toBe(review.before[0]?.entityId);
     const lifted = review.actions.filter((a) => a.outcome === 'lifted');
-    expect(lifted).toHaveLength(1);
-    const liftedPack = reviewed.prospects.find((p) => p.brand.entityId === lifted[0]!.entityId)!;
-    const displacedPack = reviewed.prospects.find(
-      (p) => p.brand.entityId === lifted[0]!.aboveEntityId
-    )!;
-    expect(liftedPack.tradeAreaTaste?.audiences.length ?? 0).toBeGreaterThan(0);
-    expect(displacedPack.tradeAreaTaste?.audiences.length ?? 0).toBe(0);
+    expect(lifted.length).toBeGreaterThan(0);
+    for (const action of lifted) {
+      const liftedPack = reviewed.prospects.find((p) => p.brand.entityId === action.entityId)!;
+      const displacedPack = reviewed.prospects.find((p) => p.brand.entityId === action.aboveEntityId)!;
+      expect(liftedPack.tradeAreaTaste?.audiences.length ?? 0).toBeGreaterThan(0);
+      expect(displacedPack.tradeAreaTaste?.audiences.length ?? 0).toBe(0);
+      // Every applied lift is backed by comparable markets, with the numbers in the reason.
+      expect(action.reason).toMatch(/^Rule: lift; .* of panel markets/);
+    }
     console.log(JSON.stringify({ before: review.before.map((b) => b.name), after: review.after.map((b) => b.name), action: lifted[0]!.resultSummary }));
   });
 

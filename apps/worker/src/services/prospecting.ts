@@ -386,6 +386,7 @@ export class ProspectingService {
         prospects: result.prospects,
         neighborhood: result.location.neighborhood,
         address: result.location.address,
+        location: { latitude: result.location.latitude, longitude: result.location.longitude },
         runId,
       };
       // Review and drafts run in their own loopback invocation when available.

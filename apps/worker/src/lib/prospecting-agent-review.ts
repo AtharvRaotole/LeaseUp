@@ -2,13 +2,17 @@ import type { ProspectPack } from '@leaseup/contracts';
 import type { Env } from '../index';
 import { displayBrandName } from './brand-display';
 import { withTimeout } from './analysis-step-budget';
+import { panelMarketShare } from './taste-twins';
 
 /**
  * Review after ranking: the server lists every lift the evidence check would allow (a
  * shortlisted brand with verified local audience overlap ranked below a top-five brand that
- * was checked and has none). The reviewer must accept or decline each one with a reason;
- * both decisions are logged. Every lift is still validated on the server. When no lift is
- * eligible the model is not called. No Qloo calls; the model path uses gpt-4o-mini only.
+ * was checked and has none). Each eligible lift carries a second, independent source: how the
+ * two brands trade in comparable markets (the site's Qloo taste twins and the 40 market panel).
+ * The reviewer accepts or declines each lift with a reason; both decisions are logged. Every
+ * lift is still validated on the server. When no lift is eligible the model is not called.
+ * No Qloo calls; the model path uses gpt-4o-mini only. Backtest:
+ * data/qloo-eval-40/REVIEW_JUDGMENT_BACKTEST.md.
  */
 
 export const PROSPECTING_REVIEW_SHORTLIST = 8;
@@ -48,7 +52,67 @@ export type ProspectingReviewEligibleLift = {
   aboveEntityId: string;
   aboveName: string;
   aboveRank: number;
+  /** Comparable market evidence for both brands; absent fields mean the brand is outside the panel. */
+  comparableMarkets: {
+    lifted: ProspectingReviewComparable;
+    displaced: ProspectingReviewComparable;
+  };
 };
+
+/** How a brand trades in comparable markets: taste twins with a store, and the panel market share. */
+export type ProspectingReviewComparable = {
+  twinMarketsWithStore?: number;
+  twinMarkets?: number;
+  panelMarketShare?: number;
+};
+
+/** How far below the displaced brand's panel market share a lifted brand may be and still move up. */
+/** Ends a sentence once, so a name like "Tiffany & Co." does not get a second period. */
+export function endSentence(text: string): string {
+  return text.endsWith('.') ? text : `${text}.`;
+}
+
+function sharePct(value: string): string {
+  return `${Math.round(Number(value) * 100)}%`;
+}
+
+/**
+ * The model reasons with the tool field names; brokers read the reason, so field names and
+ * 0 to 1 shares become plain words and percentages. Wording only: the numbers are unchanged.
+ */
+export function plainReviewReason(reason: string): string {
+  return reason
+    .replace(/\bpanelMarketShare\b(?: of| is| =|:)? ?(0?\.\d+|1(?:\.0+)?|0)\b/g, (_m, v: string) =>
+      `share of panel markets (${sharePct(v)})`
+    )
+    .replace(/(\d?\.\d+|\b[01]\b) minus 0?\.10?\b/g, (_m, v: string) => `${sharePct(v)} minus 10 points`)
+    .replace(/\bpanelMarketShare\b/g, 'share of panel markets')
+    .replace(/\btwinMarketsWithStore\b/g, 'taste twin markets with a store')
+    .replace(/\btwinMarkets\b/g, 'taste twin markets')
+    .replace(/\bcomparableMarkets\b/g, 'comparable markets')
+    .replace(/(\d+%\)?) minus 0?\.10?\b/g, '$1 minus 10 points')
+    // "Nike's of 24%" or "Nike's share of panel markets (24%) minus" read as "Nike's 24% minus".
+    .replace(/'s (?:of |share of panel markets \()(\d+%)\)?(?= minus)/g, "'s $1")
+    .replace(/^[a-z]/, (c) => c.toUpperCase());
+}
+
+export const REVIEW_PANEL_SHARE_MARGIN = 0.1;
+
+/**
+ * supports: the lifted brand has a store in at least the displaced brand's share of panel markets,
+ * less a 10 point margin; weaker: further below; unknown: either brand is outside the panel. Chosen
+ * by leave one market out selection, see data/qloo-eval-40/REVIEW_JUDGMENT_BACKTEST.md.
+ */
+export type ComparableMarketsVerdict = 'supports' | 'weaker' | 'unknown';
+
+export function comparableMarketsVerdict(
+  lift: Pick<ProspectingReviewEligibleLift, 'comparableMarkets'>
+): ComparableMarketsVerdict {
+  const a = lift.comparableMarkets.lifted.panelMarketShare;
+  const b = lift.comparableMarkets.displaced.panelMarketShare;
+  if (a === undefined || b === undefined) return 'unknown';
+  return a + 1e-9 >= b - REVIEW_PANEL_SHARE_MARGIN ? 'supports' : 'weaker';
+}
 
 export type ProspectingReviewModelUsage = {
   calls: number;
@@ -101,7 +165,14 @@ export type ProspectingReviewShortlistRow = {
   /** overlap: verified overlap; none: checked, no overlap; unchecked: not recorded or Qloo unavailable. */
   audienceCheck: ProspectingReviewAudienceCheck;
   nearestStoreKm?: number;
+  /** Of this site's taste twins, how many have a store for the brand. */
+  twinMarketsWithStore?: number;
+  twinMarkets?: number;
+  /** Share of panel markets over 50 km away with a store for the brand (2 decimals). */
+  panelMarketShare?: number;
 };
+
+export type ProspectingReviewLocation = { latitude: number; longitude: number };
 
 export type ProspectingReviewAudienceCheck = 'overlap' | 'none' | 'unchecked';
 
@@ -129,18 +200,39 @@ function audienceCheck(pack: ProspectPack): ProspectingReviewAudienceCheck {
   return pack.tradeAreaTasteChecked === true ? 'none' : 'unchecked';
 }
 
-export function reviewShortlist(prospects: ProspectPack[]): ProspectingReviewShortlistRow[] {
-  return prospects.slice(0, PROSPECTING_REVIEW_SHORTLIST).map((pack, index) => ({
-    rank: index + 1,
-    entityId: pack.brand.entityId,
-    name: packName(pack),
-    localAudienceOverlaps: audienceNames(pack),
-    audienceCheck: audienceCheck(pack),
-    nearestStoreKm:
-      pack.nearestExistingStoreKm !== undefined
-        ? Math.round(pack.nearestExistingStoreKm * 10) / 10
-        : undefined,
-  }));
+export function reviewShortlist(
+  prospects: ProspectPack[],
+  location?: ProspectingReviewLocation
+): ProspectingReviewShortlistRow[] {
+  return prospects.slice(0, PROSPECTING_REVIEW_SHORTLIST).map((pack, index) => {
+    const share = location
+      ? panelMarketShare(pack.brand.entityId, location.latitude, location.longitude)
+      : undefined;
+    return {
+      rank: index + 1,
+      entityId: pack.brand.entityId,
+      name: packName(pack),
+      localAudienceOverlaps: audienceNames(pack),
+      audienceCheck: audienceCheck(pack),
+      nearestStoreKm:
+        pack.nearestExistingStoreKm !== undefined
+          ? Math.round(pack.nearestExistingStoreKm * 10) / 10
+          : undefined,
+      ...(pack.tasteTwins
+        ? { twinMarketsWithStore: pack.tasteTwins.presentIn, twinMarkets: pack.tasteTwins.of }
+        : {}),
+      ...(share !== undefined ? { panelMarketShare: Math.round(share * 100) / 100 } : {}),
+    };
+  });
+}
+
+function comparable(row: ProspectingReviewShortlistRow): ProspectingReviewComparable {
+  return {
+    ...(row.twinMarketsWithStore !== undefined
+      ? { twinMarketsWithStore: row.twinMarketsWithStore, twinMarkets: row.twinMarkets }
+      : {}),
+    ...(row.panelMarketShare !== undefined ? { panelMarketShare: row.panelMarketShare } : {}),
+  };
 }
 
 /**
@@ -164,6 +256,7 @@ export function eligibleReviewLifts(
         aboveEntityId: above.entityId,
         aboveName: above.name,
         aboveRank: above.rank,
+        comparableMarkets: { lifted: comparable(row), displaced: comparable(above) },
       });
     }
   }
@@ -205,7 +298,7 @@ export function applyReviewLift(
     return { prospects, ok: false, summary: 'Not lifted: the displaced brand is outside the top 5.' };
   }
   if (from <= to) {
-    return { prospects, ok: false, summary: `Not lifted: ${packName(lifted)} already ranks above ${packName(displaced)}.` };
+    return { prospects, ok: false, summary: endSentence(`Not lifted: ${packName(lifted)} already ranks above ${packName(displaced)}`) };
   }
   if (liftedOverlaps === 0) {
     return { prospects, ok: false, summary: `Not lifted: ${packName(lifted)} has no verified local audience overlap.` };
@@ -234,31 +327,56 @@ export function applyReviewLift(
   };
 }
 
-/** Deterministic reviewer for demo mode, tests, servers without OpenAI, and model fallback. */
+function pct(share: number | undefined): string {
+  return share === undefined ? 'unknown' : `${Math.round(share * 100)}%`;
+}
+
+function twinsPhrase(c: ProspectingReviewComparable): string {
+  return c.twinMarketsWithStore === undefined ? 'an unknown number of' : `${c.twinMarketsWithStore} of ${c.twinMarkets ?? 5}`;
+}
+
+/** One sentence with the comparable market numbers for both brands. */
+export function comparableMarketsReason(lift: ProspectingReviewEligibleLift): string {
+  const a = lift.comparableMarkets.lifted;
+  const b = lift.comparableMarkets.displaced;
+  const facts = `${lift.name} has a store in ${pct(a.panelMarketShare)} of panel markets and ${twinsPhrase(a)} taste twins; ${lift.aboveName} in ${pct(b.panelMarketShare)} and ${twinsPhrase(b)}`;
+  switch (comparableMarketsVerdict(lift)) {
+    case 'supports':
+      return `Rule: lift; local audience overlap and comparable markets agree (${facts}).`;
+    case 'weaker':
+      return `Rule: keep the order; overlap alone is weak and ${lift.name} trades in fewer comparable markets (${facts}).`;
+    default:
+      return `Rule: keep the order; comparable market data is missing, so overlap alone is not enough (${facts}).`;
+  }
+}
+
+/**
+ * Deterministic reviewer for demo mode, tests, servers without OpenAI, and model fallback. Lifts an
+ * eligible pitch only when comparable markets support it and declines the rest with the numbers.
+ */
 export class RuleProspectingReviewClient implements ProspectingReviewClient {
   readonly kind = 'rule' as const;
-  private turn = 0;
+  /** Pairs already proposed or declined, so a rejected lift is never retried and each decline is said once. */
+  private readonly seen = new Set<string>();
 
-  async nextTurn(input: { shortlist: ProspectingReviewShortlistRow[] }): Promise<ProspectingReviewTurn> {
-    if (this.turn > 0) return { lifts: [], done: true };
-    this.turn += 1;
-    const top = input.shortlist.slice(0, PROSPECTING_REVIEW_TOP);
-    const displaced = top.find((row) => row.rank > 1 && row.audienceCheck === 'none');
-    if (!displaced) return { lifts: [], done: true };
-    const candidate = input.shortlist.find(
-      (row) => row.rank > displaced.rank && row.localAudienceOverlaps.length > 0
-    );
-    if (!candidate) return { lifts: [], done: true };
-    return {
-      lifts: [
-        {
-          entityId: candidate.entityId,
-          aboveEntityId: displaced.entityId,
-          reason: `Rule: put a pitch with local audience evidence (${candidate.name}) ahead of one without (${displaced.name}).`,
-        },
-      ],
-      done: false,
-    };
+  async nextTurn(input: { eligibleLifts: ProspectingReviewEligibleLift[] }): Promise<ProspectingReviewTurn> {
+    const lifts: ProspectingReviewTurn['lifts'] = [];
+    const declines: NonNullable<ProspectingReviewTurn['declines']> = [];
+    for (const lift of input.eligibleLifts) {
+      const key = `${lift.entityId}>${lift.aboveEntityId}`;
+      if (this.seen.has(key)) continue;
+      const row = { entityId: lift.entityId, aboveEntityId: lift.aboveEntityId, reason: comparableMarketsReason(lift) };
+      const verdict = comparableMarketsVerdict(lift);
+      // One lift per turn, so the next turn sees the updated ranks.
+      if (verdict === 'supports' && lifts.length === 0) {
+        lifts.push(row);
+        this.seen.add(key);
+      } else if (verdict !== 'supports') {
+        declines.push(row);
+        this.seen.add(key);
+      }
+    }
+    return { lifts, declines, done: lifts.length === 0 };
   }
 }
 
@@ -335,11 +453,12 @@ export class OpenAiProspectingReviewClient implements ProspectingReviewClient {
         role: 'system',
         content: [
           'You review a ranked shortlist of retail brands a leasing broker will pitch for one storefront.',
-          'The order comes from a ranking of brand taste fit and chain size. You add one signal it does not use: Qloo local audience overlap, meaning audiences that are over-represented in this trade area and also over-index for the brand.',
-          'eligibleLifts lists every move the server evidence check allows: a brand with verified overlap ranked below a top-5 brand that was checked and has none.',
-          'Decide every eligible lift: call lift_pitch when the local audience evidence makes the lower brand the stronger pitch for this site, or decline_lift when something outweighs it, for example a large rank gap or a lifted brand whose nearest store is much closer.',
-          'In a 40-site backtest, brands with overlap had a store in similar trade areas somewhat more often (34% vs 23%, small sample), so treat overlap as a pitch argument, not proof.',
-          `At most ${PROSPECTING_REVIEW_MAX_LIFTS} lifts are applied. Every reason is one short sentence that names the evidence. Never propose a move that is not in eligibleLifts.`,
+          'The order comes from a ranking of Qloo brand taste fit, chain size and taste twin presence.',
+          'eligibleLifts lists every move the server evidence check allows: a brand with verified Qloo local audience overlap ranked below a top-5 brand that was checked and has none.',
+          'Each eligible lift also gives comparableMarkets for both brands: panelMarketShare (share of the 40 panel markets over 50 km away with a store) and twinMarketsWithStore of twinMarkets (this site\'s taste twins, the panel markets with the closest Qloo taste, that have a store).',
+          'Overlap alone is weak evidence. In a 40 market backtest, lifts where the lower brand\'s panelMarketShare was at least the displaced brand\'s minus 0.10 gained a top 5 hit more than twice as often as they lost one; lifts further below broke even, and taking only the backed lifts beat taking every lift.',
+          'So call lift_pitch only when the lifted panelMarketShare is at least the displaced panelMarketShare minus 0.10; otherwise call decline_lift. If either panelMarketShare is missing, decline. Twin counts explain the call; they do not override that test.',
+          `Decide every eligible lift in one turn. At most ${PROSPECTING_REVIEW_MAX_LIFTS} lifts are applied. Every reason is one short sentence that cites the comparable numbers for both brands. Never propose a move that is not in eligibleLifts.`,
         ].join(' '),
       });
       this.messages.push({
@@ -360,7 +479,7 @@ export class OpenAiProspectingReviewClient implements ProspectingReviewClient {
         messages: this.messages,
         tools: REVIEW_TOOLS,
         temperature: 0.2,
-        max_tokens: 300,
+        max_tokens: 700,
       }),
     });
     this.usage.calls += 1;
@@ -393,7 +512,7 @@ export class OpenAiProspectingReviewClient implements ProspectingReviewClient {
         toolCallId: tc.id,
         entityId: String(parsed.entityId ?? ''),
         aboveEntityId: String(parsed.aboveEntityId ?? ''),
-        reason: String(parsed.reason ?? msg.content ?? ''),
+        reason: plainReviewReason(String(parsed.reason ?? msg.content ?? '')),
       };
       if (name === 'lift_pitch') lifts.push({ ...row, reason: row.reason || 'Model chose this lift' });
       else if (name === 'decline_lift') declines.push({ ...row, reason: row.reason || 'Model kept the order' });
@@ -468,6 +587,8 @@ export async function runProspectingAgentReview(params: {
   prospects: ProspectPack[];
   client: ProspectingReviewClient;
   neighborhood?: string;
+  /** Site pin, used for the panel market share (markets within 50 km are left out). */
+  location?: ProspectingReviewLocation;
 }): Promise<{ prospects: ProspectPack[]; review: ProspectingReviewResult }> {
   const before = topBrands(params.prospects);
   const standard = standardTop5(params.prospects);
@@ -476,11 +597,11 @@ export async function runProspectingAgentReview(params: {
   let planner: ProspectingReviewPlanner = params.client.kind;
   let fallbackReason: string | undefined;
 
-  const eligibleAtStart = eligibleReviewLifts(reviewShortlist(params.prospects)).length;
+  const eligibleAtStart = eligibleReviewLifts(reviewShortlist(params.prospects, params.location)).length;
 
   const loop = async (client: ProspectingReviewClient) => {
     for (let turnIndex = 0; turnIndex < PROSPECTING_REVIEW_MAX_TURNS; turnIndex++) {
-      const shortlist = reviewShortlist(current);
+      const shortlist = reviewShortlist(current, params.location);
       // Pairs the model already declined are not offered again.
       const declined = new Set(
         actions.filter((a) => a.outcome === 'declined').map((a) => `${a.entityId}>${a.aboveEntityId}`)
@@ -500,7 +621,7 @@ export async function runProspectingAgentReview(params: {
       for (const decline of turn.declines ?? []) {
         const liftedName = shortlist.find((r) => r.entityId === decline.entityId)?.name ?? 'Unknown brand';
         const aboveName = shortlist.find((r) => r.entityId === decline.aboveEntityId)?.name ?? 'Unknown brand';
-        const summary = `Kept ${aboveName} above ${liftedName}.`;
+        const summary = endSentence(`Kept ${aboveName} above ${liftedName}`);
         actions.push({
           planner: client.kind,
           tool: 'decline_lift',
@@ -517,7 +638,7 @@ export async function runProspectingAgentReview(params: {
       if (turn.done || turn.lifts.length === 0) break;
       for (const lift of turn.lifts) {
         const used = actions.filter((a) => a.outcome === 'lifted').length;
-        const names = reviewShortlist(current);
+        const names = reviewShortlist(current, params.location);
         const liftedName = names.find((r) => r.entityId === lift.entityId)?.name ?? 'Unknown brand';
         const aboveName = names.find((r) => r.entityId === lift.aboveEntityId)?.name ?? 'Unknown brand';
         const applied =

@@ -10,6 +10,8 @@ import {
   RuleProspectingReviewClient,
   runProspectingAgentReview,
   type ProspectingReviewClient,
+  plainReviewReason,
+  endSentence,
 } from '../lib/prospecting-agent-review';
 
 const ID = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
@@ -31,6 +33,21 @@ function pack(n: number, overlaps: number, checked = true, rank = n): ProspectPa
       : undefined,
     reasons: [],
   } as unknown as ProspectPack;
+}
+
+const P = {
+  share90: '29271B4D-CAD2-4DD4-A766-7338AEE5533D',
+  share75: '5E978F43-4450-4F41-8EE4-A0421E8EC178',
+  share60: 'B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7',
+  share55: 'CCD54989-DFC4-4443-A378-72D6693B4903',
+  share50: 'CBCFD4C5-3906-4361-B56D-583B1BCB6532',
+  share30: 'FF5D6B55-7FF3-432C-A0E8-CE3F790E7941',
+  share10: 'FFB9D7B9-F161-4003-86BA-6FD2A860AFDA',
+};
+
+function panelPack(entityId: string, n: number, overlaps: number): ProspectPack {
+  const p = pack(n, overlaps);
+  return { ...p, brand: { ...p.brand, entityId } } as ProspectPack;
 }
 
 const LIST = [pack(1, 2), pack(2, 0), pack(3, 1), pack(4, 0), pack(5, 0), pack(6, 2), pack(7, 0)];
@@ -70,36 +87,46 @@ describe('applyReviewLift guardrails', () => {
 });
 
 describe('runProspectingAgentReview', () => {
-  it('rule reviewer keeps #1 and lifts the best evidence-backed pitch once', async () => {
+  it('rule reviewer declines every lift when comparable market data is missing', async () => {
     const { prospects, review } = await runProspectingAgentReview({
       prospects: LIST,
       client: new RuleProspectingReviewClient(),
     });
     expect(review.planner).toBe('rule');
-    expect(review.changed).toBe(true);
-    expect(prospects[0]!.brand.entityId).toBe(ID(1));
-    expect(review.after.map((b) => b.name)).toEqual(['Brand 1', 'Brand 3', 'Brand 2', 'Brand 4', 'Brand 5']);
-    expect(review.summary).toBe('Review changed the top 5 with 1 evidence-backed lift.');
+    expect(review.changed).toBe(false);
+    expect(prospects).toEqual(LIST);
+    const declined = review.actions.filter((a) => a.outcome === 'declined');
+    expect(declined.length).toBeGreaterThan(0);
+    expect(review.actions.every((a) => a.outcome === 'declined')).toBe(true);
+    expect(declined[0]!.reason).toMatch(/^Rule: keep the order; comparable market data is missing/);
   });
 
-  it('rule reviewer skips unchecked brands and the outcome compares with the standard ranking', async () => {
-    const list = [pack(1, 2), pack(2, 0, false), pack(3, 0), pack(4, 1), pack(5, 1), pack(6, 2)];
-    const { review } = await runProspectingAgentReview({
-      prospects: list,
-      client: new RuleProspectingReviewClient(),
-    });
-    expect(review.after.map((b) => b.name)).toEqual(['Brand 1', 'Brand 2', 'Brand 4', 'Brand 3', 'Brand 5']);
-    expect(review.outcome.standardTop5.map((b) => b.name)).toEqual([
-      'Brand 1',
-      'Brand 2',
-      'Brand 3',
-      'Brand 4',
-      'Brand 5',
+  it('rule reviewer lifts only when the panel backs it, and cites both brands', async () => {
+    // Mid Pacific: every panel market is over 50 km away, so shares are the full panel rates.
+    const location = { latitude: 0, longitude: -150 };
+    const list = [
+      panelPack(P.share90, 1, 2),
+      panelPack(P.share60, 2, 0),
+      panelPack(P.share50, 3, 0),
+      panelPack(P.share30, 4, 0),
+      panelPack(P.share75, 5, 1),
+      panelPack(P.share55, 6, 1),
+      panelPack(P.share10, 7, 1),
+    ];
+    const { review } = await runProspectingAgentReview({ prospects: list, client: new RuleProspectingReviewClient(), location });
+    expect(review.changed).toBe(true);
+    expect(review.after.map((b) => b.entityId)).toEqual([P.share90, P.share60, P.share75, P.share50, P.share30]);
+    const declined = review.actions.filter((a) => a.outcome === 'declined');
+    expect(declined.map((a) => a.entityId)).toEqual([P.share10, P.share10]);
+    expect(declined[0]!.reason).toMatch(/Tommy Bahama has a store in 10% of panel markets/);
+    expect(declined[0]!.reason).toMatch(/Men's Wearhouse in 30%/);
+    const lifted = review.actions.filter((a) => a.outcome === 'lifted');
+    expect(lifted.map((a) => [a.entityId, a.aboveEntityId])).toEqual([
+      [P.share75, P.share30],
+      [P.share75, P.share50],
     ]);
-    expect(review.outcome.top3Changed).toBe(true);
-    expect(review.outcome.enteredTop5).toEqual([]);
-    expect(review.outcome.leftTop5).toEqual([]);
-    expect(review.outcome.summary).toBe('Changed vs the standard ranking: Brand 4 #4 to #3; Brand 3 #3 to #4.');
+    // A rejected lift (lift cap reached) is not retried.
+    expect(review.actions.filter((a) => a.outcome === 'rejected')).toHaveLength(1);
   });
 
   it('standard ranking ignores a planner boost already in the list order', async () => {
@@ -262,5 +289,24 @@ describe('runProspectingAgentReview', () => {
     expect(review.actions[0]).toMatchObject({ outcome: 'declined', reason: 'One overlap is thin evidence.' });
     expect(review.actions[0]!.resultSummary).toBe('Kept Brand 2 above Brand 3.');
     expect(review.summary).toMatch(/declined/);
+  });
+
+  it('words model reasons for brokers, keeping the numbers', () => {
+    // Live deploy47 Bedford reasons, as gpt-4o-mini wrote them.
+    expect(
+      plainReviewReason("H&M's panelMarketShare of 0.22 is below Victoria's Secret's 0.30 minus 0.10.")
+    ).toBe("H&M's share of panel markets (22%) is below Victoria's Secret's 30% minus 10 points.");
+    expect(plainReviewReason('panelMarketShare is missing; twinMarketsWithStore is 3 of 5 twinMarkets.')).toBe(
+      'Share of panel markets is missing; taste twin markets with a store is 3 of 5 taste twin markets.'
+    );
+    // deploy48 live wording, and the model naming the field on both sides.
+    expect(plainReviewReason("Vans's panelMarketShare of 0.19 is below Nike's of 0.24 minus 0.10.")).toBe(
+      "Vans's share of panel markets (19%) is below Nike's 24% minus 10 points."
+    );
+    expect(
+      plainReviewReason("Vans's panelMarketShare of 0.19 is below Nike's panelMarketShare of 0.24 minus 0.10.")
+    ).toBe("Vans's share of panel markets (19%) is below Nike's 24% minus 10 points.");
+    expect(endSentence('Kept Nike above Tiffany & Co.')).toBe('Kept Nike above Tiffany & Co.');
+    expect(endSentence('Kept Nike above Vans')).toBe('Kept Nike above Vans.');
   });
 });

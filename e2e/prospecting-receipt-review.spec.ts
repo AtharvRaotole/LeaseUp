@@ -25,16 +25,25 @@ test.describe('Prospecting agent receipt', () => {
     const review = page.getByTestId('agent-receipt-review');
     await expect(review).toBeVisible();
     await expect(page.getByTestId('agent-receipt-review-summary')).toContainText(
-      'Review changed the top 5 with 1 evidence-backed lift.'
+      'Review changed the top 5 with 2 evidence-backed lifts'
     );
+    await expect(page.getByTestId('agent-receipt-review-summary')).toContainText(
+      'eligible lifts declined with a reason'
+    );
+    // The first call is a decline with its comparable market numbers; a later one is the lift.
     await expect(page.getByTestId('agent-receipt-review-action-0')).toContainText(
-      'Vans moved from #5 to #2'
+      'Rule: keep the order; overlap alone is weak and Vans trades in fewer comparable markets'
     );
+    await expect(
+      page
+        .locator('[data-testid^="agent-receipt-review-action-"]')
+        .filter({ hasText: 'Vans moved from #5 to #4' })
+    ).toHaveCount(1);
     await expect(page.getByTestId('agent-receipt-review-before')).toContainText(
       "TJ Maxx, Victoria's Secret, J.Crew, H&M, Vans"
     );
     await expect(page.getByTestId('agent-receipt-review-after')).toContainText(
-      "TJ Maxx, Vans, Victoria's Secret, J.Crew, H&M"
+      "TJ Maxx, Victoria's Secret, J.Crew, Vans, Express"
     );
     const text = (await receipt.textContent()) ?? '';
     expect(text).not.toMatch(/[\u2013\u2014]/);

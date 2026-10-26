@@ -47,6 +47,8 @@ export interface CoTenancyOffloadInput {
 export interface ReviewDraftsInput {
   prospects: ProspectPack[];
   neighborhood?: string;
+  /** Site pin for the review's comparable market check. */
+  location?: { latitude: number; longitude: number };
   address: string;
   runId: string;
 }
@@ -66,6 +68,7 @@ export async function runReviewAndDrafts(
     prospects: input.prospects,
     client: createProspectingReviewClient(env),
     neighborhood: input.neighborhood,
+    location: input.location,
   });
   const draftPacks = reviewed.prospects.slice(0, 3);
   const drafts = await new AnalysisService(env).generateOutreachForBrands(
