@@ -114,6 +114,7 @@ describe('live prospecting model path subrequest budget (non-demo address)', () 
     };
     let plannerTurns = 0;
     let reviewTurns = 0;
+    let firstEligible: Array<{ comparableMarkets?: { lifted?: { panelMarketShare?: number }; displaced?: { panelMarketShare?: number } } }> = [];
     const edge = new Map<string, Response>();
     const panelSeen = new Map<string, number>();
     vi.stubGlobal('caches', {
@@ -146,6 +147,7 @@ describe('live prospecting model path subrequest budget (non-demo address)', () 
                 entityId: string;
                 aboveEntityId: string;
               }>;
+              firstEligible = eligible as typeof firstEligible;
               return chat({
                 content: null,
                 tool_calls: eligible.slice(0, 1).map((e) =>
@@ -339,6 +341,10 @@ describe('live prospecting model path subrequest budget (non-demo address)', () 
     expect(review?.planner).toBe('model');
     expect(review?.fallbackReason).toBeUndefined();
     expect(review?.eligibleLifts).toBeGreaterThan(0);
+    // The run location reaches the offloaded review, so every lift carries panel market shares.
+    expect(firstEligible.length).toBeGreaterThan(0);
+    expect(firstEligible.every((e) => typeof e.comparableMarkets?.lifted?.panelMarketShare === 'number')).toBe(true);
+    expect(firstEligible.every((e) => typeof e.comparableMarkets?.displaced?.panelMarketShare === 'number')).toBe(true);
     expect((review?.actions as Array<{ outcome: string }>).some((a) => a.outcome === 'lifted')).toBe(true);
     expect(sum('openaiDrafts')).toBe(1);
     expect(job.outreachDrafts).toHaveLength(3);

@@ -1,0 +1,1225 @@
+{
+ "meta": {
+  "model": "gpt-4o-mini",
+  "recordedAt": "2026-10-26T01:37:22.547Z",
+  "calls": 80,
+  "promptTokens": 170538,
+  "completionTokens": 13349
+ },
+ "cases": {
+  "chi_wicker": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "aboveEntityId": "853AD85F-89EF-4274-BD23-E2B5C1F1A8DC",
+       "reason": "Bath & Body Works has a panelMarketShare of 0.49, which is above MAC Cosmetics' 0.41."
+      }
+     ],
+     "declines": [
+      {
+       "entityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "aboveEntityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "reason": "Bath & Body Works has a panelMarketShare of 0.49, which is below Chipotle's 0.84 minus 0.10."
+      }
+     ],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "chi_lakeview": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "aboveEntityId": "853AD85F-89EF-4274-BD23-E2B5C1F1A8DC",
+       "reason": "Bath & Body Works has a panelMarketShare of 0.49, which is above MAC Cosmetics' 0.41."
+      }
+     ],
+     "declines": [
+      {
+       "entityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "aboveEntityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "reason": "Bath & Body Works has a panelMarketShare of 0.49, which is below Chipotle's 0.84 minus 0.10."
+      }
+     ],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "nyc_williamsburg": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23",
+       "aboveEntityId": "2C5054E1-8691-4F52-83CD-310D029BA6A3",
+       "reason": "Whole Foods Market's panelMarketShare of 0.51 is greater than Sephora's 0.43."
+      },
+      {
+       "entityId": "A4F0BE29-87A4-4074-9ABB-21B215E532FD",
+       "aboveEntityId": "2C5054E1-8691-4F52-83CD-310D029BA6A3",
+       "reason": "J.Crew's panelMarketShare of 0.49 is greater than Sephora's 0.43."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "A4F0BE29-87A4-4074-9ABB-21B215E532FD",
+       "aboveEntityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "reason": "J.Crew's panelMarketShare of 0.49 is not greater than Target's 0.59."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "nyc_uws": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "aboveEntityId": "A4F0BE29-87A4-4074-9ABB-21B215E532FD",
+       "reason": "Lululemon's panelMarketShare of 0.62 is above J.Crew's 0.49 by more than 0.10."
+      },
+      {
+       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "aboveEntityId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
+       "reason": "Target's panelMarketShare of 0.59 is above Dunkin's 0.73 by more than 0.10."
+      }
+     ],
+     "declines": [
+      {
+       "entityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "aboveEntityId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
+       "reason": "Lululemon's panelMarketShare of 0.62 is not at least 0.10 below Dunkin's 0.73."
+      },
+      {
+       "entityId": "853AD85F-89EF-4274-BD23-E2B5C1F1A8DC",
+       "aboveEntityId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
+       "reason": "MAC Cosmetics' panelMarketShare of 0.41 is not at least 0.10 below Dunkin's 0.73."
+      },
+      {
+       "entityId": "853AD85F-89EF-4274-BD23-E2B5C1F1A8DC",
+       "aboveEntityId": "A4F0BE29-87A4-4074-9ABB-21B215E532FD",
+       "reason": "MAC Cosmetics' panelMarketShare of 0.41 is not at least 0.10 below J.Crew's 0.49."
+      }
+     ],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "sf_fillmore": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "2C5054E1-8691-4F52-83CD-310D029BA6A3",
+       "aboveEntityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "reason": "Sephora's panelMarketShare of 0.46 is within 0.10 of Lululemon's 0.65."
+      },
+      {
+       "entityId": "90390722-A8D1-4499-80FD-76703E3798A3",
+       "aboveEntityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "reason": "Orangetheory Fitness's panelMarketShare of 0.68 is within 0.10 of Lululemon's 0.65."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "90390722-A8D1-4499-80FD-76703E3798A3",
+       "aboveEntityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "reason": "Orangetheory Fitness's panelMarketShare of 0.68 is not above Lululemon's 0.65."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "sf_mission": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "2C5054E1-8691-4F52-83CD-310D029BA6A3",
+       "aboveEntityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "reason": "Sephora's panelMarketShare of 0.46 is within 0.10 of Lululemon's 0.65."
+      },
+      {
+       "entityId": "90390722-A8D1-4499-80FD-76703E3798A3",
+       "aboveEntityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "reason": "Orangetheory Fitness's panelMarketShare of 0.68 is within 0.10 of Lululemon's 0.65."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [
+      {
+       "entityId": "90390722-A8D1-4499-80FD-76703E3798A3",
+       "aboveEntityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "reason": "Orangetheory Fitness's panelMarketShare of 0.68 is within 0.10 of Lululemon's 0.65."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "2C5054E1-8691-4F52-83CD-310D029BA6A3",
+       "aboveEntityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "reason": "Sephora's panelMarketShare of 0.46 is below Lululemon's 0.65 minus 0.10."
+      },
+      {
+       "entityId": "90390722-A8D1-4499-80FD-76703E3798A3",
+       "aboveEntityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "reason": "Orangetheory Fitness's panelMarketShare of 0.68 is below Lululemon's 0.65 minus 0.10."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "dc_14th": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "aboveEntityId": "A4F0BE29-87A4-4074-9ABB-21B215E532FD",
+       "reason": "Target's panelMarketShare of 0.58 is above J.Crew's 0.50 minus 0.10."
+      },
+      {
+       "entityId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
+       "aboveEntityId": "A4F0BE29-87A4-4074-9ABB-21B215E532FD",
+       "reason": "Dunkin's panelMarketShare of 0.74 is above J.Crew's 0.50 minus 0.10."
+      }
+     ],
+     "declines": [
+      {
+       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "aboveEntityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "reason": "Target's panelMarketShare of 0.58 is below Lululemon's 0.63 minus 0.10."
+      },
+      {
+       "entityId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
+       "aboveEntityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "reason": "Dunkin's panelMarketShare of 0.74 is below Lululemon's 0.63 minus 0.10."
+      }
+     ],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "phl_walnut": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "aboveEntityId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
+       "reason": "Ulta's panelMarketShare of 0.51 is greater than TJ Maxx's 0.46."
+      },
+      {
+       "entityId": "B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7",
+       "aboveEntityId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
+       "reason": "Chick-fil-A's panelMarketShare of 0.62 is greater than TJ Maxx's 0.46."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "sea_caphill": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "aboveEntityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "reason": "Lululemon's panelMarketShare of 0.64 is above Target's of 0.56 minus 0.10."
+      }
+     ],
+     "declines": [
+      {
+       "entityId": "2C5054E1-8691-4F52-83CD-310D029BA6A3",
+       "aboveEntityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "reason": "Sephora's panelMarketShare of 0.46 is below Target's of 0.56 minus 0.10."
+      }
+     ],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "greenwich_ct": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "aboveEntityId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
+       "reason": "Lululemon's panelMarketShare of 0.62 is greater than Dunkin's 0.73 minus 0.10."
+      },
+      {
+       "entityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "aboveEntityId": "096B986E-3D63-44F4-BE44-F85D52A2979D",
+       "reason": "Lululemon's panelMarketShare of 0.62 is greater than Trader Joe's 0.59."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "bethesda_md": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
+       "aboveEntityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "reason": "Dunkin' has a panelMarketShare of 0.74, which is higher than Target's 0.58."
+      }
+     ],
+     "declines": [
+      {
+       "entityId": "E515D012-5197-4B01-BFAD-5E5FAC25B525",
+       "aboveEntityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "reason": "Sweetgreen's panelMarketShare of 0.5 is not higher than Target's 0.58."
+      }
+     ],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "naperville_il": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "aboveEntityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+       "reason": "Target's panelMarketShare of 0.54 is greater than Aldi's 0.46."
+      },
+      {
+       "entityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "aboveEntityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+       "reason": "Bath & Body Works' panelMarketShare of 0.49 is greater than Aldi's 0.46."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "853AD85F-89EF-4274-BD23-E2B5C1F1A8DC",
+       "aboveEntityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+       "reason": "MAC Cosmetics' panelMarketShare of 0.41 is not greater than Aldi's 0.46."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "palo_alto_ca": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "aboveEntityId": "2C5054E1-8691-4F52-83CD-310D029BA6A3",
+       "reason": "Lululemon's panelMarketShare of 0.65 is greater than Sephora's 0.46."
+      },
+      {
+       "entityId": "90390722-A8D1-4499-80FD-76703E3798A3",
+       "aboveEntityId": "2C5054E1-8691-4F52-83CD-310D029BA6A3",
+       "reason": "Orangetheory Fitness's panelMarketShare of 0.68 is greater than Sephora's 0.46."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [
+      {
+       "entityId": "90390722-A8D1-4499-80FD-76703E3798A3",
+       "aboveEntityId": "2C5054E1-8691-4F52-83CD-310D029BA6A3",
+       "reason": "Orangetheory Fitness's panelMarketShare of 0.68 is greater than Sephora's 0.46."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "aboveEntityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "reason": "Lululemon's panelMarketShare of 0.65 is not greater than Target's 0.59."
+      },
+      {
+       "entityId": "90390722-A8D1-4499-80FD-76703E3798A3",
+       "aboveEntityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "reason": "Orangetheory Fitness's panelMarketShare of 0.68 is not greater than Target's 0.59."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "edina_mn": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "0F6BCED5-19B1-4DFD-B55C-42708EE32A64",
+       "aboveEntityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "reason": "Caribou Coffee's panelMarketShare of 0.15 is at least Ulta's 0.51 minus 0.10."
+      },
+      {
+       "entityId": "096B986E-3D63-44F4-BE44-F85D52A2979D",
+       "aboveEntityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "reason": "Trader Joe's panelMarketShare of 0.59 is at least Ulta's 0.51 minus 0.10."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "096B986E-3D63-44F4-BE44-F85D52A2979D",
+       "aboveEntityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "reason": "Trader Joe's panelMarketShare of 0.59 is not at least Ulta's 0.51 minus 0.10."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "wellesley_ma": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "A4F0BE29-87A4-4074-9ABB-21B215E532FD",
+       "aboveEntityId": "1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23",
+       "reason": "J.Crew's panelMarketShare of 0.51 is equal to Whole Foods Market's, allowing the lift."
+      },
+      {
+       "entityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "aboveEntityId": "1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23",
+       "reason": "Lululemon's panelMarketShare of 0.64 is greater than Whole Foods Market's 0.51, allowing the lift."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "aboveEntityId": "1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23",
+       "reason": "Lululemon's panelMarketShare of 0.64 is greater than Whole Foods Market's 0.51, allowing the lift."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "boulder_co": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "90390722-A8D1-4499-80FD-76703E3798A3",
+       "aboveEntityId": "B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7",
+       "reason": "Orangetheory Fitness has a panelMarketShare of 0.67, which is higher than Chick-fil-A's 0.62."
+      },
+      {
+       "entityId": "90390722-A8D1-4499-80FD-76703E3798A3",
+       "aboveEntityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "reason": "Orangetheory Fitness has a panelMarketShare of 0.67, which is higher than Bath & Body Works' 0.49."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "annarbor_mi": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "E4182E04-0D61-4DAD-AE66-EF4208951A5C",
+       "aboveEntityId": "AB8D769A-CCEB-4C2D-A3D8-21641E0EC664",
+       "reason": "Lush's panelMarketShare of 0.31 is at least Warby Parker's 0.56 minus 0.10."
+      },
+      {
+       "entityId": "096B986E-3D63-44F4-BE44-F85D52A2979D",
+       "aboveEntityId": "AB8D769A-CCEB-4C2D-A3D8-21641E0EC664",
+       "reason": "Trader Joe's panelMarketShare of 0.59 is at least Warby Parker's 0.56 minus 0.10."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "096B986E-3D63-44F4-BE44-F85D52A2979D",
+       "aboveEntityId": "AB8D769A-CCEB-4C2D-A3D8-21641E0EC664",
+       "reason": "Trader Joe's panelMarketShare of 0.59 is not at least Warby Parker's 0.56 minus 0.10."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "athens_ga": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "aboveEntityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "reason": "Chipotle Mexican Grill's panelMarketShare of 0.85 is above Ulta's 0.51 minus 0.10."
+      }
+     ],
+     "declines": [
+      {
+       "entityId": "4C7C9E59-5CD7-4EDF-860D-5427FEA4046C",
+       "aboveEntityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "reason": "Waffle House's panelMarketShare of 0.1 is below Ulta's 0.51 minus 0.10."
+      }
+     ],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "madison_wi": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "aboveEntityId": "945C90D2-07D7-43B3-98FE-C437DE7A6D16",
+       "reason": "Target's panelMarketShare of 0.56 is greater than Kohl's 0.38."
+      },
+      {
+       "entityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "aboveEntityId": "945C90D2-07D7-43B3-98FE-C437DE7A6D16",
+       "reason": "Ulta's panelMarketShare of 0.54 is greater than Kohl's 0.38."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [
+      {
+       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "aboveEntityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "reason": "Target's panelMarketShare of 0.56 is greater than Bath & Body Works 0.49."
+      },
+      {
+       "entityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "aboveEntityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "reason": "Ulta's panelMarketShare of 0.54 is greater than Bath & Body Works 0.49."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "ithaca_ny": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23",
+       "aboveEntityId": "A4F0BE29-87A4-4074-9ABB-21B215E532FD",
+       "reason": "Whole Foods Market's panelMarketShare of 0.54 is equal to J.Crew's, allowing the lift."
+      },
+      {
+       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "aboveEntityId": "A4F0BE29-87A4-4074-9ABB-21B215E532FD",
+       "reason": "Target's panelMarketShare of 0.59 is greater than J.Crew's 0.54, allowing the lift."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "chapelhill_nc": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "9DBAA49C-D49D-4BBE-ADBA-FE4D090F8217",
+       "aboveEntityId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
+       "reason": "Bojangles has a panelMarketShare of 0.16, which is at least 0.10 less than TJ Maxx's 0.47."
+      },
+      {
+       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "aboveEntityId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
+       "reason": "Target has a panelMarketShare of 0.55, which is at least 0.10 less than TJ Maxx's 0.47."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "aboveEntityId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
+       "reason": "Target's panelMarketShare of 0.55 is not at least 0.10 less than TJ Maxx's 0.47."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "hutchinson_ks": {
+   "turns": [
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "aboveEntityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "reason": "Ulta's panelMarketShare of 0.51 is less than Chipotle's of 0.87 minus 0.10."
+      },
+      {
+       "entityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+       "aboveEntityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "reason": "Aldi's panelMarketShare of 0.46 is less than Chipotle's of 0.87 minus 0.10."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "ottumwa_ia": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
+       "aboveEntityId": "945C90D2-07D7-43B3-98FE-C437DE7A6D16",
+       "reason": "TJ Maxx has a panel market share of 0.46, which is greater than Kohl's 0.38."
+      },
+      {
+       "entityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "aboveEntityId": "945C90D2-07D7-43B3-98FE-C437DE7A6D16",
+       "reason": "Ulta has a panel market share of 0.54, which is greater than Kohl's 0.38."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "aboveEntityId": "945C90D2-07D7-43B3-98FE-C437DE7A6D16",
+       "reason": "Ulta's panel market share of 0.54 is not enough to displace Kohl's, which is outside the top 5."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "elko_nv": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "CBCFD4C5-3906-4361-B56D-583B1BCB6532",
+       "aboveEntityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "reason": "The Home Depot's panelMarketShare of 0.49 is equal to Bath & Body Works' 0.49."
+      },
+      {
+       "entityId": "096B986E-3D63-44F4-BE44-F85D52A2979D",
+       "aboveEntityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "reason": "Trader Joe's panelMarketShare of 0.62 is greater than Bath & Body Works' 0.49."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "sedalia_mo": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
+       "aboveEntityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+       "reason": "TJ Maxx's panelMarketShare of 0.46 is equal to Aldi's 0.46 minus 0.10."
+      }
+     ],
+     "declines": [
+      {
+       "entityId": "423EDCAF-1289-474E-9982-0CC39A5BAEFE",
+       "aboveEntityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "reason": "Hobby Lobby's panelMarketShare of 0.18 is below Bath & Body Works' 0.49 minus 0.10."
+      }
+     ],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "bemidji_mn": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+       "aboveEntityId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
+       "reason": "Aldi's panelMarketShare of 0.46 is equal to TJ Maxx's of 0.46, allowing for a lift."
+      },
+      {
+       "entityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+       "aboveEntityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "reason": "Aldi's panelMarketShare of 0.46 is equal to Bath & Body Works' of 0.46, allowing for a lift."
+      }
+     ],
+     "declines": [
+      {
+       "entityId": "423EDCAF-1289-474E-9982-0CC39A5BAEFE",
+       "aboveEntityId": "A94FC7B6-34D3-4970-9EA5-2D17C49E84B6",
+       "reason": "Hobby Lobby's panelMarketShare of 0.18 is below TJ Maxx's of 0.46 minus 0.10."
+      },
+      {
+       "entityId": "423EDCAF-1289-474E-9982-0CC39A5BAEFE",
+       "aboveEntityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "reason": "Hobby Lobby's panelMarketShare of 0.18 is below Bath & Body Works' of 0.46 minus 0.10."
+      }
+     ],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "laramie_wy": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "aboveEntityId": "423EDCAF-1289-474E-9982-0CC39A5BAEFE",
+       "reason": "Bath & Body Works has a panelMarketShare of 0.46, which is greater than Hobby Lobby's 0.21."
+      },
+      {
+       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "aboveEntityId": "423EDCAF-1289-474E-9982-0CC39A5BAEFE",
+       "reason": "Target has a panelMarketShare of 0.59, which is greater than Hobby Lobby's 0.21."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [
+      {
+       "entityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "aboveEntityId": "423EDCAF-1289-474E-9982-0CC39A5BAEFE",
+       "reason": "Bath & Body Works has a panelMarketShare of 0.46, which is greater than Hobby Lobby's 0.21."
+      }
+     ],
+     "declines": [
+      {
+       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "aboveEntityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "reason": "Target's panelMarketShare of 0.59 is not greater than Chipotle's 0.85."
+      }
+     ],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "sevierville_tn": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+       "aboveEntityId": "B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7",
+       "reason": "Aldi's panelMarketShare of 0.46 is within 0.10 of Chick-fil-A's 0.59."
+      },
+      {
+       "entityId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
+       "aboveEntityId": "B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7",
+       "reason": "Dunkin's panelMarketShare of 0.74 is within 0.10 of Chick-fil-A's 0.59."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
+       "aboveEntityId": "B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7",
+       "reason": "Dunkin's panelMarketShare of 0.74 is above Chick-fil-A's 0.59, but Chick-fil-A is outside the top 5."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "lasvegas_strip": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "2C5054E1-8691-4F52-83CD-310D029BA6A3",
+       "aboveEntityId": "853AD85F-89EF-4274-BD23-E2B5C1F1A8DC",
+       "reason": "Sephora's panelMarketShare of 0.46 is greater than MAC Cosmetics' 0.38."
+      },
+      {
+       "entityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "aboveEntityId": "853AD85F-89EF-4274-BD23-E2B5C1F1A8DC",
+       "reason": "Lululemon's panelMarketShare of 0.64 is greater than MAC Cosmetics' 0.38."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+       "aboveEntityId": "853AD85F-89EF-4274-BD23-E2B5C1F1A8DC",
+       "reason": "Lululemon's panelMarketShare of 0.64 is greater than MAC Cosmetics' 0.38, but MAC Cosmetics is outside the top 5."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "keywest_fl": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
+       "aboveEntityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "reason": "Dunkin' has a panelMarketShare of 0.74, which is greater than Target's 0.59 minus 0.10."
+      },
+      {
+       "entityId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
+       "aboveEntityId": "90390722-A8D1-4499-80FD-76703E3798A3",
+       "reason": "Dunkin' has a panelMarketShare of 0.74, which is greater than Orangetheory Fitness's 0.69 minus 0.10."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "myrtle_sc": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "aboveEntityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "reason": "Chipotle Mexican Grill's panelMarketShare of 0.85 is greater than Target's 0.56 minus 0.10."
+      },
+      {
+       "entityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "aboveEntityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "reason": "Chipotle Mexican Grill's panelMarketShare of 0.85 is greater than Ulta's 0.51 minus 0.10."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "parkcity_ut": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "90390722-A8D1-4499-80FD-76703E3798A3",
+       "aboveEntityId": "CBCFD4C5-3906-4361-B56D-583B1BCB6532",
+       "reason": "Orangetheory Fitness has a panelMarketShare of 0.67, which is higher than The Home Depot's 0.49."
+      },
+      {
+       "entityId": "90390722-A8D1-4499-80FD-76703E3798A3",
+       "aboveEntityId": "1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23",
+       "reason": "Orangetheory Fitness has a panelMarketShare of 0.67, which is higher than Whole Foods Market's 0.51."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "branson_mo": {
+   "turns": [
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "D72865CB-DDB5-4202-96A4-D0415C0ACBF3",
+       "aboveEntityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+       "reason": "Walmart's panelMarketShare of 0.26 is below Aldi's of 0.46 minus 0.10."
+      },
+      {
+       "entityId": "D72865CB-DDB5-4202-96A4-D0415C0ACBF3",
+       "aboveEntityId": "B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7",
+       "reason": "Walmart's panelMarketShare of 0.26 is below Chick-fil-A's of 0.59 minus 0.10."
+      },
+      {
+       "entityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "aboveEntityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+       "reason": "Ulta's panelMarketShare of 0.51 is above Aldi's of 0.46 minus 0.10, but not eligible for lift."
+      },
+      {
+       "entityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "aboveEntityId": "B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7",
+       "reason": "Ulta's panelMarketShare of 0.51 is below Chick-fil-A's of 0.59 minus 0.10."
+      },
+      {
+       "entityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "aboveEntityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+       "reason": "Bath & Body Works' panelMarketShare of 0.46 is equal to Aldi's of 0.46 minus 0.10, but not eligible for lift."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "frisco_tx": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "aboveEntityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "reason": "Chipotle Mexican Grill's panelMarketShare of 0.85 is greater than Ulta's 0.51 minus 0.10."
+      },
+      {
+       "entityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "aboveEntityId": "B4606C6E-9133-4FB8-88FD-CF1D37F5AAC7",
+       "reason": "Chipotle Mexican Grill's panelMarketShare of 0.85 is greater than Chick-fil-A's 0.59 minus 0.10."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "boise_id": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "096B986E-3D63-44F4-BE44-F85D52A2979D",
+       "aboveEntityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "reason": "Trader Joe's has a panelMarketShare of 0.59, which is above Ulta's 0.54 minus 0.10."
+      }
+     ],
+     "declines": [
+      {
+       "entityId": "002A706B-424B-40FB-8BE5-D99E706B1CC4",
+       "aboveEntityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "reason": "HomeGoods has a panelMarketShare of 0.28, which is below Ulta's 0.54 minus 0.10."
+      }
+     ],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "nashville_12s": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "aboveEntityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+       "reason": "Chipotle Mexican Grill's panelMarketShare of 0.85 is greater than Aldi's 0.49."
+      },
+      {
+       "entityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "aboveEntityId": "7C4CC0B9-1C3C-4C5C-A732-5991046EBB03",
+       "reason": "Chipotle Mexican Grill's panelMarketShare of 0.85 is greater than Crumbl's 0.38."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "austin_soco": {
+   "turns": [
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "423EDCAF-1289-474E-9982-0CC39A5BAEFE",
+       "aboveEntityId": "CBCFD4C5-3906-4361-B56D-583B1BCB6532",
+       "reason": "Hobby Lobby's panelMarketShare of 0.21 is not at least 0.39 (0.49 - 0.10) below The Home Depot's 0.49."
+      },
+      {
+       "entityId": "48803C8A-4E24-4888-B029-CDDF0D4547CE",
+       "aboveEntityId": "CBCFD4C5-3906-4361-B56D-583B1BCB6532",
+       "reason": "Whataburger's panelMarketShare of 0.13 is not at least 0.36 (0.49 - 0.10) below The Home Depot's 0.49."
+      },
+      {
+       "entityId": "423EDCAF-1289-474E-9982-0CC39A5BAEFE",
+       "aboveEntityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "reason": "Hobby Lobby's panelMarketShare of 0.21 is not at least 0.33 (0.54 - 0.10) below Ulta's 0.54."
+      },
+      {
+       "entityId": "48803C8A-4E24-4888-B029-CDDF0D4547CE",
+       "aboveEntityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "reason": "Whataburger's panelMarketShare of 0.13 is not at least 0.36 (0.49 - 0.10) below Bath & Body Works' 0.49."
+      },
+      {
+       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "aboveEntityId": "CBCFD4C5-3906-4361-B56D-583B1BCB6532",
+       "reason": "Target's panelMarketShare of 0.56 is not at least 0.39 (0.49 - 0.10) below The Home Depot's 0.49."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "gilbert_az": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "aboveEntityId": "1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23",
+       "reason": "Target's panelMarketShare of 0.56 is greater than Whole Foods Market's 0.54."
+      },
+      {
+       "entityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "aboveEntityId": "1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23",
+       "reason": "Ulta's panelMarketShare of 0.51 is greater than Whole Foods Market's 0.54."
+      }
+     ],
+     "declines": [],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "0F77E9A4-121C-4941-ACE1-28502DBF1865",
+       "aboveEntityId": "1E5D90F5-5E0D-4486-B651-D0E7B8A6BE23",
+       "reason": "Ulta's panelMarketShare of 0.51 is less than Whole Foods Market's 0.54."
+      }
+     ],
+     "done": true
+    }
+   ]
+  },
+  "charlotte_se": {
+   "turns": [
+    {
+     "lifts": [
+      {
+       "entityId": "BFC8D7B1-BDD2-478E-85AB-F4FEE868177A",
+       "aboveEntityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "reason": "Target's panelMarketShare of 0.56 is above Bath & Body Works' 0.49 minus 0.10."
+      }
+     ],
+     "declines": [
+      {
+       "entityId": "9DBAA49C-D49D-4BBE-ADBA-FE4D090F8217",
+       "aboveEntityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "reason": "Bojangles' panelMarketShare of 0.18 is below Bath & Body Works' 0.49 minus 0.10."
+      }
+     ],
+     "done": false
+    },
+    {
+     "lifts": [],
+     "declines": [],
+     "done": true
+    }
+   ]
+  },
+  "cary_nc": {
+   "turns": [
+    {
+     "lifts": [],
+     "declines": [
+      {
+       "entityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+       "aboveEntityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "reason": "Aldi's panelMarketShare of 0.45 is below Chipotle's 0.84 minus 0.10."
+      },
+      {
+       "entityId": "88483819-91A9-45BE-8110-0D6CD0C9B35D",
+       "aboveEntityId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
+       "reason": "Aldi's panelMarketShare of 0.45 is below Dunkin's 0.74 minus 0.10."
+      },
+      {
+       "entityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "aboveEntityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "reason": "Bath & Body Works' panelMarketShare of 0.45 is below Chipotle's 0.84 minus 0.10."
+      },
+      {
+       "entityId": "54617D9D-5EC7-45E0-8B7F-360DADB0FE7E",
+       "aboveEntityId": "5E978F43-4450-4F41-8EE4-A0421E8EC178",
+       "reason": "Bath & Body Works' panelMarketShare of 0.45 is below Dunkin's 0.74 minus 0.10."
+      },
+      {
+       "entityId": "9DBAA49C-D49D-4BBE-ADBA-FE4D090F8217",
+       "aboveEntityId": "4CFF9589-5168-48BD-88F0-D0826466F37D",
+       "reason": "Bojangles' panelMarketShare of 0.16 is below Chipotle's 0.84 minus 0.10."
+      }
+     ],
+     "done": true
+    }
+   ]
+  }
+ }
+}
