@@ -8,6 +8,7 @@ import {
   type Location,
 } from '@leaseup/contracts';
 import { analyzeStreamErrorPayload } from '../lib/analyze-stream-error';
+import { liveOffloadBinding } from '../lib/live-offload-client';
 import { withSubrequestMeter } from '../lib/subrequest-meter';
 import { AnalysisService } from '../services/analysis';
 import { randomUUID } from 'node:crypto';
@@ -19,6 +20,15 @@ import {
 
 /** Browsers and the edge may reuse a recorded demo report briefly; it only changes on deploy. */
 const RECORDED_DEMO_CACHE_CONTROL = 'public, max-age=300';
+
+/**
+ * ctx.exports.LiveOffload, the free loopback binding prospecting runs already use, so a live
+ * analyze fans its per brand audience and co-tenancy lookups out to their own invocations
+ * instead of spending this invocation's Workers Free budget of 50 subrequests.
+ */
+function withLiveOffload(c: Context<{ Bindings: Env }>): Env {
+  return { ...c.env, LIVE_OFFLOAD: liveOffloadBinding(() => c.executionCtx) };
+}
 
 function scheduleOsmWarmup(
   c: Context<{ Bindings: Env }>,
@@ -90,7 +100,7 @@ analysisRouter.post('/analyze', async (c) => {
   const ip = c.req.header('cf-connecting-ip') || 'unknown';
   const ipHash = await hashIP(ip);
 
-  const service = new AnalysisService(c.env);
+  const service = new AnalysisService(withLiveOffload(c));
   const result = await service.analyze(request, runId, ipHash);
   scheduleOsmWarmup(
     c,
@@ -141,7 +151,7 @@ analysisRouter.post('/analyze/stream', async (c) => {
     });
   }
 
-  const service = new AnalysisService(c.env);
+  const service = new AnalysisService(withLiveOffload(c));
 
   void (async () => {
     try {
