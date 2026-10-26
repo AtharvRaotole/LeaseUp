@@ -10,6 +10,8 @@ import {
   RuleProspectingReviewClient,
   runProspectingAgentReview,
   type ProspectingReviewClient,
+  plainReviewReason,
+  endSentence,
 } from '../lib/prospecting-agent-review';
 
 const ID = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
@@ -287,5 +289,17 @@ describe('runProspectingAgentReview', () => {
     expect(review.actions[0]).toMatchObject({ outcome: 'declined', reason: 'One overlap is thin evidence.' });
     expect(review.actions[0]!.resultSummary).toBe('Kept Brand 2 above Brand 3.');
     expect(review.summary).toMatch(/declined/);
+  });
+
+  it('words model reasons for brokers, keeping the numbers', () => {
+    // Live deploy47 Bedford reasons, as gpt-4o-mini wrote them.
+    expect(
+      plainReviewReason("H&M's panelMarketShare of 0.22 is below Victoria's Secret's 0.30 minus 0.10.")
+    ).toBe("H&M's share of panel markets (22%) is below Victoria's Secret's 30% minus 10 points.");
+    expect(plainReviewReason('panelMarketShare is missing; twinMarketsWithStore is 3 of 5 twinMarkets.')).toBe(
+      'Share of panel markets is missing; taste twin markets with a store is 3 of 5 taste twin markets.'
+    );
+    expect(endSentence('Kept Nike above Tiffany & Co.')).toBe('Kept Nike above Tiffany & Co.');
+    expect(endSentence('Kept Nike above Vans')).toBe('Kept Nike above Vans.');
   });
 });

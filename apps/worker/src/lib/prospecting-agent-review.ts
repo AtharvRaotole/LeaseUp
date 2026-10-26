@@ -67,6 +67,32 @@ export type ProspectingReviewComparable = {
 };
 
 /** How far below the displaced brand's panel market share a lifted brand may be and still move up. */
+/** Ends a sentence once, so a name like "Tiffany & Co." does not get a second period. */
+export function endSentence(text: string): string {
+  return text.endsWith('.') ? text : `${text}.`;
+}
+
+function sharePct(value: string): string {
+  return `${Math.round(Number(value) * 100)}%`;
+}
+
+/**
+ * The model reasons with the tool field names; brokers read the reason, so field names and
+ * 0 to 1 shares become plain words and percentages. Wording only: the numbers are unchanged.
+ */
+export function plainReviewReason(reason: string): string {
+  return reason
+    .replace(/\bpanelMarketShare\b(?: of| is| =|:)? ?(0?\.\d+|1(?:\.0+)?|0)\b/g, (_m, v: string) =>
+      `share of panel markets (${sharePct(v)})`
+    )
+    .replace(/(\d?\.\d+|\b[01]\b) minus 0?\.10?\b/g, (_m, v: string) => `${sharePct(v)} minus 10 points`)
+    .replace(/\bpanelMarketShare\b/g, 'share of panel markets')
+    .replace(/\btwinMarketsWithStore\b/g, 'taste twin markets with a store')
+    .replace(/\btwinMarkets\b/g, 'taste twin markets')
+    .replace(/\bcomparableMarkets\b/g, 'comparable markets')
+    .replace(/^[a-z]/, (c) => c.toUpperCase());
+}
+
 export const REVIEW_PANEL_SHARE_MARGIN = 0.1;
 
 /**
@@ -269,7 +295,7 @@ export function applyReviewLift(
     return { prospects, ok: false, summary: 'Not lifted: the displaced brand is outside the top 5.' };
   }
   if (from <= to) {
-    return { prospects, ok: false, summary: `Not lifted: ${packName(lifted)} already ranks above ${packName(displaced)}.` };
+    return { prospects, ok: false, summary: endSentence(`Not lifted: ${packName(lifted)} already ranks above ${packName(displaced)}`) };
   }
   if (liftedOverlaps === 0) {
     return { prospects, ok: false, summary: `Not lifted: ${packName(lifted)} has no verified local audience overlap.` };
@@ -483,7 +509,7 @@ export class OpenAiProspectingReviewClient implements ProspectingReviewClient {
         toolCallId: tc.id,
         entityId: String(parsed.entityId ?? ''),
         aboveEntityId: String(parsed.aboveEntityId ?? ''),
-        reason: String(parsed.reason ?? msg.content ?? ''),
+        reason: plainReviewReason(String(parsed.reason ?? msg.content ?? '')),
       };
       if (name === 'lift_pitch') lifts.push({ ...row, reason: row.reason || 'Model chose this lift' });
       else if (name === 'decline_lift') declines.push({ ...row, reason: row.reason || 'Model kept the order' });
@@ -592,7 +618,7 @@ export async function runProspectingAgentReview(params: {
       for (const decline of turn.declines ?? []) {
         const liftedName = shortlist.find((r) => r.entityId === decline.entityId)?.name ?? 'Unknown brand';
         const aboveName = shortlist.find((r) => r.entityId === decline.aboveEntityId)?.name ?? 'Unknown brand';
-        const summary = `Kept ${aboveName} above ${liftedName}.`;
+        const summary = endSentence(`Kept ${aboveName} above ${liftedName}`);
         actions.push({
           planner: client.kind,
           tool: 'decline_lift',
