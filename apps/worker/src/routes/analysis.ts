@@ -8,6 +8,7 @@ import {
   type Location,
 } from '@leaseup/contracts';
 import { analyzeStreamErrorPayload } from '../lib/analyze-stream-error';
+import { withSubrequestMeter } from '../lib/subrequest-meter';
 import { AnalysisService } from '../services/analysis';
 import { randomUUID } from 'node:crypto';
 import {
@@ -144,27 +145,34 @@ analysisRouter.post('/analyze/stream', async (c) => {
 
   void (async () => {
     try {
-      const result = await service.analyzeWithSteps(request, runId, ipHash, async (step) => {
-        await send('step', step);
-      });
-      scheduleOsmWarmup(
-        c,
-        result.location,
-        request.radius,
-        result.prospects,
-        result.prospectFunnel?.absenceRadiusKm
-      );
-      await send('complete', result);
-      const needsOsm = result.prospects.some((p) => p.brand.verified === 'verifying...');
-      if (needsOsm) {
-        const { prospects: verified, summary } = await service.applyOsmVerification(
+      // Metered like prospecting runs (Workers Free: 50 subrequests per invocation); the counts
+      // go to the client as a last event and to the Worker log. No KV or D1 writes. The OSM
+      // warmup runs in waitUntil after this snapshot; the CI budget test counts it too.
+      const { counts } = await withSubrequestMeter(async () => {
+        const result = await service.analyzeWithSteps(request, runId, ipHash, async (step) => {
+          await send('step', step);
+        });
+        scheduleOsmWarmup(
+          c,
           result.location,
           request.radius,
           result.prospects,
-          result.prospectFunnel?.absenceRadiusKm ?? request.radius
+          result.prospectFunnel?.absenceRadiusKm
         );
-        await send('verification', { runId, prospects: verified, osmSummary: summary });
-      }
+        await send('complete', result);
+        const needsOsm = result.prospects.some((p) => p.brand.verified === 'verifying...');
+        if (needsOsm) {
+          const { prospects: verified, summary } = await service.applyOsmVerification(
+            result.location,
+            request.radius,
+            result.prospects,
+            result.prospectFunnel?.absenceRadiusKm ?? request.radius
+          );
+          await send('verification', { runId, prospects: verified, osmSummary: summary });
+        }
+      });
+      await send('subrequests', { runId, ...counts });
+      console.log(JSON.stringify({ event: 'analyze_subrequests', runId, ...counts }));
     } catch (error) {
       await send('error', analyzeStreamErrorPayload(error));
     } finally {
