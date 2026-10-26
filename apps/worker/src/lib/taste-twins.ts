@@ -214,3 +214,17 @@ export function withTasteTwinEvidence(pack: ProspectPack, set: TasteTwinSet | nu
     reasons: reason ? [...pack.reasons.slice(0, 2), reason, ...pack.reasons.slice(2)] : pack.reasons,
   };
 }
+
+/**
+ * Share of panel test markets more than 50 km from the site with a store for the brand inside their
+ * adaptive radius (the panel base rate the review compares). Undefined outside the panel.
+ */
+export function panelMarketShare(entityId: string, latitude: number, longitude: number): number | undefined {
+  const idx = BRAND_INDEX.get(entityId);
+  if (idx === undefined) return undefined;
+  const far = PANEL.sites.filter(
+    (s) => haversineKm(latitude, longitude, s.lat, s.lon) > PANEL.excludeKm
+  );
+  if (far.length === 0) return undefined;
+  return far.filter((s) => s.present.includes(idx)).length / far.length;
+}

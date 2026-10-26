@@ -90,5 +90,17 @@ describe('twinRankingLine', () => {
     expect(line).toMatch(/2 test markets whose Qloo taste is closest to this site: Wellesley, MA and Bethesda, MD\./);
     expect(line).toMatch(/from 8\.2 to 9 of 10/);
     expect(line).not.toMatch(/[\u2013\u2014]/);
+    const three = twinRankingLine({
+      ...base,
+      rankingModel: {
+        kind: 'taste_twins',
+        twins: [
+          { id: 'a', label: 'Wellesley, MA' },
+          { id: 'b', label: 'Bethesda, MD' },
+          { id: 'c', label: 'Edina, MN' },
+        ],
+      },
+    });
+    expect(three).toMatch(/closest to this site: Wellesley, MA; Bethesda, MD; and Edina, MN\./);
   });
 });

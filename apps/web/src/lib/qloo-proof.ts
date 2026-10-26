@@ -223,9 +223,11 @@ export function qlooProofHitRateTieSubtitle(
 /** Leave one address out, 40 test sites, all scored brands (the analyze pool) (data/qloo-eval-40/TWIN_RANK_EVAL.md). */
 export const TWIN_RANK_EVAL_TOP10 = { standard: 8.2, twins: 9.0 } as const;
 
+/** Market labels contain commas ("Wellesley, MA"), so lists of three or more use semicolons. */
 function joinLabels(labels: string[]): string {
   if (labels.length <= 1) return labels.join('');
-  return `${labels.slice(0, -1).join(', ')} and ${labels[labels.length - 1]}`;
+  if (labels.length === 2) return `${labels[0]} and ${labels[1]}`;
+  return `${labels.slice(0, -1).join('; ')}; and ${labels[labels.length - 1]}`;
 }
 
 /** One line naming the taste twins that shaped this live order, or null for demo chips and fallbacks. */
