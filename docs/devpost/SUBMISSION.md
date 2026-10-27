@@ -35,7 +35,7 @@ Offline copy for the Qloo Agentic Hackathon. Numbers below come from `data/qloo-
 - **Address input validation:** typed addresses are rejected before geocode with plain errors for gibberish, PO boxes, non-US text, and ambiguous input (`address-input-validation.ts`, `analyze-robustness` e2e and screenshots under `docs/screenshots/analyze-robustness/`).
 - **Chain-size fallback when Qloo is down:** live analyze returns national chain-size ranking with `tasteDataStatus: unavailable` and `TasteUnavailableBanner`; no fabricated taste scores (`qloo-chain-fallback.ts`, `qloo-analyze-resilience.test.ts`).
 
-**Recording:** Atharv lifted the recording hold on Oct 26, 2026. Gallery stills were recaptured from deploy50 (`docs/devpost/GALLERY_ASSETS.md`, `scripts/capture-devpost-gallery-3x2.mjs`). The walkthrough video is being made separately; its URL goes in the Devpost video field (videos are optional for this hackathon). Copy ready to paste into every Devpost field is in `docs/devpost/SUBMISSION_PACK.md`.
+**Recording:** Atharv lifted the recording hold on Oct 26, 2026. Gallery stills were recaptured from deploy50 (`docs/devpost/GALLERY_ASSETS.md`, `scripts/capture-devpost-gallery-3x2.mjs`). Demo video: https://youtu.be/SRpG3FYun3E (credits in `docs/devpost/VIDEO_CREDITS.md`). Copy ready to paste into every Devpost field is in `docs/devpost/SUBMISSION_PACK.md`.
 
 ---
 
@@ -363,4 +363,4 @@ The deploy50 stills are 2880x1920 PNGs (3:2, each under 1.5 MB) in `docs/devpost
 
 - [x] Gallery recaptured from production at 3:2 with plain captions
 - [x] Live demo link and public MIT repo
-- [ ] Video URL (optional for this hackathon) pasted once the separate video is uploaded
+- [x] Video URL: https://youtu.be/SRpG3FYun3E
