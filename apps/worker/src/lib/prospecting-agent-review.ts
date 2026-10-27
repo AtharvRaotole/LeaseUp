@@ -350,6 +350,14 @@ export function comparableMarketsReason(lift: ProspectingReviewEligibleLift): st
   }
 }
 
+/** The comparable market sentence for a model call; says so when the panel test overruled the model. */
+export function checkedReviewReason(lift: ProspectingReviewEligibleLift, modelAgreed: boolean): string {
+  const body = comparableMarketsReason(lift)
+    .replace(/^Rule: /, '')
+    .replace(/^[a-z]/, (c) => c.toUpperCase());
+  return modelAgreed ? body : `Panel check overruled the model. ${body}`;
+}
+
 /**
  * Deterministic reviewer for demo mode, tests, servers without OpenAI, and model fallback. Lifts an
  * eligible pitch only when comparable markets support it and declines the rest with the numbers.
@@ -514,6 +522,17 @@ export class OpenAiProspectingReviewClient implements ProspectingReviewClient {
         aboveEntityId: String(parsed.aboveEntityId ?? ''),
         reason: plainReviewReason(String(parsed.reason ?? msg.content ?? '')),
       };
+      const eligible = input.eligibleLifts.find(
+        (e) => e.entityId === row.entityId && e.aboveEntityId === row.aboveEntityId
+      );
+      if (eligible && (name === 'lift_pitch' || name === 'decline_lift')) {
+        // The model decides, the panel test checks it: a call that breaks the test is overruled, and
+        // the reason quotes the server's numbers so no model arithmetic reaches the broker.
+        const backed = comparableMarketsVerdict(eligible) === 'supports';
+        const reason = checkedReviewReason(eligible, (name === 'lift_pitch') === backed);
+        (backed ? lifts : declines).push({ ...row, reason });
+        continue;
+      }
       if (name === 'lift_pitch') lifts.push({ ...row, reason: row.reason || 'Model chose this lift' });
       else if (name === 'decline_lift') declines.push({ ...row, reason: row.reason || 'Model kept the order' });
       else this.messages.push({ role: 'tool', tool_call_id: tc.id, content: 'Unknown tool.' });

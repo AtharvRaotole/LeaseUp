@@ -2,7 +2,18 @@
 
 Find the right retail tenants for an empty storefront, with taste signals and store-footprint checks before you pitch.
 
-**Live app:** [https://leaseup-59m.pages.dev](https://leaseup-59m.pages.dev)
+**Live app:** https://leaseup-59m.pages.dev · **Sample pitch brief:** https://leaseup-59m.pages.dev/pitch/demo-boulder-ulta · **License:** MIT
+
+![LeaseUp site report for Wicker Park](docs/devpost/gallery/01-report-wicker.png)
+
+## Try it in two minutes
+
+1. Open the live app. No login or key needed.
+2. Click a demo chip (Wicker Park, Boulder, Sevierville). These replay recorded data and are marked **Recorded demo**.
+3. Or type any US storefront address, for example `240 Bedford Ave, Brooklyn, NY 11249`. That runs live Qloo calls on the server (30 to 90 seconds cold).
+4. Click **Run full prospecting** for the agent run: planner steps, the review after ranking, and the Agent receipt.
+
+Live analyze is capped at **48 cold addresses per UTC day** so the free tiers last; cached addresses do not count. If you hit the cap, use a chip or come back after the UTC day rolls over.
 
 ## Problem and audience
 
@@ -22,54 +33,26 @@ Enter a US storefront address and trade-area radius. LeaseUp returns a **ranked 
 | **Watchlist** (`/watchlist`) | Saved addresses with change alerts |
 | **Full prospecting** (`/prospect/:id`) | Multi-step run from geocode through pitch pack, with an **Agent receipt** after completion (logged steps only, JSON/Markdown export) |
 
-**Production API** runs with **`APP_MODE=live`** on the Cloudflare Worker (`GET /api/health` reports `mode: live` and configured Qloo). The repo’s `apps/worker/wrangler.toml` sets `APP_MODE = "demo"` under `[vars]` for local `wrangler dev` only; production overrides that in the dashboard (see `docs/DEPLOY.md`). Any typed **US storefront address** goes through **live** Qloo `/v2/insights` on the server (never in the browser), subject to **`LIVE_QLOO_JUDGE_DAILY_CAP`** (default **48** cold analyzes per UTC day, `apps/worker/src/lib/live-qloo-judge-quota.ts`). The three **landing demo chips** (Wicker, Boulder, Sevierville in `packages/fixtures/src/demo-addresses.ts`) use **committed recordings** for Qloo taste and store context so those demos stay fast and reproducible on the live site. Local development without keys uses `APP_MODE=demo` and is chip-only (see [Local setup](#local-setup)).
+**Production** runs the Worker with `APP_MODE=live` (`GET /api/health` reports `mode: live` and Qloo configured). Typed US addresses call Qloo `/v2/insights` on the server, never in the browser, under `LIVE_QLOO_JUDGE_DAILY_CAP` (default 48 cold analyzes per UTC day, `apps/worker/src/lib/live-qloo-judge-quota.ts`). The three demo chips (`packages/fixtures/src/demo-addresses.ts`) replay committed recordings so they stay fast and reproducible. The committed `apps/worker/wrangler.toml` sets `APP_MODE = "demo"` for local work; production sets live in its deploy config (see `docs/DEPLOY.md`).
 
 ## Screenshots
 
-Production stills from `docs/devpost/gallery/`, captured from https://leaseup-59m.pages.dev in the dark theme.
+Captured from production (deploy50) on Oct 26, 2026 with `scripts/capture-devpost-gallery-3x2.mjs`. All twelve, with captions, are listed in [docs/devpost/GALLERY_ASSETS.md](docs/devpost/GALLERY_ASSETS.md).
 
-**Landing page**
-
-![LeaseUp landing page](docs/devpost/gallery/landing-1440.png)
-
-**Site report (Wicker Park, desktop)**
-
-![Wicker Park report](docs/devpost/gallery/report-wicker-1440.png)
-
-**Site report (mobile width)**
-
-![Wicker Park report mobile](docs/devpost/gallery/report-wicker-390.png)
-
-**Full prospecting run and Agent receipt**
-
-![Full prospecting run with Agent receipt, planner decisions, and review after ranking](docs/devpost/gallery/prospecting-receipt-1440.png)
-
-**Pitch pack (Boulder sample)**
-
-![Boulder pitch pack](docs/devpost/gallery/pitch-boulder-1440.png)
-
-**Brand exploration**
-
-![Brand sites heatmap](docs/devpost/gallery/brand-1440.png)
-
-**Portfolio batch**
-
-![Portfolio paste and analyze](docs/devpost/gallery/portfolio-1440.png)
-
-**Leasing pipeline**
-
-![Leasing pipeline](docs/devpost/gallery/pipeline-1440.png)
-
-**Methodology**
-
-![Methodology overview](docs/devpost/gallery/methodology-1440.png)
+| | |
+| --- | --- |
+| <img src="docs/devpost/gallery/02-agent-review-bedford.png" alt="Live agent run (Brooklyn): the review after ranking, with panel numbers for every decision" width="420"><br>Live agent run (Brooklyn): the review after ranking, with panel numbers for every decision | <img src="docs/devpost/gallery/03-agent-receipt-bedford.png" alt="Agent receipt: planner decisions and logged steps" width="420"><br>Agent receipt: planner decisions and logged steps |
+| <img src="docs/devpost/gallery/05-pitch-brief.png" alt="Pitch brief to share with a prospect" width="420"><br>Pitch brief to share with a prospect | <img src="docs/devpost/gallery/04-report-boulder.png" alt="Boulder report" width="420"><br>Boulder report |
+| <img src="docs/devpost/gallery/12-mobile-wicker.png" alt="Phone width (390 px): report and map" width="420"><br>Phone width (390 px): report and map | <img src="docs/devpost/gallery/10-portfolio.png" alt="Portfolio batch" width="420"><br>Portfolio batch |
+| <img src="docs/devpost/gallery/11-pipeline.png" alt="Leasing pipeline" width="420"><br>Leasing pipeline | <img src="docs/devpost/gallery/09-methodology.png" alt="Methodology" width="420"><br>Methodology |
 
 ## How LeaseUp uses Qloo and the agent planner
 
 ### Taste ranking (site analyze)
 
 - The worker calls Qloo **`GET /v2/insights`** with brand entities at the geocoded point (`apps/worker/src/providers/qloo.ts`). Batches use up to **45** brand IDs per request across **227** tracked chains.
-- Default pitch order on the report uses a **fitted logistic blend** of Qloo affinity and chain size (`packages/fixtures/src/eval/live-qloo-lift/logistic-coefficients.json`), not raw Qloo order alone. Judges and brokers can compare **Local taste** vs **Chain size** in the report UI.
+- **Taste twins:** the site's Qloo scores are matched to the 5 most similar of 40 panel markets, at no extra Qloo cost. On live addresses (not the demo chips) twin share feeds the pitch order; top 10 hits rose from 8.2 to 9.0 of 10 in a leave one site out test (`data/qloo-eval-40/TWIN_RANK_EVAL.md`).
+- On demo chips (and whenever twins are unavailable) the pitch order uses a **fitted logistic blend** of Qloo affinity and chain size (`packages/fixtures/src/eval/live-qloo-lift/logistic-coefficients.json`), not raw Qloo order alone. Judges and brokers can compare **Local taste** vs **Chain size** in the report UI.
 - If Qloo errors in live mode, analyze **falls back to national chain-size ranking**, sets taste status to unavailable, and shows **`TasteUnavailableBanner`** (`apps/worker/src/lib/qloo-chain-fallback.ts`). Demo chips keep recorded taste JSON.
 
 ### Full prospecting planner
@@ -80,6 +63,8 @@ On **Run full prospecting**, the worker runs **Plan site checks (agent)** before
 - **Live** workers with `OPENAI_API_KEY`: **gpt-4o-mini** tool calling inside that step (planner kind **model**; receipt label **Agent**).
 - **Demo chips:** deterministic **rule** planner (no OpenAI); receipt label **Rule** for those tool rows.
 - If the planner is missing, times out, or fails, the run continues with the **fixed analysis pipeline** (`dag_fallback` on the job). The timeline still shows geocode, taste, store scan, verify, rank, outreach draft, and pitch pack steps.
+
+**Review after ranking:** gpt-4o-mini (live) or a rule (demo chips) may move a brand up only when it trades in comparable markets: its share of the 40 panel markets with a store must be within 10 points of the brand it displaces. The server checks every model call against that rule, overrules calls that break it (labeled **Panel check overruled the model**), and writes the reason with the server's numbers (`apps/worker/src/lib/prospecting-agent-review.ts`). Backtest in `data/qloo-eval-40/REVIEW_JUDGMENT_BACKTEST.md`: +0.200 top 5 hits per market, 95% interval [0.025, 0.375].
 
 The **Agent receipt** lists only steps the server logged (`apps/web/src/components/prospecting/AgentReceipt.tsx`). It is an audit-style summary, not a separate generative narrative.
 
