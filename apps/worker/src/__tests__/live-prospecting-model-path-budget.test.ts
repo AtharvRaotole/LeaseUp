@@ -150,7 +150,15 @@ describe('live prospecting model path subrequest budget (non-demo address)', () 
               firstEligible = eligible as typeof firstEligible;
               return chat({
                 content: null,
-                tool_calls: eligible.slice(0, 1).map((e) =>
+                // Lift the first move the panel test backs, as the prompt asks; others would be overruled.
+                tool_calls: eligible
+                  .filter((e) => {
+                    const c = (e as unknown as { comparableMarkets?: Record<string, { panelMarketShare?: number }> })
+                      .comparableMarkets;
+                    return (c?.lifted?.panelMarketShare ?? -1) >= (c?.displaced?.panelMarketShare ?? 2) - 0.1;
+                  })
+                  .slice(0, 1)
+                  .map((e) =>
                   toolCall('rv1', 'lift_pitch', {
                     reason: 'Verified local audience overlap.',
                     entityId: e.entityId,
