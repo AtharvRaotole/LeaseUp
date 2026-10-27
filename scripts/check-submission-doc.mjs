@@ -4,7 +4,7 @@
  * integration branch; any git commit SHA cited in SUBMISSION.md is on that branch.
  */
 import { execSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -115,10 +115,10 @@ const checks = [
     submission.includes('240 Bedford Ave') && submission.includes('LIVE_QLOO_JUDGE_DAILY_CAP'),
   ],
   [
-    'walkthrough pending re-record',
-    submission.includes('pending re-record') || submission.includes('Walkthrough video pending re-record'),
+    'video status stated',
+    submission.includes('Devpost video field') && existsSync(join(root, 'docs/devpost/SUBMISSION_PACK.md')),
   ],
-  ['deploy44 production label', submission.includes('deploy44')],
+  ['deploy50 production label', submission.includes('deploy50')],
   [
     'agent receipt documented',
     submission.includes('Agent receipt') && submission.includes('agent-receipt'),
