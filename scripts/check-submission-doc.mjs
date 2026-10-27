@@ -115,8 +115,11 @@ const checks = [
     submission.includes('240 Bedford Ave') && submission.includes('LIVE_QLOO_JUDGE_DAILY_CAP'),
   ],
   [
-    'video status stated',
-    submission.includes('Devpost video field') && existsSync(join(root, 'docs/devpost/SUBMISSION_PACK.md')),
+    'demo video YouTube URL',
+    submission.includes('https://youtu.be/SRpG3FYun3E') &&
+      readFileSync(join(root, 'docs/devpost/SUBMISSION_PACK.md'), 'utf8').includes('https://youtu.be/SRpG3FYun3E') &&
+      existsSync(join(root, 'docs/devpost/VIDEO_CREDITS.md')) &&
+      existsSync(join(root, 'docs/devpost/video-thumbnail.png')),
   ],
   ['deploy50 production label', submission.includes('deploy50')],
   [

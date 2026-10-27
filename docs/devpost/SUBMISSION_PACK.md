@@ -100,7 +100,9 @@ React, TypeScript, Vite, Tailwind CSS, MapLibre GL, TanStack Query, Cloudflare P
 
 ## Video demo link
 
-VIDEO_URL_HERE (YouTube or Vimeo; optional for this hackathon)
+https://youtu.be/SRpG3FYun3E
+
+Title: LeaseUp: an AI leasing agent for empty retail space (Qloo Agentic Hackathon 2026). Credits: docs/devpost/VIDEO_CREDITS.md.
 
 ---
 
