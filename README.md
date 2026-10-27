@@ -1,84 +1,103 @@
 # LeaseUp
 
-Find the right retail tenants for an empty storefront, with taste signals and store-footprint checks before you pitch.
+**Find which retail chains to pitch for an empty storefront, using Qloo taste data, real store footprints, and a small agent that shows its work.**
 
-**Live app:** https://leaseup-59m.pages.dev · **Sample pitch brief:** https://leaseup-59m.pages.dev/pitch/demo-boulder-ulta · **License:** MIT
+[![Live app](https://img.shields.io/badge/Live_app-leaseup--59m.pages.dev-0ea5e9?style=flat-square)](https://leaseup-59m.pages.dev)
+[![Demo video](https://img.shields.io/badge/Demo_video-YouTube-ff0000?style=flat-square)](https://youtu.be/SRpG3FYun3E)
+[![How LeaseUp uses Qloo](https://img.shields.io/badge/Methodology-How_LeaseUp_uses_Qloo-6366f1?style=flat-square)](https://leaseup-59m.pages.dev/methodology/qloo)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
-![LeaseUp site report for Wicker Park](docs/devpost/gallery/01-report-wicker.png)
+[![Watch the demo](docs/devpost/video-thumbnail.png)](https://youtu.be/SRpG3FYun3E)
 
-## Try it in two minutes
+**[Live app](https://leaseup-59m.pages.dev)** · **[Demo video](https://youtu.be/SRpG3FYun3E)** · **[How LeaseUp uses Qloo](https://leaseup-59m.pages.dev/methodology/qloo)** · **[Sample pitch brief](https://leaseup-59m.pages.dev/pitch/demo-boulder-ulta)**
 
-1. Open the live app. No login or key needed.
-2. Click a demo chip (Wicker Park, Boulder, Sevierville). These replay recorded data and are marked **Recorded demo**.
-3. Or type any US storefront address, for example `240 Bedford Ave, Brooklyn, NY 11249`. That runs live Qloo calls on the server (30 to 90 seconds cold).
-4. Click **Run full prospecting** for the agent run: planner steps, the review after ranking, and the Agent receipt.
+Built for the [Qloo Agentic Hackathon 2026](https://qloo-hackathon.devpost.com/). Production is **deploy50** on Cloudflare Pages and Workers (free tiers).
 
-Live analyze is capped at **48 cold addresses per UTC day** so the free tiers last; cached addresses do not count. If you hit the cap, use a chip or come back after the UTC day rolls over.
+## Try it in 30 seconds
 
-## Problem and audience
+1. Open **https://leaseup-59m.pages.dev**. No login or API key.
+2. Click a demo chip (Wicker Park, Boulder, or Sevierville). These replay recorded Qloo and store data, are marked **Recorded demo**, and never use quota.
+3. Or type a live US address such as `240 Bedford Ave, Brooklyn, NY 11249` (about 30 to 90 seconds cold).
+4. Click **Run full prospecting** for the agent path: planner steps, the review after ranking, and the Agent receipt.
 
-Landlords and retail brokers lose time pitching chains that already operate near a site, or that do not match how people shop in the trade area. LeaseUp is for **US retail leasing teams** (landlords, tenant reps, and small-shop brokers) who need a shortlist they can defend: ranked brands, map context, verification notes, and shareable artifacts for owners and prospects.
+Live analyze is capped at **48 cold addresses per UTC day** so free tiers last through judging. Cached addresses do not count. If you hit the cap, use a chip or come back after the UTC day rolls over.
+
+![LeaseUp site report for Wicker Park, Chicago](docs/devpost/gallery/01-report-wicker.png)
 
 ## What it does
 
-Enter a US storefront address and trade-area radius. LeaseUp returns a **ranked prospect list**, a **report** with funnel and methodology context, and tools to act on that list:
+LeaseUp turns a US storefront address into a broker-ready shortlist:
 
 | Area | What you get |
 | --- | --- |
-| **Site report** | Summary stats, prospect funnel, top brands to pitch, map, trade-area shopper tags, co-tenancy context, optional vacancy cost inputs |
-| **Brand pages** (`/brand/:id`) | Chain-level heatmap and gap-style exploration (not used to rank the site pitch list) |
-| **Portfolio** (`/portfolio`) | Batch up to 10 addresses, geocode confirm, sequential analyzes |
-| **Pitch pack** (`/pitch/:id`) | Read-only leasing brief and share link |
-| **Pipeline** (`/pipeline`) | Kanban cards with status, notes, reminders, and evidence links back to the report |
-| **Watchlist** (`/watchlist`) | Saved addresses with change alerts |
-| **Full prospecting** (`/prospect/:id`) | Multi-step run from geocode through pitch pack, with an **Agent receipt** after completion (logged steps only, JSON/Markdown export) |
+| **Site report** | Ranked brands to pitch, map, shopper tags, co-tenancy, vacancy cost |
+| **Full prospecting** | Bounded agent planner, review after ranking, Agent receipt (JSON/Markdown) |
+| **Pitch pack** | Read-only leasing brief you can share |
+| **Pipeline** | Kanban with notes, reminders, and evidence links |
+| **Portfolio / Watchlist / Brand sites** | Batch addresses, change alerts, chain heatmaps |
 
-**Production** runs the Worker with `APP_MODE=live` (`GET /api/health` reports `mode: live` and Qloo configured). Typed US addresses call Qloo `/v2/insights` on the server, never in the browser, under `LIVE_QLOO_JUDGE_DAILY_CAP` (default 48 cold analyzes per UTC day, `apps/worker/src/lib/live-qloo-judge-quota.ts`). The three demo chips (`packages/fixtures/src/demo-addresses.ts`) replay committed recordings so they stay fast and reproducible. The committed `apps/worker/wrangler.toml` sets `APP_MODE = "demo"` for local work; production sets live in its deploy config (see `docs/DEPLOY.md`).
+Production runs with `APP_MODE=live`. Typed addresses call Qloo `/v2/insights` on the server only. Demo chips replay committed recordings.
 
 ## Screenshots
 
-Captured from production (deploy50) on Oct 26, 2026 with `scripts/capture-devpost-gallery-3x2.mjs`. All twelve, with captions, are listed in [docs/devpost/GALLERY_ASSETS.md](docs/devpost/GALLERY_ASSETS.md).
+Captured from production (deploy50) on Oct 26, 2026. Full set and captions: [docs/devpost/GALLERY_ASSETS.md](docs/devpost/GALLERY_ASSETS.md).
 
-| | |
+| Agent review (live Brooklyn run) | Agent receipt |
 | --- | --- |
-| <img src="docs/devpost/gallery/02-agent-review-bedford.png" alt="Live agent run (Brooklyn): the review after ranking, with panel numbers for every decision" width="420"><br>Live agent run (Brooklyn): the review after ranking, with panel numbers for every decision | <img src="docs/devpost/gallery/03-agent-receipt-bedford.png" alt="Agent receipt: planner decisions and logged steps" width="420"><br>Agent receipt: planner decisions and logged steps |
-| <img src="docs/devpost/gallery/05-pitch-brief.png" alt="Pitch brief to share with a prospect" width="420"><br>Pitch brief to share with a prospect | <img src="docs/devpost/gallery/04-report-boulder.png" alt="Boulder report" width="420"><br>Boulder report |
-| <img src="docs/devpost/gallery/12-mobile-wicker.png" alt="Phone width (390 px): report and map" width="420"><br>Phone width (390 px): report and map | <img src="docs/devpost/gallery/10-portfolio.png" alt="Portfolio batch" width="420"><br>Portfolio batch |
-| <img src="docs/devpost/gallery/11-pipeline.png" alt="Leasing pipeline" width="420"><br>Leasing pipeline | <img src="docs/devpost/gallery/09-methodology.png" alt="Methodology" width="420"><br>Methodology |
+| ![Agent review](docs/devpost/gallery/02-agent-review-bedford.png) | ![Agent receipt](docs/devpost/gallery/03-agent-receipt-bedford.png) |
 
-## How LeaseUp uses Qloo and the agent planner
+| Pitch brief | Boulder report |
+| --- | --- |
+| ![Pitch brief](docs/devpost/gallery/05-pitch-brief.png) | ![Boulder report](docs/devpost/gallery/04-report-boulder.png) |
 
-### Taste ranking (site analyze)
+| Mobile (390 px) | Pipeline |
+| --- | --- |
+| ![Mobile Wicker](docs/devpost/gallery/12-mobile-wicker.png) | ![Pipeline](docs/devpost/gallery/11-pipeline.png) |
 
-- The worker calls Qloo **`GET /v2/insights`** with brand entities at the geocoded point (`apps/worker/src/providers/qloo.ts`). Batches use up to **45** brand IDs per request across **227** tracked chains.
-- **Taste twins:** the site's Qloo scores are matched to the 5 most similar of 40 panel markets, at no extra Qloo cost. On live addresses (not the demo chips) twin share feeds the pitch order; top 10 hits rose from 8.2 to 9.0 of 10 in a leave one site out test (`data/qloo-eval-40/TWIN_RANK_EVAL.md`).
-- On demo chips (and whenever twins are unavailable) the pitch order uses a **fitted logistic blend** of Qloo affinity and chain size (`packages/fixtures/src/eval/live-qloo-lift/logistic-coefficients.json`), not raw Qloo order alone. Judges and brokers can compare **Local taste** vs **Chain size** in the report UI.
-- If Qloo errors in live mode, analyze **falls back to national chain-size ranking**, sets taste status to unavailable, and shows **`TasteUnavailableBanner`** (`apps/worker/src/lib/qloo-chain-fallback.ts`). Demo chips keep recorded taste JSON.
+| Portfolio | Methodology |
+| --- | --- |
+| ![Portfolio](docs/devpost/gallery/10-portfolio.png) | ![Methodology](docs/devpost/gallery/09-methodology.png) |
 
-### Full prospecting planner
+## How LeaseUp uses Qloo
 
-On **Run full prospecting**, the worker runs **Plan site checks (agent)** before the standard analyze pipeline (`apps/worker/src/lib/prospecting-agent-planner.ts`):
+- **Brand ranking:** the Worker calls Qloo `GET /v2/insights` with brand entities at the geocoded point (batches of up to **45** IDs across **227** tracked chains). Affinity is blended with chain size in a model fitted on a 40-address live study.
+- **Who shops here:** separate location tag insights describe the trade area (shown as names, not raw affinities).
+- **Taste twins:** the site's scores are matched to the 5 most similar of 40 panel markets at **no extra Qloo cost**. On live addresses, twin share feeds the pitch order.
+- **Agent tools:** the planner and reviewer call the same Qloo tools inside a fixed budget (at most 6 tool steps, 3 Qloo calls, 18 s).
+- **Fallback:** if Qloo errors in live mode, ranking falls back to national chain size and the report says taste is unavailable.
 
-- **Budget:** at most **6** tool steps, **3** Qloo logical calls, and an **18 s** planner loop timeout (`PROSPECTING_AGENT_MAX_STEPS`, `PROSPECTING_AGENT_MAX_QLOO_CALLS`, `PROSPECTING_AGENT_LOOP_TIMEOUT_MS`).
-- **Live** workers with `OPENAI_API_KEY`: **gpt-4o-mini** tool calling inside that step (planner kind **model**; receipt label **Agent**).
-- **Demo chips:** deterministic **rule** planner (no OpenAI); receipt label **Rule** for those tool rows.
-- If the planner is missing, times out, or fails, the run continues with the **fixed analysis pipeline** (`dag_fallback` on the job). The timeline still shows geocode, taste, store scan, verify, rank, outreach draft, and pitch pack steps.
+In-app explainer: [How LeaseUp uses Qloo](https://leaseup-59m.pages.dev/methodology/qloo).
 
-**Review after ranking:** gpt-4o-mini (live) or a rule (demo chips) may move a brand up only when it trades in comparable markets: its share of the 40 panel markets with a store must be within 10 points of the brand it displaces. The server checks every model call against that rule, overrules calls that break it (labeled **Panel check overruled the model**), and writes the reason with the server's numbers (`apps/worker/src/lib/prospecting-agent-review.ts`). Backtest in `data/qloo-eval-40/REVIEW_JUDGMENT_BACKTEST.md`: +0.200 top 5 hits per market, 95% interval [0.025, 0.375].
+### Agent review (honest scope)
 
-The **Agent receipt** lists only steps the server logged (`apps/web/src/components/prospecting/AgentReceipt.tsx`). It is an audit-style summary, not a separate generative narrative.
+After ranking, **gpt-4o-mini** (live) or a rule (demo chips) may move a brand up only when comparable-market evidence backs it: the lower brand's share of the 40 panel markets with a store must be within 10 points of the brand it displaces. The server checks every model call against that rule, overrules calls that break it (labeled **Panel check overruled the model**), and writes reasons with the server's numbers. The Agent receipt lists only steps the server logged.
 
-More detail: [How LeaseUp uses Qloo](https://leaseup-59m.pages.dev/methodology/qloo) in the app and [docs/DEVPOST.md](docs/DEVPOST.md).
+## Measured results (40-address study)
+
+Headline metrics are committed in `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` and explained in `data/qloo-eval-40/QLOO_LIFT_EVAL.md`. **P@10** is the share of the top 10 ranked brands that already had a store in the trade area per All The Places / OpenStreetMap. It is **not** signed leases.
+
+| Ranker | Mean P@10 (40 US addresses) |
+| --- | --- |
+| Raw Qloo affinity | **54%** (exact 0.5375) |
+| National chain size | **76%** (0.760) |
+| Fitted logistic blend (shipped) | **82.5%** (0.825; +6.5 pp vs chain, 95% CI 3.3 to 9.3) |
+
+Other committed results:
+
+- Same-size tier AUC for Qloo vs presence: **0.664** [0.642, 0.687]
+- Mid-size tier P@5: **0.53** (Qloo) vs **0.23** (chain)
+- Taste-twin ranker on live addresses: top 10 hits **8.2 → 9.0** of 10 in leave-one-site-out (`TWIN_RANK_EVAL.md`)
+- Review rule leave-one-out: **+0.200** top-5 hits per market [0.025, 0.375] (`REVIEW_JUDGMENT_BACKTEST.md`)
 
 ## Architecture
 
-**pnpm** workspace with **Turbo** (`apps/web`, `apps/worker`, `packages/contracts`, `packages/fixtures`).
+pnpm + Turbo monorepo (`apps/web`, `apps/worker`, `packages/contracts`, `packages/fixtures`).
 
 | Layer | Stack |
 | --- | --- |
 | **Web** | React, Vite, Tailwind, MapLibre GL on Cloudflare Pages |
-| **API** | Cloudflare Worker, Hono, D1 (pipeline, prospecting jobs, rate limits), KV (response cache), static assets for store and OSM snapshot tiles |
-| **Data** | Qloo insights API, All The Places store index (embedded snapshot), OSM snapshot tiles, optional OpenAI for outreach drafts and live planner |
+| **API** | Cloudflare Worker, Hono, D1, KV, static store/OSM tiles |
+| **Data** | Qloo Taste AI, All The Places, OpenStreetMap, OpenAI gpt-4o-mini |
 
 ```mermaid
 flowchart TB
@@ -107,19 +126,7 @@ flowchart TB
   Worker --> OpenAI
 ```
 
-Deeper notes: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-
-## Evaluation (40-address study)
-
-Headline metrics are committed in `packages/fixtures/src/eval/live-qloo-lift/aggregates.json` and explained in `data/qloo-eval-40/QLOO_LIFT_EVAL.md`. **P@10** means the share of the top 10 ranked brands that already had a store in the trade area per ATP/OSM at the study radius. It is **not** signed leases or guaranteed whitespace.
-
-| Ranker | Mean P@10 (40 US addresses, adaptive radius) |
-| --- | --- |
-| Raw Qloo | 0.5375 (tables in eval doc round to 0.54; bootstrap CI in eval doc) |
-| Chain size | 0.760 (eval doc: 0.76 [0.71, 0.81]) |
-| Logistic blend (shipped default) | 0.825 (eval doc: 0.82 [0.78, 0.87]; +6.5 pp vs chain in `aggregates.json`, CI in eval doc) |
-
-Same-size tier AUC for Qloo vs chain presence: **0.664** with 95% CI **[0.642, 0.687]** in `aggregates.json` (`sameSizeAuc`). Heatmap features did not add ranking lift in that study (`heatmapAddsLift: false`).
+More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Local setup
 
@@ -130,17 +137,9 @@ pnpm install
 pnpm dev
 ```
 
-`pnpm dev` runs the web app and worker via Turbo. You can also run `pnpm --filter @leaseup/web dev` and `pnpm --filter @leaseup/worker dev` separately.
+Copy `apps/worker/.dev.vars.example` to `apps/worker/.dev.vars`. Default `APP_MODE=demo` works without keys for the three demo chips.
 
-Copy `apps/worker/.dev.vars.example` to `apps/worker/.dev.vars` for local worker secrets. Default **`APP_MODE=demo`** works without keys for the three demo chip addresses.
-
-**Worker environment variable names** (set values locally or in Cloudflare; never commit secrets):
-
-`APP_MODE`, `QLOO_API_KEY`, `QLOO_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_MODEL`, `NOMINATIM_CONTACT`, `ALLOWED_ORIGINS`, `LIVE_QLOO_JUDGE_DAILY_CAP`, `GIT_SHA`, `BUILD_TIME`
-
-**Web build:** `VITE_API_URL` (API origin for production builds). Tests may set `VITE_API_URL_ALLOW_MISSING`.
-
-**CI / local gate:**
+Worker env names (never commit secrets): `APP_MODE`, `QLOO_API_KEY`, `QLOO_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_MODEL`, `NOMINATIM_CONTACT`, `ALLOWED_ORIGINS`, `LIVE_QLOO_JUDGE_DAILY_CAP`, `GIT_SHA`, `BUILD_TIME`.
 
 ```bash
 pnpm verify:ci
@@ -148,25 +147,23 @@ pnpm verify:ci
 
 ## Tests and CI
 
-- **Unit and integration:** `pnpm test` (Vitest across packages; worker tests include analyze, planner, and receipt helpers).
-- **End-to-end:** `pnpm test:e2e` (Playwright; local D1 seed via wrangler).
-- **GitHub Actions** (`.github/workflows/ci.yml` on `cursor/**`): lint, typecheck, test, worker bundle dry-run, production build, CSP and Axe e2e, Qloo-down path, pipeline and report smokes, Lighthouse CI, and submission doc checks.
-
-## Deploy (high level)
-
-- **Web:** Cloudflare Pages from `apps/web` (see `apps/web` build and `_headers` for CSP).
-- **API:** `pnpm --filter @leaseup/worker deploy` (Wrangler, D1 migrations under `apps/worker/migrations`).
-- Operational checklists: [docs/DEPLOY.md](docs/DEPLOY.md), [docs/DEPLOY_CHECKLIST_20.md](docs/DEPLOY_CHECKLIST_20.md).
+- **Unit / integration:** Vitest across packages (361 worker tests, 192 web tests at last count)
+- **End-to-end:** Playwright (CSP, accessibility, Qloo-down, pipeline, ranking toggle)
+- **GitHub Actions** on `cursor/**`: lint, typecheck, test, bundle dry-run, production build, Lighthouse CI (mobile medians: landing perf **93**, report perf **89**, report a11y **96**), submission doc checks
 
 ## Limitations
 
-- **US retail chains panel** (~227 brands), not every tenant type or international retail.
-- **Store truth** combines an embedded All The Places snapshot and OSM snapshot tiles; brands missing from both cannot be detected. OSM snapshot coverage is partial versus the full chain list (see methodology in app).
-- **Shared live Qloo budget:** production analyze is capped by **`LIVE_QLOO_JUDGE_DAILY_CAP`** (default **48** per UTC day). **Local `APP_MODE=demo`** (wrangler default) accepts only the three chip addresses and always uses recordings; it does not replace production live analyze for arbitrary US addresses.
-- **Eval metrics** measure in-trade-area store presence, not lease success or broker conversion.
-- **Outreach drafts** use OpenAI only when the broker requests them; nothing is sent automatically.
-- **Planner** is a bounded tool loop ahead of a fixed DAG, not an open-ended autonomous agent.
+- US retail panel of about **227** chains; not every tenant type or international retail
+- Store truth is an All The Places snapshot plus OSM tiles; brands missing from both cannot be detected
+- Shared live Qloo budget: **48** cold analyzes per UTC day by default
+- Eval metrics measure in-trade-area store presence, not lease outcomes
+- Outreach drafts are never sent automatically
+- The planner is a bounded tool loop ahead of a fixed pipeline, not an open-ended autonomous agent
 
-## License
+## License and credits
 
 MIT. See [LICENSE](LICENSE).
+
+Demo video credits (voice, music, fonts, footage): [docs/devpost/VIDEO_CREDITS.md](docs/devpost/VIDEO_CREDITS.md).
+
+Devpost paste pack: [docs/devpost/SUBMISSION_PACK.md](docs/devpost/SUBMISSION_PACK.md).
