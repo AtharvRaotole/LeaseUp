@@ -196,10 +196,14 @@ describe('runProspectingAgentReview', () => {
     const client = new OpenAiProspectingReviewClient('k', 'gpt-4o-mini');
     const { review } = await runProspectingAgentReview({ prospects: LIST, client });
     expect(review.planner).toBe('model');
-    expect(review.actions.map((a) => a.outcome)).toEqual(['rejected', 'lifted']);
-    expect(review.after.map((b) => b.name)).toEqual(['Brand 1', 'Brand 2', 'Brand 3', 'Brand 6', 'Brand 4']);
-    expect(bodies).toHaveLength(3);
-    expect(review.modelUsage).toEqual({ calls: 3, promptTokens: 300, completionTokens: 60 });
+    // Brand 6 has no panel market data, so the panel test overrules the model's lift.
+    expect(review.actions.map((a) => a.outcome)).toEqual(['rejected', 'declined']);
+    expect(review.actions[1]!.reason).toMatch(
+      /^Panel check overruled the model\. Keep the order; comparable market data is missing/
+    );
+    expect(review.changed).toBe(false);
+    expect(bodies).toHaveLength(2);
+    expect(review.modelUsage).toEqual({ calls: 2, promptTokens: 200, completionTokens: 40 });
     expect(JSON.stringify(bodies[1]!.messages)).toContain('no verified local audience overlap');
     expect(bodies.every((b) => (b as unknown as { model: string }).model === 'gpt-4o-mini')).toBe(true);
   });
@@ -286,9 +290,64 @@ describe('runProspectingAgentReview', () => {
     expect(review.eligibleLifts).toBe(4);
     expect(review.changed).toBe(false);
     expect(review.actions).toHaveLength(1);
-    expect(review.actions[0]).toMatchObject({ outcome: 'declined', reason: 'One overlap is thin evidence.' });
+    expect(review.actions[0]).toMatchObject({ outcome: 'declined' });
+    expect(review.actions[0]!.reason).toMatch(/^Keep the order; comparable market data is missing/);
     expect(review.actions[0]!.resultSummary).toBe('Kept Brand 2 above Brand 3.');
     expect(review.summary).toMatch(/declined/);
+  });
+
+  it('checks each model call against the panel test and quotes the server numbers', async () => {
+    const location = { latitude: 0, longitude: -150 };
+    const list = [
+      panelPack(P.share90, 1, 2),
+      panelPack(P.share60, 2, 0),
+      panelPack(P.share50, 3, 0),
+      panelPack(P.share30, 4, 0),
+      panelPack(P.share75, 5, 1),
+      panelPack(P.share55, 6, 1),
+      panelPack(P.share10, 7, 1),
+    ];
+    // The live deploy49 mistake: the model declines a backed lift and lifts a weak one, with wrong math.
+    const call = (id: string, name: string, entityId: string, aboveEntityId: string, reason: string) => ({
+      id,
+      type: 'function',
+      function: { name, arguments: JSON.stringify({ entityId, aboveEntityId, reason }) },
+    });
+    const responses = [
+      {
+        content: null,
+        tool_calls: [
+          call('m1', 'decline_lift', P.share75, P.share30, '75% is less than 30% minus 10 points.'),
+          call('m2', 'lift_pitch', P.share10, P.share30, '10% is above 30%.'),
+        ],
+      },
+      { content: 'Done.', tool_calls: undefined },
+    ];
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({ choices: [{ message: responses.shift()! }], usage: { prompt_tokens: 10, completion_tokens: 5 } }),
+            { status: 200 }
+          )
+      )
+    );
+    const { review } = await runProspectingAgentReview({
+      prospects: list,
+      client: new OpenAiProspectingReviewClient('k', 'gpt-4o-mini'),
+      location,
+    });
+    const declined = review.actions.find((a) => a.outcome === 'declined')!;
+    expect(declined.entityId).toBe(P.share10);
+    expect(declined.reason).toMatch(/^Panel check overruled the model\. Keep the order;/);
+    expect(declined.reason).toMatch(/Tommy Bahama has a store in 10% of panel markets/);
+    const lifted = review.actions.find((a) => a.outcome === 'lifted')!;
+    expect([lifted.entityId, lifted.aboveEntityId]).toEqual([P.share75, P.share30]);
+    expect(lifted.reason).toMatch(
+      /^Panel check overruled the model\. Lift; local audience overlap and comparable markets agree/
+    );
+    expect(review.actions.every((a) => !/minus 10 points/.test(a.reason ?? ''))).toBe(true);
   });
 
   it('words model reasons for brokers, keeping the numbers', () => {
