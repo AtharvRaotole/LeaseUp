@@ -1,30 +1,24 @@
-# Devpost gallery (dark redesign production stills)
+# Devpost gallery (deploy50 production stills)
 
-All stills are PNGs captured from production **https://leaseup-59m.pages.dev**. Eleven were captured for the dark redesign gallery in #163. `prospecting-receipt-1440.png` was recaptured from deploy41 (integration head **`234364e`**, see `integration-head.txt`) on a live Wicker chip prospecting job, so it shows the review after ranking added in #169 and the readable rule planner reasons from #170. No video; upload stills only. The walkthrough video is still pending a re-record (see the recording hold in `SUBMISSION.md`).
+Twelve PNGs at 2880x1920 (3:2, a 1440x960 viewport at 2x), each under 1.5 MB, captured from https://leaseup-59m.pages.dev on Oct 26, 2026 with `scripts/capture-devpost-gallery-3x2.mjs`. The capture opens GET pages only: demo chip reports replay recordings and the prospecting page reads a finished job, so it spends no live Qloo quota. Every capture had 0 console errors.
+
+The agent stills come from a live deploy50 run on 240 Bedford Ave, Brooklyn (job `5ea1265e-e01e-46aa-ac91-79511f31cebb`): gpt-4o-mini planner, 2 gpt-4o-mini review calls, 5,217 tokens.
 
 | Image | Caption |
 | --- | --- |
-| `landing-1440.png` | Landing page: type an address or pick a demo chip (Wicker Park, Pearl Street, Sevierville), choose a trade area, then Analyze or Run full prospecting; a sample Wicker report preview sits on the right. |
-| `report-wicker-1440.png` | Wicker Park, Chicago report: headline, stat tiles, and a ranked pitch list beside the map. |
-| `report-wicker-390.png` | Same Wicker report on a phone-width layout without horizontal scroll. |
-| `report-bleecker-1440.png` | 350 Bleecker report: ranked pitch brands with nearest-store distances on each row. |
-| `report-boulder-1440.png` | Pearl Street, Boulder report: pitch rows with shared local audience lines where the evidence gates pass. |
-| `report-sevierville-1440.png` | Sevierville, Tennessee report: a lower-density trade area with its own ranked pitch list. |
-| `prospecting-receipt-1440.png` | Full prospecting run on the Wicker chip, Agent receipt expanded: three **Rule** planner decisions with results, then **Review after ranking**, where Vans (2 verified local audience overlaps) moves from #5 to #2 ahead of Victoria's Secret (none), with the top 5 before and after review, then the nine logged run steps. Rows are labeled Rule because demo chips use the rule planner and reviewer. |
-| `pitch-boulder-1440.png` | Sample leasing brief for the Boulder pin: match summary, fit bullets, trade area facts, and a link to reach the brand. |
-| `pipeline-1440.png` | Leasing pipeline empty state: track brands saved from reports with status, notes, and reminders, plus a one-page owner update. LeaseUp does not send email. |
-| `brand-1440.png` | Brand sites view: a taste heatmap and numbered gap opportunities for one brand in one city. |
-| `portfolio-1440.png` | Portfolio mode: paste up to ten storefront addresses or upload a CSV, then analyze them in sequence. |
-| `methodology-1440.png` | Methodology page: how LeaseUp ranks tenants, with a link to the plain-language Qloo explainer. |
+| `01-report-wicker.png` | Site report for Wicker Park, Chicago, with the brands to pitch and the map. Suggested thumbnail. |
+| `02-agent-review-bedford.png` | A live agent run in Brooklyn. The reviewer moved H&M and HomeGoods up and kept Victoria's Secret above Michael Kors and Vans, quoting the panel numbers. One lift is labeled Panel check overruled the model. |
+| `03-agent-receipt-bedford.png` | The Agent receipt: planner decisions and run steps the server logged, with JSON and Markdown export. |
+| `04-report-boulder.png` | Pearl Street, Boulder report. |
+| `05-pitch-brief.png` | Read only leasing brief for Wicker Park and American Eagle Outfitters, ready to share with a prospect. |
+| `06-report-sevierville.png` | Sevierville, Tennessee: a small market with its own ranked list. |
+| `07-landing.png` | Landing page with the address form and demo chips. |
+| `08-brand-sites.png` | Brand sites: pick one of 227 tracked chains to map where its shoppers are. |
+| `09-methodology.png` | Methodology: every step from address to ranked brands, with backtests. |
+| `10-portfolio.png` | Portfolio: paste up to 10 addresses and analyze them in sequence. |
+| `11-pipeline.png` | Leasing pipeline with statuses, notes and reminders. LeaseUp never sends email. |
+| `12-mobile-wicker.png` | Wicker Park report and map at phone width (390 px). |
 
-## Suggested Devpost order (7 images)
+Suggested Devpost order is 01 to 12. If you want fewer, use 01, 02, 03, 05, 11 and 12.
 
-1. `report-wicker-1440.png` (hero: full product)
-2. `prospecting-receipt-1440.png` (agent decisions and the review that changes the top 5)
-3. `report-boulder-1440.png` (audience lines on pitch rows)
-4. `pitch-boulder-1440.png` (shareable brief)
-5. `pipeline-1440.png` (where saved pitches are tracked)
-6. `report-wicker-390.png` (mobile)
-7. `methodology-1440.png` (trust and definitions)
-
-Optional eighth: `brand-1440.png` or `landing-1440.png`.
+The older 1440x900 stills (`*-1440.png`, `report-wicker-390.png`) stay in this folder because earlier audit docs link to them. Do not upload those.
